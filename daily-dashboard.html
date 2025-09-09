@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Dashboard - CSS Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="global.css">
+    <style>
+         /* ========== VARIABEL CSS YANG DIPERLUKAN ========== */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            --success-gradient: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);
+            --warning-gradient: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
+            --info-gradient: linear-gradient(135deg, #4895ef 0%, #3f37c9 100%);
+        }
+
+        /* ========== PERBAIKAN UTAMA UNTUK LAYOUT ========== */
+        .main-content {
+            padding: var(--space-lg);
+            background-color: var(--bg-secondary);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        /* ========== PERBAIKAN STATISTIC CARDS ========== */
+        .daily-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: var(--space-md);
+            margin-bottom: var(--space-xl);
+        }
+
+        .daily-stat-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .daily-stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .daily-stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        .daily-stat-card.today-completed::before {
+            background: var(--success-gradient);
+        }
+
+        .daily-stat-card.today-pending::before {
+            background: var(--info-gradient);
+        }
+
+        .daily-stat-card.today-urgent::before {
+            background: var(--warning-gradient);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-md);
+        }
+
+        .stat-title {
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .stat-icon.today-completed {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .stat-icon.today-pending {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+        }
+
+        .stat-icon.today-urgent {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: var(--font-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+            line-height: 1;
+        }
+
+        .stat-description {
+            font-size: var(--text-xs);
+            color: var(--text-secondary);
+        }
+
+        /* ========== PERBAIKAN FILTER SECTION ========== */
+        .daily-filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+            padding: var(--space-lg);
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+        }
+
+        .filter-group label {
+            font-size: var(--text-xs);
+            font-weight: var(--font-semibold);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-select {
+            padding: var(--space-sm) var(--space-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            font-size: var(--text-sm);
+            transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+            height: 42px;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        /* ========== PERBAIKAN TABLE ========== */
+        .daily-activities-section {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            margin-bottom: var(--space-xl);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+            padding-bottom: var(--space-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section-title {
+            font-size: var(--text-xl);
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin: 0;
+        }
+
+        .section-actions {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+        }
+
+        .daily-table-container {
+            overflow-x: auto;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            margin-bottom: var(--space-lg);
+        }
+
+        .daily-table {
+            margin: 0;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 900px;
+        }
+
+        .daily-table th {
+            padding: var(--space-md) var(--space-lg);
+            background: var(--table-header-bg);
+            font-weight: var(--font-semibold);
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+            font-size: var(--text-xs);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            text-align: left;
+            position: sticky;
+            top: 0;
+        }
+
+        .daily-table td {
+            padding: var(--space-md) var(--space-lg);
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: var(--text-sm);
+            vertical-align: middle;
+            line-height: 1.5;
+        }
+
+        .daily-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .daily-table tr:hover {
+            background-color: var(--hover-color);
+            transition: background-color var(--transition-fast);
+        }
+
+        /* Perbaikan untuk Priority Badges */
+        .priority-high, .priority-medium, .priority-low {
+            padding: 6px 12px;
+            border-radius: var(--radius-full);
+            font-size: var(--text-xs);
+            font-weight: var(--font-semibold);
+            display: inline-block;
+            text-align: center;
+            min-width: 80px;
+            letter-spacing: 0.3px;
+        }
+
+        .priority-high {
+            background-color: var(--danger-light);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .priority-medium {
+            background-color: var(--warning-light);
+            color: var(--warning);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .priority-low {
+            background-color: var(--success-light);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        /* Perbaikan untuk Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: var(--space-xs);
+            justify-content: flex-start;
+            flex-wrap: nowrap;
+        }
+
+        .btn-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: var(--text-sm);
+            padding: 0;
+            box-shadow: var(--shadow-xs);
+        }
+
+        .btn-icon.view {
+            background: var(--info-light);
+            color: var(--info);
+        }
+
+        .btn-icon:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+            opacity: 0.9;
+        }
+
+        /* ========== PERBAIKAN EMPTY STATE ========== */
+        .empty-state {
+            text-align: center;
+            padding: var(--space-xl) var(--space-lg);
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 2px dashed var(--border-color);
+            margin: var(--space-lg) 0;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--text-tertiary);
+            margin-bottom: var(--space-md);
+        }
+
+        .empty-state h3 {
+            font-size: var(--text-lg);
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .empty-state p {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-lg);
+        }
+
+        /* ========== PERBAIKAN PAGINATION ========== */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--space-md);
+            margin-top: var(--space-lg);
+            padding: var(--space-md) 0;
+        }
+
+        .page-numbers {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            font-weight: var(--font-medium);
+        }
+
+        /* ========== PERBAIKAN MODAL ========== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: var(--z-modal);
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-normal);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            transform: translateY(20px);
+            transition: transform var(--transition-normal);
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: var(--space-lg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: var(--text-xl);
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm);
+            transition: background-color var(--transition-fast);
+        }
+
+        .modal-close:hover {
+            background-color: var(--hover-color);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: var(--space-lg);
+        }
+
+        .modal-footer {
+            padding: var(--space-lg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--space-sm);
+        }
+
+        /* Form input static (readonly) */
+        .form-input-static {
+            padding: var(--space-sm) 0;
+            color: var(--text-primary);
+            font-size: var(--text-sm);
+            line-height: var(--leading-normal);
+            min-height: 20px;
+        }
+
+        /* Time tracking styles */
+        .time-tracking {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+            background: var(--bg-secondary);
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+        }
+
+        .time-track-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-xs) 0;
+        }
+
+        .time-track-label {
+            font-weight: var(--font-medium);
+            color: var(--text-secondary);
+        }
+
+        .time-track-value {
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+        }
+
+        /* Menu item styles */
+        .menu-item {
+            background-color: transparent;
+            color: var(--text-primary);
+            padding: 12px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            border: none;
+            text-decoration: none;
+        }
+
+        .menu-item:hover {
+            background-color: var(--hover-color);
+            color: var(--menu-hover-text);
+        }
+
+        .menu-item:hover i,
+        .menu-item:hover .menu-icon {
+            color: var(--menu-hover-text);
+        }
+
+        .menu-item.active {
+            background: var(--success-gradient);
+            color: #fff;
+        }
+
+        /* Today indicator */
+        .today-indicator {
+            display: inline-block;
+            padding: 4px 8px;
+            background-color: var(--info-light);
+            color: var(--info);
+            border-radius: var(--radius-sm);
+            font-size: var(--text-xs);
+            font-weight: var(--font-medium);
+            margin-left: var(--space-sm);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========== RESPONSIVE ADJUSTMENTS ========== */
+        @media (max-width: 1024px) {
+            .daily-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: var(--space-md);
+            }
+            
+            .header {
+                padding: var(--space-md);
+            }
+            
+            .daily-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .daily-filters {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-sm);
+            }
+            
+            .daily-table th, 
+            .daily-table td {
+                padding: var(--space-sm) var(--space-md);
+            }
+            
+            .modal {
+                width: 95%;
+                margin: var(--space-md);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .daily-table {
+                min-width: 100%;
+            }
+            
+            .daily-table th:nth-child(3),
+            .daily-table td:nth-child(3),
+            .daily-table th:nth-child(6),
+            .daily-table td:nth-child(6) {
+                display: none;
+            }
+            
+            .pagination {
+                flex-direction: column;
+                gap: var(--space-sm);
+            }
+        }
+
+        /* Custom scrollbar for table container */
+        .daily-table-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .daily-table-container::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+            border-radius: var(--radius-full);
+        }
+
+        .daily-table-container::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: var(--radius-full);
+        }
+
+        .daily-table-container::-webkit-scrollbar-thumb:hover {
+            background: var(--scrollbar-thumb-hover);
+        }
+
+        /* Hover effects for table rows */
+        .daily-table tr {
+            transition: background-color var(--transition-fast), transform var(--transition-fast);
+        }
+
+        .daily-table tr:hover {
+            background-color: var(--hover-color);
+            transform: translateX(4px);
+        }
+
+        /* Improved focus states for accessibility */
+        .btn-icon:focus,
+        .filter-select:focus,
+        .modal-close:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* ========== TOMBOL HAPUS SEMUA ========== */
+        .btn-delete-all {
+            background: var(--warning-gradient);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            font-size: var(--text-sm);
+            font-weight: var(--font-semibold);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            transition: all var(--transition-fast);
+        }
+
+        .btn-delete-all:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Modal konfirmasi hapus */
+        .delete-confirm-modal .modal {
+            max-width: 450px;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: var(--space-sm) var(--space-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            font-size: var(--text-sm);
+            transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+            margin-top: var(--space-xs);
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: var(--text-xs);
+            margin-top: var(--space-xs);
+            display: none;
+        }
+     </style>
+</head>
+<body>
+    <!-- Container untuk sidebar yang akan dimuat oleh sidebar-loader.js -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <div id="notificationContainer"></div>
+            <button class="menu-toggle">
+      
+            </button>
+            <h1><i class="fas fa-calendar-day"></i> Daily Dashboard <span class="today-indicator" id="todayDate"></span></h1>
+            <div class="header-actions">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search today's reports..." id="dailySearch">
+                </div>
+                
+                <button class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="user-profile">
+                    <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
+                    <div class="user-info">
+                        <h4>Nama Masing Masing</h4>
+                        <p>Customer Service Support</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="kpi-container">
+    <!-- Tab Menu -->
+    <div class="kpi-tab-menu" style="display: flex; gap: var(--space-sm); margin-bottom: var(--space-lg);">
+        <!-- Dashboard Overview -->
+        <a class="menu-item" href="index.html">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard Overview</span>
+        </a>
+
+        <!-- Daily Dashboard -->
+        <a class="menu-item active" href="daily-dashboard.html">
+            <i class="fas fa-calendar-check"></i>
+            <span>Daily Dashboard</span>
+        </a>
+
+        <!-- Summary Dashboard -->
+        <a class="menu-item" href="summary-dashboard.html">
+            <i class="fas fa-chart-pie"></i>
+            <span>Summary Dashboard</span>
+        </a>
+    </div>
+</div>
+
+        <!-- Daily Stats Cards -->
+        <div class="daily-stats">
+            <!-- Today's Reports Card -->
+            <div class="daily-stat-card fade-in" style="animation-delay: 0.1s;">
+                <div class="stat-header">
+                    <h3 class="stat-title">Today's Reports</h3>
+                    <div class="stat-icon today-pending">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                </div>
+                <div class="stat-card-content">
+                    <div class="stat-value" id="todayTotalCount">0</div>
+                    <div class="stat-description">Reports created today</div>
+                </div>
+            </div>
+
+            <!-- Today's Pending Card -->
+            <div class="daily-stat-card fade-in" style="animation-delay: 0.2s;">
+                <div class="stat-header">
+                    <h3 class="stat-title">Today's Pending</h3>
+                    <div class="stat-icon today-pending">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+                <div class="stat-card-content">
+                    <div class="stat-value" id="todayPendingCount">0</div>
+                    <div class="stat-description">Pending reports from today</div>
+                </div>
+            </div>
+
+            <!-- Today's Completed Card -->
+            <div class="daily-stat-card fade-in today-completed" style="animation-delay: 0.3s;">
+                <div class="stat-header">
+                    <h3 class="stat-title">Today's Completed</h3>
+                    <div class="stat-icon today-completed">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+                <div class="stat-card-content">
+                    <div class="stat-value" id="todayCompletedCount">0</div>
+                    <div class="stat-description">Reports solved today</div>
+                </div>
+            </div>
+
+            <!-- Today's Urgent Card -->
+            <div class="daily-stat-card fade-in today-urgent" style="animation-delay: 0.4s;">
+                <div class="stat-header">
+                    <h3 class="stat-title">Today's Urgent</h3>
+                    <div class="stat-icon today-urgent">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                </div>
+                <div class="stat-card-content">
+                    <div class="stat-value" id="todayUrgentCount">0</div>
+                    <div class="stat-description">Urgent reports today</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Filters -->
+        <div class="daily-filters fade-in" style="animation-delay: 0.5s;">
+            <div class="filter-group">
+                <label for="categoryFilter">Category</label>
+                <select id="categoryFilter" class="filter-select">
+                    <option value="all">All Categories</option>
+                    <option value="Kemenangan Pending">Kemenangan Pending</option>
+                    <option value="Replay Pending">Replay Kemenangan</option>
+                    <option value="Report Kendala Panel">Report Kendala Panel</option>
+                    <option value="Report Kendala Provider">Report Kendala Provider</option>
+                    <option value="Report Kendala Game">Report Kendala Game</option>
+                    <option value="Report Maintenance">Report Maintenance</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="priorityFilter">Priority</label>
+                <select id="priorityFilter" class="filter-select">
+                    <option value="all">All Priorities</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="statusFilter">Status</label>
+                <select id="statusFilter" class="filter-select">
+                    <option value="all">All Status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Completed">Completed</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="brandFilter">Brand</label>
+                <select id="brandFilter" class="filter-select">
+                    <option value="all">All Brands</option>
+                    <option value="CINTAWIN88 (D-GAMING)">CINTAWIN88 (D-GAMING)</option>
+                    <option value="CERIASLOT99 (D-GAMING)">CERIASLOT99 (D-GAMING)</option>
+                    <option value="RAJASCATTER88 (D-GAMING)">RAJASCATTER88 (D-GAMING)</option>
+                    <option value="MAHJONGJP88 (D-GAMING)">MAHJONGJP88 (D-GAMING)</option>
+                    <option value="NAGAHOKI88 (D-GAMING)">NAGAHOKI88 (D-GAMING)</option>
+                    <option value="SPACEMAN88 (D-GAMING)">SPACEMAN88 (D-GAMING)</option>
+                    <option value="RAJAPANEN (D-GAMING)">RAJAPANEN (D-GAMING)</option>
+                    <option value="BROTO88 (D-GAMING)">BROTO88 (D-GAMING)</option>
+                    <option value="MEDUSA88 (GACHA)">MEDUSA88 (GACHA)</option>
+                    <option value="ATHENA168 (GACHA)">ATHENA168 (GACHA)</option>
+                    <option value="ARES GACOR (GACHA)">ARES GACOR (GACHA)</option>
+                    <option value="RAJA MAHJONG (GACHA)">RAJA MAHJONG (GACHA)</option>
+                    <option value="OLYMPUS1000 (GACHA)">OLYMPUS1000 (GACHA)</option>
+                    <option value="CLICKBET (GACHA)">CLICKBET (GACHA)</option>
+                    <option value="GACHA99 (GACHA)">GACHA99 (GACHA)</option>
+                    <option value="UJANGBET (BREM)">UJANGBET (BREM)</option>
+                    <option value="EPISODEBET (BREM)">EPISODEBET (BREM)</option>
+                    <option value="FOKUSBET88 (89ENGINE)">FOKUSBET88 (89ENGINE)</option>
+                    <option value="RAJAKING88 (89ENGINE)">RAJAKING88 (89ENGINE)</option>
+                    <option value="RAJANAGA99 (89ENGINE)">RAJANAGA99 (89ENGINE)</option>
+                    <option value="JOIN999 (LUXION)">JOIN999 (LUXION)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Today's Activities Section -->
+        <div class="daily-activities-section fade-in" style="animation-delay: 0.6s;">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-list-alt"></i> Today's Activities</h2>
+                <div class="section-actions">
+                    <button class="btn btn-outline" id="refreshDaily">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="btn-delete-all" id="deleteAllBtn">
+                        <i class="fas fa-trash-alt"></i> Hapus Semua
+                    </button>
+                </div>
+            </div>
+            
+            <div class="daily-table-container">
+                <table class="daily-table">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Report ID</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Priority</th>
+                            <th>Brand</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dailyTableBody">
+                        <!-- Data akan dimuat secara dinamis -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="noDailyActivities" class="empty-state" style="display: none;">
+                <i class="fas fa-inbox"></i>
+                <h3>No Activities Today</h3>
+                <p>There are no reports created or updated today.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Konfirmasi Hapus -->
+    <div class="modal-overlay delete-confirm-modal" id="deleteConfirmModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-exclamation-triangle"></i> Konfirmasi Hapus</h2>
+                <button class="modal-close" id="closeDeleteModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Anda akan menghapus SEMUA data aktivitas harian. Tindakan ini tidak dapat dibatalkan.</p>
+                <p>Masukkan password untuk mengonfirmasi:</p>
+                <input type="password" class="password-input" id="deletePassword" placeholder="Masukkan password">
+                <p class="error-message" id="passwordError">Password salah!</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelDelete">Batal</button>
+                <button class="btn-delete-all" id="confirmDelete">Hapus Semua</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth-check.js"></script>
+    <script src="sidebar-loader.js"></script>
+    <script src="user-profile.js"></script>
+    <script src="notifications.js"></script>
+
+    <script>
+    // Fungsi untuk mendapatkan tanggal hari ini dalam format YYYY-MM-DD
+    function getTodayDate() {
+        const today = new Date();
+        return today.toISOString().split('T')[0];
+    }
+
+    // Fungsi untuk memformat waktu menjadi format jam:menit
+    function formatTime(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit',
+            hour12: false 
+        });
+    }
+
+    // Fungsi untuk mendapatkan aktivitas harian dari localStorage
+    function getDailyActivities() {
+        const activities = localStorage.getItem('dailyActivities');
+        return activities ? JSON.parse(activities) : [];
+    }
+
+    // Fungsi untuk mendapatkan aktivitas hari ini
+    function getTodayActivities() {
+        const today = getTodayDate();
+        const allActivities = getDailyActivities();
+        return allActivities.filter(activity => activity.date === today);
+    }
+
+    // Fungsi untuk menghitung statistik harian
+    function calculateDailyStats() {
+        const todayActivities = getTodayActivities();
+        
+        // Hitung total laporan hari ini
+        const totalCount = todayActivities.length;
+        
+        // Hitung laporan pending hari ini
+        const pendingCount = todayActivities.filter(activity => 
+            activity.status === 'Pending' || activity.action === 'created'
+        ).length;
+        
+        // Hitung laporan completed hari ini
+        const completedCount = todayActivities.filter(activity => 
+            activity.status === 'Completed' || activity.action === 'completed'
+        ).length;
+        
+        // Hitung laporan urgent hari ini
+        const urgentCount = todayActivities.filter(activity => 
+            activity.priority === 'High'
+        ).length;
+        
+        // Perbarui UI dengan statistik
+        document.getElementById('todayTotalCount').textContent = totalCount;
+        document.getElementById('todayPendingCount').textContent = pendingCount;
+        document.getElementById('todayCompletedCount').textContent = completedCount;
+        document.getElementById('todayUrgentCount').textContent = urgentCount;
+    }
+
+    // Fungsi untuk merender tabel aktivitas harian
+    function renderDailyActivities() {
+        const tableBody = document.getElementById('dailyTableBody');
+        const noActivities = document.getElementById('noDailyActivities');
+        const todayActivities = getTodayActivities();
+        
+        if (todayActivities.length === 0) {
+            tableBody.innerHTML = '';
+            noActivities.style.display = 'block';
+            return;
+        }
+        
+        noActivities.style.display = 'none';
+        tableBody.innerHTML = '';
+        
+        // Urutkan aktivitas berdasarkan waktu (terbaru pertama)
+        const sortedActivities = [...todayActivities].sort((a, b) => 
+            new Date(b.timestamp) - new Date(a.timestamp)
+        );
+        
+        sortedActivities.forEach(activity => {
+            const row = document.createElement('tr');
+            
+            // Tentukan teks status berdasarkan action
+            let statusText = activity.status;
+            if (activity.action === 'created') statusText = 'Created';
+            if (activity.action === 'completed') statusText = 'Completed';
+            
+            // Tentukan class untuk badge priority
+            let priorityClass = 'priority-medium';
+            if (activity.priority === 'High') priorityClass = 'priority-high';
+            if (activity.priority === 'Low') priorityClass = 'priority-low';
+            
+            row.innerHTML = `
+                <td>${formatTime(activity.timestamp)}</td>
+                <td>${activity.id}</td>
+                <td>${activity.category}</td>
+                <td><span class="status ${statusText.toLowerCase()}">${statusText}</span></td>
+                <td><span class="${priorityClass}">${activity.priority}</span></td>
+                <td>${activity.brand}</td>
+                <td class="action-buttons">
+                    <button class="btn-icon view" data-id="${activity.id}" data-action="${activity.action}">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </td>
+            `;
+            
+            tableBody.appendChild(row);
+        });
+        
+        // Tambahkan event listener untuk tombol view
+        document.querySelectorAll('.btn-icon.view').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const reportId = this.getAttribute('data-id');
+                const action = this.getAttribute('data-action');
+                
+                // Redirect ke halaman yang sesuai
+                if (action === 'completed') {
+                    window.location.href = `solved-report.html?view=${reportId}`;
+                } else {
+                    window.location.href = `pending-reports.html?view=${reportId}`;
+                }
+            });
+        });
+    }
+
+    // Fungsi untuk memfilter aktivitas harian
+    function filterDailyActivities() {
+        const categoryFilter = document.getElementById('categoryFilter').value;
+        const priorityFilter = document.getElementById('priorityFilter').value;
+        const statusFilter = document.getElementById('statusFilter').value;
+        const brandFilter = document.getElementById('brandFilter').value;
+        
+        const todayActivities = getTodayActivities();
+        let filteredActivities = todayActivities;
+        
+        // Terapkan filter
+        if (categoryFilter !== 'all') {
+            filteredActivities = filteredActivities.filter(activity => 
+                activity.category === categoryFilter
+            );
+        }
+        
+        if (priorityFilter !== 'all') {
+            filteredActivities = filteredActivities.filter(activity => 
+                activity.priority === priorityFilter
+            );
+        }
+        
+        if (statusFilter !== 'all') {
+            if (statusFilter === 'Pending') {
+                filteredActivities = filteredActivities.filter(activity => 
+                    activity.status === 'Pending' || activity.action === 'created'
+                );
+            } else if (statusFilter === 'Completed') {
+                filteredActivities = filteredActivities.filter(activity => 
+                    activity.status === 'Completed' || activity.action === 'completed'
+                );
+            }
+        }
+        
+        if (brandFilter !== 'all') {
+            filteredActivities = filteredActivities.filter(activity => 
+                activity.brand === brandFilter
+            );
+        }
+        
+        // Render ulang tabel dengan data yang difilter
+        renderFilteredActivities(filteredActivities);
+    }
+
+    // Fungsi untuk merender aktivitas yang sudah difilter
+    function renderFilteredActivities(activities) {
+        const tableBody = document.getElementById('dailyTableBody');
+        const noActivities = document.getElementById('noDailyActivities');
+        
+        if (activities.length === 0) {
+            tableBody.innerHTML = '';
+            noActivities.style.display = 'block';
+            return;
+        }
+        
+        noActivities.style.display = 'none';
+        tableBody.innerHTML = '';
+        
+        activities.forEach(activity => {
+            const row = document.createElement('tr');
+            
+            // Tentukan teks status berdasarkan action
+            let statusText = activity.status;
+            if (activity.action === 'created') statusText = 'Created';
+            if (activity.action === 'completed') statusText = 'Completed';
+            
+            // Tentukan class untuk badge priority
+            let priorityClass = 'priority-medium';
+            if (activity.priority === 'High') priorityClass = 'priority-high';
+            if (activity.priority === 'Low') priorityClass = 'priority-low';
+            
+            row.innerHTML = `
+                <td>${formatTime(activity.timestamp)}</td>
+                <td>${activity.id}</td>
+                <td>${activity.category}</td>
+                <td><span class="status ${statusText.toLowerCase()}">${statusText}</span></td>
+                <td><span class="${priorityClass}">${activity.priority}</span></td>
+                <td>${activity.brand}</td>
+                <td class="action-buttons">
+                    <button class="btn-icon view" data-id="${activity.id}" data-action="${activity.action}">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </td>
+            `;
+            
+            tableBody.appendChild(row);
+        });
+        
+        // Tambahkan event listener untuk tombol view
+        document.querySelectorAll('.btn-icon.view').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const reportId = this.getAttribute('data-id');
+                const action = this.getAttribute('data-action');
+                
+                // Redirect ke halaman yang sesuai
+                if (action === 'completed') {
+                    window.location.href = `solved-report.html?view=${reportId}`;
+                } else {
+                    window.location.href = `pending-reports.html?view=${reportId}`;
+                }
+            });
+        });
+    }
+
+    // Fungsi untuk memperbarui tanggal hari ini
+    function updateTodayDate() {
+        const today = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate = today.toLocaleDateString('en-US', options);
+        document.getElementById('todayDate').textContent = formattedDate;
+    }
+
+    // Fungsi untuk inisialisasi data contoh jika belum ada
+    function initializeSampleData() {
+        if (!localStorage.getItem('dailyActivities')) {
+            const sampleActivities = [
+                {
+                    id: 'RP-123456789',
+                    action: 'created',
+                    category: 'Technical',
+                    status: 'Pending',
+                    priority: 'High',
+                    brand: 'CINTAWIN88 (D-GAMING)',
+                    timestamp: new Date().toISOString(),
+                    date: getTodayDate()
+                },
+                {
+                    id: 'RP-987654321',
+                    action: 'completed',
+                    category: 'Billing',
+                    status: 'Completed',
+                    priority: 'Medium',
+                    brand: 'CERIASLOT99 (D-GAMING)',
+                    timestamp: new Date().toISOString(),
+                    date: getTodayDate()
+                }
+            ];
+            localStorage.setItem('dailyActivities', JSON.stringify(sampleActivities));
+        }
+    }
+
+    // Fungsi untuk menampilkan modal konfirmasi hapus
+    function showDeleteConfirmModal() {
+        const modal = document.getElementById('deleteConfirmModal');
+        modal.classList.add('active');
+        document.getElementById('deletePassword').value = '';
+        document.getElementById('passwordError').style.display = 'none';
+    }
+
+    // Fungsi untuk menyembunyikan modal konfirmasi hapus
+    function hideDeleteConfirmModal() {
+        const modal = document.getElementById('deleteConfirmModal');
+        modal.classList.remove('active');
+    }
+
+    // Fungsi untuk menghapus semua aktivitas hari ini
+    function deleteAllTodayActivities() {
+        const today = getTodayDate();
+        const allActivities = getDailyActivities();
+        
+        // Simpan aktivitas yang bukan hari ini
+        const filteredActivities = allActivities.filter(activity => activity.date !== today);
+        
+        // Simpan kembali ke localStorage
+        localStorage.setItem('dailyActivities', JSON.stringify(filteredActivities));
+        
+        // Perbarui UI
+        calculateDailyStats();
+        renderDailyActivities();
+        
+        // Tampilkan notifikasi
+        showNotification('All today\'s activities have been deleted successfully!', 'success');
+    }
+
+    // Fungsi untuk memverifikasi password
+    function verifyPassword(password) {
+        // Ganti dengan logika verifikasi password yang sesuai
+        // Contoh sederhana: password adalah "admin123"
+        return password === 'admin123';
+    }
+
+    // Inisialisasi saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeSampleData();
+        updateTodayDate();
+        calculateDailyStats();
+        renderDailyActivities();
+        
+        // Event listener untuk tombol refresh
+        const refreshButton = document.getElementById('refreshDaily');
+        if (refreshButton) {
+            refreshButton.addEventListener('click', function() {
+                calculateDailyStats();
+                renderDailyActivities();
+                showNotification('Daily data refreshed successfully!', 'success');
+            });
+        }
+        
+        // Event listener untuk filter changes
+        document.getElementById('categoryFilter').addEventListener('change', filterDailyActivities);
+        document.getElementById('priorityFilter').addEventListener('change', filterDailyActivities);
+        document.getElementById('statusFilter').addEventListener('change', filterDailyActivities);
+        document.getElementById('brandFilter').addEventListener('change', filterDailyActivities);
+        
+        // Event listener untuk pencarian
+        const searchInput = document.getElementById('dailySearch');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const todayActivities = getTodayActivities();
+                
+                if (!searchTerm) {
+                    renderDailyActivities();
+                    return;
+                }
+                
+                const filteredActivities = todayActivities.filter(activity => {
+                    return (
+                        activity.id.toLowerCase().includes(searchTerm) ||
+                        activity.category.toLowerCase().includes(searchTerm) ||
+                        activity.brand.toLowerCase().includes(searchTerm)
+                    );
+                });
+                
+                renderFilteredActivities(filteredActivities);
+            });
+        }
+        
+        // Event listener untuk tombol hapus semua
+        const deleteAllBtn = document.getElementById('deleteAllBtn');
+        if (deleteAllBtn) {
+            deleteAllBtn.addEventListener('click', showDeleteConfirmModal);
+        }
+        
+        // Event listener untuk tombol batal di modal
+        const cancelDeleteBtn = document.getElementById('cancelDelete');
+        if (cancelDeleteBtn) {
+            cancelDeleteBtn.addEventListener('click', hideDeleteConfirmModal);
+        }
+        
+        // Event listener untuk tombol tutup modal
+        const closeModalBtn = document.getElementById('closeDeleteModal');
+        if (closeModalBtn) {
+            closeModalBtn.addEventListener('click', hideDeleteConfirmModal);
+        }
+        
+        // Event listener untuk tombol konfirmasi hapus
+        const confirmDeleteBtn = document.getElementById('confirmDelete');
+        if (confirmDeleteBtn) {
+            confirmDeleteBtn.addEventListener('click', function() {
+                const password = document.getElementById('deletePassword').value;
+                
+                if (!password) {
+                    document.getElementById('passwordError').textContent = 'Password harus diisi!';
+                    document.getElementById('passwordError').style.display = 'block';
+                    return;
+                }
+                
+                if (!verifyPassword(password)) {
+                    document.getElementById('passwordError').textContent = 'Password salah!';
+                    document.getElementById('passwordError').style.display = 'block';
+                    return;
+                }
+                
+                // Jika password benar, hapus semua aktivitas hari ini
+                deleteAllTodayActivities();
+                hideDeleteConfirmModal();
+            });
+        }
+        
+        // Event listener untuk menutup modal saat klik di luar modal
+        const modalOverlay = document.getElementById('deleteConfirmModal');
+        if (modalOverlay) {
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === modalOverlay) {
+                    hideDeleteConfirmModal();
+                }
+            });
+        }
+        
+        // Event listener untuk menekan Enter pada input password
+        const passwordInput = document.getElementById('deletePassword');
+        if (passwordInput) {
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    document.getElementById('confirmDelete').click();
+                }
+            });
+        }
+    });
+
+    // Fungsi untuk menampilkan notifikasi
+    function showNotification(message, type = 'info') {
+        // Implementasi notifikasi sesuai dengan kode yang sudah ada
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => notification.classList.add('show'), 100);
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 3000);
+    }
+</script>
+</body>
+</html>

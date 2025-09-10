@@ -331,6 +331,21 @@
         background: rgba(255, 255, 255, 0.3);
     }
 
+    .browser-warning {
+        display: none;
+        background: #ff4757;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .browser-warning i {
+        margin-right: 8px;
+    }
+
     @media (max-width: 480px) {
         .login-container {
             max-width: 100%;
@@ -375,6 +390,11 @@
     </div>
 
     <div class="login-form">
+      <div class="browser-warning" id="browserWarning">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span id="warningText"></span>
+      </div>
+
       <div class="input-group">
         <label for="email">Email</label>
         <div class="input-icon"><i class="fas fa-envelope"></i></div>
@@ -397,10 +417,12 @@
       <div class="success-message" id="loginSuccess"></div>
     </div>
 
-    <div class="login-footer">&copy; 2025 CSS Admin Dashboard. All rights reserved.</div>
+    <div class="login-footer">
+      <p>&copy; 2025 CSS Admin Dashboard. All rights reserved.</p>
+      <p id="browserInfo" style="font-size: 12px; margin-top: 5px;"></p>
+    </div>
   </div>
 
-  <!-- Gunakan Firebase modular SDK seperti di index.html -->
   <script type="module">
     // ========== FIREBASE CONFIGURATION ==========
     import { 
@@ -415,15 +437,15 @@
     } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
     const firebaseConfig = {
-  apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
-  authDomain: "dashboard-css.firebaseapp.com",
-  databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "dashboard-css",
-  storageBucket: "dashboard-css.appspot.com",
-  messagingSenderId: "771131792881",
-  appId: "1:771131792881:web:ad634424225bd7de847850",
-  measurementId: "G-3CYBC5B101"
-};
+      apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
+      authDomain: "dashboard-css.firebaseapp.com",
+      databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "dashboard-css",
+      storageBucket: "dashboard-css.appspot.com",
+      messagingSenderId: "771131792881",
+      appId: "1:771131792881:web:ad634424225bd7de847850",
+      measurementId: "G-3CYBC5B101"
+    };
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
@@ -438,6 +460,28 @@
     const themeToggle = document.getElementById("themeToggle");
     const bgAnimation = document.getElementById("bgAnimation");
     const forgotPassword = document.getElementById("forgotPassword");
+    const browserWarning = document.getElementById("browserWarning");
+    const warningText = document.getElementById("warningText");
+    const browserInfo = document.getElementById("browserInfo");
+
+    // ========== BROWSER DETECTION ==========
+    function detectBrowser() {
+      const userAgent = navigator.userAgent;
+      let browserName = "Unknown Browser";
+      
+      if (userAgent.includes("Firefox")) browserName = "Mozilla Firefox";
+      else if (userAgent.includes("Chrome")) browserName = "Google Chrome";
+      else if (userAgent.includes("Safari")) browserName = "Safari";
+      else if (userAgent.includes("Edg")) browserName = "Microsoft Edge";
+      
+      browserInfo.textContent = `Browser: ${browserName}`;
+      
+      // Show warning for Firefox with specific issues
+      if (userAgent.includes("Firefox")) {
+        warningText.textContent = "Untuk pengalaman terbaik, pastikan Enhanced Tracking Protection dimatikan untuk situs ini.";
+        browserWarning.style.display = "block";
+      }
+    }
 
     // ========== BACKGROUND ANIMATION ==========
     function createCircles() {
@@ -531,7 +575,7 @@
                       errorMessage = "Terlalu banyak percobaan gagal. Coba lagi nanti";
                       break;
                   case "auth/network-request-failed":
-                      errorMessage = "Koneksi jaringan bermasalah. Periksa koneksi internet Anda";
+                      errorMessage = "Koneksi jaringan bermasalah. Periksa koneksi internet Anda. Jika menggunakan Firefox, coba nonaktifkan Enhanced Tracking Protection untuk situs ini.";
                       break;
                   default:
                       errorMessage = error.message;
@@ -635,6 +679,9 @@
     // ========== EVENT LISTENERS ==========
     document.addEventListener("DOMContentLoaded", () => {
         console.log("DOM Content Loaded");
+        
+        // Deteksi browser
+        detectBrowser();
         
         // Terapkan tema yang disimpan
         applySavedTheme();

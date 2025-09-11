@@ -527,6 +527,113 @@
             margin-left: var(--space-sm);
         }
 
+        /* ========== STYLE UNTUK MODAL LOGIN ========== */
+        .login-card {
+            padding: var(--space-xl);
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: var(--space-lg);
+        }
+
+        .login-header h1 {
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .login-header p {
+            color: var(--text-secondary);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-md);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: var(--space-xs);
+            color: var(--text-primary);
+            font-weight: var(--font-medium);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: var(--space-sm) var(--space-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--input-bg);
+            color: var(--text-primary);
+            transition: border-color var(--transition-fast);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: var(--text-xs);
+            margin-top: var(--space-xs);
+            display: none;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: var(--space-lg);
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .login-footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ========== NOTIFICATION STYLES ========== */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: var(--radius-md);
+            color: white;
+            z-index: var(--z-modal);
+            max-width: 300px;
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            transform: translateY(-30px);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .notification.success {
+            background-color: var(--success);
+        }
+
+        .notification.error {
+            background-color: var(--danger);
+        }
+
+        .notification.info {
+            background-color: var(--info);
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -905,6 +1012,34 @@
         </div>
     </div>
 
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal">
+            <div class="login-card">
+                <div class="login-header">
+                    <h1><i class="fas fa-tachometer-alt"></i> Dashboard Login</h1>
+                    <p>Masukkan kredensial Anda untuk mengakses dashboard</p>
+                </div>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" placeholder="Masukkan email Anda" required>
+                        <div class="error-message" id="emailError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Kata Sandi</label>
+                        <input type="password" id="loginPassword" placeholder="Masukkan kata sandi Anda" required>
+                        <div class="error-message" id="passwordError"></div>
+                    </div>
+                    <button type="submit" class="btn-primary">Masuk</button>
+                </form>
+                <div class="login-footer">
+                    <p>Tidak punya akun? <a href="#" id="registerLink">Daftar di sini</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Konfirmasi Hapus -->
     <div class="modal-overlay delete-confirm-modal" id="deleteConfirmModal">
         <div class="modal">
@@ -927,12 +1062,41 @@
         </div>
     </div>
 
-    <script src="auth-check.js"></script>
     <script src="sidebar-loader.js"></script>
     <script src="user-profile.js"></script>
     <script src="notifications.js"></script>
 
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
     <script>
+    // Konfigurasi Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
+        authDomain: "dashboard-css.firebaseapp.com",
+        databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "dashboard-css",
+        storageBucket: "dashboard-css.appspot.com",
+        messagingSenderId: "771131792881",
+        appId: "1:771131792881:web:ad634424225bd7de847850",
+        measurementId: "G-3CYBC5B101"
+    };
+
+    // Inisialisasi Firebase
+    try {
+        firebase.initializeApp(firebaseConfig);
+        console.log("Firebase initialized successfully");
+    } catch (error) {
+        console.error("Firebase initialization error:", error);
+    }
+
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    // Variabel global untuk data
+    let dailyActivities = [];
+
     // Fungsi untuk mendapatkan tanggal hari ini dalam format YYYY-MM-DD
     function getTodayDate() {
         const today = new Date();
@@ -941,46 +1105,86 @@
 
     // Fungsi untuk memformat waktu menjadi format jam:menit
     function formatTime(dateString) {
-        const date = new Date(dateString);
-        return date.toLocaleTimeString('en-US', { 
-            hour: '2-digit', 
-            minute: '2-digit',
-            hour12: false 
-        });
+        if (!dateString) return 'N/A';
+        
+        try {
+            const date = dateString.toDate ? dateString.toDate() : new Date(dateString);
+            return date.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false 
+            });
+        } catch (error) {
+            console.error("Error formatting time:", error);
+            return 'N/A';
+        }
     }
 
-    // Fungsi untuk mendapatkan aktivitas harian dari localStorage
-    function getDailyActivities() {
-        const activities = localStorage.getItem('dailyActivities');
-        return activities ? JSON.parse(activities) : [];
-    }
-
-    // Fungsi untuk mendapatkan aktivitas hari ini
-    function getTodayActivities() {
-        const today = getTodayDate();
-        const allActivities = getDailyActivities();
-        return allActivities.filter(activity => activity.date === today);
+    // Fungsi untuk mendapatkan aktivitas harian dari Firestore
+    async function getDailyActivities() {
+        try {
+            const today = getTodayDate();
+            
+            // Ambil data dari pendingReports yang dibuat hari ini
+            const pendingSnapshot = await db.collection('pendingReports')
+                .where('dateCreated', '>=', new Date(today))
+                .where('dateCreated', '<', new Date(new Date(today).getTime() + 24 * 60 * 60 * 1000))
+                .get();
+            
+            // Ambil data dari solvedReports yang diselesaikan hari ini
+            const solvedSnapshot = await db.collection('solvedReports')
+                .where('dateSolved', '>=', new Date(today))
+                .where('dateSolved', '<', new Date(new Date(today).getTime() + 24 * 60 * 60 * 1000))
+                .get();
+            
+            // Gabungkan dan format data
+            const pendingActivities = pendingSnapshot.docs.map(doc => ({ 
+                id: doc.id, 
+                ...doc.data(),
+                action: 'created',
+                date: today,
+                timestamp: doc.data().dateCreated,
+                status: 'Pending'
+            }));
+            
+            const solvedActivities = solvedSnapshot.docs.map(doc => ({ 
+                id: doc.id, 
+                ...doc.data(),
+                action: 'completed',
+                date: today,
+                timestamp: doc.data().dateSolved,
+                status: 'Completed'
+            }));
+            
+            // Gabungkan semua aktivitas dan urutkan berdasarkan timestamp
+            dailyActivities = [...pendingActivities, ...solvedActivities]
+                .sort((a, b) => b.timestamp - a.timestamp);
+                
+            return dailyActivities;
+        } catch (error) {
+            console.error("Error getting daily activities:", error);
+            showNotification('Failed to load daily activities', 'error');
+            return [];
+        }
     }
 
     // Fungsi untuk menghitung statistik harian
-    function calculateDailyStats() {
-        const todayActivities = getTodayActivities();
-        
+    function calculateDailyStats(activities) {
         // Hitung total laporan hari ini
-        const totalCount = todayActivities.length;
+        const totalCount = activities.length;
         
         // Hitung laporan pending hari ini
-        const pendingCount = todayActivities.filter(activity => 
+        const pendingCount = activities.filter(activity => 
             activity.status === 'Pending' || activity.action === 'created'
         ).length;
         
         // Hitung laporan completed hari ini
-        const completedCount = todayActivities.filter(activity => 
+        const completedCount = activities.filter(activity => 
             activity.status === 'Completed' || activity.action === 'completed'
         ).length;
         
-        // Hitung laporan urgent hari ini
-        const urgentCount = todayActivities.filter(activity => 
+        // Hitung laporan urgent hari ini (prioritas tinggi)
+        const urgentCount = activities.filter(activity => 
             activity.priority === 'High'
         ).length;
         
@@ -992,12 +1196,11 @@
     }
 
     // Fungsi untuk merender tabel aktivitas harian
-    function renderDailyActivities() {
+    function renderDailyActivities(activities) {
         const tableBody = document.getElementById('dailyTableBody');
         const noActivities = document.getElementById('noDailyActivities');
-        const todayActivities = getTodayActivities();
         
-        if (todayActivities.length === 0) {
+        if (activities.length === 0) {
             tableBody.innerHTML = '';
             noActivities.style.display = 'block';
             return;
@@ -1006,12 +1209,7 @@
         noActivities.style.display = 'none';
         tableBody.innerHTML = '';
         
-        // Urutkan aktivitas berdasarkan waktu (terbaru pertama)
-        const sortedActivities = [...todayActivities].sort((a, b) => 
-            new Date(b.timestamp) - new Date(a.timestamp)
-        );
-        
-        sortedActivities.forEach(activity => {
+        activities.forEach(activity => {
             const row = document.createElement('tr');
             
             // Tentukan teks status berdasarkan action
@@ -1027,10 +1225,10 @@
             row.innerHTML = `
                 <td>${formatTime(activity.timestamp)}</td>
                 <td>${activity.id}</td>
-                <td>${activity.category}</td>
+                <td>${activity.category || 'N/A'}</td>
                 <td><span class="status ${statusText.toLowerCase()}">${statusText}</span></td>
-                <td><span class="${priorityClass}">${activity.priority}</span></td>
-                <td>${activity.brand}</td>
+                <td><span class="${priorityClass}">${activity.priority || 'Medium'}</span></td>
+                <td>${activity.brand || 'N/A'}</td>
                 <td class="action-buttons">
                     <button class="btn-icon view" data-id="${activity.id}" data-action="${activity.action}">
                         <i class="fas fa-eye"></i>
@@ -1064,8 +1262,7 @@
         const statusFilter = document.getElementById('statusFilter').value;
         const brandFilter = document.getElementById('brandFilter').value;
         
-        const todayActivities = getTodayActivities();
-        let filteredActivities = todayActivities;
+        let filteredActivities = dailyActivities;
         
         // Terapkan filter
         if (categoryFilter !== 'all') {
@@ -1099,67 +1296,8 @@
         }
         
         // Render ulang tabel dengan data yang difilter
-        renderFilteredActivities(filteredActivities);
-    }
-
-    // Fungsi untuk merender aktivitas yang sudah difilter
-    function renderFilteredActivities(activities) {
-        const tableBody = document.getElementById('dailyTableBody');
-        const noActivities = document.getElementById('noDailyActivities');
-        
-        if (activities.length === 0) {
-            tableBody.innerHTML = '';
-            noActivities.style.display = 'block';
-            return;
-        }
-        
-        noActivities.style.display = 'none';
-        tableBody.innerHTML = '';
-        
-        activities.forEach(activity => {
-            const row = document.createElement('tr');
-            
-            // Tentukan teks status berdasarkan action
-            let statusText = activity.status;
-            if (activity.action === 'created') statusText = 'Created';
-            if (activity.action === 'completed') statusText = 'Completed';
-            
-            // Tentukan class untuk badge priority
-            let priorityClass = 'priority-medium';
-            if (activity.priority === 'High') priorityClass = 'priority-high';
-            if (activity.priority === 'Low') priorityClass = 'priority-low';
-            
-            row.innerHTML = `
-                <td>${formatTime(activity.timestamp)}</td>
-                <td>${activity.id}</td>
-                <td>${activity.category}</td>
-                <td><span class="status ${statusText.toLowerCase()}">${statusText}</span></td>
-                <td><span class="${priorityClass}">${activity.priority}</span></td>
-                <td>${activity.brand}</td>
-                <td class="action-buttons">
-                    <button class="btn-icon view" data-id="${activity.id}" data-action="${activity.action}">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </td>
-            `;
-            
-            tableBody.appendChild(row);
-        });
-        
-        // Tambahkan event listener untuk tombol view
-        document.querySelectorAll('.btn-icon.view').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const reportId = this.getAttribute('data-id');
-                const action = this.getAttribute('data-action');
-                
-                // Redirect ke halaman yang sesuai
-                if (action === 'completed') {
-                    window.location.href = `solved-report.html?view=${reportId}`;
-                } else {
-                    window.location.href = `pending-reports.html?view=${reportId}`;
-                }
-            });
-        });
+        renderDailyActivities(filteredActivities);
+        calculateDailyStats(filteredActivities);
     }
 
     // Fungsi untuk memperbarui tanggal hari ini
@@ -1170,66 +1308,47 @@
         document.getElementById('todayDate').textContent = formattedDate;
     }
 
-    // Fungsi untuk inisialisasi data contoh jika belum ada
-    function initializeSampleData() {
-        if (!localStorage.getItem('dailyActivities')) {
-            const sampleActivities = [
-                {
-                    id: 'RP-123456789',
-                    action: 'created',
-                    category: 'Technical',
-                    status: 'Pending',
-                    priority: 'High',
-                    brand: 'CINTAWIN88 (D-GAMING)',
-                    timestamp: new Date().toISOString(),
-                    date: getTodayDate()
-                },
-                {
-                    id: 'RP-987654321',
-                    action: 'completed',
-                    category: 'Billing',
-                    status: 'Completed',
-                    priority: 'Medium',
-                    brand: 'CERIASLOT99 (D-GAMING)',
-                    timestamp: new Date().toISOString(),
-                    date: getTodayDate()
-                }
-            ];
-            localStorage.setItem('dailyActivities', JSON.stringify(sampleActivities));
+    // Fungsi untuk menghapus semua aktivitas hari ini dari Firestore
+    async function deleteAllTodayActivities() {
+        try {
+            const today = getTodayDate();
+            
+            // Hapus dari pendingReports yang dibuat hari ini
+            const pendingSnapshot = await db.collection('pendingReports')
+                .where('dateCreated', '>=', new Date(today))
+                .where('dateCreated', '<', new Date(new Date(today).getTime() + 24 * 60 * 60 * 1000))
+                .get();
+            
+            // Hapus dari solvedReports yang diselesaikan hari ini
+            const solvedSnapshot = await db.collection('solvedReports')
+                .where('dateSolved', '>=', new Date(today))
+                .where('dateSolved', '<', new Date(new Date(today).getTime() + 24 * 60 * 60 * 1000))
+                .get();
+            
+            // Hapus semua dokumen hari ini
+            const batch = db.batch();
+            
+            pendingSnapshot.docs.forEach(doc => {
+                batch.delete(doc.ref);
+            });
+            
+            solvedSnapshot.docs.forEach(doc => {
+                batch.delete(doc.ref);
+            });
+            
+            await batch.commit();
+            
+            // Perbarui UI
+            dailyActivities = [];
+            calculateDailyStats([]);
+            renderDailyActivities([]);
+            
+            // Tampilkan notifikasi
+            showNotification('All today\'s activities have been deleted successfully!', 'success');
+        } catch (error) {
+            console.error("Error deleting activities:", error);
+            showNotification('Failed to delete activities', 'error');
         }
-    }
-
-    // Fungsi untuk menampilkan modal konfirmasi hapus
-    function showDeleteConfirmModal() {
-        const modal = document.getElementById('deleteConfirmModal');
-        modal.classList.add('active');
-        document.getElementById('deletePassword').value = '';
-        document.getElementById('passwordError').style.display = 'none';
-    }
-
-    // Fungsi untuk menyembunyikan modal konfirmasi hapus
-    function hideDeleteConfirmModal() {
-        const modal = document.getElementById('deleteConfirmModal');
-        modal.classList.remove('active');
-    }
-
-    // Fungsi untuk menghapus semua aktivitas hari ini
-    function deleteAllTodayActivities() {
-        const today = getTodayDate();
-        const allActivities = getDailyActivities();
-        
-        // Simpan aktivitas yang bukan hari ini
-        const filteredActivities = allActivities.filter(activity => activity.date !== today);
-        
-        // Simpan kembali ke localStorage
-        localStorage.setItem('dailyActivities', JSON.stringify(filteredActivities));
-        
-        // Perbarui UI
-        calculateDailyStats();
-        renderDailyActivities();
-        
-        // Tampilkan notifikasi
-        showNotification('All today\'s activities have been deleted successfully!', 'success');
     }
 
     // Fungsi untuk memverifikasi password
@@ -1239,19 +1358,160 @@
         return password === 'admin123';
     }
 
+    // Fungsi untuk menampilkan notifikasi
+    function showNotification(message, type = 'info') {
+        // Buat elemen notifikasi
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Tampilkan notifikasi
+        setTimeout(() => notification.classList.add('show'), 100);
+        
+        // Sembunyikan setelah 3 detik
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 3000);
+    }
+
+    // Fungsi untuk memuat data dan memperbarui UI
+    async function loadDailyData() {
+        try {
+            showLoading();
+            const activities = await getDailyActivities();
+            calculateDailyStats(activities);
+            renderDailyActivities(activities);
+            hideLoading();
+        } catch (error) {
+            console.error("Error loading daily data:", error);
+            hideLoading();
+        }
+    }
+
+    // Fungsi untuk menampilkan loading
+    function showLoading() {
+        const cards = document.querySelectorAll('.daily-stat-card');
+        cards.forEach(card => {
+            card.style.opacity = '0.7';
+        });
+    }
+
+    // Fungsi untuk menyembunyikan loading
+    function hideLoading() {
+        const cards = document.querySelectorAll('.daily-stat-card');
+        cards.forEach(card => {
+            card.style.opacity = '1';
+        });
+    }
+
+    // Fungsi untuk menampilkan modal konfirmasi hapus
+    function showDeleteConfirmModal() {
+        document.getElementById('deleteConfirmModal').classList.add('active');
+        document.getElementById('deletePassword').value = '';
+        document.getElementById('passwordError').style.display = 'none';
+    }
+
+    // Fungsi untuk menyembunyikan modal konfirmasi hapus
+    function hideDeleteConfirmModal() {
+        document.getElementById('deleteConfirmModal').classList.remove('active');
+    }
+
     // Inisialisasi saat halaman dimuat
     document.addEventListener('DOMContentLoaded', function() {
-        initializeSampleData();
-        updateTodayDate();
-        calculateDailyStats();
-        renderDailyActivities();
+        // Cek status autentikasi
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // Pengguna sudah login
+                const loginModal = document.getElementById('loginModal');
+                if (loginModal) {
+                    loginModal.classList.remove('active');
+                }
+                
+                // Update user profile
+                const userProfile = document.querySelector('.user-info h4');
+                if (userProfile) {
+                    userProfile.textContent = user.displayName || user.email || 'Nama Pengguna';
+                }
+                
+                // Muat data
+                updateTodayDate();
+                loadDailyData();
+                
+            } else {
+                // Pengguna belum login, tampilkan modal login
+                const loginModal = document.getElementById('loginModal');
+                if (loginModal) {
+                    loginModal.classList.add('active');
+                }
+            }
+        });
+        
+        // Event listener untuk form login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const emailError = document.getElementById('emailError');
+            const passwordError = document.getElementById('passwordError');
+            
+            // Reset error messages
+            emailError.style.display = 'none';
+            passwordError.style.display = 'none';
+            
+            // Simple validation
+            if (!email) {
+                emailError.textContent = 'Email harus diisi';
+                emailError.style.display = 'block';
+                return;
+            }
+            
+            if (!password) {
+                passwordError.textContent = 'Kata sandi harus diisi';
+                passwordError.style.display = 'block';
+                return;
+            }
+            
+            // Login with Firebase
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Hide login modal
+                    document.getElementById('loginModal').classList.remove('active');
+                    showNotification('Login berhasil!', 'success');
+                    
+                    // Update user profile
+                    const userProfile = document.querySelector('.user-info h4');
+                    if (userProfile) {
+                        userProfile.textContent = userCredential.user.displayName || userCredential.user.email || 'Nama Pengguna';
+                    }
+                    
+                    // Load data
+                    updateTodayDate();
+                    loadDailyData();
+                })
+                .catch((error) => {
+                    console.error("Login error:", error);
+                    showNotification('Login gagal: ' + error.message, 'error');
+                });
+        });
         
         // Event listener untuk tombol refresh
         const refreshButton = document.getElementById('refreshDaily');
         if (refreshButton) {
             refreshButton.addEventListener('click', function() {
-                calculateDailyStats();
-                renderDailyActivities();
+                loadDailyData();
                 showNotification('Daily data refreshed successfully!', 'success');
             });
         }
@@ -1267,22 +1527,23 @@
         if (searchInput) {
             searchInput.addEventListener('input', function() {
                 const searchTerm = this.value.toLowerCase();
-                const todayActivities = getTodayActivities();
                 
                 if (!searchTerm) {
-                    renderDailyActivities();
+                    renderDailyActivities(dailyActivities);
+                    calculateDailyStats(dailyActivities);
                     return;
                 }
                 
-                const filteredActivities = todayActivities.filter(activity => {
+                const filteredActivities = dailyActivities.filter(activity => {
                     return (
                         activity.id.toLowerCase().includes(searchTerm) ||
-                        activity.category.toLowerCase().includes(searchTerm) ||
-                        activity.brand.toLowerCase().includes(searchTerm)
+                        (activity.category && activity.category.toLowerCase().includes(searchTerm)) ||
+                        (activity.brand && activity.brand.toLowerCase().includes(searchTerm))
                     );
                 });
                 
-                renderFilteredActivities(filteredActivities);
+                renderDailyActivities(filteredActivities);
+                calculateDailyStats(filteredActivities);
             });
         }
         
@@ -1347,33 +1608,13 @@
                 }
             });
         }
+        
+        // Event listener untuk register link
+        document.getElementById('registerLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            showNotification('Fitur pendaftaran akan segera hadir', 'info');
+        });
     });
-
-    // Fungsi untuk menampilkan notifikasi
-    function showNotification(message, type = 'info') {
-        // Implementasi notifikasi sesuai dengan kode yang sudah ada
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.innerHTML = `
-            <div class="notification-content">
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'}"></i>
-                <span>${message}</span>
-            </div>
-        `;
-        
-        document.body.appendChild(notification);
-        
-        setTimeout(() => notification.classList.add('show'), 100);
-        
-        setTimeout(() => {
-            notification.classList.remove('show');
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.parentNode.removeChild(notification);
-                }
-            }, 300);
-        }, 3000);
-    }
 </script>
 </body>
 </html>

@@ -1437,6 +1437,7 @@
                             <th>Report ID</th>
                             <th>Brand</th>
                             <th>Reported By</th>
+                            <th>Title</th>  <!-- Kolom Title ditambahkan -->
                             <th>Category</th>
                             <th>Priority</th>
                             <th>Reported At</th>
@@ -1446,7 +1447,7 @@
                         </tr>
                     </thead>
                     <tbody id="solvedReportsTableBody">
-                        <!-- Data will be populated by JavaScript -->
+                        <!-- Data akan diisi oleh JavaScript -->
                     </tbody>
                 </table>
             </div>
@@ -1471,7 +1472,7 @@
                 <button class="modal-close" id="closeDetailsModal">&times;</button>
             </div>
             <div class="modal-body" id="reportDetailsContent">
-                <!-- Content will be populated by JavaScript -->
+                <!-- Konten akan diisi oleh JavaScript -->
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" id="closeDetailsBtn">Close</button>
@@ -1611,7 +1612,7 @@
         if (solvedReports.length === 0) {
             tableBody.innerHTML = `
                 <tr>
-                    <td colspan="9" class="empty-state">
+                    <td colspan="10" class="empty-state">
                         <i class="fas fa-database"></i>
                         <h3>No Solved Reports Found</h3>
                         <p>There are no completed reports in the database yet.</p>
@@ -1644,7 +1645,7 @@
         if (currentPageReports.length === 0) {
             const emptyRow = document.createElement('tr');
             emptyRow.innerHTML = `
-                <td colspan="9" style="text-align: center; padding: 40px 20px;">
+                <td colspan="10" style="text-align: center; padding: 40px 20px;">
                     <i class="fas fa-inbox" style="font-size: 3rem; color: var(--text-tertiary); margin-bottom: 15px; display: block;"></i>
                     <h3 style="color: var(--text-secondary; margin-bottom: 10px;">No solved reports found</h3>
                     <p style="color: var(--text-tertiary);">Try adjusting your filters or check back later.</p>
@@ -1665,6 +1666,7 @@
                 <td>${report.id}</td>
                 <td>${report.brand || 'N/A'}</td>
                 <td>${report.userId || report.reportedBy || 'N/A'}</td>
+                <td>${report.title || 'No Title'}</td>  <!-- Menambahkan kolom Title -->
                 <td>${report.category || 'N/A'}</td>
                 <td><span class="priority-medium">${report.priority || 'Medium'}</span></td>
                 <td>${reportedDate}</td>
@@ -1900,6 +1902,10 @@
                     <span class="report-detail-value">${report.userId || report.reportedBy || 'N/A'}</span>
                 </div>
                 <div class="report-detail-item">
+                    <span class="report-detail-label">Title</span>
+                    <span class="report-detail-value">${report.title || 'No Title'}</span>
+                </div>
+                <div class="report-detail-item">
                     <span class="report-detail-label">Category</span>
                     <span class="report-detail-value">${report.category || 'N/A'}</span>
                 </div>
@@ -1947,39 +1953,39 @@
         document.getElementById('reportDetailsModal').classList.add('active');
     }
     
-function reopenReport(reportId) {
-    const solvedReportRef = db.collection('solvedReports').doc(reportId);
-    const pendingReportRef = db.collection('pendingReports').doc(reportId); // Ubah ke pendingReports
+    function reopenReport(reportId) {
+        const solvedReportRef = db.collection('solvedReports').doc(reportId);
+        const pendingReportRef = db.collection('pendingReports').doc(reportId); // Ubah ke pendingReports
 
-    // Pertama, ambil data dari solvedReports
-    solvedReportRef.get().then((doc) => {
-        if (doc.exists) {
-            const reportData = doc.data();
-            
-            // Pindahkan ke pendingReports dengan status pending
-            pendingReportRef.set({
-                ...reportData,
-                status: 'pending',
-                dateSolved: null,
-                resolution: null,
-                completedBy: null,
-                dateUpdated: new Date() // Tambahkan timestamp update
-            })
-            .then(() => {
-                // Hapus dari solvedReports
-                return solvedReportRef.delete();
-            })
-            .then(() => {
-                showToast("Report reopened successfully", "success");
-                document.getElementById('reopenConfirmModal').classList.remove('active');
-            })
-            .catch(error => {
-                console.error("Error reopening report:", error);
-                showToast("Error reopening report", "error");
-            });
-        }
-    });
-}
+        // Pertama, ambil data dari solvedReports
+        solvedReportRef.get().then((doc) => {
+            if (doc.exists) {
+                const reportData = doc.data();
+                
+                // Pindahkan ke pendingReports dengan status pending
+                pendingReportRef.set({
+                    ...reportData,
+                    status: 'pending',
+                    dateSolved: null,
+                    resolution: null,
+                    completedBy: null,
+                    dateUpdated: new Date() // Tambahkan timestamp update
+                })
+                .then(() => {
+                    // Hapus dari solvedReports
+                    return solvedReportRef.delete();
+                })
+                .then(() => {
+                    showToast("Report reopened successfully", "success");
+                    document.getElementById('reopenConfirmModal').classList.remove('active');
+                })
+                .catch(error => {
+                    console.error("Error reopening report:", error);
+                    showToast("Error reopening report", "error");
+                });
+            }
+        });
+    }
     
     function showToast(message, type = "info") {
         // Create toast element if it doesn't exist
@@ -2031,12 +2037,13 @@ function reopenReport(reportId) {
     }
     
     function convertToCSV(reports) {
-        const headers = ['ID', 'Brand', 'User', 'Category', 'Priority', 'Reported Date', 'Solved Date', 'Status'];
+        const headers = ['ID', 'Brand', 'User', 'Title', 'Category', 'Priority', 'Reported Date', 'Solved Date', 'Status'];
         
         const rows = reports.map(report => [
             report.id,
             report.brand || '',
             report.userId || report.reportedBy || '',
+            report.title || '',
             report.category || '',
             report.priority || '',
             report.dateCreated ? formatDate(report.dateCreated.toDate()) : '',

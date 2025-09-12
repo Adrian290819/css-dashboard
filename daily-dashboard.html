@@ -1128,24 +1128,6 @@
         appId: "1:771131792881:web:ad634424225bd7de847850",
         measurementId: "G-3CYBC5B101"
     };
-function loadDashboardData() {
-  const db = firebase.firestore();
-  db.collection('yourCollection').get()
-    .then(snapshot => {
-      // proses data Firestore
-    })
-    .catch(error => {
-      console.error('Firestore error:', error);
-    });
-}
-
-firebase.auth().onAuthStateChanged(user => {
-  if (user) {
-    loadDashboardData();
-  } else {
-    window.location.href = 'login.html';
-  }
-});
 
     // Inisialisasi Firebase
     try {

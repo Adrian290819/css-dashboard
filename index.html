@@ -1036,14 +1036,14 @@
         <input type="text" placeholder="Cari..." id="dashboardSearch">
     </div>
     
-    <div class="user-profile" id="userProfile">
-        <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
-        <div class="user-info">
-            <h4>Bang Pengshui</h4>
-            <p>Customer Service Support</p>
-        </div>
-    </div>
-</div>
+<div class="user-profile">
+                    <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
+                    <div class="user-info">
+                        <h4>Nama Masing Masing</h4>
+                        <p>Customer Service Support</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="kpi-container">
@@ -1684,9 +1684,6 @@
             auth.onAuthStateChanged(user => {
                 if (user) {
                     console.log("User authenticated:", user.uid);
-                    // Update user profile
-                    document.querySelector('.user-info h4').textContent = 'Bang Pengshui';
-document.querySelector('.user-info p').textContent = 'Customer Service Support';
                     
                     // Hide login modal
                     document.getElementById('loginModal').classList.remove('active');

@@ -848,65 +848,124 @@
     </div>
 </div>
 
-        <!-- Daily Stats Cards -->
-        <div class="daily-stats">
-            <!-- Today's Reports Card -->
-            <div class="daily-stat-card fade-in" style="animation-delay: 0.1s;">
-                <div class="stat-header">
-                    <h3 class="stat-title">Today's Reports</h3>
-                    <div class="stat-icon today-pending">
-                        <i class="fas fa-file-alt"></i>
-                    </div>
-                </div>
-                <div class="stat-card-content">
-                    <div class="stat-value" id="todayTotalCount">0</div>
-                    <div class="stat-description">Reports created today</div>
-                </div>
-            </div>
-
-            <!-- Today's Pending Card -->
-            <div class="daily-stat-card fade-in" style="animation-delay: 0.2s;">
-                <div class="stat-header">
-                    <h3 class="stat-title">Today's Pending</h3>
-                    <div class="stat-icon today-pending">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                </div>
-                <div class="stat-card-content">
-                    <div class="stat-value" id="todayPendingCount">0</div>
-                    <div class="stat-description">Pending reports from today</div>
-                </div>
-            </div>
-
-            <!-- Today's Completed Card -->
-            <div class="daily-stat-card fade-in today-completed" style="animation-delay: 0.3s;">
-                <div class="stat-header">
-                    <h3 class="stat-title">Today's Completed</h3>
-                    <div class="stat-icon today-completed">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                </div>
-                <div class="stat-card-content">
-                    <div class="stat-value" id="todayCompletedCount">0</div>
-                    <div class="stat-description">Reports solved today</div>
-                </div>
-            </div>
-
-            <!-- Today's Urgent Card -->
-            <div class="daily-stat-card fade-in today-urgent" style="animation-delay: 0.4s;">
-                <div class="stat-header">
-                    <h3 class="stat-title">Today's Urgent</h3>
-                    <div class="stat-icon today-urgent">
-                        <i class="fas fa-exclamation-triangle"></i>
-                    </div>
-                </div>
-                <div class="stat-card-content">
-                    <div class="stat-value" id="todayUrgentCount">0</div>
-                    <div class="stat-description">Urgent reports today</div>
-                </div>
+       <!-- Daily Stats Cards -->
+<div class="daily-stats">
+    <!-- Today's Reports Card -->
+    <div class="daily-stat-card fade-in" style="animation-delay: 0.1s;">
+        <div class="stat-header">
+            <h3 class="stat-title">Today's Reports</h3>
+            <div class="stat-icon today-pending">
+                <i class="fas fa-file-alt"></i>
             </div>
         </div>
+        <div class="stat-card-content">
+            <div class="stat-value" id="todayTotalCount">0</div>
+            <div class="stat-description">Reports created today</div>
+        </div>
+    </div>
 
+
+    <!-- Today's Maintenance Reports Card -->
+    <div class="daily-stat-card fade-in today-urgent" style="animation-delay: 0.2s;">
+        <div class="stat-header">
+            <h3 class="stat-title">Today's Maintenance Reports</h3>
+            <div class="stat-icon today-urgent">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+        </div>
+        <div class="stat-card-content">
+            <div class="stat-value" id="todayMaintenanceCount">0</div>
+            <div class="stat-description">Maintenance reports today</div>
+        </div>
+    </div>
+
+    <!-- Today's New Feature Card -->
+<div class="daily-stat-card fade-in today-completed" style="animation-delay: 0.3s;">
+    <div class="stat-header">
+        <h3 class="stat-title">Today's New Feature</h3>
+        <div class="stat-icon today-completed">
+            <i class="fas fa-check-circle"></i>
+        </div>
+    </div>
+    <div class="stat-card-content">
+        <div class="stat-value" id="todaynewfeatureCount">0</div>
+        <div class="stat-description">Features released today</div>
+    </div>
+</div>
+
+    <!-- Today's New Game Card -->
+    <div class="daily-stat-card fade-in today-urgent" style="animation-delay: 0.4s;">
+        <div class="stat-header">
+            <h3 class="stat-title">Today's New Game</h3>
+            <div class="stat-icon today-urgent">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+        </div>
+        <div class="stat-card-content">
+            <div class="stat-value" id="todayUrgentCount">0</div>
+            <div class="stat-description">Reports New Game today</div>
+        </div>
+    </div>
+</div>
+
+<!-- Daily Stats Cards -->
+<div class="daily-stats">
+    <!-- Today's Pending Card -->
+    <div class="daily-stat-card fade-in" style="animation-delay: 0.5s;">
+        <div class="stat-header">
+            <h3 class="stat-title">Today's Pending</h3>
+            <div class="stat-icon today-pending">
+                <i class="fas fa-clock"></i>
+            </div>
+        </div>
+        <div class="stat-card-content">
+            <div class="stat-value" id="todayPendingCount">0</div>
+            <div class="stat-description">Pending reports from today</div>
+        </div>
+    </div>
+
+    <!-- Today's Completed Card -->
+    <div class="daily-stat-card fade-in today-completed" style="animation-delay: 0.6s;">
+        <div class="stat-header">
+            <h3 class="stat-title">Today's Completed</h3>
+            <div class="stat-icon today-completed">
+                <i class="fas fa-check-circle"></i>
+            </div>
+        </div>
+        <div class="stat-card-content">
+            <div class="stat-value" id="todayCompletedCount">0</div>
+            <div class="stat-description">Reports solved today</div>
+        </div>
+    </div>
+
+    <!-- Today's Maintenance Pending Card -->
+<div class="daily-stat-card fade-in" style="animation-delay: 0.7s;">
+        <div class="stat-header">
+            <h3 class="stat-title">Today's Maintenance Pending</h3>
+            <div class="stat-icon today-pending">
+                <i class="fas fa-clock"></i>
+            </div>
+        </div>
+        <div class="stat-card-content">
+            <div class="stat-value" id="todayMaintenancePending">0</div>
+            <div class="stat-description">Pending maintenance today</div>
+        </div>
+    </div>
+
+    <!-- Today's Maintenance Solved Card -->
+       <div class="daily-stat-card fade-in" style="animation-delay: 0.8s;">
+        <div class="stat-header">
+            <h3 class="stat-title">Today's Maintenance Solved</h3>
+            <div class="stat-icon today-completed">
+                <i class="fas fa-check-circle"></i>
+            </div>
+        </div>
+        <div class="stat-card-content">
+            <div class="stat-value" id="todayMaintenanceSolved">0</div>
+            <div class="stat-description">Solved maintenance today</div>
+        </div>
+    </div>
+</div>
         <!-- Daily Filters -->
         <div class="daily-filters fade-in" style="animation-delay: 0.5s;">
             <div class="filter-group">
@@ -920,16 +979,6 @@
                     <option value="Report Kendala Game">Report Kendala Game</option>
                     <option value="Report Maintenance">Report Maintenance</option>
                     <option value="Other">Other</option>
-                </select>
-            </div>
-            
-            <div class="filter-group">
-                <label for="priorityFilter">Priority</label>
-                <select id="priorityFilter" class="filter-select">
-                    <option value="all">All Priorities</option>
-                    <option value="High">High</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Low">Low</option>
                 </select>
             </div>
             
@@ -978,9 +1027,6 @@
                 <div class="section-actions">
                     <button class="btn btn-outline" id="refreshDaily">
                         <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                    <button class="btn-delete-all" id="deleteAllBtn">
-                        <i class="fas fa-trash-alt"></i> Hapus Semua
                     </button>
                 </div>
             </div>
@@ -1067,10 +1113,10 @@
     <script src="notifications.js"></script>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 
-    <script>
+<script>
     // Konfigurasi Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
@@ -1094,78 +1140,250 @@
     const db = firebase.firestore();
     const auth = firebase.auth();
 
-    // Variabel global untuk data
+    // Variabel global untuk data dan listener
     let dailyActivities = [];
+    let today = getTodayDate();
+    let activitiesListener = null;
+    let dateCheckInterval = null;
 
-    // Fungsi untuk mendapatkan tanggal hari ini dalam format YYYY-MM-DD
+    // Fungsi untuk mendapatkan tanggal hari ini dalam format YYYY-MM-DD (timezone Indonesia)
     function getTodayDate() {
-        const today = new Date();
-        return today.toISOString().split('T')[0];
+        const now = new Date();
+        // Convert to Indonesia timezone (UTC+7)
+        const offset = 7; // UTC+7 for Indonesia Western Time
+        const localTime = now.getTime();
+        const localOffset = now.getTimezoneOffset() * 60000;
+        const utc = localTime + localOffset;
+        const indonesiaTime = new Date(utc + (3600000 * offset));
+        
+        const year = indonesiaTime.getFullYear();
+        const month = String(indonesiaTime.getMonth() + 1).padStart(2, '0');
+        const day = String(indonesiaTime.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }
 
-    // Fungsi untuk memformat waktu menjadi format jam:menit
-    function formatTime(dateString) {
-        if (!dateString) return 'N/A';
+    // Fungsi untuk membuat tanggal dengan waktu 00:00:00 timezone Indonesia
+    // Fungsi untuk membuat tanggal dengan waktu 00:00:00 timezone Indonesia
+function getStartOfDay() {
+    const now = new Date();
+    // Convert to Indonesia timezone (UTC+7)
+    const offset = 7; // UTC+7 for Indonesia Western Time
+    const localTime = now.getTime();
+    const localOffset = now.getTimezoneOffset() * 60000;
+    const utc = localTime + localOffset;
+    const indonesiaTime = new Date(utc + (3600000 * offset));
+    
+    // Set to start of day (00:00:00)
+    indonesiaTime.setHours(0, 0, 0, 0);
+    
+    // Convert back to UTC for Firestore query
+    const utcTime = new Date(indonesiaTime.getTime() - (3600000 * offset));
+    return utcTime;
+}
+
+// Fungsi untuk membuat tanggal dengan waktu 23:59:59 timezone Indonesia
+function getEndOfDay() {
+    const now = new Date();
+    // Convert to Indonesia timezone (UTC+7)
+    const offset = 7; // UTC+7 for Indonesia Western Time
+    const localTime = now.getTime();
+    const localOffset = now.getTimezoneOffset() * 60000;
+    const utc = localTime + localOffset;
+    const indonesiaTime = new Date(utc + (3600000 * offset));
+    
+    // Set to end of day (23:59:59)
+    indonesiaTime.setHours(23, 59, 59, 999);
+    
+    // Convert back to UTC for Firestore query
+    const utcTime = new Date(indonesiaTime.getTime() - (3600000 * offset));
+    return utcTime;
+}
+    // Fungsi untuk memeriksa apakah hari sudah berganti
+    function checkDateChange() {
+        const currentDate = getTodayDate();
+        if (currentDate !== today) {
+            today = currentDate;
+            updateTodayDate();
+            // Hentikan listener lama dan mulai yang baru untuk tanggal hari ini
+            if (activitiesListener) {
+                activitiesListener();
+            }
+            loadDailyData();
+            showNotification('Hari telah berganti, data telah diperbarui', 'info');
+        }
+    }
+
+    // Fungsi untuk memformat waktu menjadi format jam:menit (timezone Indonesia)
+    function formatTime(timestamp) {
+        if (!timestamp) return 'N/A';
         
         try {
-            const date = dateString.toDate ? dateString.toDate() : new Date(dateString);
-            return date.toLocaleTimeString('en-US', { 
+            let date;
+            if (timestamp.toDate) {
+                date = timestamp.toDate();
+            } else if (timestamp instanceof Date) {
+                date = timestamp;
+            } else {
+                date = new Date(timestamp);
+            }
+            
+            // Convert to Indonesia timezone (UTC+7)
+            const offset = 7; // UTC+7 for Indonesia Western Time
+            const localTime = date.getTime();
+            const localOffset = date.getTimezoneOffset() * 60000;
+            const utc = localTime + localOffset;
+            const indonesiaTime = new Date(utc + (3600000 * offset));
+            
+            return indonesiaTime.toLocaleTimeString('id-ID', { 
                 hour: '2-digit', 
                 minute: '2-digit',
                 hour12: false 
             });
         } catch (error) {
-            console.error("Error formatting time:", error);
+            console.error("Error formatting time:", error, timestamp);
             return 'N/A';
         }
     }
 
-    // Fungsi untuk mendapatkan aktivitas harian dari Firestore
-    async function getDailyActivities() {
-        try {
-            const today = getTodayDate();
-            
-            // Ambil data dari pendingReports yang dibuat hari ini
-            const pendingSnapshot = await db.collection('pendingReports')
-                .where('dateCreated', '>=', new Date(today))
-                .where('dateCreated', '<', new Date(new Date(today).getTime() + 24 * 60 * 60 * 1000))
-                .get();
-            
-            // Ambil data dari solvedReports yang diselesaikan hari ini
-            const solvedSnapshot = await db.collection('solvedReports')
-                .where('dateSolved', '>=', new Date(today))
-                .where('dateSolved', '<', new Date(new Date(today).getTime() + 24 * 60 * 60 * 1000))
-                .get();
-            
-            // Gabungkan dan format data
-            const pendingActivities = pendingSnapshot.docs.map(doc => ({ 
+    // Fungsi untuk menyiapkan real-time listener aktivitas harian
+    function setupDailyActivitiesListener() {
+        console.log("Setting up daily activities listener for:", today);
+        
+        // Hentikan listener sebelumnya jika ada
+        if (activitiesListener) {
+            activitiesListener();
+        }
+        
+        const startOfDay = getStartOfDay();
+        const endOfDay = getEndOfDay();
+        
+        console.log("Query range (UTC):", startOfDay, "to", endOfDay);
+        console.log("Query range (Local):", 
+            new Date(startOfDay.getTime() + (7 * 60 * 60 * 1000)), 
+            "to", 
+            new Date(endOfDay.getTime() + (7 * 60 * 60 * 1000))
+        );
+        
+        // Setup listener untuk pendingReports yang dibuat hari ini
+        const pendingQuery = db.collection('pendingReports')
+            .where('dateCreated', '>=', startOfDay)
+            .where('dateCreated', '<=', endOfDay);
+        
+        // Setup listener untuk solvedReports yang diselesaikan hari ini
+        const solvedQuery = db.collection('solvedReports')
+            .where('dateSolved', '>=', startOfDay)
+            .where('dateSolved', '<=', endOfDay);
+        
+        // Simpan unsubscribe functions
+        const unsubscribeFunctions = [];
+        
+        // Listener untuk pending reports
+        const pendingUnsubscribe = pendingQuery.onSnapshot(
+            (snapshot) => {
+                console.log("Pending snapshot received:", snapshot.docs.length, "documents");
+                if (!snapshot.empty) {
+                    snapshot.docs.forEach(doc => {
+                        const data = doc.data();
+                        console.log("Pending document:", doc.id, "dateCreated:", data.dateCreated ? formatTime(data.dateCreated) : "N/A");
+                    });
+                }
+                processPendingSnapshot(snapshot);
+                updateCombinedActivities();
+            },
+            (error) => {
+                console.error("Error listening to pending reports:", error);
+                showNotification('Gagal memuat aktivitas pending', 'error');
+            }
+        );
+        unsubscribeFunctions.push(pendingUnsubscribe);
+        
+        // Listener untuk solved reports
+        const solvedUnsubscribe = solvedQuery.onSnapshot(
+            (snapshot) => {
+                console.log("Solved snapshot received:", snapshot.docs.length, "documents");
+                if (!snapshot.empty) {
+                    snapshot.docs.forEach(doc => {
+                        const data = doc.data();
+                        console.log("Solved document:", doc.id, "dateSolved:", data.dateSolved ? formatTime(data.dateSolved) : "N/A");
+                    });
+                }
+                processSolvedSnapshot(snapshot);
+                updateCombinedActivities();
+            },
+            (error) => {
+                console.error("Error listening to solved reports:", error);
+                showNotification('Gagal memuat aktivitas solved', 'error');
+            }
+        );
+        unsubscribeFunctions.push(solvedUnsubscribe);
+        
+        // Kembalikan fungsi untuk unsubscribe semua listener
+        activitiesListener = () => {
+            unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
+            console.log("Listeners removed");
+        };
+    }
+
+    // Proses snapshot pending reports
+    function processPendingSnapshot(snapshot) {
+        const pendingActivities = snapshot.docs.map(doc => {
+            const data = doc.data();
+            return { 
                 id: doc.id, 
-                ...doc.data(),
+                ...data,
                 action: 'created',
                 date: today,
-                timestamp: doc.data().dateCreated,
-                status: 'Pending'
-            }));
-            
-            const solvedActivities = solvedSnapshot.docs.map(doc => ({ 
+                timestamp: data.dateCreated,
+                status: 'Pending',
+                collection: 'pendingReports'
+            };
+        });
+        
+        // Simpan di storage terpisah
+        window.pendingActivitiesCache = pendingActivities;
+        console.log("Pending activities cached:", pendingActivities.length);
+    }
+
+    // Proses snapshot solved reports
+    function processSolvedSnapshot(snapshot) {
+        const solvedActivities = snapshot.docs.map(doc => {
+            const data = doc.data();
+            return { 
                 id: doc.id, 
-                ...doc.data(),
+                ...data,
                 action: 'completed',
                 date: today,
-                timestamp: doc.data().dateSolved,
-                status: 'Completed'
-            }));
+                timestamp: data.dateSolved,
+                status: 'Completed',
+                collection: 'solvedReports'
+            };
+        });
+        
+        // Simpan di storage terpisah
+        window.solvedActivitiesCache = solvedActivities;
+        console.log("Solved activities cached:", solvedActivities.length);
+    }
+
+    // Gabungkan dan update aktivitas
+    function updateCombinedActivities() {
+        const pending = window.pendingActivitiesCache || [];
+        const solved = window.solvedActivitiesCache || [];
+        
+        console.log("Combining activities - Pending:", pending.length, "Solved:", solved.length);
+        
+        // Gabungkan semua aktivitas dan urutkan berdasarkan timestamp
+        dailyActivities = [...pending, ...solved]
+            .sort((a, b) => {
+                const aTime = a.timestamp.toDate ? a.timestamp.toDate().getTime() : new Date(a.timestamp).getTime();
+                const bTime = b.timestamp.toDate ? b.timestamp.toDate().getTime() : new Date(b.timestamp).getTime();
+                return bTime - aTime;
+            });
             
-            // Gabungkan semua aktivitas dan urutkan berdasarkan timestamp
-            dailyActivities = [...pendingActivities, ...solvedActivities]
-                .sort((a, b) => b.timestamp - a.timestamp);
-                
-            return dailyActivities;
-        } catch (error) {
-            console.error("Error getting daily activities:", error);
-            showNotification('Failed to load daily activities', 'error');
-            return [];
-        }
+        console.log("Total activities after combining:", dailyActivities.length);
+        
+        // Perbarui UI
+        calculateDailyStats(dailyActivities);
+        renderDailyActivities(dailyActivities);
     }
 
     // Fungsi untuk menghitung statistik harian
@@ -1188,17 +1406,24 @@
             activity.priority === 'High'
         ).length;
         
+        console.log("Stats - Total:", totalCount, "Pending:", pendingCount, "Completed:", completedCount, "Urgent:", urgentCount);
+        
         // Perbarui UI dengan statistik
         document.getElementById('todayTotalCount').textContent = totalCount;
         document.getElementById('todayPendingCount').textContent = pendingCount;
         document.getElementById('todayCompletedCount').textContent = completedCount;
         document.getElementById('todayUrgentCount').textContent = urgentCount;
+        
+        // Update card for Today's New Feature
+        document.getElementById('todaynewfeatureCount').textContent = completedCount;
     }
 
     // Fungsi untuk merender tabel aktivitas harian
     function renderDailyActivities(activities) {
         const tableBody = document.getElementById('dailyTableBody');
         const noActivities = document.getElementById('noDailyActivities');
+        
+        console.log("Rendering activities:", activities.length);
         
         if (activities.length === 0) {
             tableBody.innerHTML = '';
@@ -1254,11 +1479,21 @@
             });
         });
     }
+// Di dalam loadDailyData():
+let maintenanceListeners = [];
 
+// Setup listener untuk maintenance data
+maintenanceListeners = setupMaintenanceListeners();
+
+// Di cleanup:
+window.addEventListener('beforeunload', function() {
+    if (maintenanceListeners.length > 0) {
+        maintenanceListeners.forEach(unsubscribe => unsubscribe());
+    }
+});
     // Fungsi untuk memfilter aktivitas harian
     function filterDailyActivities() {
         const categoryFilter = document.getElementById('categoryFilter').value;
-        const priorityFilter = document.getElementById('priorityFilter').value;
         const statusFilter = document.getElementById('statusFilter').value;
         const brandFilter = document.getElementById('brandFilter').value;
         
@@ -1268,12 +1503,6 @@
         if (categoryFilter !== 'all') {
             filteredActivities = filteredActivities.filter(activity => 
                 activity.category === categoryFilter
-            );
-        }
-        
-        if (priorityFilter !== 'all') {
-            filteredActivities = filteredActivities.filter(activity => 
-                activity.priority === priorityFilter
             );
         }
         
@@ -1295,6 +1524,8 @@
             );
         }
         
+        console.log("After filtering:", filteredActivities.length, "activities");
+        
         // Render ulang tabel dengan data yang difilter
         renderDailyActivities(filteredActivities);
         calculateDailyStats(filteredActivities);
@@ -1302,60 +1533,17 @@
 
     // Fungsi untuk memperbarui tanggal hari ini
     function updateTodayDate() {
-        const today = new Date();
+        const now = new Date();
+        // Convert to Indonesia timezone (UTC+7)
+        const offset = 7; // UTC+7 for Indonesia Western Time
+        const localTime = now.getTime();
+        const localOffset = now.getTimezoneOffset() * 60000;
+        const utc = localTime + localOffset;
+        const indonesiaTime = new Date(utc + (3600000 * offset));
+        
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const formattedDate = today.toLocaleDateString('en-US', options);
+        const formattedDate = indonesiaTime.toLocaleDateString('id-ID', options);
         document.getElementById('todayDate').textContent = formattedDate;
-    }
-
-    // Fungsi untuk menghapus semua aktivitas hari ini dari Firestore
-    async function deleteAllTodayActivities() {
-        try {
-            const today = getTodayDate();
-            
-            // Hapus dari pendingReports yang dibuat hari ini
-            const pendingSnapshot = await db.collection('pendingReports')
-                .where('dateCreated', '>=', new Date(today))
-                .where('dateCreated', '<', new Date(new Date(today).getTime() + 24 * 60 * 60 * 1000))
-                .get();
-            
-            // Hapus dari solvedReports yang diselesaikan hari ini
-            const solvedSnapshot = await db.collection('solvedReports')
-                .where('dateSolved', '>=', new Date(today))
-                .where('dateSolved', '<', new Date(new Date(today).getTime() + 24 * 60 * 60 * 1000))
-                .get();
-            
-            // Hapus semua dokumen hari ini
-            const batch = db.batch();
-            
-            pendingSnapshot.docs.forEach(doc => {
-                batch.delete(doc.ref);
-            });
-            
-            solvedSnapshot.docs.forEach(doc => {
-                batch.delete(doc.ref);
-            });
-            
-            await batch.commit();
-            
-            // Perbarui UI
-            dailyActivities = [];
-            calculateDailyStats([]);
-            renderDailyActivities([]);
-            
-            // Tampilkan notifikasi
-            showNotification('All today\'s activities have been deleted successfully!', 'success');
-        } catch (error) {
-            console.error("Error deleting activities:", error);
-            showNotification('Failed to delete activities', 'error');
-        }
-    }
-
-    // Fungsi untuk memverifikasi password
-    function verifyPassword(password) {
-        // Ganti dengan logika verifikasi password yang sesuai
-        // Contoh sederhana: password adalah "admin123"
-        return password === 'admin123';
     }
 
     // Fungsi untuk menampilkan notifikasi
@@ -1390,16 +1578,105 @@
     async function loadDailyData() {
         try {
             showLoading();
-            const activities = await getDailyActivities();
-            calculateDailyStats(activities);
-            renderDailyActivities(activities);
+            
+            // Setup listener untuk data hari ini
+            setupDailyActivitiesListener();
+            
+            // Periksa perubahan tanggal setiap menit
+            if (!dateCheckInterval) {
+                dateCheckInterval = setInterval(checkDateChange, 60000); // Periksa setiap menit
+            }
+            
             hideLoading();
         } catch (error) {
             console.error("Error loading daily data:", error);
             hideLoading();
+            showNotification('Gagal memuat data harian', 'error');
         }
     }
+// Fungsi untuk mengambil data maintenance dari berbagai koleksi
+async function fetchMaintenanceData() {
+    try {
+        const startOfDay = getStartOfDay();
+        const endOfDay = getEndOfDay();
+        
+        // 1. Ambil data dari maintenanceReports (pending/maintenance aktif)
+        const maintenanceQuery = db.collection('maintenanceReports')
+            .where('dateCreated', '>=', startOfDay)
+            .where('dateCreated', '<=', endOfDay);
+        
+        const maintenanceSnapshot = await maintenanceQuery.get();
+        const maintenanceData = maintenanceSnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+            type: 'active'
+        }));
+        
+        // 2. Ambil data dari solvedMaintenance (maintenance yang sudah diselesaikan)
+        const solvedQuery = db.collection('solvedMaintenance')
+            .where('dateCompleted', '>=', startOfDay)
+            .where('dateCompleted', '<=', endOfDay);
+        
+        const solvedSnapshot = await solvedQuery.get();
+        const solvedData = solvedSnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+            type: 'solved'
+        }));
+        
+        // Gabungkan semua data
+        const allMaintenanceData = [...maintenanceData, ...solvedData];
+        
+        // Hitung statistik
+        const totalMaintenance = allMaintenanceData.length;
+        const pendingMaintenance = maintenanceData.length;
+        const solvedMaintenance = solvedData.length;
+        
+        // Update UI
+        document.getElementById('todayMaintenanceCount').textContent = totalMaintenance;
+        document.getElementById('todayMaintenancePending').textContent = pendingMaintenance;
+        document.getElementById('todayMaintenanceSolved').textContent = solvedMaintenance;
+        
+        console.log("Maintenance data loaded:", {
+            total: totalMaintenance,
+            pending: pendingMaintenance,
+            solved: solvedMaintenance
+        });
+        
+        return allMaintenanceData;
+    } catch (error) {
+        console.error("Error fetching maintenance data:", error);
+        showNotification('Gagal memuat data maintenance', 'error');
+        return [];
+    }
+}
 
+// Panggil fungsi ini dalam loadDailyData()
+async function loadDailyData() {
+    try {
+        showLoading();
+        
+        // Setup listener untuk data hari ini (laporan)
+        setupDailyActivitiesListener();
+        
+        // Setup listener untuk releases hari ini (fitur baru)
+        setupReleasesListenerForToday();
+        
+        // Ambil data maintenance
+        await fetchMaintenanceData();
+        
+        // Periksa perubahan tanggal setiap menit
+        if (!dateCheckInterval) {
+            dateCheckInterval = setInterval(checkDateChange, 60000);
+        }
+        
+        hideLoading();
+    } catch (error) {
+        console.error("Error loading daily data:", error);
+        hideLoading();
+        showNotification('Gagal memuat data harian', 'error');
+    }
+}
     // Fungsi untuk menampilkan loading
     function showLoading() {
         const cards = document.querySelectorAll('.daily-stat-card');
@@ -1416,20 +1693,98 @@
         });
     }
 
-    // Fungsi untuk menampilkan modal konfirmasi hapus
-    function showDeleteConfirmModal() {
-        document.getElementById('deleteConfirmModal').classList.add('active');
-        document.getElementById('deletePassword').value = '';
-        document.getElementById('passwordError').style.display = 'none';
+    // Fungsi manual untuk debug - memuat ulang data
+    function debugReloadData() {
+        console.log("Manual reload triggered");
+        console.log("Today date:", today);
+        console.log("Current time Indonesia:", new Date(new Date().getTime() + (7 * 60 * 60 * 1000)));
+        
+        if (activitiesListener) {
+            activitiesListener();
+        }
+        loadDailyData();
     }
+// Fungsi untuk setup real-time listener maintenance data
+function setupMaintenanceListeners() {
+    const startOfDay = getStartOfDay();
+    const endOfDay = getEndOfDay();
+    
+    const listeners = [];
+    
+    // Listener untuk maintenanceReports
+    const maintenanceListener = db.collection('maintenanceReports')
+        .where('dateCreated', '>=', startOfDay)
+        .where('dateCreated', '<=', endOfDay)
+        .onSnapshot(snapshot => {
+            console.log("Maintenance data updated:", snapshot.docs.length, "active maintenance");
+            fetchMaintenanceData();
+        }, error => {
+            console.error("Error in maintenance listener:", error);
+        });
+    
+    listeners.push(maintenanceListener);
+    
+    // Listener untuk solvedMaintenance
+    const solvedListener = db.collection('solvedMaintenance')
+        .where('dateCompleted', '>=', startOfDay)
+        .where('dateCompleted', '<=', endOfDay)
+        .onSnapshot(snapshot => {
+            console.log("Solved maintenance data updated:", snapshot.docs.length, "solved maintenance");
+            fetchMaintenanceData();
+        }, error => {
+            console.error("Error in solved maintenance listener:", error);
+        });
+    
+    listeners.push(solvedListener);
+    
+    return listeners;
+}
 
-    // Fungsi untuk menyembunyikan modal konfirmasi hapus
-    function hideDeleteConfirmModal() {
-        document.getElementById('deleteConfirmModal').classList.remove('active');
+// Panggil dalam loadDailyData()
+async function loadDailyData() {
+    try {
+        showLoading();
+        
+        // Setup listener untuk data hari ini (laporan)
+        setupDailyActivitiesListener();
+        
+        // Setup listener untuk releases hari ini (fitur baru)
+        setupReleasesListenerForToday();
+        
+        // Setup listener untuk maintenance data
+        setupMaintenanceListeners();
+        
+        // Ambil data maintenance
+        await fetchMaintenanceData();
+        
+        // Periksa perubahan tanggal setiap menit
+        if (!dateCheckInterval) {
+            dateCheckInterval = setInterval(checkDateChange, 60000);
+        }
+        
+        hideLoading();
+    } catch (error) {
+        console.error("Error loading daily data:", error);
+        hideLoading();
+        showNotification('Gagal memuat data harian', 'error');
     }
-
+}
     // Inisialisasi saat halaman dimuat
     document.addEventListener('DOMContentLoaded', function() {
+        console.log("Daily Dashboard initialized");
+        console.log("Today date:", today);
+        console.log("Current time Indonesia:", new Date(new Date().getTime() + (7 * 60 * 60 * 1000)));
+        
+        // Tambahkan tombol debug untuk testing
+        const refreshButton = document.getElementById('refreshDaily');
+        if (refreshButton) {
+            refreshButton.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+            refreshButton.onclick = function() {
+                debugReloadData();
+                showNotification('Data diperbarui secara manual', 'info');
+            };
+        }
+        
         // Cek status autentikasi
         auth.onAuthStateChanged(user => {
             if (user) {
@@ -1439,11 +1794,7 @@
                     loginModal.classList.remove('active');
                 }
                 
-                // Update user profile
-                const userProfile = document.querySelector('.user-info h4');
-                if (userProfile) {
-                    userProfile.textContent = user.displayName || user.email || 'Nama Pengguna';
-                }
+
                 
                 // Muat data
                 updateTodayDate();
@@ -1459,68 +1810,69 @@
         });
         
         // Event listener untuk form login
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            const emailError = document.getElementById('emailError');
-            const passwordError = document.getElementById('passwordError');
-            
-            // Reset error messages
-            emailError.style.display = 'none';
-            passwordError.style.display = 'none';
-            
-            // Simple validation
-            if (!email) {
-                emailError.textContent = 'Email harus diisi';
-                emailError.style.display = 'block';
-                return;
-            }
-            
-            if (!password) {
-                passwordError.textContent = 'Kata sandi harus diisi';
-                passwordError.style.display = 'block';
-                return;
-            }
-            
-            // Login with Firebase
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    // Hide login modal
-                    document.getElementById('loginModal').classList.remove('active');
-                    showNotification('Login berhasil!', 'success');
-                    
-                    // Update user profile
-                    const userProfile = document.querySelector('.user-info h4');
-                    if (userProfile) {
-                        userProfile.textContent = userCredential.user.displayName || userCredential.user.email || 'Nama Pengguna';
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                const emailError = document.getElementById('emailError');
+                const passwordError = document.getElementById('passwordError');
+                
+                // Reset error messages
+                if (emailError) emailError.style.display = 'none';
+                if (passwordError) passwordError.style.display = 'none';
+                
+                // Simple validation
+                if (!email) {
+                    if (emailError) {
+                        emailError.textContent = 'Email harus diisi';
+                        emailError.style.display = 'block';
                     }
-                    
-                    // Load data
-                    updateTodayDate();
-                    loadDailyData();
-                })
-                .catch((error) => {
-                    console.error("Login error:", error);
-                    showNotification('Login gagal: ' + error.message, 'error');
-                });
-        });
-        
-        // Event listener untuk tombol refresh
-        const refreshButton = document.getElementById('refreshDaily');
-        if (refreshButton) {
-            refreshButton.addEventListener('click', function() {
-                loadDailyData();
-                showNotification('Daily data refreshed successfully!', 'success');
+                    return;
+                }
+                
+                if (!password) {
+                    if (passwordError) {
+                        passwordError.textContent = 'Kata sandi harus diisi';
+                        passwordError.style.display = 'block';
+                    }
+                    return;
+                }
+                
+                // Login with Firebase
+                auth.signInWithEmailAndPassword(email, password)
+                    .then((userCredential) => {
+                        // Hide login modal
+                        document.getElementById('loginModal').classList.remove('active');
+                        showNotification('Login berhasil!', 'success');
+                        
+                        // Update user profile
+                        const userProfile = document.querySelector('.user-info h4');
+                        if (userProfile) {
+                            userProfile.textContent = userCredential.user.displayName || userCredential.user.email || 'Nama Pengguna';
+                        }
+                        
+                        // Load data dengan listener real-time
+                        updateTodayDate();
+                        loadDailyData();
+                    })
+                    .catch((error) => {
+                        console.error("Login error:", error);
+                        showNotification('Login gagal: ' + error.message, 'error');
+                    });
             });
         }
         
         // Event listener untuk filter changes
-        document.getElementById('categoryFilter').addEventListener('change', filterDailyActivities);
-        document.getElementById('priorityFilter').addEventListener('change', filterDailyActivities);
-        document.getElementById('statusFilter').addEventListener('change', filterDailyActivities);
-        document.getElementById('brandFilter').addEventListener('change', filterDailyActivities);
+        const categoryFilter = document.getElementById('categoryFilter');
+        const statusFilter = document.getElementById('statusFilter');
+        const brandFilter = document.getElementById('brandFilter');
+        
+        if (categoryFilter) categoryFilter.addEventListener('change', filterDailyActivities);
+        if (statusFilter) statusFilter.addEventListener('change', filterDailyActivities);
+        if (brandFilter) brandFilter.addEventListener('change', filterDailyActivities);
         
         // Event listener untuk pencarian
         const searchInput = document.getElementById('dailySearch');
@@ -1546,75 +1898,100 @@
                 calculateDailyStats(filteredActivities);
             });
         }
-        
-        // Event listener untuk tombol hapus semua
-        const deleteAllBtn = document.getElementById('deleteAllBtn');
-        if (deleteAllBtn) {
-            deleteAllBtn.addEventListener('click', showDeleteConfirmModal);
-        }
-        
-        // Event listener untuk tombol batal di modal
-        const cancelDeleteBtn = document.getElementById('cancelDelete');
-        if (cancelDeleteBtn) {
-            cancelDeleteBtn.addEventListener('click', hideDeleteConfirmModal);
-        }
-        
-        // Event listener untuk tombol tutup modal
-        const closeModalBtn = document.getElementById('closeDeleteModal');
-        if (closeModalBtn) {
-            closeModalBtn.addEventListener('click', hideDeleteConfirmModal);
-        }
-        
-        // Event listener untuk tombol konfirmasi hapus
-        const confirmDeleteBtn = document.getElementById('confirmDelete');
-        if (confirmDeleteBtn) {
-            confirmDeleteBtn.addEventListener('click', function() {
-                const password = document.getElementById('deletePassword').value;
-                
-                if (!password) {
-                    document.getElementById('passwordError').textContent = 'Password harus diisi!';
-                    document.getElementById('passwordError').style.display = 'block';
-                    return;
-                }
-                
-                if (!verifyPassword(password)) {
-                    document.getElementById('passwordError').textContent = 'Password salah!';
-                    document.getElementById('passwordError').style.display = 'block';
-                    return;
-                }
-                
-                // Jika password benar, hapus semua aktivitas hari ini
-                deleteAllTodayActivities();
-                hideDeleteConfirmModal();
-            });
-        }
-        
-        // Event listener untuk menutup modal saat klik di luar modal
-        const modalOverlay = document.getElementById('deleteConfirmModal');
-        if (modalOverlay) {
-            modalOverlay.addEventListener('click', function(e) {
-                if (e.target === modalOverlay) {
-                    hideDeleteConfirmModal();
-                }
-            });
-        }
-        
-        // Event listener untuk menekan Enter pada input password
-        const passwordInput = document.getElementById('deletePassword');
-        if (passwordInput) {
-            passwordInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    document.getElementById('confirmDelete').click();
-                }
-            });
-        }
-        
-        // Event listener untuk register link
-        document.getElementById('registerLink').addEventListener('click', function(e) {
-            e.preventDefault();
-            showNotification('Fitur pendaftaran akan segera hadir', 'info');
-        });
     });
+
+    // Pastikan membersihkan listener ketika tab/window ditutup
+    window.addEventListener('beforeunload', function() {
+        if (activitiesListener) {
+            activitiesListener();
+        }
+        if (dateCheckInterval) {
+            clearInterval(dateCheckInterval);
+        }
+    });
+    let releasesListener = null;
+let releasesData = [];
+
+// Fungsi untuk mengambil data releases baru hari ini
+function setupReleasesListenerForToday() {
+    // Hentikan listener sebelumnya jika ada
+    if (releasesListener) {
+        releasesListener();
+    }
+    
+    const startOfDay = getStartOfDay();
+    const endOfDay = getEndOfDay();
+    
+    console.log("Setting up releases listener for today:", today);
+    
+    releasesListener = db.collection('releases')
+        .where('dateCreated', '>=', startOfDay)
+        .where('dateCreated', '<=', endOfDay)
+        .onSnapshot(snapshot => {
+            releasesData = [];
+            snapshot.forEach(doc => {
+                const release = doc.data();
+                release.id = doc.id;
+                releasesData.push(release);
+            });
+            
+            console.log("Releases today:", releasesData.length);
+            updateTodayNewFeaturesCount();
+        }, error => {
+            console.error("Error loading releases:", error);
+        });
+}
+
+// Fungsi untuk update count fitur baru hari ini
+function updateTodayNewFeaturesCount() {
+    try {
+        const countElement = document.getElementById('todaynewfeatureCount');
+        if (countElement) {
+            countElement.textContent = releasesData.length;
+        }
+        
+        console.log(`Found ${releasesData.length} new features released today`);
+    } catch (error) {
+        console.error("Error calculating today's new features:", error);
+    }
+}
+
+// ========== MODIFIKASI loadDailyData() ==========
+async function loadDailyData() {
+    try {
+        showLoading();
+        
+        // Setup listener untuk data hari ini (laporan)
+        setupDailyActivitiesListener();
+        
+        // Setup listener untuk releases hari ini (fitur baru)
+        setupReleasesListenerForToday();
+        
+        // Periksa perubahan tanggal setiap menit
+        if (!dateCheckInterval) {
+            dateCheckInterval = setInterval(checkDateChange, 60000);
+        }
+        
+        hideLoading();
+    } catch (error) {
+        console.error("Error loading daily data:", error);
+        hideLoading();
+        showNotification('Gagal memuat data harian', 'error');
+    }
+}
+
+// ========== TAMBAHKAN cleanup untuk releases listener ==========
+window.addEventListener('beforeunload', function() {
+    if (activitiesListener) {
+        activitiesListener();
+    }
+    if (releasesListener) {
+        releasesListener();
+    }
+    if (dateCheckInterval) {
+        clearInterval(dateCheckInterval);
+    }
+});
 </script>
 </body>
 </html>

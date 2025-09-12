@@ -1020,6 +1020,13 @@
     align-items: center;
     gap: 10px;
 }
+#activitiesTable th:nth-child(4),
+#activitiesTable td:nth-child(4) {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
     </style>
 </head>
 <body>
@@ -1070,111 +1077,90 @@
 </div>
 
         <div class="dashboard-stats">
-            <!-- Total Report Card -->
-            <div class="stat-card fade-in" style="animation-delay: 0.1s;">
-                <div class="stat-card-header">
-                    <h3 class="stat-title">Total Laporan</h3>
-                    <div class="stat-icon">
-                        <i class="fas fa-file-alt"></i>
-                    </div>
-                </div>
-                <div class="stat-card-content">
-                    <div class="stat-numbers">
-                        <div class="stat-value" id="totalReports">0</div>
-                        <div class="stat-change" id="totalChange">
-                            <i class="fas fa-minus"></i> 0% dari minggu lalu
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill animated" id="totalProgress" style="width: 0%;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pending Reports Card -->
-            <div class="stat-card fade-in" style="animation-delay: 0.2s;">
-                <div class="stat-card-header">
-                    <h3 class="stat-title">Laporan Tertunda</h3>
-                    <div class="stat-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                </div>
-                <div class="stat-card-content">
-                    <div class="stat-numbers">
-                        <div class="stat-value" id="pendingCount">0</div>
-                        <div class="stat-change" id="pendingChange">
-                            <i class="fas fa-minus"></i> 0% dari minggu lalu
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill animated" id="pendingProgress" style="width: 0%;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Solved Reports Card -->
-            <div class="stat-card fade-in" style="animation-delay: 0.3s;">
-                <div class="stat-card-header">
-                    <h3 class="stat-title">Laporan Terselesaikan</h3>
-                    <div class="stat-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                </div>
-                <div class="stat-card-content">
-                    <div class="stat-numbers">
-                        <div class="stat-value" id="solvedCount">0</div>
-                        <div class="stat-change" id="solvedChange">
-                            <i class="fas fa-minus"></i> 0% dari minggu lalu
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill animated" id="solvedProgress" style="width: 0%;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Urgent Tasks Card -->
-            <div class="stat-card fade-in" style="animation-delay: 0.4s;">
-                <div class="stat-card-header">
-                    <h3 class="stat-title">Tugas Mendesak</h3>
-                    <div class="stat-icon">
-                        <i class="fas fa-exclamation-triangle"></i>
-                    </div>
-                </div>
-                <div class="stat-card-content">
-                    <div class="stat-numbers">
-                        <div class="stat-value" id="urgentCount">0</div>
-                        <div class="stat-change" id="urgentChange">
-                            <i class="fas fa-minus"></i> 0% dari minggu lalu
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill animated" id="urgentProgress" style="width: 0%;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Team Performance Card -->
-            <div class="stat-card fade-in" style="animation-delay: 0.5s;">
-                <div class="stat-card-header">
-                    <h3 class="stat-title">Kinerja Tim</h3>
-                    <div class="stat-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                </div>
-                <div class="stat-card-content">
-                    <div class="stat-numbers">
-                        <div class="stat-value" id="performanceValue">0%</div>
-                        <div class="stat-change" id="performanceChange">
-                            <i class="fas fa-minus"></i> 0% dari minggu lalu
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill animated" id="performanceProgress" style="width: 0%;"></div>
-                    </div>
-                </div>
+    <!-- Total Report Card -->
+    <div class="stat-card fade-in" style="animation-delay: 0.1s;">
+        <div class="stat-card-header">
+            <h3 class="stat-title">Total Laporan</h3>
+            <div class="stat-icon">
+                <i class="fas fa-file-alt"></i>
             </div>
         </div>
+        <div class="stat-card-content">
+            <div class="stat-numbers">
+                <div class="stat-value" id="totalReports">0</div>
+                <div class="stat-change" id="totalChange">
+                    <i class="fas fa-minus"></i> 0% dari minggu lalu
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill animated" id="totalProgress" style="width: 0%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pending Reports Card -->
+    <div class="stat-card fade-in" style="animation-delay: 0.2s;">
+        <div class="stat-card-header">
+            <h3 class="stat-title">Laporan Tertunda</h3>
+            <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+        </div>
+        <div class="stat-card-content">
+            <div class="stat-numbers">
+                <div class="stat-value" id="pendingCount">0</div>
+                <div class="stat-change" id="pendingChange">
+                    <i class="fas fa-minus"></i> 0% dari minggu lalu
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill animated" id="pendingProgress" style="width: 0%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Solved Reports Card -->
+    <div class="stat-card fade-in" style="animation-delay: 0.3s;">
+        <div class="stat-card-header">
+            <h3 class="stat-title">Laporan Terselesaikan</h3>
+            <div class="stat-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+        </div>
+        <div class="stat-card-content">
+            <div class="stat-numbers">
+                <div class="stat-value" id="solvedCount">0</div>
+                <div class="stat-change" id="solvedChange">
+                    <i class="fas fa-minus"></i> 0% dari minggu lalu
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill animated" id="solvedProgress" style="width: 0%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Performance Card -->
+    <div class="stat-card fade-in" style="animation-delay: 0.4s;">
+        <div class="stat-card-header">
+            <h3 class="stat-title">Kinerja Tim</h3>
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+        </div>
+        <div class="stat-card-content">
+            <div class="stat-numbers">
+                <div class="stat-value" id="performanceValue">0%</div>
+                <div class="stat-change" id="performanceChange">
+                    <i class="fas fa-minus"></i> 0% dari minggu lalu
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill animated" id="performanceProgress" style="width: 0%;"></div>
+            </div>
+        </div>
+    </div>
+</div>
         
         <div class="activities-section fade-in" style="animation-delay: 0.6s;">
             <div class="section-header">
@@ -1187,17 +1173,18 @@
             </div>
             
             <table id="activitiesTable">
-                <thead>
-                    <tr>
-                        <th>Tanggal</th>
-                        <th>ID AGEN</th>
-                        <th>Kategori</th>
-                        <th>Status</th>
-                        <th>Merek</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="activitiesTableBody">
+    <thead>
+        <tr>
+            <th>Tanggal</th>
+            <th>ID AGEN</th>
+            <th>Kategori</th>
+            <th>Title</th>  <!-- Kolom Title ditambahkan -->
+            <th>Status</th>
+            <th>Merek</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody id="activitiesTableBody">
                     <!-- Data akan dimuat secara dinamis -->
                 </tbody>
             </table>
@@ -1349,16 +1336,11 @@
         }
 
         // Fungsi untuk menampilkan statistik
-        function updateStatistics() {
-            try {
-                const pendingCount = dashboardData.pendingReports.length;
-                const solvedCount = dashboardData.solvedReports.length;
-                const totalReports = pendingCount + solvedCount;
-                
-                // Hitung laporan urgent (prioritas tinggi)
-                const urgentCount = dashboardData.pendingReports.filter(report => 
-                    report.priority === 'high' || report.priority === 'urgent'
-                ).length;
+function updateStatistics() {
+    try {
+        const pendingCount = dashboardData.pendingReports.length;
+        const solvedCount = dashboardData.solvedReports.length;
+        const totalReports = pendingCount + solvedCount;
                 
                 // Hitung kinerja tim (% penyelesaian)
                 const performanceValue = totalReports > 0 ? Math.round((solvedCount / totalReports) * 100) : 0;
@@ -1367,30 +1349,29 @@
                 const totalChange = calculateChange(totalReports, dashboardData.lastWeekData.totalReports);
                 const pendingChange = calculateChange(pendingCount, dashboardData.lastWeekData.pendingCount);
                 const solvedChange = calculateChange(solvedCount, dashboardData.lastWeekData.solvedCount);
-                const urgentChange = calculateChange(urgentCount, dashboardData.lastWeekData.urgentCount);
                 const performanceChange = calculateChange(performanceValue, dashboardData.lastWeekData.performanceValue);
 
                 // Update elemen HTML
                 document.getElementById('totalReports').textContent = totalReports;
-                document.getElementById('pendingCount').textContent = pendingCount;
-                document.getElementById('solvedCount').textContent = solvedCount;
-                document.getElementById('urgentCount').textContent = urgentCount;
-                document.getElementById('performanceValue').textContent = `${performanceValue}%`;
+        document.getElementById('pendingCount').textContent = pendingCount;
+        document.getElementById('solvedCount').textContent = solvedCount;
+        // HAPUS: document.getElementById('urgentCount').textContent = urgentCount;
+        document.getElementById('performanceValue').textContent = `${performanceValue}%`;
 
-                // Update perubahan
-                updateChangeElement('totalChange', totalChange);
-                updateChangeElement('pendingChange', pendingChange);
-                updateChangeElement('solvedChange', solvedChange);
-                updateChangeElement('urgentChange', urgentChange);
-                updateChangeElement('performanceChange', performanceChange);
+        // Update perubahan
+        updateChangeElement('totalChange', totalChange);
+        updateChangeElement('pendingChange', pendingChange);
+        updateChangeElement('solvedChange', solvedChange);
+        // HAPUS: updateChangeElement('urgentChange', urgentChange);
+        updateChangeElement('performanceChange', performanceChange);
 
-                // Update progress bars
-                updateProgressBars(totalReports, pendingCount, solvedCount, urgentCount, performanceValue);
-                
-            } catch (error) {
-                console.error("Error in updateStatistics:", error);
-            }
-        }
+        // Update progress bars
+        updateProgressBars(totalReports, pendingCount, solvedCount, performanceValue);
+        
+    } catch (error) {
+        console.error("Error in updateStatistics:", error);
+    }
+}
 
         // Hitung perubahan persentase
         function calculateChange(current, previous) {
@@ -1424,10 +1405,6 @@
                 // Progress bar untuk laporan terselesaikan
                 document.getElementById('solvedProgress').style.width = `${solved > 0 ? 100 : 0}%`;
                 
-                // Progress bar untuk tugas mendesak
-                const urgentProgress = total > 0 ? Math.round((urgent / total) * 100) : 0;
-                document.getElementById('urgentProgress').style.width = `${urgentProgress}%`;
-                
                 // Progress bar untuk kinerja tim
                 document.getElementById('performanceProgress').style.width = `${performance}%`;
                 
@@ -1437,68 +1414,70 @@
         }
 
         // Fungsi untuk update recent activities - MENGGABUNGKAN DATA DARI PENDING DAN SOLVED
-        function updateRecentActivities() {
-            try {
-                const container = document.getElementById('activitiesTableBody');
-                const emptyState = document.getElementById('noActivities');
-                
-                if (!container) {
-                    console.log("activitiesTableBody container not found");
-                    return;
-                }
-                
-                // Gabungkan data dari pendingReports dan solvedReports
-                const combinedActivities = [
-                    ...dashboardData.pendingReports.map(report => ({
-                        ...report,
-                        date: report.dateCreated || new Date(),
-                        type: 'pending'
-                    })),
-                    ...dashboardData.solvedReports.map(report => ({
-                        ...report,
-                        date: report.dateSolved || new Date(),
-                        type: 'solved'
-                    }))
-                ];
-                
-                // Urutkan berdasarkan tanggal (yang terbaru di atas)
-                combinedActivities.sort((a, b) => {
-                    const dateA = a.date.toDate ? a.date.toDate() : new Date(a.date);
-                    const dateB = b.date.toDate ? b.date.toDate() : new Date(b.date);
-                    return dateB - dateA;
-                });
-                
-                // Ambil 10 aktivitas terbaru
-                const recentActivities = combinedActivities.slice(0, 10);
-                
-                if (recentActivities.length === 0) {
-                    if (emptyState) emptyState.style.display = 'block';
-                    container.innerHTML = '';
-                    return;
-                }
-                
-                if (emptyState) emptyState.style.display = 'none';
-                
-                // Render activities table
-                container.innerHTML = recentActivities.map(activity => `
-                    <tr>
-                        <td>${formatDate(activity.date)}</td>
-                        <td>${activity.agentId || 'N/A'}</td>
-                        <td>${activity.category || 'N/A'}</td>
-                        <td><span class="status-badge ${getStatusClass(activity.status)}">${getStatusText(activity.status)}</span></td>
-                        <td>${activity.brand || 'N/A'}</td>
-                        <td>
-                            <button class="btn-icon view" onclick="viewActivity('${activity.id}', '${activity.type}')">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `).join('');
-                
-            } catch (error) {
-                console.error("Error in updateRecentActivities:", error);
-            }
+        // Fungsi untuk update recent activities - MENGGABUNGKAN DATA DARI PENDING DAN SOLVED
+function updateRecentActivities() {
+    try {
+        const container = document.getElementById('activitiesTableBody');
+        const emptyState = document.getElementById('noActivities');
+        
+        if (!container) {
+            console.log("activitiesTableBody container not found");
+            return;
         }
+        
+        // Gabungkan data dari pendingReports dan solvedReports
+        const combinedActivities = [
+            ...dashboardData.pendingReports.map(report => ({
+                ...report,
+                date: report.dateCreated || new Date(),
+                type: 'pending'
+            })),
+            ...dashboardData.solvedReports.map(report => ({
+                ...report,
+                date: report.dateSolved || new Date(),
+                type: 'solved'
+            }))
+        ];
+        
+        // Urutkan berdasarkan tanggal (yang terbaru di atas)
+        combinedActivities.sort((a, b) => {
+            const dateA = a.date.toDate ? a.date.toDate() : new Date(a.date);
+            const dateB = b.date.toDate ? b.date.toDate() : new Date(b.date);
+            return dateB - dateA;
+        });
+        
+        // Ambil 10 aktivitas terbaru
+        const recentActivities = combinedActivities.slice(0, 10);
+        
+        if (recentActivities.length === 0) {
+            if (emptyState) emptyState.style.display = 'block';
+            container.innerHTML = '';
+            return;
+        }
+        
+        if (emptyState) emptyState.style.display = 'none';
+        
+        // Render activities table dengan kolom Title
+        container.innerHTML = recentActivities.map(activity => `
+            <tr>
+                <td>${formatDate(activity.date)}</td>
+                <td>${activity.agentId || 'N/A'}</td>
+                <td>${activity.category || 'N/A'}</td>
+                <td>${activity.title || 'No Title'}</td>  <!-- Kolom Title ditambahkan -->
+                <td><span class="status-badge ${getStatusClass(activity.status)}">${getStatusText(activity.status)}</span></td>
+                <td>${activity.brand || 'N/A'}</td>
+                <td>
+                    <button class="btn-icon view" onclick="viewActivity('${activity.id}', '${activity.type}')">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+        
+    } catch (error) {
+        console.error("Error in updateRecentActivities:", error);
+    }
+}
 
         // Helper function untuk format tanggal
         function formatDate(dateValue) {
@@ -1576,16 +1555,12 @@
             const pendingCount = dashboardData.pendingReports.length;
             const solvedCount = dashboardData.solvedReports.length;
             const totalReports = pendingCount + solvedCount;
-            const urgentCount = dashboardData.pendingReports.filter(report => 
-                report.priority === 'high' || report.priority === 'urgent'
-            ).length;
             const performanceValue = totalReports > 0 ? Math.round((solvedCount / totalReports) * 100) : 0;
             
             dashboardData.lastWeekData = {
                 totalReports: totalReports,
                 pendingCount: pendingCount,
                 solvedCount: solvedCount,
-                urgentCount: urgentCount,
                 performanceValue: performanceValue
             };
             

@@ -331,19 +331,33 @@
         background: rgba(255, 255, 255, 0.3);
     }
 
-    .browser-warning {
-        display: none;
-        background: #ff4757;
-        color: white;
-        padding: 10px 15px;
-        border-radius: 5px;
-        margin-bottom: 20px;
-        text-align: center;
-        font-size: 14px;
+    .demo-accounts {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: rgba(67, 97, 238, 0.05);
+        border-radius: 8px;
+        border-left: 4px solid var(--primary-color);
     }
 
-    .browser-warning i {
+    .demo-accounts h4 {
+        margin-bottom: 10px;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+    }
+
+    .demo-accounts h4 i {
         margin-right: 8px;
+    }
+
+    .demo-account {
+        margin-bottom: 8px;
+        font-size: 13px;
+    }
+
+    .demo-account .role {
+        font-weight: 600;
+        color: var(--primary-color);
     }
 
     @media (max-width: 480px) {
@@ -390,21 +404,16 @@
     </div>
 
     <div class="login-form">
-      <div class="browser-warning" id="browserWarning">
-        <i class="fas fa-exclamation-triangle"></i>
-        <span id="warningText"></span>
-      </div>
-
       <div class="input-group">
         <label for="email">Email</label>
         <div class="input-icon"><i class="fas fa-envelope"></i></div>
-        <input type="email" id="email" placeholder="Masukkan email Anda" autocomplete="email" value="admin@example.com">
+        <input type="email" id="email" placeholder="Masukkan email Anda" autocomplete="email">
       </div>
 
       <div class="input-group">
         <label for="password">Password</label>
         <div class="input-icon"><i class="fas fa-lock"></i></div>
-        <input type="password" id="password" placeholder="Masukkan password Anda" autocomplete="current-password" value="password123">
+        <input type="password" id="password" placeholder="Masukkan password Anda" autocomplete="current-password">
       </div>
 
       <div class="remember-forgot">
@@ -415,6 +424,11 @@
       <button class="btn-login" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
       <div class="error-message" id="loginError"></div>
       <div class="success-message" id="loginSuccess"></div>
+    </div>
+
+    <div class="login-footer">
+      <p>&copy; 2025 CSS Admin Dashboard. All rights reserved.</p>
+      <p id="browserInfo" style="font-size: 12px; margin-top: 5px;"></p>
     </div>
 
     <div class="login-footer">
@@ -460,28 +474,7 @@
     const themeToggle = document.getElementById("themeToggle");
     const bgAnimation = document.getElementById("bgAnimation");
     const forgotPassword = document.getElementById("forgotPassword");
-    const browserWarning = document.getElementById("browserWarning");
-    const warningText = document.getElementById("warningText");
     const browserInfo = document.getElementById("browserInfo");
-
-    // ========== BROWSER DETECTION ==========
-    function detectBrowser() {
-      const userAgent = navigator.userAgent;
-      let browserName = "Unknown Browser";
-      
-      if (userAgent.includes("Firefox")) browserName = "Mozilla Firefox";
-      else if (userAgent.includes("Chrome")) browserName = "Google Chrome";
-      else if (userAgent.includes("Safari")) browserName = "Safari";
-      else if (userAgent.includes("Edg")) browserName = "Microsoft Edge";
-      
-      browserInfo.textContent = `Browser: ${browserName}`;
-      
-      // Show warning for Firefox with specific issues
-      if (userAgent.includes("Firefox")) {
-        warningText.textContent = "Untuk pengalaman terbaik, pastikan Enhanced Tracking Protection dimatikan untuk situs ini.";
-        browserWarning.style.display = "block";
-      }
-    }
 
     // ========== BACKGROUND ANIMATION ==========
     function createCircles() {
@@ -555,30 +548,28 @@
 
           if (error.code) {
               switch (error.code) {
+                  case "auth/invalid-login-credentials":
                   case "auth/user-not-found":
-                      errorMessage = "Email tidak terdaftar. Silakan daftar terlebih dahulu.";
-                      // Tawarkan pendaftaran otomatis
-                      if (confirm("Email tidak terdaftar. Ingin membuat akun baru dengan email ini?")) {
-                          await handleAutoRegister(email, password);
-                      }
-                      break;
                   case "auth/wrong-password":
-                      errorMessage = "Password salah. Silakan coba lagi atau reset password.";
+                      errorMessage = "Email atau password salah. Silakan periksa kembali.";
                       break;
                   case "auth/invalid-email":
                       errorMessage = "Format email tidak valid";
                       break;
                   case "auth/user-disabled":
-                      errorMessage = "Akun dinonaktifkan";
+                      errorMessage = "Akun dinonaktifkan. Silakan hubungi administrator.";
                       break;
                   case "auth/too-many-requests":
-                      errorMessage = "Terlalu banyak percobaan gagal. Coba lagi nanti";
+                      errorMessage = "Terlalu banyak percobaan gagal. Silakan coba lagi nanti.";
                       break;
                   case "auth/network-request-failed":
-                      errorMessage = "Koneksi jaringan bermasalah. Periksa koneksi internet Anda. Jika menggunakan Firefox, coba nonaktifkan Enhanced Tracking Protection untuk situs ini.";
+                      errorMessage = "Koneksi jaringan bermasalah. Periksa koneksi internet Anda.";
+                      break;
+                  case "auth/operation-not-allowed":
+                      errorMessage = "Login dengan email dan password tidak diizinkan. Silakan hubungi administrator.";
                       break;
                   default:
-                      errorMessage = error.message;
+                      errorMessage = "Tidak dapat mengakses sistem. Silakan coba lagi atau hubungi administrator.";
               }
           }
 
@@ -605,7 +596,15 @@
         
       } catch (error) {
         console.error("Registration error:", error);
-        showError("Gagal membuat akun: " + error.message);
+        
+        let errorMessage = "Gagal membuat akun. Silakan coba lagi.";
+        if (error.code === "auth/email-already-in-use") {
+          errorMessage = "Email sudah terdaftar. Silakan gunakan email lain.";
+        } else if (error.code === "auth/weak-password") {
+          errorMessage = "Password terlalu lemah. Gunakan password yang lebih kuat.";
+        }
+        
+        showError(errorMessage);
       } finally {
         loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
         loginBtn.disabled = false;
@@ -632,7 +631,13 @@
           showSuccess("Email reset password telah dikirim. Periksa inbox Anda.");
       } catch (error) {
           console.error("Password reset error:", error);
-          showError("Terjadi kesalahan saat mengirim email reset password: " + error.message);
+          
+          let errorMessage = "Terjadi kesalahan saat mengirim email reset password.";
+          if (error.code === "auth/user-not-found") {
+            errorMessage = "Email tidak terdaftar dalam sistem.";
+          }
+          
+          showError(errorMessage);
       }
     }
 
@@ -674,6 +679,18 @@
       const theme = localStorage.getItem("theme") || "light";
       document.documentElement.setAttribute("data-theme", theme);
       themeToggle.querySelector("i").className = theme === "dark" ? "fas fa-sun" : "fas fa-moon";
+    }
+
+    function detectBrowser() {
+      const userAgent = navigator.userAgent;
+      let browserName = "Unknown Browser";
+      
+      if (userAgent.includes("Firefox")) browserName = "Mozilla Firefox";
+      else if (userAgent.includes("Chrome")) browserName = "Google Chrome";
+      else if (userAgent.includes("Safari")) browserName = "Safari";
+      else if (userAgent.includes("Edg")) browserName = "Microsoft Edge";
+      
+      browserInfo.textContent = `Browser: ${browserName}`;
     }
 
     // ========== EVENT LISTENERS ==========

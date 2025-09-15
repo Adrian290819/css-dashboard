@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Up Credit - Dashboard Admin CSS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="global.css">
+    <style>
+        /* ========== VARIABEL CSS YANG DIPERLUKAN ========== */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            --success-gradient: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);
+            --warning-gradient: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
+            --info-gradient: linear-gradient(135deg, #4895ef 0%, #3f37c9 100%);
+        }
+
+        /* ========== PERBAIKAN UTAMA UNTUK LAYOUT ========== */
+        .main-content {
+            padding: var(--space-lg);
+            background-color: var(--bg-secondary);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        /* ========== PERBAIKAN STATISTIC CARDS ========== */
+        .credit-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: var(--space-md);
+            margin-bottom: var(--space-xl);
+        }
+
+        .credit-stat-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .credit-stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .credit-stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-md);
+        }
+
+        .stat-title {
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        /* Perbaikan class untuk stat-icon agar sesuai dengan 6 kategori */
+.stat-icon.d-gaming {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: var(--info);
+}
+
+.stat-icon.gacha {
+    background-color: rgba(139, 92, 246, 0.1);
+    color: var(--purple);
+}
+
+.stat-icon.brem {
+    background-color: rgba(156, 163, 175, 0.1);
+    color: var(--text-secondary);
+}
+
+.stat-icon.cbwl {
+    background-color: rgba(74, 144, 226, 0.1);
+    color: var(--info);
+}
+
+.stat-icon.engine-89 {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+}
+
+.stat-icon.luxion {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+}
+
+        .stat-icon.custom {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: var(--font-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+            line-height: 1;
+        }
+
+        .stat-description {
+            font-size: var(--text-xs);
+            color: var(--text-secondary);
+        }
+
+        /* ========== TOP UP FORM ========== */
+        .topup-section {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            margin-bottom: var(--space-xl);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+            padding-bottom: var(--space-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section-title {
+            font-size: var(--text-xl);
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin: 0;
+        }
+
+        .topup-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-lg);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+        }
+
+        .form-group label {
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            color: var(--text-secondary);
+        }
+
+        .form-select, .form-input {
+            padding: var(--space-sm) var(--space-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            font-size: var(--text-sm);
+            transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+            height: 42px;
+        }
+
+        .form-select:focus, .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .form-actions {
+            grid-column: span 2;
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--space-sm);
+            margin-top: var(--space-md);
+        }
+
+        /* ========== MASTERAGENT FORM ========== */
+        .masteragent-section {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            margin-bottom: var(--space-xl);
+        }
+
+        .masteragent-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-lg);
+        }
+
+        /* ========== HISTORY SECTION ========== */
+        .history-section {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            margin-bottom: var(--space-xl);
+        }
+
+        .history-table-container {
+            overflow-x: auto;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+        }
+
+        .history-table {
+            margin: 0;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 600px;
+        }
+
+        .history-table th {
+            padding: var(--space-md) var(--space-lg);
+            background: var(--table-header-bg);
+            font-weight: var(--font-semibold);
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+            font-size: var(--text-xs);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            text-align: left;
+            position: sticky;
+            top: 0;
+        }
+
+        .history-table td {
+            padding: var(--space-md) var(--space-lg);
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: var(--text-sm);
+            vertical-align: middle;
+            line-height: 1.5;
+        }
+
+        .history-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .history-table tr:hover {
+            background-color: var(--hover-color);
+            transition: background-color var(--transition-fast);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--space-xl) var(--space-lg);
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 2px dashed var(--border-color);
+            margin: var(--space-lg) 0;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--text-tertiary);
+            margin-bottom: var(--space-md);
+        }
+
+        .empty-state h3 {
+            font-size: var(--text-lg);
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .empty-state p {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-lg);
+        }
+
+        /* ========== RESPONSIVE ADJUSTMENTS ========== */
+        @media (max-width: 768px) {
+            .topup-form,
+            .masteragent-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                grid-column: span 1;
+            }
+            
+            .credit-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .credit-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .credit-stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* ========== ANIMATIONS ========== */
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Toast notification styles */
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: var(--radius-md);
+            color: white;
+            z-index: var(--z-modal);
+            max-width: 300px;
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            transform: translateY(-30px);
+            pointer-events: none;
+            animation: toast-in 0.5s ease forwards;
+        }
+
+        @keyframes toast-in {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes toast-out {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+
+        .toast-notification.hide {
+            animation: toast-out 0.4s ease forwards;
+        }
+
+        .toast-notification.success {
+            background-color: var(--success);
+        }
+
+        .toast-notification.error {
+            background-color: var(--danger);
+        }
+
+        .toast-notification.info {
+            background-color: var(--info);
+        }
+
+        .toast-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: var(--z-modal);
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-normal);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            transform: translateY(20px);
+            transition: transform var(--transition-normal);
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: var(--space-lg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: var(--text-xl);
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm);
+            transition: background-color var(--transition-fast);
+        }
+
+        .modal-close:hover {
+            background-color: var(--hover-color);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: var(--space-lg);
+        }
+
+        .modal-footer {
+            padding: var(--space-lg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--space-sm);
+        }
+
+        /* Tab styles */
+        .tabs {
+            display: flex;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab {
+            padding: var(--space-sm) var(--space-lg);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all var(--transition-fast);
+            font-weight: var(--font-medium);
+            color: var(--text-secondary);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Container untuk sidebar yang akan dimuat oleh sidebar-loader.js -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1><i class="fas fa-coins"></i> Top Up Credit</h1>
+            <div class="header-actions">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Cari..." id="dashboardSearch">
+                </div>
+                
+                <div class="user-profile">
+                    <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
+                    <div class="user-info">
+                        <h4>Nama Masing Masing</h4>
+                        <p>Customer Service Support</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Credit Statistics Cards -->
+        <div class="credit-stats" id="creditStatsContainer">
+            <!-- Cards will be generated dynamically -->
+        </div>
+
+        <!-- Tabs for Masteragent and Regular Top Up -->
+        <div class="tabs">
+            <div class="tab active" data-tab="masteragent">Form Top Up Credit Masteragent</div>
+            <div class="tab" data-tab="regular">Form Top Up Credit Agent</div>
+        </div>
+
+        <!-- Masteragent Top Up Form Section -->
+        <div id="masteragentTab" class="tab-content active">
+            <div class="masteragent-section fade-in" style="animation-delay: 0.1s;">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-crown"></i> Form Top Up Credit Masteragent</h2>
+                </div>
+                
+                <form id="masteragentForm" class="masteragent-form">
+                    <div class="form-group">
+                        <label for="masteragentCategory">Kategori</label>
+                        <select id="masteragentCategory" class="form-control" required>
+                            <option value="">Select Category</option>
+                            <option value="D-GAMING">D-GAMING</option>
+                            <option value="GACHA">GACHA</option>
+                            <option value="BREM">BREM</option>
+                            <option value="CBWL">CBWL</option>
+                            <option value="89ENGINE">89ENGINE</option>
+                            <option value="LUXION">LUXION</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="masteragentCurrentCredit">Credit Saat Ini</label>
+                        <input type="text" id="masteragentCurrentCredit" class="form-input" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="masteragentCredit">Jumlah Top Up</label>
+                        <input type="number" id="masteragentCredit" class="form-input" placeholder="Masukkan jumlah top up" min="1" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="masteragentNewCredit">Credit Setelah Top Up</label>
+                        <input type="text" id="masteragentNewCredit" class="form-input" readonly>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="reset" class="btn btn-outline">Reset</button>
+                        <button type="submit" class="btn btn-primary">Proses Top Up</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Masteragent History Section -->
+            <div class="history-section fade-in" style="animation-delay: 0.3s;">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-history"></i> Riwayat Top Up Masteragent</h2>
+                    <div class="section-actions">
+                        <button class="btn btn-outline" id="refreshMasteragentHistory">
+                            <i class="fas fa-sync-alt"></i> Muat Ulang
+                        </button>
+                        <button class="btn btn-outline" id="clearMasteragentHistory">
+                            <i class="fas fa-trash"></i> Hapus Riwayat
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="history-table-container">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Kategori</th>
+                                <th>Jumlah Top Up</th>
+                                <th>Credit Sebelum</th>
+                                <th>Credit Sesudah</th>
+                            </tr>
+                        </thead>
+                        <tbody id="masteragentHistoryTableBody">
+                            <!-- Data history masteragent akan dimuat di sini -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="noMasteragentHistory" class="empty-state" style="display: none;">
+                    <i class="fas fa-history"></i>
+                    <h3>Tidak Ada Riwayat</h3>
+                    <p>Belum ada riwayat top up masteragent untuk ditampilkan.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Regular Top Up Form Section -->
+        <div id="regularTab" class="tab-content">
+            <div class="topup-section fade-in" style="animation-delay: 0.2s;">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Form Top Up Credit Agent</h2>
+                </div>
+                
+                <form id="topupForm" class="topup-form">
+                    <div class="form-group">
+                        <label for="brandSelect">Pilih Brand</label>
+                        <select id="brandSelect" class="form-select" required>
+                            <option value="">Select Brand</option>
+                            <!-- Options will be populated dynamically -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="currentCredit">Credit Saat Ini</label>
+                        <input type="text" id="currentCredit" class="form-input" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="topupAmount">Jumlah Top Up</label>
+                        <input type="number" id="topupAmount" class="form-input" placeholder="Masukkan jumlah top up" min="1" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newCredit">Credit Setelah Top Up</label>
+                        <input type="text" id="newCredit" class="form-input" readonly>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="reset" class="btn btn-outline">Reset</button>
+                        <button type="submit" class="btn btn-primary">Proses Top Up</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Regular History Section -->
+            <div class="history-section fade-in" style="animation-delay: 0.3s;">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-history"></i> Riwayat Top Up</h2>
+                    <div class="section-actions">
+                        <button class="btn btn-outline" id="refreshHistory">
+                            <i class="fas fa-sync-alt"></i> Muat Ulang
+                        </button>
+                        <button class="btn btn-outline" id="clearHistory">
+                            <i class="fas fa-trash"></i> Hapus Riwayat
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="history-table-container">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Brand</th>
+                                <th>Jumlah Top Up</th>
+                                <th>Credit Sebelum</th>
+                                <th>Credit Sesudah</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <!-- Data history akan dimuat di sini -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="noHistory" class="empty-state" style="display: none;">
+                    <i class="fas fa-history"></i>
+                    <h3>Tidak Ada Riwayat</h3>
+                    <p>Belum ada riwayat top up untuk ditampilkan.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toastNotification" class="toast-notification" style="display: none;">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="toastMessage"></span>
+        </div>
+    </div>
+
+    <script src="sidebar-loader.js"></script>
+    <script src="user-profile.js"></script>
+   <script>
+    // Data default untuk brand - HANYA SATU DEFINISI INI YANG DIGUNAKAN
+    const defaultBrands = {
+        "D-GAMING": {
+            credit: 2167067148,
+            brands: [
+                "CINTAWIN88 (D-GAMING)",
+                "CERIASLOT99 (D-GAMING)",
+                "RAJASCATTER88 (D-GAMING)",
+                "MAHJONGJP88 (D-GAMING)",
+                "NAGAHOKI88 (D-GAMING)",
+                "SPACEMAN88 (D-GAMING)",
+                "RAJAPANEN (D-GAMING)",
+                "BROTO88 (D-GAMING)"
+            ]
+        },
+        "GACHA": {
+            credit: 5004281403,
+            brands: [
+                "MEDUSA88 (GACHA)",
+                "ATHENA168 (GACHA)",
+                "ARES GACOR (GACHA)",
+                "RAJA MAHJONG (GACHA)",
+                "OLYMPUS1000 (GACHA)",
+                "GACHA99 (GACHA)"
+            ]
+        },
+        "BREM": {
+            credit: 155000000,
+            brands: [
+                "UJANGBET (BREM)",
+                "EPISODEBET (BREM)"
+            ]
+        },
+        "CBWL": {
+            credit: 155000000,
+            brands: [
+                "CBWL (CBWL)",
+            ]
+        },
+        "89ENGINE": {
+            credit: 500000000,
+            brands: [
+                "FOKUSBET88 (89ENGINE)",
+                "RAJAKING88 (89ENGINE)",
+                "RAJANAGA99 (89ENGINE)"
+            ]
+        },
+        "LUXION": {
+            credit: 100000000,
+            brands: [
+                "JOIN999 (LUXION)"
+            ]
+        }
+    };
+
+    // Data koin untuk setiap kategori brand
+    let creditData = JSON.parse(localStorage.getItem('creditData')) || defaultBrands;
+    
+    // Data history top up
+    let topupHistory = JSON.parse(localStorage.getItem('topupHistory')) || [];
+    
+    // Data history top up masteragent
+    let masteragentHistory = JSON.parse(localStorage.getItem('masteragentHistory')) || [];
+
+    // ... (sisa kode JavaScript tetap sama)
+    // Format angka dengan pemisah ribuan
+    function formatNumber(num) {
+        return new Intl.NumberFormat('id-ID').format(num);
+    }
+
+    // Parse angka dari format dengan pemisah
+    function parseFormattedNumber(formattedNum) {
+        return parseInt(formattedNum.replace(/\./g, ''), 10);
+    }
+
+    // Tampilkan notifikasi toast
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('toastNotification');
+        const toastMessage = document.getElementById('toastMessage');
+        
+        toast.className = `toast-notification ${type}`;
+        toastMessage.textContent = message;
+        toast.style.display = 'block';
+        
+        setTimeout(() => {
+            toast.classList.add('hide');
+            setTimeout(() => {
+                toast.style.display = 'none';
+                toast.classList.remove('hide');
+            }, 400);
+        }, 3000);
+    }
+
+    // Update tampilan credit stats cards
+    function updateCreditStats() {
+        const container = document.getElementById('creditStatsContainer');
+        if (!container) return;
+        
+        let html = '';
+        
+        // Add all category cards (6 brand)
+        const categories = Object.keys(creditData);
+        console.log("Render categories:", categories);
+
+        
+        categories.forEach(category => {
+            if (creditData[category]) {
+                // Tentukan class icon berdasarkan kategori
+                let iconClass = category.toLowerCase();
+                if (iconClass === '89engine') iconClass = 'engine-89';
+                
+                html += `
+                    <div class="credit-stat-card fade-in">
+                        <div class="stat-header">
+                            <h3 class="stat-title">${category} Credit</h3>
+                            <div class="stat-icon ${iconClass}">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value">${formatNumber(creditData[category].credit)}</div>
+                        <div class="stat-description">Available Credit</div>
+                    </div>
+                `;
+            }
+        });
+        
+        container.innerHTML = html;
+    }
+
+    // Update dropdown pilihan brand
+    function updateBrandDropdown() {
+        const brandSelect = document.getElementById('brandSelect');
+        if (!brandSelect) return;
+        
+        let html = '<option value="">Select Brand</option>';
+        
+        // Add all brands from the 6 categories
+        for (const [category, data] of Object.entries(creditData)) {
+            data.brands.forEach(brand => {
+                html += `<option value="${brand}" data-category="${category}">${brand}</option>`;
+            });
+        }
+        
+        brandSelect.innerHTML = html;
+    }
+
+    // Update nilai credit saat kategori masteragent dipilih
+    document.getElementById('masteragentCategory').addEventListener('change', function() {
+        const category = this.value;
+        const currentCreditInput = document.getElementById('masteragentCurrentCredit');
+        const topupAmountInput = document.getElementById('masteragentCredit');
+        const newCreditInput = document.getElementById('masteragentNewCredit');
+        
+        if (category && creditData[category]) {
+            currentCreditInput.value = formatNumber(creditData[category].credit);
+            topupAmountInput.value = '';
+            newCreditInput.value = formatNumber(creditData[category].credit);
+        } else {
+            currentCreditInput.value = '';
+            topupAmountInput.value = '';
+            newCreditInput.value = '';
+        }
+    });
+
+    // Hitung credit baru saat jumlah top up masteragent diinput
+    document.getElementById('masteragentCredit').addEventListener('input', function() {
+        const categorySelect = document.getElementById('masteragentCategory');
+        const currentCreditInput = document.getElementById('masteragentCurrentCredit');
+        const newCreditInput = document.getElementById('masteragentNewCredit');
+        
+        if (categorySelect.value && currentCreditInput.value) {
+            const currentCredit = parseFormattedNumber(currentCreditInput.value);
+            const topupAmount = parseInt(this.value) || 0;
+            
+            const newCredit = currentCredit + topupAmount;
+            newCreditInput.value = formatNumber(newCredit);
+            newCreditInput.style.color = "var(--text-primary)";
+        }
+    });
+
+    // Update nilai credit saat brand dipilih
+    document.getElementById('brandSelect').addEventListener('change', function() {
+        const brand = this.value;
+        const category = this.options[this.selectedIndex]?.dataset.category;
+        const currentCreditInput = document.getElementById('currentCredit');
+        const topupAmountInput = document.getElementById('topupAmount');
+        const newCreditInput = document.getElementById('newCredit');
+        
+        if (brand && category && creditData[category]) {
+            currentCreditInput.value = formatNumber(creditData[category].credit);
+            topupAmountInput.value = '';
+            newCreditInput.value = formatNumber(creditData[category].credit);
+            newCreditInput.style.color = "var(--text-primary)";
+        } else {
+            currentCreditInput.value = '';
+            topupAmountInput.value = '';
+            newCreditInput.value = '';
+        }
+    });
+
+    // Hitung credit baru saat jumlah top up diinput
+    document.getElementById('topupAmount').addEventListener('input', function() {
+        const brandSelect = document.getElementById('brandSelect');
+        const category = brandSelect.options[brandSelect.selectedIndex]?.dataset.category;
+        const currentCreditInput = document.getElementById('currentCredit');
+        const newCreditInput = document.getElementById('newCredit');
+        
+        if (brandSelect.value && currentCreditInput.value && category) {
+            const currentCredit = parseFormattedNumber(currentCreditInput.value);
+            const topupAmount = parseInt(this.value) || 0;
+            
+            if (topupAmount > currentCredit) {
+                newCreditInput.value = "Credit tidak mencukupi!";
+                newCreditInput.style.color = "var(--danger)";
+            } else {
+                const newCredit = currentCredit - topupAmount;
+                newCreditInput.value = formatNumber(newCredit);
+                newCreditInput.style.color = "var(--text-primary)";
+            }
+        }
+    });
+
+    // Update history table
+    function updateHistoryTable() {
+        const historyTableBody = document.getElementById('historyTableBody');
+        const noHistory = document.getElementById('noHistory');
+        
+        if (topupHistory.length === 0) {
+            if (noHistory) noHistory.style.display = 'block';
+            if (historyTableBody) historyTableBody.innerHTML = '';
+            return;
+        }
+        
+        if (noHistory) noHistory.style.display = 'none';
+        
+        // Urutkan history dari yang terbaru
+        const sortedHistory = [...topupHistory].reverse();
+        
+        // Render history table
+        if (historyTableBody) {
+            historyTableBody.innerHTML = sortedHistory.map(history => `
+                <tr>
+                    <td>${history.date}</td>
+                    <td>${history.brand}</td>
+                    <td>${formatNumber(history.amount)}</td>
+                    <td>${formatNumber(history.before)}</td>
+                    <td>${formatNumber(history.after)}</td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    // Update masteragent history table
+    function updateMasteragentHistoryTable() {
+        const historyTableBody = document.getElementById('masteragentHistoryTableBody');
+        const noHistory = document.getElementById('noMasteragentHistory');
+        
+        if (masteragentHistory.length === 0) {
+            if (noHistory) noHistory.style.display = 'block';
+            if (historyTableBody) historyTableBody.innerHTML = '';
+            return;
+        }
+        
+        if (noHistory) noHistory.style.display = 'none';
+        
+        // Urutkan history dari yang terbaru
+        const sortedHistory = [...masteragentHistory].reverse();
+        
+        // Render history table
+        if (historyTableBody) {
+            historyTableBody.innerHTML = sortedHistory.map(history => `
+                <tr>
+                    <td>${history.date}</td>
+                    <td>${history.category}</td>
+                    <td>${formatNumber(history.amount)}</td>
+                    <td>${formatNumber(history.before)}</td>
+                    <td>${formatNumber(history.after)}</td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    // Proses form masteragent top up
+    document.getElementById('masteragentForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const category = document.getElementById('masteragentCategory').value;
+        const credit = parseInt(document.getElementById('masteragentCredit').value);
+        
+        if (!category || isNaN(credit) || credit <= 0) {
+            showToast('Semua field harus diisi dengan benar', 'error');
+            return;
+        }
+        
+        // Tambahkan credit ke kategori yang dipilih
+        if (creditData[category]) {
+            const currentCredit = creditData[category].credit;
+            creditData[category].credit += credit;
+            localStorage.setItem('creditData', JSON.stringify(creditData));
+            
+            // Tambahkan ke history masteragent
+            const historyEntry = {
+                date: new Date().toLocaleString('id-ID'),
+                category: category,
+                amount: credit,
+                before: currentCredit,
+                after: currentCredit + credit
+            };
+            
+            masteragentHistory.push(historyEntry);
+            localStorage.setItem('masteragentHistory', JSON.stringify(masteragentHistory));
+            
+            // Update UI
+            updateCreditStats();
+            updateMasteragentHistoryTable();
+            
+            // Reset form
+            this.reset();
+            document.getElementById('masteragentCurrentCredit').value = '';
+            document.getElementById('masteragentNewCredit').value = '';
+            
+            showToast(`Top up masteragent berhasil! ${formatNumber(credit)} credit ditambahkan ke kategori ${category}`);
+        } else {
+            showToast('Kategori tidak valid', 'error');
+        }
+    });
+
+    // Proses form top up
+    document.getElementById('topupForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const brandSelect = document.getElementById('brandSelect');
+        const brand = brandSelect.value;
+        const category = brandSelect.options[brandSelect.selectedIndex]?.dataset.category;
+        const amount = parseInt(document.getElementById('topupAmount').value);
+        
+        if (!brand || !category || isNaN(amount) || amount <= 0) {
+            showToast('Semua field harus diisi dengan benar', 'error');
+            return;
+        }
+        
+        // Kurangi credit dari kategori yang dipilih
+        if (creditData[category].credit >= amount) {
+            const currentCredit = creditData[category].credit;
+            creditData[category].credit -= amount;
+            localStorage.setItem('creditData', JSON.stringify(creditData));
+            
+            // Tambahkan ke history
+            const historyEntry = {
+                date: new Date().toLocaleString('id-ID'),
+                brand: brand,
+                amount: amount,
+                before: currentCredit,
+                after: currentCredit - amount
+            };
+            
+            topupHistory.push(historyEntry);
+            localStorage.setItem('topupHistory', JSON.stringify(topupHistory));
+            
+            // Update UI
+            updateCreditStats();
+            updateHistoryTable();
+            
+            // Reset form
+            this.reset();
+            document.getElementById('currentCredit').value = '';
+            document.getElementById('newCredit').value = '';
+            
+            showToast(`Top up berhasil! ${formatNumber(amount)} credit dikurangi dari ${brand}`);
+        } else {
+            showToast('Credit tidak mencukupi untuk melakukan top up', 'error');
+        }
+    });
+
+    // Refresh history
+    document.getElementById('refreshHistory')?.addEventListener('click', function() {
+        updateHistoryTable();
+        showToast('Riwayat diperbarui', 'info');
+    });
+
+    // Clear history
+    document.getElementById('clearHistory')?.addEventListener('click', function() {
+        if (confirm('Apakah Anda yakin ingin menghapus semua riwayat top up?')) {
+            topupHistory = [];
+            localStorage.setItem('topupHistory', JSON.stringify(topupHistory));
+            updateHistoryTable();
+            showToast('Riwayat berhasil dihapus', 'info');
+        }
+    });
+
+    // Refresh masteragent history
+    document.getElementById('refreshMasteragentHistory')?.addEventListener('click', function() {
+        updateMasteragentHistoryTable();
+        showToast('Riwayat masteragent diperbarui', 'info');
+    });
+
+    // Clear masteragent history
+    document.getElementById('clearMasteragentHistory')?.addEventListener('click', function() {
+        if (confirm('Apakah Anda yakin ingin menghapus semua riwayat top up masteragent?')) {
+            masteragentHistory = [];
+            localStorage.setItem('masteragentHistory', JSON.stringify(masteragentHistory));
+            updateMasteragentHistoryTable();
+            showToast('Riwayat masteragent berhasil dihapus', 'info');
+        }
+    });
+
+    // Tab functionality
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            const tabId = this.getAttribute('data-tab');
+            
+            // Update active tab
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Show active content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(`${tabId}Tab`).classList.add('active');
+        });
+    });
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCreditStats();
+        updateBrandDropdown();
+        updateHistoryTable();
+        updateMasteragentHistoryTable();
+    });
+
+    // Fungsi untuk menampilkan modal edit credit
+    function showEditCreditModal() {
+        const modal = document.getElementById('editCreditModal');
+        const container = document.getElementById('editCreditContainer');
+        
+        // Kosongkan container terlebih dahulu
+        container.innerHTML = '';
+        
+        // Buat form input untuk setiap kategori
+        for (const [category, data] of Object.entries(creditData)) {
+            const div = document.createElement('div');
+            div.className = 'form-group';
+            
+            div.innerHTML = `
+                <label for="edit-${category}">${category} Credit</label>
+                <input type="number" id="edit-${category}" class="form-input" 
+                       value="${data.credit}" min="0">
+            `;
+            
+            container.appendChild(div);
+        }
+        
+        // Tampilkan modal
+        modal.classList.add('active');
+    }
+
+    // Fungsi untuk menyimpan perubahan credit
+    function saveCreditChanges() {
+        for (const [category, data] of Object.entries(creditData)) {
+            const input = document.getElementById(`edit-${category}`);
+            if (input) {
+                const newValue = parseInt(input.value) || 0;
+                if (newValue >= 0) {
+                    creditData[category].credit = newValue;
+                }
+            }
+        }
+        
+        // Simpan ke localStorage
+        localStorage.setItem('creditData', JSON.stringify(creditData));
+        
+        // Update UI
+        updateCreditStats();
+        updateBrandDropdown();
+        
+        // Tutup modal
+        document.getElementById('editCreditModal').classList.remove('active');
+        
+        showToast('Nominal credit berhasil diperbarui');
+    }
+
+    // Tambahkan event listener setelah DOM selesai dimuat
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tambahkan tombol Edit Credit di header
+        const header = document.querySelector('.header');
+        if (header) {
+            const editButton = document.createElement('button');
+            editButton.className = 'btn btn-outline';
+            editButton.innerHTML = '<i class="fas fa-edit"></i> Edit Credit';
+            editButton.style.marginRight = '10px';
+            editButton.onclick = showEditCreditModal;
+            
+            // Sisipkan tombol sebelum user profile
+            const headerActions = document.querySelector('.header-actions');
+            if (headerActions) {
+                headerActions.insertBefore(editButton, headerActions.firstChild);
+            }
+        }
+        
+        // Buat modal untuk edit credit
+        const modalHTML = `
+            <div id="editCreditModal" class="modal-overlay">
+                <div class="modal">
+                    <div class="modal-header">
+                        <h3 class="modal-title"><i class="fas fa-edit"></i> Edit Nominal Credit</h3>
+                        <button class="modal-close" onclick="document.getElementById('editCreditModal').classList.remove('active')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="editCreditContainer"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="document.getElementById('editCreditModal').classList.remove('active')">
+                            Batal
+                        </button>
+                        <button class="btn btn-primary" onclick="saveCreditChanges()">
+                            Simpan Perubahan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Tambahkan modal ke body
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+    });
+</script>
+</body>
+</html>

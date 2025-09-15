@@ -3,19 +3,17 @@ class SidebarLoader {
     constructor() {
         this.sidebarContainer = document.getElementById('sidebar-container');
         this.sidebarHTML = `
-            <!-- Overlay untuk mobile -->
+           <!-- Overlay untuk mobile -->
             <div class="sidebar-overlay"></div>
             
             <!-- Sidebar -->
             <div class="sidebar">
-  <div class="sidebar-header">
-    <div class="logo-container">
-      <!-- Ganti icon dengan gambar -->
-      <img src="https://iili.io/KfDh0EN.png" alt="Logo" class="logo-image" />
-      <h2 class="logo-text">CSS Dashboard</h2>
-    </div>
-  </div>
-
+                <div class="sidebar-header">
+                    <div class="logo-container">
+                        <img src="https://iili.io/KfDh0EN.png" alt="Logo" class="logo-image" />
+                        <h2 class="logo-text">CSS Dashboard</h2>
+                    </div>
+                </div>
                 
                 <div class="sidebar-menu">
                     <div class="menu-item" data-page="index.html">
@@ -24,7 +22,8 @@ class SidebarLoader {
                         </div>
                         <span class="menu-text">Dashboard Overview</span>
                     </div>
-                 <div class="menu-category">Reports</div>
+                    
+                    <div class="menu-category">Reports</div>
                     <div class="menu-item has-submenu">
                         <div class="menu-icon">
                             <i class="fas fa-chart-line"></i>
@@ -99,80 +98,86 @@ class SidebarLoader {
                     </div>
                     
                     <div class="menu-category">Performance</div>
-<div class="menu-item has-submenu">
-    <div class="menu-icon">
-        <i class="fas fa-trophy"></i>  <!-- Icon Trophy for Performance -->
-    </div>
-    <span class="menu-text">KPI Points</span>
-    <div class="submenu-indicator">
-        <i class="fas fa-chevron-right"></i>  <!-- Down arrow for expanding submenu -->
-    </div>
-</div>
-<div class="submenu">
-    <div class="menu-item" data-page="kpi-css.html">
-        <div class="menu-icon">
-            <i class="fas fa-cogs"></i>  <!-- Gear icon for KPI CSS -->
-        </div>
-        <span class="menu-text">KPI CSS</span>
-    </div>
-    <div class="menu-item" data-page="ide-saran.html">
-        <div class="menu-icon">
-            <i class="fas fa-lightbulb"></i>  <!-- Lightbulb icon for Ideas & Suggestions -->
-        </div>
-        <span class="menu-text">Ideas & Suggestions</span>
-    </div>
-    <div class="menu-item" data-page="research.html">
-        <div class="menu-icon">
-            <i class="fas fa-chart-line"></i>  <!-- Line chart icon for Research -->
-        </div>
-        <span class="menu-text">Research</span>
-    </div>
-    <div class="menu-item" data-page="chat-response.html">
-        <div class="menu-icon">
-            <i class="fas fa-comments"></i>  <!-- Chat bubble icon for Chat Response -->
-        </div>
-        <span class="menu-text">Chat Response</span>
-    </div>
-</div>               
-<div class="menu-category">Daily</div>
+                    <div class="menu-item has-submenu">
+                        <div class="menu-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <span class="menu-text">KPI Points</span>
+                        <div class="submenu-indicator">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    <div class="submenu">
+                        <div class="menu-item" data-page="kpi-css.html">
+                            <div class="menu-icon">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <span class="menu-text">KPI CSS</span>
+                        </div>
+                        <div class="menu-item" data-page="ide-saran.html">
+                            <div class="menu-icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <span class="menu-text">Ideas & Suggestions</span>
+                        </div>
+                        <div class="menu-item" data-page="research.html">
+                            <div class="menu-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <span class="menu-text">Research</span>
+                        </div>
+                        <div class="menu-item" data-page="chat-response.html">
+                            <div class="menu-icon">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <span class="menu-text">Chat Response</span>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-category">Daily</div>
+                    <div class="menu-item has-submenu">
+                        <div class="menu-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <span class="menu-text">Daily Routine</span>
+                        <div class="submenu-indicator">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    <div class="submenu">
+                        <div class="menu-item" data-page="daily-tasks.html">
+                            <div class="menu-icon">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <span class="menu-text">Daily Tasks</span>
+                        </div>
+                        <div class="menu-item" data-page="task-history.html">
+                            <div class="menu-icon">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <span class="menu-text">Task History</span>
+                        </div>
+                    </div>
 
-<div class="menu-item has-submenu">
-    <div class="menu-icon">
-        <i class="fas fa-clock"></i>  <!-- Icon Clock for Daily Routine -->
-    </div>
-    <span class="menu-text">Daily Routine</span>
-    <div class="submenu-indicator">
-        <i class="fas fa-chevron-right"></i>  <!-- Down arrow for expanding submenu -->
-    </div>
-</div>
-
-<div class="submenu">
-    <div class="menu-item" data-page="daily-tasks.html">
-        <div class="menu-icon">
-            <i class="fas fa-tasks"></i>  <!-- Icon Tasks for Daily Tasks -->
-        </div>
-        <span class="menu-text">Daily Tasks</span>
-    </div>
-    <div class="menu-item" data-page="task-history.html">
-        <div class="menu-icon">
-            <i class="fas fa-clipboard-list"></i>  <!-- Icon Clipboard List for Task History -->
-        </div>
-        <span class="menu-text">Task History</span>
-    </div>
-</div>
+                        <div class="menu-item" data-page="topup-credit.html">
+                        <div class="menu-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <span class="menu-text">Top Up Credit</span>
+                    </div>  
 
 
+<div class="menu-item" data-page="eventprovider.html">
+                        <div class="menu-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <span class="menu-text">Event Provider</span>
+                    </div>
                     <div class="menu-item" data-page="weekly-meeting.html">
                         <div class="menu-icon">
                             <i class="fas fa-users"></i>
                         </div>
                         <span class="menu-text">Weekly Meetings</span>
-                    </div>
-                    <div class="menu-item" data-page="jadwalshift.html">
-                        <div class="menu-icon">
-                            <i class="fas fa-calendar-alt"></i>
-                        </div>
-                        <span class="menu-text">Shift Schedule</span>
                     </div>
                     
                     <div class="menu-item" data-page="pengaturan.html">
@@ -180,7 +185,7 @@ class SidebarLoader {
                             <i class="fas fa-cog"></i>
                         </div>
                         <span class="menu-text">Setting</span>
-                    </div>
+                    </div>  
                     <div class="menu-item" data-page="phishing.html">
                         <div class="menu-icon">
                             <i class="fas fa-shield-alt"></i>
@@ -194,12 +199,10 @@ class SidebarLoader {
                         </div>
                         <span class="menu-text">Logout</span>
                     </div>
-
                 </div>
             </div>
         `;
         
-        // CSS untuk sidebar
         this.injectStyles();
     }
 
@@ -232,6 +235,13 @@ class SidebarLoader {
                 --bg-color: #121212;
                 --sidebar-bg: #1e1e1e;
                 --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            }
+
+            /* Terapkan variabel ke elemen body */
+            body {
+                background-color: var(--bg-color);
+                color: var(--text-color);
+                transition: background-color var(--transition-speed), color var(--transition-speed);
             }
 
             /* CSS untuk menu toggle */
@@ -279,11 +289,12 @@ class SidebarLoader {
                 gap: 12px;
             }
 
-            .logo-icon {
-                font-size: 24px;
-                color: var(--primary-color);
+            .logo-image {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                object-fit: cover;
             }
-                
 
             .logo-text {
                 font-size: 18px;
@@ -394,9 +405,10 @@ class SidebarLoader {
                 background-color: rgba(231, 76, 60, 0.1);
             }
 
+            /* Theme Toggle Styles */
             .theme-toggle-container {
-                margin-top: 20px;
-                padding: 15px;
+                margin-top: auto;
+                padding: 15px 0;
                 border-top: 1px solid rgba(0, 0, 0, 0.1);
             }
 
@@ -405,7 +417,7 @@ class SidebarLoader {
                 align-items: center;
                 width: 100%;
                 padding: 12px 15px;
-                background: rgba(0, 0, 0, 0.05);
+                background: transparent;
                 border: none;
                 border-radius: var(--border-radius);
                 color: var(--text-color);
@@ -414,17 +426,7 @@ class SidebarLoader {
             }
 
             .theme-toggle:hover {
-                background: rgba(0, 0, 0, 0.1);
-            }
-
-            .theme-toggle i {
-                margin-right: 15px;
-                font-size: 16px;
-            }
-
-            .theme-text {
-                font-size: 14px;
-                font-weight: 500;
+                background: rgba(0, 0, 0, 0.05);
             }
 
             /* Overlay untuk menutup sidebar saat diklik di luar */
@@ -442,13 +444,15 @@ class SidebarLoader {
             .sidebar-overlay.active {
                 display: block;
             }
-.logo-image {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%; /* agar berbentuk lingkaran */
-  object-fit: cover;
-  margin-right: 10px;
-}
+
+            .logo-image {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                object-fit: cover;
+                margin-right: 10px;
+            }
+
             /* Tampilkan menu toggle hanya di mobile */
             @media (max-width: 768px) {
                 .menu-toggle {
@@ -478,6 +482,7 @@ class SidebarLoader {
             this.initializeSidebarFunctionality();
             this.restoreSidebarState();
             this.setActiveMenuItem();
+            this.loadTheme(); // Load theme yang disimpan
         }
     }
 
@@ -509,7 +514,7 @@ class SidebarLoader {
                 });
             });
         }
-        
+
         // Handle window resize
         window.addEventListener('resize', () => {
             if (window.innerWidth > 768) {
@@ -520,14 +525,14 @@ class SidebarLoader {
             }
         });
 
-        // Submenu toggle - tanpa animasi
+        // Submenu toggle
         const hasSubmenuItems = document.querySelectorAll('.has-submenu');
         hasSubmenuItems.forEach((item, index) => {
             item.addEventListener('click', (e) => {
                 if (e.target.classList.contains('submenu-toggle')) return;
                 const submenu = item.nextElementSibling;
                 
-                // Toggle tanpa animasi
+                // Toggle submenu
                 if (submenu.classList.contains('active')) {
                     submenu.classList.remove('active');
                     submenu.style.maxHeight = '0';
@@ -557,29 +562,33 @@ class SidebarLoader {
             });
         });
 
-        // Theme toggle
+        // Theme toggle functionality
         const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
             themeToggle.addEventListener('click', () => this.toggleTheme());
         }
-
-        this.loadTheme();
     }
 
     toggleTheme() {
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
         const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        
+        // Terapkan theme baru
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
+        
+        // Update icon dan teks
         this.updateThemeIcon(newTheme);
     }
 
     updateThemeIcon(theme) {
-        const themeIcon = document.getElementById('themeToggle')?.querySelector('i');
-        const themeText = document.querySelector('.theme-text');
+        const themeIcon = document.querySelector('#themeToggle .menu-icon i');
+        const themeText = document.querySelector('#themeToggle .menu-text');
+        
         if (themeIcon) {
             themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
         }
+        
         if (themeText) {
             themeText.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
         }
@@ -594,15 +603,18 @@ class SidebarLoader {
     setActiveMenuItem() {
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
         const menuItems = document.querySelectorAll('.menu-item[data-page]');
-        menuItems.forEach(item => item.classList.remove('active'));
+        
         menuItems.forEach(item => {
             const pageUrl = item.getAttribute('data-page');
             if (pageUrl === currentPage) {
                 item.classList.add('active');
+                
+                // Aktifkan parent submenu jika ada
                 const parentSubmenu = item.closest('.submenu');
                 if (parentSubmenu) {
                     parentSubmenu.classList.add('active');
                     parentSubmenu.style.maxHeight = '500px';
+                    
                     const parentMenuItem = parentSubmenu.previousElementSibling;
                     if (parentMenuItem && parentMenuItem.classList.contains('has-submenu')) {
                         parentMenuItem.classList.add('active');
@@ -638,8 +650,15 @@ class SidebarLoader {
     }
 }
 
-// Inisialisasi
-document.addEventListener('DOMContentLoaded', () => {
+// Fungsi global untuk memuat sidebar
+function loadSidebar() {
     const sidebarLoader = new SidebarLoader();
     sidebarLoader.load();
-});
+}
+
+// Inisialisasi otomatis saat DOM siap
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadSidebar);
+} else {
+    loadSidebar();
+}

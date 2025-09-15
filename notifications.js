@@ -1,90 +1,145 @@
 // notifications-integration.js
 
-// Fungsi untuk menginisialisasi integrasi notifikasi dengan semua menu
+// ====== Definisi tipe notifikasi dan fungsi notifikasi ======
+const NOTIFICATION_TYPES = {
+    INFO: 'info',
+    SUCCESS: 'success',
+    WARNING: 'warning',
+    ERROR: 'error'
+};
+
+function showNotification(message, type = NOTIFICATION_TYPES.INFO) {
+    // Membuat elemen notifikasi
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+
+    // Styling dasar untuk notifikasi
+    notification.style.position = 'fixed';
+    notification.style.top = '10px';
+    notification.style.right = '10px';
+    notification.style.padding = '12px 20px';
+    notification.style.borderRadius = '5px';
+    notification.style.color = '#fff';
+    notification.style.fontFamily = 'Arial, sans-serif';
+    notification.style.fontSize = '14px';
+    notification.style.zIndex = 10000;
+    notification.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
+    notification.style.opacity = '0';
+    notification.style.transition = 'opacity 0.3s ease';
+
+    // Warna berdasarkan tipe notifikasi
+    switch(type) {
+        case NOTIFICATION_TYPES.SUCCESS:
+            notification.style.backgroundColor = '#28a745';
+            break;
+        case NOTIFICATION_TYPES.WARNING:
+            notification.style.backgroundColor = '#ffc107';
+            notification.style.color = '#333';
+            break;
+        case NOTIFICATION_TYPES.ERROR:
+            notification.style.backgroundColor = '#dc3545';
+            break;
+        default: // info dan default
+            notification.style.backgroundColor = '#007bff';
+    }
+
+    document.body.appendChild(notification);
+
+    // Tampilkan dengan animasi
+    setTimeout(() => {
+        notification.style.opacity = '1';
+    }, 10);
+
+    // Hilangkan notifikasi setelah 3 detik
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }, 3000);
+
+    return notification;
+}
+
+// Wrapper fungsi notifikasi
+function notifyInfo(msg) {
+    return showNotification(msg, NOTIFICATION_TYPES.INFO);
+}
+
+function notifySuccess(msg) {
+    return showNotification(msg, NOTIFICATION_TYPES.SUCCESS);
+}
+
+function notifyWarning(msg) {
+    return showNotification(msg, NOTIFICATION_TYPES.WARNING);
+}
+
+function notifyError(msg) {
+    return showNotification(msg, NOTIFICATION_TYPES.ERROR);
+}
+
+// ====== Fungsi utama integrasi notifikasi ======
+
 function initializeNotificationIntegration() {
     console.log('Menginisialisasi integrasi notifikasi...');
     
-    // 1. Integrasi dengan menu navigasi
     integrateWithNavigation();
-    
-    // 2. Integrasi dengan form
     integrateWithForms();
-    
-    // 3. Integrasi dengan tombol aksi
     integrateWithButtons();
-    
-    // 4. Integrasi dengan AJAX/Fetch operations
     integrateWithAjax();
-    
-    // 5. Membuat event global untuk notifikasi
     createGlobalNotificationEvent();
-    
-    // 6. Menghubungkan dengan state perubahan halaman (jika menggunakan SPA)
     integrateWithPageState();
     
     console.log('Integrasi notifikasi selesai.');
 }
 
-// 1. INTEGRASI DENGAN MENU NAVIGASI
+// 1. Integrasi dengan menu navigasi
 function integrateWithNavigation() {
-    // Menghubungkan notifikasi ke menu navigasi utama
     const navMenuItems = document.querySelectorAll('nav a, .menu-item, [role="menuitem"]');
     
     navMenuItems.forEach(menuItem => {
-        // Menyimpan teks asli untuk notifikasi
         if (!menuItem.dataset.originalText) {
             menuItem.dataset.originalText = menuItem.textContent.trim();
         }
         
-        // Menambahkan event listener untuk klik
         menuItem.addEventListener('click', function(e) {
             const menuText = this.dataset.originalText;
             const isExternal = this.hostname !== window.location.hostname;
             const isHashLink = this.getAttribute('href')?.startsWith('#');
             
-            // Jangan tampilkan notifikasi untuk link external atau hash links
             if (!isExternal && !isHashLink) {
                 notifyInfo(`Membuka: ${menuText}`);
             }
             
-            // Untuk demo, kita preventDefault agar tidak navigasi sesungguhnya
-            // Di production, hapus baris berikut
             if (!this.getAttribute('href') || this.getAttribute('href') === '#') {
                 e.preventDefault();
                 notifyInfo(`Menu "${menuText}" diklik`);
             }
-        });
-        
-        // Menambahkan event listener untuk hover (opsional)
-        menuItem.addEventListener('mouseenter', function() {
-            // Bisa digunakan untuk preview notifikasi atau tooltip
         });
     });
     
     console.log(`Terintegrasi dengan ${navMenuItems.length} menu navigasi`);
 }
 
-// 2. INTEGRASI DENGAN FORM
+// 2. Integrasi dengan form
 function integrateWithForms() {
     const allForms = document.querySelectorAll('form');
     
     allForms.forEach(form => {
-        // Menambahkan event listener untuk submit
         form.addEventListener('submit', function(e) {
-            // Validasi form
             const isValid = validateForm(this);
-            
             if (!isValid) {
                 e.preventDefault();
                 return false;
             }
             
-            // Tampilkan notifikasi
             const formName = this.getAttribute('name') || this.getAttribute('id') || 'Form';
             notifyInfo(`Memproses ${formName}...`);
         });
         
-        // Notifikasi untuk field changes (opsional)
         const importantFields = form.querySelectorAll('input[required], select[required], textarea[required]');
         importantFields.forEach(field => {
             field.addEventListener('blur', function() {
@@ -98,7 +153,7 @@ function integrateWithForms() {
     console.log(`Terintegrasi dengan ${allForms.length} form`);
 }
 
-// Fungsi validasi form
+// Validasi form
 function validateForm(form) {
     let isValid = true;
     let firstErrorField = null;
@@ -109,10 +164,7 @@ function validateForm(form) {
             if (!firstErrorField) {
                 firstErrorField = field;
             }
-            // Highlight field error
             field.style.borderColor = '#dc3545';
-            
-            // Tambahkan event untuk menghilangkan highlight ketika diperbaiki
             field.addEventListener('input', function() {
                 if (this.value.trim()) {
                     this.style.borderColor = '';
@@ -123,46 +175,37 @@ function validateForm(form) {
     
     if (!isValid) {
         notifyError('Harap isi semua field yang diperlukan');
-        if (firstErrorField) {
-            firstErrorField.focus();
-        }
+        if (firstErrorField) firstErrorField.focus();
     }
     
     return isValid;
 }
 
-// 3. INTEGRASI DENGAN TOMBOL AKSI
+// 3. Integrasi dengan tombol aksi
 function integrateWithButtons() {
-    // Tombol dengan class tertentu
     const actionButtons = document.querySelectorAll('.btn-action, [data-action]');
     
     actionButtons.forEach(button => {
         button.addEventListener('click', function() {
-            const action = this.dataset.action || 
-                          this.textContent.trim() || 
-                          this.getAttribute('aria-label') || 
-                          'tindakan';
+            const action = this.dataset.action || this.textContent.trim() || this.getAttribute('aria-label') || 'tindakan';
             
             notifyInfo(`Melakukan: ${action}`);
             
-            // Simulasi proses async
             if (this.dataset.async === 'true') {
                 simulateAsyncAction(action);
             }
         });
     });
     
-    // Tombol khusus dengan tipe tertentu
     const deleteButtons = document.querySelectorAll('.btn-delete, [data-type="delete"]');
     deleteButtons.forEach(button => {
         button.addEventListener('click', function(e) {
             e.preventDefault();
             const target = this.dataset.target || 'item';
             
-            // Konfirmasi sebelum menghapus
             if (confirm(`Apakah Anda yakin ingin menghapus ${target}?`)) {
                 notifyWarning(`Menghapus ${target}...`);
-                // Logika penghapusan di sini
+                // Logika penghapusan bisa ditambahkan di sini
             } else {
                 notifyInfo('Penghapusan dibatalkan');
             }
@@ -174,10 +217,10 @@ function integrateWithButtons() {
 
 // Simulasi aksi async
 function simulateAsyncAction(action) {
-    const duration = 1000 + Math.random() * 2000; // 1-3 detik
+    const duration = 1000 + Math.random() * 2000;
     
     setTimeout(() => {
-        if (Math.random() > 0.2) { // 80% sukses
+        if (Math.random() > 0.2) {
             notifySuccess(`${action} berhasil`);
         } else {
             notifyError(`${action} gagal`);
@@ -185,9 +228,8 @@ function simulateAsyncAction(action) {
     }, duration);
 }
 
-// 4. INTEGRASI DENGAN AJAX/FETCH
+// 4. Integrasi dengan AJAX/Fetch
 function integrateWithAjax() {
-    // Override fetch global untuk otomatis menampilkan notifikasi
     const originalFetch = window.fetch;
     
     window.fetch = function(...args) {
@@ -195,7 +237,6 @@ function integrateWithAjax() {
         const options = args[1] || {};
         const method = options.method || 'GET';
         
-        // Tampilkan notifikasi untuk request yang penting
         if (method !== 'GET') {
             notifyInfo(`Memproses ${method} request...`);
         }
@@ -208,7 +249,6 @@ function integrateWithAjax() {
                 return response;
             })
             .then(response => {
-                // Notifikasi untuk non-GET requests yang sukses
                 if (method !== 'GET') {
                     notifySuccess(`${method} request berhasil`);
                 }
@@ -223,9 +263,8 @@ function integrateWithAjax() {
     console.log('Terintegrasi dengan AJAX/Fetch operations');
 }
 
-// 5. EVENT GLOBAL UNTUK NOTIFIKASI
+// 5. Event global untuk notifikasi
 function createGlobalNotificationEvent() {
-    // Membuat custom event untuk notifikasi
     function dispatchNotificationEvent(message, type = NOTIFICATION_TYPES.INFO) {
         const event = new CustomEvent('showNotification', {
             detail: { message, type }
@@ -233,37 +272,29 @@ function createGlobalNotificationEvent() {
         window.dispatchEvent(event);
     }
 
-    // Mendengarkan event notifikasi
     window.addEventListener('showNotification', function(e) {
         showNotification(e.detail.message, e.detail.type);
     });
     
-    // Ekspos fungsi global untuk memicu notifikasi dari mana saja
     window.dispatchNotification = dispatchNotificationEvent;
     
     console.log('Event global notifikasi telah dibuat');
 }
 
-// 6. INTEGRASI DENGAN STATE PERUBAHAN HALAMAN (SPA)
+// 6. Integrasi dengan state perubahan halaman (SPA)
 function integrateWithPageState() {
-    // Jika menggunakan framework SPA seperti React, Vue, dll.
-    // kita bisa mendeteksi perubahan rute dan menampilkan notifikasi
-    
-    // Simulasi untuk history API (pushState)
     const originalPushState = history.pushState;
     history.pushState = function(state, title, url) {
         notifyInfo(`Navigasi ke: ${title || url}`);
         return originalPushState.apply(history, arguments);
     };
     
-    // Juga untuk replaceState
     const originalReplaceState = history.replaceState;
     history.replaceState = function(state, title, url) {
         notifyInfo(`Mengganti halaman: ${title || url}`);
         return originalReplaceState.apply(history, arguments);
     };
     
-    // Event untuk tombol back/forward
     window.addEventListener('popstate', function() {
         notifyInfo('Navigasi menggunakan history');
     });
@@ -271,11 +302,10 @@ function integrateWithPageState() {
     console.log('Terintegrasi dengan state perubahan halaman');
 }
 
-// 7. FUNGSI UTILITY TAMBAHAN
+// 7. Fungsi utility tambahan
 function showNotificationForDuration(message, type, duration) {
     const notification = showNotification(message, type);
     
-    // Hapus notifikasi setelah durasi tertentu
     setTimeout(() => {
         if (notification.parentNode) {
             notification.classList.remove('show');
@@ -290,7 +320,7 @@ function showNotificationForDuration(message, type, duration) {
     return notification;
 }
 
-// 8. FUNGSI UNTUK MENGHUBUNGKAN DENGAN ELEMENT SPESIFIK
+// 8. Fungsi untuk menghubungkan dengan element spesifik
 function connectNotificationToElement(selector, eventType, message, type = NOTIFICATION_TYPES.INFO) {
     const elements = document.querySelectorAll(selector);
     
@@ -303,13 +333,12 @@ function connectNotificationToElement(selector, eventType, message, type = NOTIF
     return elements.length;
 }
 
-// 9. INISIALISASI OTOMATIS SAAT DOKUMEN SIAP
+// 9. Inisialisasi otomatis saat dokumen siap
 document.addEventListener('DOMContentLoaded', function() {
-    // Tunggu sebentar untuk memastikan semua element telah dimuat
     setTimeout(initializeNotificationIntegration, 100);
 });
 
-// 10. EKSPOS FUNGSI KE GLOBAL SCOPE
+// 10. Ekspos fungsi ke global scope
 window.initializeNotificationIntegration = initializeNotificationIntegration;
 window.connectNotificationToElement = connectNotificationToElement;
 window.showNotificationForDuration = showNotificationForDuration;

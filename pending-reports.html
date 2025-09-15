@@ -2008,9 +2008,8 @@
         
         try {
             const snapshot = await db.collection('pendingReports')
-                .where('userId', '==', currentUser.uid)
-                .orderBy('dateCreated', 'desc')
-                .get();
+    .orderBy('dateCreated', 'desc') // Tanpa filter userId
+    .get();
                 
             return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         } catch (error) {

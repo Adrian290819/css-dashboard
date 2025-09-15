@@ -1010,26 +1010,6 @@
 
   </div>
         
-        <!-- Quick Actions -->
-        <div class="quick-actions fade-in">
-            <div class="quick-action-btn" id="quickAddGame">
-                <i class="fas fa-plus"></i>
-                <span>Add New Game</span>
-            </div>
-            <div class="quick-action-btn" id="quickImport">
-                <i class="fas fa-file-import"></i>
-                <span>Import Games</span>
-            </div>
-            <div class="quick-action-btn" id="quickExport">
-                <i class="fas fa-file-export"></i>
-                <span>Export Games</span>
-            </div>
-            <div class="quick-action-btn" id="quickCategories">
-                <i class="fas fa-tags"></i>
-                <span>Manage Categories</span>
-            </div>
-        </div>
-        
         <!-- Filter Panel -->
         <div class="filter-panel fade-in">
             <div class="filter-header">
@@ -1228,9 +1208,9 @@
                             </div>
                             
                             <div class="form-group">
-                                <label class="form-label required">Release Date</label>
-                                <input type="date" class="form-input" id="gameReleaseDate" required>
-                            </div>   
+    <label class="form-label required">Release Date</label>
+    <input type="date" class="form-input" id="gameReleaseDate" required>
+</div>
                             
                             <div class="form-group">
                                 <label class="form-label">Status</label>
@@ -1308,17 +1288,17 @@
 <script src="user-profile.js"></script>
    <script src="notifications.js"></script>
    <script>
-    // ========== FIREBASE CONFIGURATION ==========
-    const firebaseConfig = {
-        apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
-        authDomain: "dashboard-css.firebaseapp.com",
-        databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "dashboard-css",
-        storageBucket: "dashboard-css.appspot.com",
-        messagingSenderId: "771131792881",
-        appId: "1:771131792881:web:ad634424225bd7de847850",
-        measurementId: "G-3CYBC5B101"
-    };
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
+    authDomain: "dashboard-css.firebaseapp.com",
+    databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "dashboard-css",
+    storageBucket: "dashboard-css.appspot.com",
+    messagingSenderId: "771131792881",
+    appId: "1:771131792881:web:ad634424225bd7de847850",
+    measurementId: "G-3CYBC5B101"
+};
 
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
@@ -1333,6 +1313,46 @@
     let isEditing = false;
     let currentEditId = null;
     let currentImage = null;
+
+  // ========== FIXED GAMES LISTENER ==========
+    function setupGamesListener() {
+        if (unsubscribeGames) {
+            unsubscribeGames(); // Remove old listener if exists
+        }
+        
+        try {
+            console.log("Setting up games listener...");
+            
+            // Hapus filter userId karena data game bersifat global
+            unsubscribeGames = db.collection('newGame')
+                .onSnapshot(snapshot => {
+                    games = [];
+                    snapshot.forEach(doc => {
+                        try {
+                            const game = doc.data();
+                            game.id = doc.id;
+                            games.push(game);
+                            console.log("Game loaded:", game.title);
+                        } catch (e) {
+                            console.error("Error processing document:", e);
+                        }
+                    });
+                    
+                    console.log(`Found ${games.length} games`);
+                    filteredGames = [...games];
+                    renderGames();
+                    updateGameStats();
+                    
+                }, error => {
+                    console.error("Error fetching games:", error);
+                    showNotification('Error loading games. Please check console for details.', 'error');
+                });
+            
+        } catch (error) {
+            console.error("Error setting up listener:", error);
+            showNotification('Error setting up data connection.', 'error');
+        }
+    }
 
     // ========== FUNGSI NOTIFIKASI ==========
     function showNotification(message, type = 'info') {
@@ -1360,23 +1380,31 @@
         }, 100);
         
         // Add event listener to close button
-        notification.querySelector('.notification-close').addEventListener('click', () => {
-            notification.classList.remove('show');
-            setTimeout(() => {
-                notification.remove();
-            }, 300);
-        });
+        const closeBtn = notification.querySelector('.notification-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            });
+        }
         
         // Auto remove after 5 seconds
         setTimeout(() => {
             if (notification.parentNode) {
                 notification.classList.remove('show');
                 setTimeout(() => {
-                    notification.remove();
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
                 }, 300);
             }
         }, 5000);
     }
+
 
     // ========== FIREBASE AUTHENTICATION ==========
     function checkAuthState() {
@@ -1396,22 +1424,27 @@
             showNotification('Authentication error. Please try again.', 'error');
         });
     }
-
-    // ========== FIRESTORE OPERATIONS ==========
     function setupGamesListener() {
         if (unsubscribeGames) {
             unsubscribeGames(); // Remove old listener if exists
         }
         
         try {
+            console.log("Setting up games listener...");
+            
+            // Hapus filter userId karena data game bersifat global
             unsubscribeGames = db.collection('newGame')
-                .where('userId', '==', currentUser.uid)
                 .onSnapshot(snapshot => {
                     games = [];
                     snapshot.forEach(doc => {
-                        const game = doc.data();
-                        game.id = doc.id;
-                        games.push(game);
+                        try {
+                            const game = doc.data();
+                            game.id = doc.id;
+                            games.push(game);
+                            console.log("Game loaded:", game.title);
+                        } catch (e) {
+                            console.error("Error processing document:", e);
+                        }
                     });
                     
                     console.log(`Found ${games.length} games`);
@@ -1419,15 +1452,9 @@
                     renderGames();
                     updateGameStats();
                     
-                    if (games.length === 0) {
-                        document.getElementById('noGames').style.display = 'flex';
-                        showNotification('No games found. Add your first game!', 'info');
-                    } else {
-                        document.getElementById('noGames').style.display = 'none';
-                    }
                 }, error => {
                     console.error("Error fetching games:", error);
-                    showNotification('Error loading games. Please refresh the page.', 'error');
+                    showNotification('Error loading games. Please check console for details.', 'error');
                 });
             
         } catch (error) {
@@ -1435,27 +1462,60 @@
             showNotification('Error setting up data connection.', 'error');
         }
     }
-
-    // Add a new game to Firestore
-    async function addGame(gameData) {
-        try {
-            const newGame = {
-                ...gameData,
-                userId: currentUser.uid,
-                projectcss: "pengshui",
-                dateCreated: new Date(),
-                dateUpdated: new Date()
-            };
-            
-            await db.collection('newGame').add(newGame);
-            showNotification(`"${gameData.title}" has been added successfully!`, 'success');
-            return true;
-        } catch (error) {
-            console.error("Error adding game:", error);
-            showNotification('Error adding game. Please try again.', 'error');
-            throw error;
-        }
+// Dalam fungsi setupGamesListener(), perbaiki kueri:
+function setupGamesListener() {
+    if (unsubscribeGames) {
+        unsubscribeGames(); // Remove old listener if exists
     }
+    
+    try {
+        // Hapus filter userId jika data game bersifat global
+        unsubscribeGames = db.collection('newGame')
+            .onSnapshot(snapshot => {
+                games = [];
+                snapshot.forEach(doc => {
+                    const game = doc.data();
+                    game.id = doc.id;
+                    games.push(game);
+                });
+                
+                console.log(`Found ${games.length} games`);
+                filteredGames = [...games];
+                renderGames();
+                updateGameStats();
+                
+                // Rest of your code...
+            }, error => {
+                console.error("Error fetching games:", error);
+                showNotification('Error loading games. Please refresh the page.', 'error');
+            });
+        
+    } catch (error) {
+        console.error("Error setting up listener:", error);
+        showNotification('Error setting up data connection.', 'error');
+    }
+}
+    // Add a new game to Firestore
+async function addGame(gameData) {
+    try {
+        const newGame = {
+            ...gameData,
+            userId: currentUser.uid,
+            projectcss: "pengshui",
+            dateCreated: new Date(),
+            dateUpdated: new Date(),
+            releaseDate: gameData.releaseDate // Pastikan format YYYY-MM-DD
+        };
+        
+        await db.collection('newGame').add(newGame);
+        showNotification(`"${gameData.title}" has been added successfully!`, 'success');
+        return true;
+    } catch (error) {
+        console.error("Error adding game:", error);
+        showNotification('Error adding game. Please try again.', 'error');
+        throw error;
+    }
+}
 
     // Update an existing game in Firestore
     async function updateGame(id, gameData) {
@@ -2110,7 +2170,15 @@
             // Error notification is handled in updateGame function
         }
     }
+window.getTotalGamesCount = function() {
+    return games.length;
+}
 
+// Fungsi untuk mendapatkan jumlah game yang dirilis hari ini
+window.getTodayGamesCount = function() {
+    const today = new Date().toISOString().split('T')[0];
+    return games.filter(game => game.releaseDate === today).length;
+}
     // ========== EVENT LISTENERS SETUP ==========
     function setupEventListeners() {
         // Filter event listeners
@@ -2222,9 +2290,6 @@
         
         // Set default view to grid
         toggleView(true);
-        
-        // Add some sample data if needed (for demo purposes)
-        // addSampleData();
     });
 
     // Function to add sample data (for demo purposes)

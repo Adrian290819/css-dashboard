@@ -563,169 +563,169 @@
             <!-- Cards will be generated dynamically -->
         </div>
 
-        <!-- Tabs for Masteragent and Regular Top Up -->
-        <div class="tabs">
-            <div class="tab active" data-tab="masteragent">Form Top Up Credit Masteragent</div>
-            <div class="tab" data-tab="regular">Form Top Up Credit Agent</div>
+        <!-- Tabs for Regular Top Up and Masteragent -->
+<div class="tabs">
+    <div class="tab active" data-tab="regular">Form Top Up Credit Agent</div>
+    <div class="tab" data-tab="masteragent">Form Top Up Credit Masteragent</div>
+</div>
+
+<!-- Regular Top Up Form Section -->
+<div id="regularTab" class="tab-content active">
+    <div class="topup-section fade-in" style="animation-delay: 0.2s;">
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Form Top Up Credit Agent</h2>
         </div>
-
-        <!-- Masteragent Top Up Form Section -->
-        <div id="masteragentTab" class="tab-content active">
-            <div class="masteragent-section fade-in" style="animation-delay: 0.1s;">
-                <div class="section-header">
-                    <h2 class="section-title"><i class="fas fa-crown"></i> Form Top Up Credit Masteragent</h2>
-                </div>
-                
-                <form id="masteragentForm" class="masteragent-form">
-                    <div class="form-group">
-                        <label for="masteragentCategory">Kategori</label>
-                        <select id="masteragentCategory" class="form-control" required>
-                            <option value="">Select Category</option>
-                            <option value="D-GAMING">D-GAMING</option>
-                            <option value="GACHA">GACHA</option>
-                            <option value="BREM">BREM</option>
-                            <option value="CBWL">CBWL</option>
-                            <option value="89ENGINE">89ENGINE</option>
-                            <option value="LUXION">LUXION</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="masteragentCurrentCredit">Credit Saat Ini</label>
-                        <input type="text" id="masteragentCurrentCredit" class="form-input" readonly>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="masteragentCredit">Jumlah Top Up</label>
-                        <input type="number" id="masteragentCredit" class="form-input" placeholder="Masukkan jumlah top up" min="1" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="masteragentNewCredit">Credit Setelah Top Up</label>
-                        <input type="text" id="masteragentNewCredit" class="form-input" readonly>
-                    </div>
-                    
-                    <div class="form-actions">
-                        <button type="reset" class="btn btn-outline">Reset</button>
-                        <button type="submit" class="btn btn-primary">Proses Top Up</button>
-                    </div>
-                </form>
+        
+        <form id="topupForm" class="topup-form">
+            <div class="form-group">
+                <label for="brandSelect">Pilih Brand</label>
+                <select id="brandSelect" class="form-select" required>
+                    <option value="">Select Brand</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
             </div>
+            
+            <div class="form-group">
+                <label for="currentCredit">Credit Saat Ini</label>
+                <input type="text" id="currentCredit" class="form-input" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label for="topupAmount">Jumlah Top Up</label>
+                <input type="number" id="topupAmount" class="form-input" placeholder="Masukkan jumlah top up" min="1" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="newCredit">Credit Setelah Top Up</label>
+                <input type="text" id="newCredit" class="form-input" readonly>
+            </div>
+            
+            <div class="form-actions">
+                <button type="reset" class="btn btn-outline">Reset</button>
+                <button type="submit" class="btn btn-primary">Proses Top Up</button>
+            </div>
+        </form>
+    </div>
 
-            <!-- Masteragent History Section -->
-            <div class="history-section fade-in" style="animation-delay: 0.3s;">
-                <div class="section-header">
-                    <h2 class="section-title"><i class="fas fa-history"></i> Riwayat Top Up Masteragent</h2>
-                    <div class="section-actions">
-                        <button class="btn btn-outline" id="refreshMasteragentHistory">
-                            <i class="fas fa-sync-alt"></i> Muat Ulang
-                        </button>
-                        <button class="btn btn-outline" id="clearMasteragentHistory">
-                            <i class="fas fa-trash"></i> Hapus Riwayat
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="history-table-container">
-                    <table class="history-table">
-                        <thead>
-                            <tr>
-                                <th>Tanggal</th>
-                                <th>Kategori</th>
-                                <th>Jumlah Top Up</th>
-                                <th>Credit Sebelum</th>
-                                <th>Credit Sesudah</th>
-                            </tr>
-                        </thead>
-                        <tbody id="masteragentHistoryTableBody">
-                            <!-- Data history masteragent akan dimuat di sini -->
-                        </tbody>
-                    </table>
-                </div>
-                <div id="noMasteragentHistory" class="empty-state" style="display: none;">
-                    <i class="fas fa-history"></i>
-                    <h3>Tidak Ada Riwayat</h3>
-                    <p>Belum ada riwayat top up masteragent untuk ditampilkan.</p>
-                </div>
+    <!-- Regular History Section -->
+    <div class="history-section fade-in" style="animation-delay: 0.3s;">
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-history"></i> Riwayat Top Up</h2>
+            <div class="section-actions">
+                <button class="btn btn-outline" id="refreshHistory">
+                    <i class="fas fa-sync-alt"></i> Muat Ulang
+                </button>
+                <button class="btn btn-outline" id="clearHistory">
+                    <i class="fas fa-trash"></i> Hapus Riwayat
+                </button>
             </div>
         </div>
-
-        <!-- Regular Top Up Form Section -->
-        <div id="regularTab" class="tab-content">
-            <div class="topup-section fade-in" style="animation-delay: 0.2s;">
-                <div class="section-header">
-                    <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Form Top Up Credit Agent</h2>
-                </div>
-                
-                <form id="topupForm" class="topup-form">
-                    <div class="form-group">
-                        <label for="brandSelect">Pilih Brand</label>
-                        <select id="brandSelect" class="form-select" required>
-                            <option value="">Select Brand</option>
-                            <!-- Options will be populated dynamically -->
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="currentCredit">Credit Saat Ini</label>
-                        <input type="text" id="currentCredit" class="form-input" readonly>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="topupAmount">Jumlah Top Up</label>
-                        <input type="number" id="topupAmount" class="form-input" placeholder="Masukkan jumlah top up" min="1" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="newCredit">Credit Setelah Top Up</label>
-                        <input type="text" id="newCredit" class="form-input" readonly>
-                    </div>
-                    
-                    <div class="form-actions">
-                        <button type="reset" class="btn btn-outline">Reset</button>
-                        <button type="submit" class="btn btn-primary">Proses Top Up</button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Regular History Section -->
-            <div class="history-section fade-in" style="animation-delay: 0.3s;">
-                <div class="section-header">
-                    <h2 class="section-title"><i class="fas fa-history"></i> Riwayat Top Up</h2>
-                    <div class="section-actions">
-                        <button class="btn btn-outline" id="refreshHistory">
-                            <i class="fas fa-sync-alt"></i> Muat Ulang
-                        </button>
-                        <button class="btn btn-outline" id="clearHistory">
-                            <i class="fas fa-trash"></i> Hapus Riwayat
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="history-table-container">
-                    <table class="history-table">
-                        <thead>
-                            <tr>
-                                <th>Tanggal</th>
-                                <th>Brand</th>
-                                <th>Jumlah Top Up</th>
-                                <th>Credit Sebelum</th>
-                                <th>Credit Sesudah</th>
-                            </tr>
-                        </thead>
-                        <tbody id="historyTableBody">
-                            <!-- Data history akan dimuat di sini -->
-                        </tbody>
-                    </table>
-                </div>
-                <div id="noHistory" class="empty-state" style="display: none;">
-                    <i class="fas fa-history"></i>
-                    <h3>Tidak Ada Riwayat</h3>
-                    <p>Belum ada riwayat top up untuk ditampilkan.</p>
-                </div>
-            </div>
+        
+        <div class="history-table-container">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Brand</th>
+                        <th>Jumlah Top Up</th>
+                        <th>Credit Sebelum</th>
+                        <th>Credit Sesudah</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                    <!-- Data history akan dimuat di sini -->
+                </tbody>
+            </table>
+        </div>
+        <div id="noHistory" class="empty-state" style="display: none;">
+            <i class="fas fa-history"></i>
+            <h3>Tidak Ada Riwayat</h3>
+            <p>Belum ada riwayat top up untuk ditampilkan.</p>
         </div>
     </div>
+</div>
+
+<!-- Masteragent Top Up Form Section -->
+<div id="masteragentTab" class="tab-content">
+    <div class="masteragent-section fade-in" style="animation-delay: 0.1s;">
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-crown"></i> Form Top Up Credit Masteragent</h2>
+        </div>
+        
+        <form id="masteragentForm" class="masteragent-form">
+            <div class="form-group">
+                <label for="masteragentCategory">Kategori</label>
+                <select id="masteragentCategory" class="form-control" required>
+                    <option value="">Select Category</option>
+                    <option value="D-GAMING">D-GAMING</option>
+                    <option value="GACHA">GACHA</option>
+                    <option value="BREM">BREM</option>
+                    <option value="CBWL">CBWL</option>
+                    <option value="89ENGINE">89ENGINE</option>
+                    <option value="LUXION">LUXION</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="masteragentCurrentCredit">Credit Saat Ini</label>
+                <input type="text" id="masteragentCurrentCredit" class="form-input" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label for="masteragentCredit">Jumlah Top Up</label>
+                <input type="number" id="masteragentCredit" class="form-input" placeholder="Masukkan jumlah top up" min="1" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="masteragentNewCredit">Credit Setelah Top Up</label>
+                <input type="text" id="masteragentNewCredit" class="form-input" readonly>
+            </div>
+            
+            <div class="form-actions">
+                <button type="reset" class="btn btn-outline">Reset</button>
+                <button type="submit" class="btn btn-primary">Proses Top Up</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Masteragent History Section -->
+    <div class="history-section fade-in" style="animation-delay: 0.3s;">
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-history"></i> Riwayat Top Up Masteragent</h2>
+            <div class="section-actions">
+                <button class="btn btn-outline" id="refreshMasteragentHistory">
+                    <i class="fas fa-sync-alt"></i> Muat Ulang
+                </button>
+                <button class="btn btn-outline" id="clearMasteragentHistory">
+                    <i class="fas fa-trash"></i> Hapus Riwayat
+                </button>
+            </div>
+        </div>
+        
+        <div class="history-table-container">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Kategori</th>
+                        <th>Jumlah Top Up</th>
+                        <th>Credit Sebelum</th>
+                        <th>Credit Sesudah</th>
+                    </tr>
+                </thead>
+                <tbody id="masteragentHistoryTableBody">
+                    <!-- Data history masteragent akan dimuat di sini -->
+                </tbody>
+            </table>
+        </div>
+        <div id="noMasteragentHistory" class="empty-state" style="display: none;">
+            <i class="fas fa-history"></i>
+            <h3>Tidak Ada Riwayat</h3>
+            <p>Belum ada riwayat top up masteragent untuk ditampilkan.</p>
+        </div>
+    </div>
+</div>
+
 
     <!-- Toast Notification -->
     <div id="toastNotification" class="toast-notification" style="display: none;">

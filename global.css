@@ -11,11 +11,7 @@
   --secondary-gradient: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
   --secondary-hover: #5a6268;
   --secondary-light: rgba(108, 117, 125, 0.1);
-  
-  --success: #17c964;
-  --success-gradient: linear-gradient(135deg, #17c964 0%, #14a855 100%);
-  --success-hover: #14a855;
-  --success-light: rgba(23, 201, 100, 0.1);
+
   
   --danger: #f21361;
   --danger-gradient: linear-gradient(135deg, #f21361 0%, #d41156 100%);
@@ -4222,3 +4218,6 @@ body, html {
         .notification.info .notification-content i {
             color: var(--info);
         }
+        
+        
+        

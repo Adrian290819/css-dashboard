@@ -532,6 +532,16 @@
         .tab-content.active {
             display: block;
         }
+        .error-message {
+    color: var(--danger);
+    display: none;
+    font-size: var(--text-xs);
+    margin-top: 5px;
+}
+
+.modal-footer {
+    display: none;
+}
     </style>
 </head>
 <body>
@@ -615,9 +625,6 @@
                 <button class="btn btn-outline" id="refreshHistory">
                     <i class="fas fa-sync-alt"></i> Muat Ulang
                 </button>
-                <button class="btn btn-outline" id="clearHistory">
-                    <i class="fas fa-trash"></i> Hapus Riwayat
-                </button>
             </div>
         </div>
         
@@ -696,9 +703,6 @@
                 <button class="btn btn-outline" id="refreshMasteragentHistory">
                     <i class="fas fa-sync-alt"></i> Muat Ulang
                 </button>
-                <button class="btn btn-outline" id="clearMasteragentHistory">
-                    <i class="fas fa-trash"></i> Hapus Riwayat
-                </button>
             </div>
         </div>
         
@@ -737,8 +741,29 @@
 
     <script src="sidebar-loader.js"></script>
     <script src="user-profile.js"></script>
-   <script>
-    // Data default untuk brand - HANYA SATU DEFINISI INI YANG DIGUNAKAN
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
+<script>
+    // Konfigurasi Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
+        authDomain: "dashboard-css.firebaseapp.com",
+        databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "dashboard-css",
+        storageBucket: "dashboard-css.appspot.com",
+        messagingSenderId: "771131792881",
+        appId: "1:771131792881:web:ad634424225bd7de847850",
+        measurementId: "G-3CYBC5B101"
+    };
+
+    // Inisialisasi Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    // Data default untuk brand
     const defaultBrands = {
         "D-GAMING": {
             credit: 2167067148,
@@ -793,16 +818,119 @@
         }
     };
 
-    // Data koin untuk setiap kategori brand
-    let creditData = JSON.parse(localStorage.getItem('creditData')) || defaultBrands;
-    
-    // Data history top up
-    let topupHistory = JSON.parse(localStorage.getItem('topupHistory')) || [];
-    
-    // Data history top up masteragent
-    let masteragentHistory = JSON.parse(localStorage.getItem('masteragentHistory')) || [];
+    // Deklarasi variabel global
+    let creditData = {};
+    let topupHistory = [];
+    let masteragentHistory = [];
+    let unsubscribeCreditData = null;
+    let unsubscribeTopupHistory = null;
+    let unsubscribeMasteragentHistory = null;
 
-    // ... (sisa kode JavaScript tetap sama)
+    // Fungsi untuk memuat data dari Firestore
+    function setupFirestoreListeners() {
+        console.log("Setting up Firestore listeners...");
+        
+        // Setup listener untuk creditData
+        if (unsubscribeCreditData) {
+            unsubscribeCreditData();
+        }
+        
+        unsubscribeCreditData = db.collection('creditData').doc('brands')
+            .onSnapshot((doc) => {
+                if (doc.exists) {
+                    creditData = doc.data();
+                    console.log("Credit data loaded from Firestore:", creditData);
+                    updateCreditStats();
+                    updateBrandDropdown();
+                } else {
+                    // Jika dokumen tidak ada, buat dengan data default
+                    console.log("No credit data found, creating with defaults");
+                    creditData = defaultBrands;
+                    db.collection('creditData').doc('brands').set(defaultBrands)
+                        .then(() => {
+                            console.log("Default credit data saved to Firestore");
+                            updateCreditStats();
+                            updateBrandDropdown();
+                        })
+                        .catch((error) => {
+                            console.error("Error saving default credit data:", error);
+                            showToast("Error initializing credit data", "error");
+                        });
+                }
+            }, (error) => {
+                console.error("Error loading credit data:", error);
+                showToast("Error loading credit data", "error");
+                
+                // Fallback ke localStorage
+                const localData = localStorage.getItem('creditData');
+                if (localData) {
+                    creditData = JSON.parse(localData);
+                    updateCreditStats();
+                    updateBrandDropdown();
+                } else {
+                    creditData = defaultBrands;
+                    updateCreditStats();
+                    updateBrandDropdown();
+                }
+            });
+
+        // Setup listener untuk topupHistory
+        if (unsubscribeTopupHistory) {
+            unsubscribeTopupHistory();
+        }
+        
+        unsubscribeTopupHistory = db.collection('topupHistory')
+            .orderBy('timestamp', 'desc')
+            .onSnapshot((snapshot) => {
+                topupHistory = [];
+                snapshot.forEach((doc) => {
+                    const historyItem = doc.data();
+                    historyItem.id = doc.id;
+                    topupHistory.push(historyItem);
+                });
+                console.log("Topup history loaded:", topupHistory.length, "items");
+                updateHistoryTable();
+            }, (error) => {
+                console.error("Error loading topup history:", error);
+                showToast("Error loading topup history", "error");
+                
+                // Fallback ke localStorage
+                const localHistory = localStorage.getItem('topupHistory');
+                if (localHistory) {
+                    topupHistory = JSON.parse(localHistory);
+                    updateHistoryTable();
+                }
+            });
+
+        // Setup listener untuk masteragentHistory
+        if (unsubscribeMasteragentHistory) {
+            unsubscribeMasteragentHistory();
+        }
+        
+        unsubscribeMasteragentHistory = db.collection('masteragentHistory')
+            .orderBy('timestamp', 'desc')
+            .onSnapshot((snapshot) => {
+                masteragentHistory = [];
+                snapshot.forEach((doc) => {
+                    const historyItem = doc.data();
+                    historyItem.id = doc.id;
+                    masteragentHistory.push(historyItem);
+                });
+                console.log("Masteragent history loaded:", masteragentHistory.length, "items");
+                updateMasteragentHistoryTable();
+            }, (error) => {
+                console.error("Error loading masteragent history:", error);
+                showToast("Error loading masteragent history", "error");
+                
+                // Fallback ke localStorage
+                const localHistory = localStorage.getItem('masteragentHistory');
+                if (localHistory) {
+                    masteragentHistory = JSON.parse(localHistory);
+                    updateMasteragentHistoryTable();
+                }
+            });
+    }
+
     // Format angka dengan pemisah ribuan
     function formatNumber(num) {
         return new Intl.NumberFormat('id-ID').format(num);
@@ -817,6 +945,11 @@
     function showToast(message, type = 'success') {
         const toast = document.getElementById('toastNotification');
         const toastMessage = document.getElementById('toastMessage');
+        
+        if (!toast || !toastMessage) {
+            console.log("Toast elements not found");
+            return;
+        }
         
         toast.className = `toast-notification ${type}`;
         toastMessage.textContent = message;
@@ -840,8 +973,6 @@
         
         // Add all category cards (6 brand)
         const categories = Object.keys(creditData);
-        console.log("Render categories:", categories);
-
         
         categories.forEach(category => {
             if (creditData[category]) {
@@ -973,15 +1104,12 @@
         
         if (noHistory) noHistory.style.display = 'none';
         
-        // Urutkan history dari yang terbaru
-        const sortedHistory = [...topupHistory].reverse();
-        
         // Render history table
         if (historyTableBody) {
-            historyTableBody.innerHTML = sortedHistory.map(history => `
+            historyTableBody.innerHTML = topupHistory.map(history => `
                 <tr>
-                    <td>${history.date}</td>
-                    <td>${history.brand}</td>
+                    <td>${history.date || 'N/A'}</td>
+                    <td>${history.brand || 'N/A'}</td>
                     <td>${formatNumber(history.amount)}</td>
                     <td>${formatNumber(history.before)}</td>
                     <td>${formatNumber(history.after)}</td>
@@ -1003,15 +1131,12 @@
         
         if (noHistory) noHistory.style.display = 'none';
         
-        // Urutkan history dari yang terbaru
-        const sortedHistory = [...masteragentHistory].reverse();
-        
         // Render history table
         if (historyTableBody) {
-            historyTableBody.innerHTML = sortedHistory.map(history => `
+            historyTableBody.innerHTML = masteragentHistory.map(history => `
                 <tr>
-                    <td>${history.date}</td>
-                    <td>${history.category}</td>
+                    <td>${history.date || 'N/A'}</td>
+                    <td>${history.category || 'N/A'}</td>
                     <td>${formatNumber(history.amount)}</td>
                     <td>${formatNumber(history.before)}</td>
                     <td>${formatNumber(history.after)}</td>
@@ -1021,7 +1146,7 @@
     }
 
     // Proses form masteragent top up
-    document.getElementById('masteragentForm').addEventListener('submit', function(e) {
+    document.getElementById('masteragentForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
         const category = document.getElementById('masteragentCategory').value;
@@ -1036,37 +1161,62 @@
         if (creditData[category]) {
             const currentCredit = creditData[category].credit;
             creditData[category].credit += credit;
-            localStorage.setItem('creditData', JSON.stringify(creditData));
             
-            // Tambahkan ke history masteragent
-            const historyEntry = {
-                date: new Date().toLocaleString('id-ID'),
-                category: category,
-                amount: credit,
-                before: currentCredit,
-                after: currentCredit + credit
-            };
-            
-            masteragentHistory.push(historyEntry);
-            localStorage.setItem('masteragentHistory', JSON.stringify(masteragentHistory));
-            
-            // Update UI
-            updateCreditStats();
-            updateMasteragentHistoryTable();
-            
-            // Reset form
-            this.reset();
-            document.getElementById('masteragentCurrentCredit').value = '';
-            document.getElementById('masteragentNewCredit').value = '';
-            
-            showToast(`Top up masteragent berhasil! ${formatNumber(credit)} credit ditambahkan ke kategori ${category}`);
+            try {
+                // Simpan ke Firestore
+                await db.collection('creditData').doc('brands').set(creditData);
+                
+                // Tambahkan ke history masteragent
+                const historyEntry = {
+                    date: new Date().toLocaleString('id-ID'),
+                    category: category,
+                    amount: credit,
+                    before: currentCredit,
+                    after: currentCredit + credit,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                // Simpan ke Firestore
+                await db.collection('masteragentHistory').add(historyEntry);
+                
+                // Update UI
+                updateCreditStats();
+                
+                // Reset form
+                this.reset();
+                document.getElementById('masteragentCurrentCredit').value = '';
+                document.getElementById('masteragentNewCredit').value = '';
+                
+                showToast(`Top up masteragent berhasil! ${formatNumber(credit)} credit ditambahkan ke kategori ${category}`);
+            } catch (error) {
+                console.error("Error saving masteragent topup:", error);
+                showToast("Gagal menyimpan data ke server", "error");
+                
+                // Simpan ke localStorage sebagai fallback
+                localStorage.setItem('creditData', JSON.stringify(creditData));
+                
+                // Tambahkan ke history lokal
+                masteragentHistory.push({
+                    date: new Date().toLocaleString('id-ID'),
+                    category: category,
+                    amount: credit,
+                    before: currentCredit,
+                    after: currentCredit + credit
+                });
+                localStorage.setItem('masteragentHistory', JSON.stringify(masteragentHistory));
+                
+                updateCreditStats();
+                updateMasteragentHistoryTable();
+                
+                showToast(`Top up masteragent berhasil (offline mode)! ${formatNumber(credit)} credit ditambahkan ke kategori ${category}`);
+            }
         } else {
             showToast('Kategori tidak valid', 'error');
         }
     });
 
     // Proses form top up
-    document.getElementById('topupForm').addEventListener('submit', function(e) {
+    document.getElementById('topupForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
         const brandSelect = document.getElementById('brandSelect');
@@ -1083,30 +1233,55 @@
         if (creditData[category].credit >= amount) {
             const currentCredit = creditData[category].credit;
             creditData[category].credit -= amount;
-            localStorage.setItem('creditData', JSON.stringify(creditData));
             
-            // Tambahkan ke history
-            const historyEntry = {
-                date: new Date().toLocaleString('id-ID'),
-                brand: brand,
-                amount: amount,
-                before: currentCredit,
-                after: currentCredit - amount
-            };
-            
-            topupHistory.push(historyEntry);
-            localStorage.setItem('topupHistory', JSON.stringify(topupHistory));
-            
-            // Update UI
-            updateCreditStats();
-            updateHistoryTable();
-            
-            // Reset form
-            this.reset();
-            document.getElementById('currentCredit').value = '';
-            document.getElementById('newCredit').value = '';
-            
-            showToast(`Top up berhasil! ${formatNumber(amount)} credit dikurangi dari ${brand}`);
+            try {
+                // Simpan ke Firestore
+                await db.collection('creditData').doc('brands').set(creditData);
+                
+                // Tambahkan ke history
+                const historyEntry = {
+                    date: new Date().toLocaleString('id-ID'),
+                    brand: brand,
+                    amount: amount,
+                    before: currentCredit,
+                    after: currentCredit - amount,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                // Simpan ke Firestore
+                await db.collection('topupHistory').add(historyEntry);
+                
+                // Update UI
+                updateCreditStats();
+                
+                // Reset form
+                this.reset();
+                document.getElementById('currentCredit').value = '';
+                document.getElementById('newCredit').value = '';
+                
+                showToast(`Top up berhasil! ${formatNumber(amount)} credit dikurangi dari ${brand}`);
+            } catch (error) {
+                console.error("Error saving topup:", error);
+                showToast("Gagal menyimpan data ke server", "error");
+                
+                // Simpan ke localStorage sebagai fallback
+                localStorage.setItem('creditData', JSON.stringify(creditData));
+                
+                // Tambahkan ke history lokal
+                topupHistory.push({
+                    date: new Date().toLocaleString('id-ID'),
+                    brand: brand,
+                    amount: amount,
+                    before: currentCredit,
+                    after: currentCredit - amount
+                });
+                localStorage.setItem('topupHistory', JSON.stringify(topupHistory));
+                
+                updateCreditStats();
+                updateHistoryTable();
+                
+                showToast(`Top up berhasil (offline mode)! ${formatNumber(amount)} credit dikurangi dari ${brand}`);
+            }
         } else {
             showToast('Credit tidak mencukupi untuk melakukan top up', 'error');
         }
@@ -1118,15 +1293,6 @@
         showToast('Riwayat diperbarui', 'info');
     });
 
-    // Clear history
-    document.getElementById('clearHistory')?.addEventListener('click', function() {
-        if (confirm('Apakah Anda yakin ingin menghapus semua riwayat top up?')) {
-            topupHistory = [];
-            localStorage.setItem('topupHistory', JSON.stringify(topupHistory));
-            updateHistoryTable();
-            showToast('Riwayat berhasil dihapus', 'info');
-        }
-    });
 
     // Refresh masteragent history
     document.getElementById('refreshMasteragentHistory')?.addEventListener('click', function() {
@@ -1134,15 +1300,7 @@
         showToast('Riwayat masteragent diperbarui', 'info');
     });
 
-    // Clear masteragent history
-    document.getElementById('clearMasteragentHistory')?.addEventListener('click', function() {
-        if (confirm('Apakah Anda yakin ingin menghapus semua riwayat top up masteragent?')) {
-            masteragentHistory = [];
-            localStorage.setItem('masteragentHistory', JSON.stringify(masteragentHistory));
-            updateMasteragentHistoryTable();
-            showToast('Riwayat masteragent berhasil dihapus', 'info');
-        }
-    });
+
 
     // Tab functionality
     document.querySelectorAll('.tab').forEach(tab => {
@@ -1157,14 +1315,6 @@
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             document.getElementById(`${tabId}Tab`).classList.add('active');
         });
-    });
-
-    // Initialize page
-    document.addEventListener('DOMContentLoaded', function() {
-        updateCreditStats();
-        updateBrandDropdown();
-        updateHistoryTable();
-        updateMasteragentHistoryTable();
     });
 
     // Fungsi untuk menampilkan modal edit credit
@@ -1194,7 +1344,7 @@
     }
 
     // Fungsi untuk menyimpan perubahan credit
-    function saveCreditChanges() {
+    async function saveCreditChanges() {
         for (const [category, data] of Object.entries(creditData)) {
             const input = document.getElementById(`edit-${category}`);
             if (input) {
@@ -1205,21 +1355,41 @@
             }
         }
         
-        // Simpan ke localStorage
-        localStorage.setItem('creditData', JSON.stringify(creditData));
-        
-        // Update UI
-        updateCreditStats();
-        updateBrandDropdown();
-        
-        // Tutup modal
-        document.getElementById('editCreditModal').classList.remove('active');
-        
-        showToast('Nominal credit berhasil diperbarui');
+        try {
+            // Simpan ke Firestore
+            await db.collection('creditData').doc('brands').set(creditData);
+            
+            // Update UI
+            updateCreditStats();
+            updateBrandDropdown();
+            
+            // Tutup modal
+            document.getElementById('editCreditModal').classList.remove('active');
+            
+            showToast('Nominal credit berhasil diperbarui');
+        } catch (error) {
+            console.error("Error saving credit changes:", error);
+            showToast("Gagal menyimpan perubahan ke server", "error");
+            
+            // Simpan ke localStorage sebagai fallback
+            localStorage.setItem('creditData', JSON.stringify(creditData));
+            
+            // Update UI
+            updateCreditStats();
+            updateBrandDropdown();
+            
+            // Tutup modal
+            document.getElementById('editCreditModal').classList.remove('active');
+            
+            showToast('Nominal credit berhasil diperbarui (offline mode)');
+        }
     }
 
-    // Tambahkan event listener setelah DOM selesai dimuat
+    // Initialize page
     document.addEventListener('DOMContentLoaded', function() {
+        // Setup Firestore listeners
+        setupFirestoreListeners();
+        
         // Tambahkan tombol Edit Credit di header
         const header = document.querySelector('.header');
         if (header) {
@@ -1238,32 +1408,135 @@
         
         // Buat modal untuk edit credit
         const modalHTML = `
-            <div id="editCreditModal" class="modal-overlay">
-                <div class="modal">
-                    <div class="modal-header">
-                        <h3 class="modal-title"><i class="fas fa-edit"></i> Edit Nominal Credit</h3>
-                        <button class="modal-close" onclick="document.getElementById('editCreditModal').classList.remove('active')">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div id="editCreditContainer"></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-outline" onclick="document.getElementById('editCreditModal').classList.remove('active')">
-                            Batal
-                        </button>
-                        <button class="btn btn-primary" onclick="saveCreditChanges()">
-                            Simpan Perubahan
-                        </button>
-                    </div>
+<!-- Ganti modal HTML yang sudah ada dengan yang ini -->
+<div id="editCreditModal" class="modal-overlay">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="fas fa-edit"></i> Edit Nominal Credit</h3>
+            <button class="modal-close" onclick="document.getElementById('editCreditModal').classList.remove('active')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <!-- Password verification section -->
+            <div id="passwordSection">
+                <div class="form-group">
+                    <label for="adminPassword">Password Admin</label>
+                    <input type="password" id="adminPassword" class="form-input" placeholder="Masukkan password admin">
+                    <p class="error-message" id="passwordError" style="color: var(--danger); display: none; font-size: var(--text-xs); margin-top: 5px;">
+                        Password salah!
+                    </p>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-primary" onclick="verifyPassword()">
+                        Verifikasi Password
+                    </button>
                 </div>
             </div>
+            
+            <!-- Credit edit section (initially hidden) -->
+            <div id="creditEditSection" style="display: none;">
+                <div id="editCreditContainer"></div>
+            </div>
+        </div>
+        <div class="modal-footer" id="editModalFooter" style="display: none;">
+            <button class="btn btn-outline" onclick="document.getElementById('editCreditModal').classList.remove('active')">
+                Batal
+            </button>
+            <button class="btn btn-primary" onclick="saveCreditChanges()">
+                Simpan Perubahan
+            </button>
+        </div>
+    </div>
+</div>
         `;
         
         // Tambahkan modal ke body
         document.body.insertAdjacentHTML('beforeend', modalHTML);
     });
+    // Password yang diharapkan (dalam aplikasi nyata, ini harus disimpan dengan aman)
+const ADMIN_PASSWORD = "167669123"; // Ganti dengan password yang diinginkan
+
+// Fungsi untuk verifikasi password
+function verifyPassword() {
+    const passwordInput = document.getElementById('adminPassword');
+    const passwordError = document.getElementById('passwordError');
+    const passwordSection = document.getElementById('passwordSection');
+    const creditEditSection = document.getElementById('creditEditSection');
+    const editModalFooter = document.getElementById('editModalFooter');
+    
+    if (passwordInput.value === ADMIN_PASSWORD) {
+        // Password benar, tampilkan form edit credit
+        passwordSection.style.display = 'none';
+        creditEditSection.style.display = 'block';
+        editModalFooter.style.display = 'flex';
+        
+        // Isi form dengan data credit saat ini
+        const container = document.getElementById('editCreditContainer');
+        container.innerHTML = '';
+        
+        for (const [category, data] of Object.entries(creditData)) {
+            const div = document.createElement('div');
+            div.className = 'form-group';
+            
+            div.innerHTML = `
+                <label for="edit-${category}">${category} Credit</label>
+                <input type="number" id="edit-${category}" class="form-input" 
+                       value="${data.credit}" min="0">
+            `;
+            
+            container.appendChild(div);
+        }
+    } else {
+        // Password salah, tampilkan pesan error
+        passwordError.style.display = 'block';
+        passwordInput.style.borderColor = 'var(--danger)';
+        
+        // Reset input setelah 2 detik
+        setTimeout(() => {
+            passwordInput.value = '';
+            passwordInput.focus();
+        }, 2000);
+    }
+}
+
+// Fungsi untuk reset modal ketika ditutup
+function resetEditModal() {
+    const passwordInput = document.getElementById('adminPassword');
+    const passwordError = document.getElementById('passwordError');
+    const passwordSection = document.getElementById('passwordSection');
+    const creditEditSection = document.getElementById('creditEditSection');
+    const editModalFooter = document.getElementById('editModalFooter');
+    
+    passwordInput.value = '';
+    passwordError.style.display = 'none';
+    passwordInput.style.borderColor = '';
+    passwordSection.style.display = 'block';
+    creditEditSection.style.display = 'none';
+    editModalFooter.style.display = 'none';
+}
+
+// Modifikasi fungsi showEditCreditModal
+function showEditCreditModal() {
+    const modal = document.getElementById('editCreditModal');
+    resetEditModal(); // Reset modal setiap kali dibuka
+    modal.classList.add('active');
+}
+
+// Tambahkan event listener untuk mereset modal ketika ditutup
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('editCreditModal');
+    const closeButton = modal.querySelector('.modal-close');
+    
+    closeButton.addEventListener('click', resetEditModal);
+    
+    // Juga reset ketika mengklik latar belakang modal
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            resetEditModal();
+        }
+    });
+});
 </script>
 </body>
 </html>

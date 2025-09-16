@@ -11,7 +11,6 @@
         /* ========== VARIABEL CSS YANG DIPERLUKAN ========== */
         :root {
             --primary-gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
-            --success-gradient: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);
             --warning-gradient: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
             --info-gradient: linear-gradient(135deg, #4895ef 0%, #3f37c9 100%);
         }
@@ -327,35 +326,6 @@
             transition: background-color var(--transition-fast);
         }
 
-        /* Perbaikan untuk Priority Badges */
-        .priority-high, .priority-medium, .priority-low {
-            padding: 6px 12px;
-            border-radius: var(--radius-full);
-            font-size: var(--text-xs);
-            font-weight: var(--font-semibold);
-            display: inline-block;
-            text-align: center;
-            min-width: 80px;
-            letter-spacing: 0.3px;
-        }
-
-        .priority-high {
-            background-color: var(--danger-light);
-            color: var(--danger);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-        }
-
-        .priority-medium {
-            background-color: var(--warning-light);
-            color: var(--warning);
-            border: 1px solid rgba(245, 158, 11, 0.2);
-        }
-
-        .priority-low {
-            background-color: var(--success-light);
-            color: var(--success);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-        }
 
         /* Perbaikan untuk Action Buttons */
         .action-buttons {
@@ -807,7 +777,7 @@
                         </span>
                     </h3>
                     <div class="stat-icon performance">
-                        <i class="fas fa-chart-line"></i>
+                        <i class="fas fa-check-circle"></i>
                     </div>
                 </div>
                 <div class="stat-value" id="weeklyPerformance">0%</div>
@@ -818,25 +788,26 @@
                 </div>
             </div>
 
-            <div class="summary-stat-card fade-in" style="animation-delay: 0.2s;">
-                <div class="stat-header">
-                    <h3 class="stat-title">Resolution Trend
-                        <span class="info-tooltip">
-                            <i class="fas fa-info-circle"></i>
-                            <span class="tooltip-text">Tingkat resolusi keseluruhan (laporan terselesaikan / total laporan)</span>
-                        </span>
-                    </h3>
-                    <div class="stat-icon trend">
-                        <i class="fas fa-trending-up"></i>
-                    </div>
-                </div>
-                <div class="stat-value" id="resolutionRate">0%</div>
-                <div class="stat-description">
-                    <span id="trendChange" class="positive">
-                        <i class="fas fa-arrow-up"></i> 0% improvement
-                    </span>
-                </div>
-            </div>
+           <div class="summary-stat-card fade-in" style="animation-delay: 0.2s;">
+    <div class="stat-header">
+        <h3 class="stat-title">Resolution Trend
+            <span class="info-tooltip">
+                <i class="fas fa-info-circle"></i>
+                <span class="tooltip-text">Tingkat resolusi keseluruhan (laporan terselesaikan / total laporan)</span>
+            </span>
+        </h3>
+        <div class="stat-icon trend">
+            <i class="fas fa-chart-line"></i> <!-- Ikon tren -->
+        </div>
+    </div>
+    <div class="stat-value" id="resolutionRate">0%</div>
+    <div class="stat-description">
+        <span id="trendChange" class="positive">
+            <i class="fas fa-arrow-up-right-dots"></i> 0% improvement
+        </span>
+    </div>
+</div>
+
 
             <div class="summary-stat-card fade-in" style="animation-delay: 0.3s;">
                 <div class="stat-header">
@@ -931,15 +902,7 @@
                 </select>
             </div>
             
-            <div class="filter-group">
-                <label for="priorityFilter">Priority</label>
-                <select class="filter-select" id="priorityFilter">
-                    <option value="all">All Priorities</option>
-                    <option value="high">High</option>
-                    <option value="medium">Medium</option>
-                    <option value="low">Low</option>
-                </select>
-            </div>
+            <!-- Priority filter dihapus dari sini -->
         </div>
 
         <!-- Charts Section -->
@@ -999,9 +962,6 @@
                     <button class="btn btn-outline" id="refreshSummary">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
-                    <button class="btn btn-danger" id="deleteAllData">
-                        <i class="fas fa-trash"></i> Hapus Semua Data
-                    </button>
                 </div>
             </div>
             
@@ -1013,7 +973,6 @@
                             <th>Report ID</th>
                             <th>Category</th>
                             <th>Status</th>
-                            <th>Priority</th>
                             <th>Brand</th>
                             <th>Resolution Time</th>
                             <th>Actions</th>
@@ -1042,48 +1001,299 @@
             </div>
         </div>
     </div>
-    <script src="auth-check.js"></script>
     <script src="sidebar-loader.js"></script>
-    <script src="user-profile.js"></script>
-    <script src="notifications.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-    // ========== DATA INTEGRATION FUNCTIONS ==========
-    
-    // Fungsi untuk mendapatkan semua data dari semua sumber
-    function getAllReportsData() {
-        // Ambil data dari pending reports
-        const pendingReports = JSON.parse(localStorage.getItem('pendingReports') || '[]');
-        
-        // Ambil data dari solved reports
-        const solvedReports = JSON.parse(localStorage.getItem('solvedReports') || '[]');
-        
-        // Gabungkan semua data
-        const allReports = [...pendingReports, ...solvedReports];
-        
-        return allReports;
+<script src="user-profile.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
+<script>
+    // ========== KONFIGURASI FIREBASE ==========
+    const firebaseConfig = {
+        apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
+        authDomain: "dashboard-css.firebaseapp.com",
+        databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "dashboard-css",
+        storageBucket: "dashboard-css.appspot.com",
+        messagingSenderId: "771131792881",
+        appId: "1:771131792881:web:ad634424225bd7de847850",
+        measurementId: "G-3CYBC5B101"
+    };
+
+    // Inisialisasi Firebase
+    try {
+        firebase.initializeApp(firebaseConfig);
+        console.log("Firebase initialized successfully");
+    } catch (error) {
+        console.error("Firebase initialization error:", error);
     }
+
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    // ========== VARIABEL GLOBAL ==========
+    let allReportsData = [];
+    let reportsListener = null;
+    let dateRangeFilter = 30; // Default: 30 hari
+    let newGamesListener = null; // Listener untuk data game baru
+
+    // ========== DEFINISI SEMUA FUNGSI ==========
     
-    // Fungsi untuk menghitung statistik berdasarkan data aktual
-    function calculateRealStats() {
-        const pendingReports = JSON.parse(localStorage.getItem('pendingReports') || '[]');
-        const solvedReports = JSON.parse(localStorage.getItem('solvedReports') || '[]');
-        const allReports = [...pendingReports, ...solvedReports];
+    // Fungsi untuk mendapatkan tanggal dengan offset hari
+    function getDateWithOffset(daysOffset) {
+        const now = new Date();
+        // Convert to Indonesia timezone (UTC+7)
+        const offset = 7; // UTC+7 for Indonesia Western Time
+        const localTime = now.getTime();
+        const localOffset = now.getTimezoneOffset() * 60000;
+        const utc = localTime + localOffset;
+        const indonesiaTime = new Date(utc + (3600000 * offset));
         
+        // Subtract days offset
+        indonesiaTime.setDate(indonesiaTime.getDate() - daysOffset);
+        
+        // Set to start of day (00:00:00)
+        indonesiaTime.setHours(0, 0, 0, 0);
+        
+        // Convert back to UTC for Firestore query
+        const utcTime = new Date(indonesiaTime.getTime() - (3600000 * offset));
+        return utcTime;
+    }
+
+    // Fungsi untuk setup listener data laporan
+    function setupReportsListener() {
+        console.log("Setting up reports listener for date range:", dateRangeFilter);
+        
+        // Hentikan listener sebelumnya jika ada
+        if (reportsListener) {
+            reportsListener();
+        }
+        
+        const startDate = getDateWithOffset(dateRangeFilter);
+        const endDate = new Date(); // Sekarang
+        
+        console.log("Query range (UTC):", startDate, "to", endDate);
+        
+        // Setup listener untuk semua jenis data
+        const pendingQuery = db.collection('pendingReports')
+            .where('dateCreated', '>=', startDate)
+            .where('dateCreated', '<=', endDate);
+        
+        const solvedQuery = db.collection('solvedReports')
+            .where('dateCreated', '>=', startDate)
+            .where('dateCreated', '<=', endDate);
+        
+        const maintenanceQuery = db.collection('maintenanceReports')
+            .where('dateCreated', '>=', startDate)
+            .where('dateCreated', '<=', endDate);
+        
+        const solvedMaintenanceQuery = db.collection('solvedMaintenance')
+            .where('dateCompleted', '>=', startDate)
+            .where('dateCompleted', '<=', endDate);
+        
+        // Simpan unsubscribe functions
+        const unsubscribeFunctions = [];
+        
+        // Listener untuk pending reports
+        const pendingUnsubscribe = pendingQuery.onSnapshot(
+            (snapshot) => {
+                console.log(`[PENDING] Snapshot received: ${snapshot.docs.length} documents`);
+                processPendingSnapshot(snapshot);
+                updateCombinedReports();
+            },
+            (error) => {
+                console.error("[PENDING] Error listening to pending reports:", error);
+                showNotification('Gagal memuat data pending reports', 'error');
+            }
+        );
+        unsubscribeFunctions.push(pendingUnsubscribe);
+
+        // Listener untuk solved reports
+        const solvedUnsubscribe = solvedQuery.onSnapshot(
+            (snapshot) => {
+                console.log(`[SOLVED] Snapshot received: ${snapshot.docs.length} documents`);
+                processSolvedSnapshot(snapshot);
+                updateCombinedReports();
+            },
+            (error) => {
+                console.error("[SOLVED] Error listening to solved reports:", error);
+                showNotification('Gagal memuat data solved reports', 'error');
+            }
+        );
+        unsubscribeFunctions.push(solvedUnsubscribe);
+        
+        // Listener untuk maintenance reports
+        const maintenanceUnsubscribe = maintenanceQuery.onSnapshot(
+            (snapshot) => {
+                console.log("[MAINTENANCE] Snapshot received:", snapshot.docs.length, "documents");
+                processMaintenanceSnapshot(snapshot);
+                updateCombinedReports();
+            },
+            (error) => {
+                console.error("[MAINTENANCE] Error listening to maintenance reports:", error);
+                showNotification('Gagal memuat data maintenance', 'error');
+            }
+        );
+        unsubscribeFunctions.push(maintenanceUnsubscribe);
+        
+        // Listener untuk solved maintenance
+        const solvedMaintenanceUnsubscribe = solvedMaintenanceQuery.onSnapshot(
+            (snapshot) => {
+                console.log("[SOLVED MAINTENANCE] Snapshot received:", snapshot.docs.length, "documents");
+                processSolvedMaintenanceSnapshot(snapshot);
+                updateCombinedReports();
+            },
+            (error) => {
+                console.error("[SOLVED MAINTENANCE] Error listening to solved maintenance:", error);
+                showNotification('Gagal memuat data solved maintenance', 'error');
+            }
+        );
+        unsubscribeFunctions.push(solvedMaintenanceUnsubscribe);
+        
+        // Kembalikan fungsi untuk unsubscribe semua listener
+        reportsListener = () => {
+            unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
+            console.log("Reports listeners removed");
+        };
+    }
+
+    // Proses snapshot pending reports
+    function processPendingSnapshot(snapshot) {
+        const pendingReports = snapshot.docs.map(doc => {
+            const data = doc.data();
+            return { 
+                id: doc.id, 
+                ...data,
+                status: 'Pending',
+                collection: 'pendingReports',
+                date: data.dateCreated,
+                isSolved: false
+            };
+        });
+        
+        // Simpan di storage terpisah
+        window.pendingReportsCache = pendingReports;
+        console.log("Pending reports cached:", pendingReports.length);
+    }
+
+    // Proses snapshot solved reports
+    function processSolvedSnapshot(snapshot) {
+        const solvedReports = snapshot.docs.map(doc => {
+            const data = doc.data();
+            return { 
+                id: doc.id, 
+                ...data,
+                status: 'Solved',
+                collection: 'solvedReports',
+                date: data.dateCreated,
+                isSolved: true,
+                resolutionTime: calculateResolutionTime(data.dateCreated, data.dateSolved)
+            };
+        });
+        
+        // Simpan di storage terpisah
+        window.solvedReportsCache = solvedReports;
+        console.log("Solved reports cached:", solvedReports.length);
+    }
+
+    // Proses snapshot maintenance reports
+    function processMaintenanceSnapshot(snapshot) {
+        const maintenanceReports = snapshot.docs.map(doc => {
+            const data = doc.data();
+            return { 
+                id: doc.id, 
+                ...data,
+                status: 'Maintenance',
+                collection: 'maintenanceReports',
+                date: data.dateCreated,
+                isSolved: false,
+                category: data.category || 'Report Maintenance'
+            };
+        });
+        
+        // Simpan di storage terpisah
+        window.maintenanceReportsCache = maintenanceReports;
+        console.log("Maintenance reports cached:", maintenanceReports.length);
+    }
+
+    // Proses snapshot solved maintenance
+    function processSolvedMaintenanceSnapshot(snapshot) {
+        const solvedMaintenanceReports = snapshot.docs.map(doc => {
+            const data = doc.data();
+            return { 
+                id: doc.id, 
+                ...data,
+                status: 'Maintenance Solved',
+                collection: 'solvedMaintenance',
+                date: data.dateCompleted,
+                isSolved: true,
+                category: data.category || 'Report Maintenance',
+                resolutionTime: calculateResolutionTime(data.dateCreated, data.dateCompleted)
+            };
+        });
+        
+        // Simpan di storage terpisah
+        window.solvedMaintenanceCache = solvedMaintenanceReports;
+        console.log("Solved maintenance cached:", solvedMaintenanceReports.length);
+    }
+
+    // Hitung waktu resolusi dalam menit
+    function calculateResolutionTime(startDate, endDate) {
+        if (!startDate || !endDate) return 0;
+        
+        try {
+            const start = startDate.toDate ? startDate.toDate() : new Date(startDate);
+            const end = endDate.toDate ? endDate.toDate() : new Date(endDate);
+            
+            const diffMs = end - start;
+            return Math.round(diffMs / (1000 * 60)); // Convert to minutes
+        } catch (error) {
+            console.error("Error calculating resolution time:", error);
+            return 0;
+        }
+    }
+
+    // Gabungkan dan update semua laporan
+    function updateCombinedReports() {
+        const pending = window.pendingReportsCache || [];
+        const solved = window.solvedReportsCache || [];
+        const maintenance = window.maintenanceReportsCache || [];
+        const solvedMaintenance = window.solvedMaintenanceCache || [];
+        
+        console.log("Combining reports - Pending:", pending.length, "Solved:", solved.length, 
+                    "Maintenance:", maintenance.length, "Solved Maintenance:", solvedMaintenance.length);
+        
+        // Gabungkan semua laporan
+        allReportsData = [...pending, ...solved, ...maintenance, ...solvedMaintenance];
+            
+        console.log("Total reports after combining:", allReportsData.length);
+        
+        // Perbarui UI
+        updateDashboardStats(allReportsData);
+        updateCharts(allReportsData);
+        updateSummaryTable(allReportsData);
+    }
+
+    // ========== FUNGSI STATISTIK & UI UPDATE ==========
+
+    // Fungsi untuk menghitung statistik dashboard
+    function calculateRealStats(reports) {
         // Hitung total reports
-        const totalReports = allReports.length;
-        const solvedCount = solvedReports.length;
-        const pendingCount = pendingReports.length;
+        const totalReports = reports.length;
+        
+        // Hitung solved reports
+        const solvedReports = reports.filter(report => report.isSolved).length;
         
         // Hitung resolution rate
-        const resolutionRate = totalReports > 0 ? Math.round((solvedCount / totalReports) * 100) : 0;
+        const resolutionRate = totalReports > 0 ? Math.round((solvedReports / totalReports) * 100) : 0;
         
-        // Hitung rata-rata resolution time
+        // Hitung rata-rata resolution time untuk reports yang sudah solved
         let totalResolutionTime = 0;
         let countWithResolutionTime = 0;
         
-        solvedReports.forEach(report => {
-            if (report.resolutionTime) {
+        reports.forEach(report => {
+            if (report.isSolved && report.resolutionTime) {
                 totalResolutionTime += report.resolutionTime;
                 countWithResolutionTime++;
             }
@@ -1094,7 +1304,7 @@
         
         // Hitung reports per brand
         const brandCounts = {};
-        allReports.forEach(report => {
+        reports.forEach(report => {
             if (report.brand) {
                 brandCounts[report.brand] = (brandCounts[report.brand] || 0) + 1;
             }
@@ -1110,7 +1320,7 @@
         
         // Hitung reports per kategori
         const categoryCounts = {};
-        allReports.forEach(report => {
+        reports.forEach(report => {
             if (report.category) {
                 categoryCounts[report.category] = (categoryCounts[report.category] || 0) + 1;
             }
@@ -1118,49 +1328,35 @@
         
         // Hitung reports per status
         const statusCounts = {
-            'Pending': pendingCount,
-            'Solved': solvedCount
+            'Pending': reports.filter(report => report.status === 'Pending').length,
+            'Solved': reports.filter(report => report.status === 'Solved').length,
+            'Maintenance': reports.filter(report => report.status === 'Maintenance').length,
+            'Maintenance Solved': reports.filter(report => report.status === 'Maintenance Solved').length
         };
-        
-        // Hitung reports per priority
-        const priorityCounts = {
-            'High': 0,
-            'Medium': 0,
-            'Low': 0
-        };
-        
-        allReports.forEach(report => {
-            if (report.priority && priorityCounts.hasOwnProperty(report.priority)) {
-                priorityCounts[report.priority]++;
-            }
-        });
         
         return {
             totalReports,
-            solvedCount,
-            pendingCount,
+            solvedCount: solvedReports,
+            pendingCount: statusCounts.Pending,
             resolutionRate,
             avgResolutionTime,
             topBrand,
             categoryCounts,
-            statusCounts,
-            priorityCounts
+            statusCounts
         };
     }
-    
-    // ========== UI UPDATE FUNCTIONS ==========
-    
+
     // Fungsi untuk memperbarui statistik dashboard
-    function updateDashboardStats() {
-        const stats = calculateRealStats();
+    function updateDashboardStats(reports) {
+        const stats = calculateRealStats(reports);
         
-        // Update weekly performance (menggunakan data 7 hari terakhir)
+        // Update weekly performance (menggunakan resolution rate)
         document.getElementById('weeklyPerformance').textContent = `${stats.resolutionRate}%`;
         
         // Update resolution trend
         document.getElementById('resolutionRate').textContent = `${stats.resolutionRate}%`;
         
-        // Update top brand (PERBAIKAN UTAMA: menampilkan brand dengan laporan terbanyak)
+        // Update top brand
         document.getElementById('topBrand').textContent = stats.topBrand.name;
         
         // Update trend indicators (placeholder untuk perbandingan dengan periode sebelumnya)
@@ -1170,10 +1366,10 @@
         document.getElementById('trendChange').innerHTML = 
             `<i class="fas fa-arrow-up"></i> ${Math.floor(Math.random() * 10) + 1}% improvement`;
     }
-    
+
     // Fungsi untuk memperbarui chart
-    function updateCharts() {
-        const stats = calculateRealStats();
+    function updateCharts(reports) {
+        const stats = calculateRealStats(reports);
         
         // Update Status Chart
         const statusCtx = document.getElementById('statusChart').getContext('2d');
@@ -1183,10 +1379,15 @@
         window.statusChartInstance = new Chart(statusCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Solved', 'Pending'],
+                labels: ['Solved', 'Pending', 'Maintenance', 'Maintenance Solved'],
                 datasets: [{
-                    data: [stats.solvedCount, stats.pendingCount],
-                    backgroundColor: ['#4cc9f0', '#f72585'],
+                    data: [
+                        stats.statusCounts.Solved, 
+                        stats.statusCounts.Pending,
+                        stats.statusCounts.Maintenance,
+                        stats.statusCounts['Maintenance Solved']
+                    ],
+                    backgroundColor: ['#4cc9f0', '#f72585', '#4895ef', '#3a0ca3'],
                     borderWidth: 0
                 }]
             },
@@ -1207,14 +1408,14 @@
             window.trendChartInstance.destroy();
         }
         
-        // Generate sample weekly data
-        const weeks = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
-        const resolutionData = weeks.map(() => Math.floor(Math.random() * 40) + 60);
+        // Generate weekly resolution data based on actual reports
+        const weeks = getLast4Weeks();
+        const resolutionData = calculateWeeklyResolutionData(reports, weeks);
         
         window.trendChartInstance = new Chart(trendCtx, {
             type: 'line',
             data: {
-                labels: weeks,
+                labels: weeks.map(w => w.label),
                 datasets: [{
                     label: 'Resolution Rate',
                     data: resolutionData,
@@ -1230,8 +1431,8 @@
                 scales: {
                     y: {
                         beginAtZero: false,
-                        min: 50,
-                        max: 100
+                        min: Math.max(0, Math.min(...resolutionData) - 10),
+                        max: Math.min(100, Math.max(...resolutionData) + 10)
                     }
                 }
             }
@@ -1269,18 +1470,58 @@
             }
         });
     }
-    
+
+    // Fungsi untuk mendapatkan label 4 minggu terakhir
+    function getLast4Weeks() {
+        const weeks = [];
+        const now = new Date();
+        
+        for (let i = 3; i >= 0; i--) {
+            const startDate = new Date(now);
+            startDate.setDate(now.getDate() - (i * 7));
+            
+            const endDate = new Date(startDate);
+            endDate.setDate(startDate.getDate() + 6);
+            
+            const weekLabel = `Minggu ${4-i}`;
+            weeks.push({
+                label: weekLabel,
+                start: startDate,
+                end: endDate
+            });
+        }
+        
+        return weeks;
+    }
+
+    // Fungsi untuk menghitung data resolusi mingguan
+    function calculateWeeklyResolutionData(reports, weeks) {
+        return weeks.map(week => {
+            const weekReports = reports.filter(report => {
+                const reportDate = report.date.toDate ? report.date.toDate() : new Date(report.date);
+                return reportDate >= week.start && reportDate <= week.end;
+            });
+            
+            if (weekReports.length === 0) return 0;
+            
+            const solvedCount = weekReports.filter(report => report.isSolved).length;
+            return Math.round((solvedCount / weekReports.length) * 100);
+        });
+    }
+
     // Fungsi untuk memperbarui tabel data
-    function updateSummaryTable() {
-        const allReports = getAllReportsData();
+    function updateSummaryTable(reports) {
         const tableBody = document.getElementById('summaryTableBody');
         const emptyState = document.getElementById('noSummaryData');
+        
+        // Terapkan filter
+        const filteredReports = applyFilters(reports);
         
         // Kosongkan tabel
         tableBody.innerHTML = '';
         
         // Tampilkan empty state jika tidak ada data
-        if (allReports.length === 0) {
+        if (filteredReports.length === 0) {
             emptyState.style.display = 'block';
             return;
         }
@@ -1289,21 +1530,36 @@
         emptyState.style.display = 'none';
         
         // Urutkan data berdasarkan tanggal (terbaru pertama)
-        allReports.sort((a, b) => {
-            return new Date(b.date || b.createdAt) - new Date(a.date || a.createdAt);
+        filteredReports.sort((a, b) => {
+            const aDate = a.date.toDate ? a.date.toDate() : new Date(a.date);
+            const bDate = b.date.toDate ? b.date.toDate() : new Date(b.date);
+            return bDate - aDate;
         });
         
         // Tambahkan data ke tabel
-        allReports.forEach(report => {
+        filteredReports.forEach(report => {
             const row = document.createElement('tr');
             
             // Format tanggal
-            const reportDate = report.date || report.createdAt || 'N/A';
-            const formattedDate = new Date(reportDate).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            });
+            let reportDate;
+            try {
+                reportDate = report.date.toDate ? report.date.toDate() : new Date(report.date);
+                // Convert to Indonesia timezone (UTC+7)
+                const offset = 7;
+                const localTime = reportDate.getTime();
+                const localOffset = reportDate.getTimezoneOffset() * 60000;
+                const utc = localTime + localOffset;
+                const indonesiaTime = new Date(utc + (3600000 * offset));
+                
+                reportDate = indonesiaTime.toLocaleDateString('id-ID', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            } catch (error) {
+                console.error("Error formatting date:", error, report.date);
+                reportDate = 'N/A';
+            }
             
             // Format resolution time
             let resolutionTime = 'N/A';
@@ -1315,32 +1571,24 @@
             
             // Tentukan status dan class-nya
             let statusClass = 'status-pending';
-            let statusText = 'Pending';
+            let statusText = report.status || 'Pending';
             
-            if (report.status === 'Solved' || report.solved) {
+            if (statusText === 'Solved' || report.isSolved) {
                 statusClass = 'status-solved';
-                statusText = 'Solved';
+            } else if (statusText.includes('Maintenance')) {
+                statusClass = 'status-maintenance';
             }
             
-            // Tentukan priority dan class-nya
-            let priorityClass = '';
-            let priorityText = report.priority || 'Medium';
-            
-            if (priorityText === 'High') priorityClass = 'priority-high';
-            else if (priorityText === 'Medium') priorityClass = 'priority-medium';
-            else if (priorityText === 'Low') priorityClass = 'priority-low';
-            
             row.innerHTML = `
-                <td>${formattedDate}</td>
+                <td>${reportDate}</td>
                 <td>${report.id || 'N/A'}</td>
                 <td>${report.category || 'N/A'}</td>
                 <td><span class="${statusClass}">${statusText}</span></td>
-                <td><span class="${priorityClass}">${priorityText}</span></td>
                 <td>${report.brand || 'N/A'}</td>
                 <td>${resolutionTime}</td>
                 <td>
                     <div class="action-buttons">
-                        <button class="btn-icon view" title="View Details" onclick="viewReportDetails('${report.id}')">
+                        <button class="btn-icon view" title="View Details" onclick="viewReportDetails('${report.id}', '${report.collection}')">
                             <i class="fas fa-eye"></i>
                         </button>
                     </div>
@@ -1350,66 +1598,59 @@
             tableBody.appendChild(row);
         });
     }
-    
-    // ========== EVENT LISTENERS ==========
-    
-    // Event listener untuk filter changes
-    document.getElementById('dateRange').addEventListener('change', applyFilters);
-    document.getElementById('categoryFilter').addEventListener('change', applyFilters);
-    document.getElementById('brandFilter').addEventListener('change', applyFilters);
-    document.getElementById('priorityFilter').addEventListener('change', applyFilters);
-    
-    // Event listener untuk refresh button
-    document.getElementById('refreshSummary').addEventListener('click', function() {
-        updateDashboardStats();
-        updateCharts();
-        updateSummaryTable();
+
+    // ========== FUNGSI FILTER ==========
+
+    function applyFilters(reports) {
+        const categoryFilter = document.getElementById('categoryFilter').value;
+        const brandFilter = document.getElementById('brandFilter').value;
         
-        // Tampilkan notifikasi
-        showNotification('Summary data refreshed successfully!', 'success');
-    });
-    
-    // Event listener untuk export button
-    document.getElementById('exportData').addEventListener('click', function() {
-        // Simulasi export data
-        showNotification('Exporting summary data...', 'info');
+        let filteredReports = reports;
         
-        // Simulasi delay untuk export
-        setTimeout(() => {
-            showNotification('Data exported successfully!', 'success');
-        }, 1500);
-    });
-    
-    // Event listener untuk delete all data
-    document.getElementById('deleteAllData').addEventListener('click', function() {
-        if (confirm('Are you sure you want to delete all data? This action cannot be undone.')) {
-            // Hapus semua data dari localStorage
-            localStorage.removeItem('pendingReports');
-            localStorage.removeItem('solvedReports');
-            
-            // Refresh tampilan
-            updateDashboardStats();
-            updateCharts();
-            updateSummaryTable();
-            
-            showNotification('All data has been deleted.', 'success');
+        // Terapkan filter kategori
+        if (categoryFilter !== 'all') {
+            filteredReports = filteredReports.filter(report => 
+                report.category === categoryFilter
+            );
         }
-    });
-    
-    // ========== FILTER FUNCTIONS ==========
-    
-    function applyFilters() {
-        // Implementasi filter akan ditambahkan di sini
-        updateSummaryTable();
+        
+        // Terapkan filter brand
+        if (brandFilter !== 'all') {
+            filteredReports = filteredReports.filter(report => 
+                report.brand === brandFilter
+            );
+        }
+        
+        console.log("After filtering:", filteredReports.length, "reports");
+        return filteredReports;
     }
-    
-    // ========== UTILITY FUNCTIONS ==========
-    
+
+    // ========== FUNGSI UTILITY ==========
+
     // Fungsi untuk melihat detail laporan
-    function viewReportDetails(reportId) {
-        // Cari laporan di semua data
-        const allReports = getAllReportsData();
-        const report = allReports.find(r => r.id === reportId);
+    function viewReportDetails(reportId, collection) {
+        // Cari laporan di cache yang sesuai
+        let report = null;
+        
+        switch(collection) {
+            case 'pendingReports':
+                report = window.pendingReportsCache.find(r => r.id === reportId);
+                break;
+            case 'solvedReports':
+                report = window.solvedReportsCache.find(r => r.id === reportId);
+                break;
+            case 'maintenanceReports':
+                report = window.maintenanceReportsCache.find(r => r.id === reportId);
+                break;
+            case 'solvedMaintenance':
+                report = window.solvedMaintenanceCache.find(r => r.id === reportId);
+                break;
+        }
+        
+        if (!report) {
+            // Coba cari di semua data sebagai fallback
+            report = allReportsData.find(r => r.id === reportId);
+        }
         
         if (!report) {
             showNotification('Report not found!', 'error');
@@ -1419,7 +1660,7 @@
         // Tampilkan modal dengan detail laporan
         showReportModal(report);
     }
-    
+
     // Fungsi untuk menampilkan modal detail laporan
     function showReportModal(report) {
         // Buat modal element
@@ -1438,7 +1679,7 @@
                     </div>
                     <div class="form-group">
                         <label>Date</label>
-                        <div class="form-input-static">${report.date || report.createdAt || 'N/A'}</div>
+                        <div class="form-input-static">${formatDateForDisplay(report.date)}</div>
                     </div>
                     <div class="form-group">
                         <label>Category</label>
@@ -1449,12 +1690,8 @@
                         <div class="form-input-static">${report.brand || 'N/A'}</div>
                     </div>
                     <div class="form-group">
-                        <label>Priority</label>
-                        <div class="form-input-static">${report.priority || 'Medium'}</div>
-                    </div>
-                    <div class="form-group">
                         <label>Status</label>
-                        <div class="form-input-static">${report.status || (report.solved ? 'Solved' : 'Pending')}</div>
+                        <div class="form-input-static">${report.status || (report.isSolved ? 'Solved' : 'Pending')}</div>
                     </div>
                     <div class="form-group">
                         <label>Description</label>
@@ -1490,6 +1727,15 @@
         }, 10);
         
         // Event listener untuk tombol close
+        const closeModal = () => {
+            modalOverlay.classList.remove('active');
+            setTimeout(() => {
+                if (modalOverlay.parentNode) {
+                    modalOverlay.parentNode.removeChild(modalOverlay);
+                }
+            }, 300);
+        };
+        
         modalOverlay.querySelector('.modal-close').addEventListener('click', closeModal);
         modalOverlay.querySelector('#closeModal').addEventListener('click', closeModal);
         
@@ -1499,22 +1745,232 @@
                 closeModal();
             }
         });
+    }
+
+    // Format tanggal untuk display
+    function formatDateForDisplay(dateValue) {
+        if (!dateValue) return 'N/A';
         
-        function closeModal() {
-            modalOverlay.classList.remove('active');
-            setTimeout(() => {
-                document.body.removeChild(modalOverlay);
-            }, 300);
+        try {
+            let date;
+            if (dateValue.toDate) {
+                date = dateValue.toDate();
+            } else {
+                date = new Date(dateValue);
+            }
+            
+            // Convert to Indonesia timezone (UTC+7)
+            const offset = 7;
+            const localTime = date.getTime();
+            const localOffset = date.getTimezoneOffset() * 60000;
+            const utc = localTime + localOffset;
+            const indonesiaTime = new Date(utc + (3600000 * offset));
+            
+            return indonesiaTime.toLocaleDateString('id-ID', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        } catch (error) {
+            console.error("Error formatting date for display:", error, dateValue);
+            return 'N/A';
         }
     }
+
+    // Fungsi untuk menampilkan notifikasi
+    function showNotification(message, type = 'info') {
+        // Buat elemen notifikasi
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Tampilkan notifikasi
+        setTimeout(() => notification.classList.add('show'), 100);
+        
+        // Sembunyikan setelah 3 detik
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 3000);
+    }
+
+    // ========== FUNGSI UNTUK NEW GAMES ==========
     
-    // ========== INITIALIZATION ==========
-    
+    function setupNewGamesListener() {
+        console.log("Setting up new games listener...");
+        
+        // Hentikan listener sebelumnya jika ada
+        if (newGamesListener) {
+            newGamesListener();
+        }
+        
+        try {
+            // Setup listener untuk koleksi newGame
+            newGamesListener = db.collection('newGame')
+                .onSnapshot(snapshot => {
+                    let newGamesData = [];
+                    
+                    snapshot.forEach(doc => {
+                        try {
+                            const gameData = doc.data();
+                            gameData.id = doc.id;
+                            newGamesData.push(gameData);
+                        } catch (e) {
+                            console.error("Error processing game document:", e);
+                        }
+                    });
+                    
+                    console.log(`Successfully fetched ${newGamesData.length} games from releases-newgame`);
+                    
+                    // Memproses data game yang diambil
+                    processNewGamesData(newGamesData);
+                    
+                }, error => {
+                    console.error("Error in new games listener:", error);
+                    showNotification('Gagal memuat data game baru', 'error');
+                });
+                
+            return newGamesListener;
+        } catch (error) {
+            console.error("Error setting up new games listener:", error);
+            showNotification('Error setting up game listener', 'error');
+            return () => {}; // Return empty unsubscribe function
+        }
+    }
+
+    function processNewGamesData(gamesData) {
+        // Hitung statistik dari data game
+        const totalGames = gamesData.length;
+        const upcomingGames = gamesData.filter(game => 
+            game.status && game.status.toLowerCase() === 'upcoming').length;
+        
+        // Filter game populer (rating >= 4.5)
+        const popularGames = gamesData.filter(game => {
+            // Pastikan rating ada dan berupa angka
+            const rating = parseFloat(game.rating);
+            return !isNaN(rating) && rating >= 4.5;
+        }).length;
+        
+        // Hitung jumlah kategori unik
+        const uniqueCategories = new Set();
+        gamesData.forEach(game => {
+            if (game.category) {
+                uniqueCategories.add(game.category);
+            }
+        });
+        const categoryCount = uniqueCategories.size;
+        
+        // Update UI dengan data yang diperoleh
+        updateNewGamesUI(totalGames, upcomingGames, popularGames, categoryCount);
+        
+        // Simpan data untuk penggunaan lain jika diperlukan
+        window.newGamesData = gamesData;
+    }
+
+    function updateNewGamesUI(total, upcoming, popular, categories) {
+        // Update elemen UI dengan data yang diperoleh
+        const totalElement = document.getElementById('totalGames');
+        const upcomingElement = document.getElementById('upcomingGames');
+        const popularElement = document.getElementById('popularGames');
+        const categoriesElement = document.getElementById('gameCategories');
+        
+        if (totalElement) totalElement.textContent = total;
+        if (upcomingElement) upcomingElement.textContent = upcoming;
+        if (popularElement) popularElement.textContent = popular;
+        if (categoriesElement) categoriesElement.textContent = categories;
+        
+        console.log(`Updated UI - Total: ${total}, Upcoming: ${upcoming}, Popular: ${popular}, Categories: ${categories}`);
+    }
+
+    // ========== EVENT LISTENERS ==========
+
+    // Event listener untuk filter changes
+    function setupEventListeners() {
+        // Pastikan elemen ada sebelum menambahkan event listener
+        const dateRangeElement = document.getElementById('dateRange');
+        const categoryFilterElement = document.getElementById('categoryFilter');
+        const brandFilterElement = document.getElementById('brandFilter');
+        const refreshSummaryElement = document.getElementById('refreshSummary');
+        const exportDataElement = document.getElementById('exportData');
+        
+        if (dateRangeElement) {
+            dateRangeElement.addEventListener('change', function() {
+                dateRangeFilter = parseInt(this.value);
+                if (reportsListener) {
+                    reportsListener();
+                }
+                setupReportsListener();
+                showNotification(`Date range changed to ${this.options[this.selectedIndex].text}`, 'info');
+            });
+        }
+        
+        if (categoryFilterElement) {
+            categoryFilterElement.addEventListener('change', function() {
+                updateSummaryTable(allReportsData);
+            });
+        }
+        
+        if (brandFilterElement) {
+            brandFilterElement.addEventListener('change', function() {
+                updateSummaryTable(allReportsData);
+            });
+        }
+        
+        if (refreshSummaryElement) {
+            refreshSummaryElement.addEventListener('click', function() {
+                if (reportsListener) {
+                    reportsListener();
+                }
+                setupReportsListener();
+                showNotification('Summary data refreshed successfully!', 'success');
+            });
+        }
+        
+        if (exportDataElement) {
+            exportDataElement.addEventListener('click', function() {
+                // Simulasi export data
+                showNotification('Exporting summary data...', 'info');
+                
+                // Simulasi delay untuk export
+                setTimeout(() => {
+                    showNotification('Data exported successfully!', 'success');
+                }, 1500);
+            });
+        }
+    }
+
+    // ========== INISIALISASI ==========
+
     document.addEventListener('DOMContentLoaded', function() {
-        // Inisialisasi dashboard
-        updateDashboardStats();
-        updateCharts();
-        updateSummaryTable();
+        console.log("Summary Dashboard initialized");
+        
+        // Inisialisasi semua cache
+        window.pendingReportsCache = [];
+        window.solvedReportsCache = [];
+        window.maintenanceReportsCache = [];
+        window.solvedMaintenanceCache = [];
+        
+        // Setup event listeners
+        setupEventListeners();
+        
+        // Setup listener untuk data
+        setupReportsListener();
+        
+        // Setup listener untuk data game baru
+        setupNewGamesListener();
         
         // Tambahkan animasi fade-in untuk elemen
         const fadeElements = document.querySelectorAll('.fade-in');
@@ -1534,6 +1990,16 @@
             });
         }, 300);
     });
-    </script>
+
+    // Pastikan membersihkan listener ketika tab/window ditutup
+    window.addEventListener('beforeunload', function() {
+        if (reportsListener) {
+            reportsListener();
+        }
+        if (newGamesListener) {
+            newGamesListener();
+        }
+    });
+</script>
 </body>
 </html>

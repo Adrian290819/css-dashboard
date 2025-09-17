@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="stylemobile.css">
     <style>
         /* ========== VARIABEL CSS YANG DIPERLUKAN ========== */
         :root {
@@ -1176,7 +1177,13 @@
         window.pendingReportsCache = pendingReports;
         console.log("Pending reports cached:", pendingReports.length);
     }
-
+// Update informasi halaman
+            document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+            
+            // Enable/disable pagination buttons
+            document.getElementById('prevPage').disabled = currentPage === 1;
+            document.getElementById('nextPage').disabled = currentPage === totalPages || totalPages === 0;
+            
     // Proses snapshot solved reports
     function processSolvedSnapshot(snapshot) {
         const solvedReports = snapshot.docs.map(doc => {

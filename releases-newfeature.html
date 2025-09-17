@@ -1331,13 +1331,6 @@ function createReleaseCard(release) {
             <h3 class="game-title">${release.title}</h3>
             <p class="game-description">${release.description || 'No description available'}</p>
             <div class="game-meta">
-                <div class="game-platforms">
-                    <span class="platform-icon">${release.version || '1.0.0'}</span>
-                </div>
-                <div class="game-rating">
-                    <i class="fas fa-${release.priority === 'high' ? 'fire' : release.priority === 'medium' ? 'star' : 'clock'}"></i>
-                    <span>${formatPriority(release.priority || 'medium')}</span>
-                </div>
             </div>
             <div class="game-details">
                 <div class="game-detail-item">

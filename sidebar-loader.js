@@ -166,7 +166,6 @@ class SidebarLoader {
                         <span class="menu-text">Top Up Credit</span>
                     </div>  
 
-
 <div class="menu-item" data-page="eventprovider.html">
                         <div class="menu-icon">
                             <i class="fas fa-trophy"></i>
@@ -260,6 +259,29 @@ class SidebarLoader {
                 cursor: pointer;
                 align-items: center;
                 justify-content: center;
+                flex-direction: column;
+                padding: 0;
+            }
+
+            .menu-toggle span {
+                display: block;
+                width: 24px;
+                height: 2px;
+                background-color: white;
+                margin: 2px 0;
+                transition: all 0.3s ease;
+            }
+
+            .menu-toggle.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+
+            .menu-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .menu-toggle.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(5px, -5px);
             }
 
             /* Sidebar Styles */
@@ -479,10 +501,25 @@ class SidebarLoader {
     load() {
         if (this.sidebarContainer) {
             this.sidebarContainer.innerHTML = this.sidebarHTML;
+            this.createMenuToggle(); // Membuat tombol toggle
             this.initializeSidebarFunctionality();
             this.restoreSidebarState();
             this.setActiveMenuItem();
             this.loadTheme(); // Load theme yang disimpan
+        }
+    }
+
+    createMenuToggle() {
+        // Cek apakah tombol toggle sudah ada
+        if (!document.querySelector('.menu-toggle')) {
+            const menuToggle = document.createElement('button');
+            menuToggle.className = 'menu-toggle';
+            menuToggle.innerHTML = `
+                <span></span>
+                <span></span>
+                <span></span>
+            `;
+            document.body.appendChild(menuToggle);
         }
     }
 
@@ -496,11 +533,13 @@ class SidebarLoader {
             menuToggle.addEventListener('click', () => {
                 sidebar.classList.toggle('active');
                 overlay.classList.toggle('active');
+                menuToggle.classList.toggle('active');
             });
             
             overlay.addEventListener('click', () => {
                 sidebar.classList.remove('active');
                 overlay.classList.remove('active');
+                menuToggle.classList.remove('active');
             });
             
             // Tutup sidebar saat menu item diklik di mobile
@@ -510,6 +549,7 @@ class SidebarLoader {
                     if (window.innerWidth <= 768) {
                         sidebar.classList.remove('active');
                         overlay.classList.remove('active');
+                        menuToggle.classList.remove('active');
                     }
                 });
             });
@@ -520,8 +560,10 @@ class SidebarLoader {
             if (window.innerWidth > 768) {
                 const sidebar = document.querySelector('.sidebar');
                 const overlay = document.querySelector('.sidebar-overlay');
+                const menuToggle = document.querySelector('.menu-toggle');
                 if (sidebar) sidebar.classList.remove('active');
                 if (overlay) overlay.classList.remove('active');
+                if (menuToggle) menuToggle.classList.remove('active');
             }
         });
 

@@ -443,35 +443,6 @@
             transition: background-color var(--transition-fast);
         }
 
-        /* Perbaikan untuk Priority Badges */
-        .priority-high, .priority-medium, .priority-low {
-            padding: 6px 12px;
-            border-radius: var(--radius-full);
-            font-size: var(--text-xs);
-            font-weight: var(--font-semibold);
-            display: inline-block;
-            text-align: center;
-            min-width: 80px;
-            letter-spacing: 0.3px;
-        }
-
-        .priority-high {
-            background-color: var(--danger-light);
-            color: var(--danger);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-        }
-
-        .priority-medium {
-            background-color: var(--warning-light);
-            color: var(--warning);
-            border: 1px solid rgba(245, 158, 11, 0.2);
-        }
-
-        .priority-low {
-            background-color: var(--success-light);
-            color: var(--success);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-        }
 
         /* Perbaikan untuk Action Buttons */
         .action-buttons {
@@ -979,16 +950,6 @@
             </div>
             
             <div class="filter-group">
-                <label for="priorityFilter">Priority</label>
-                <select id="priorityFilter" class="filter-select">
-                    <option value="all">All Priorities</option>
-                    <option value="high">High</option>
-                    <option value="medium">Medium</option>
-                    <option value="low">Low</option>
-                </select>
-            </div>
-            
-            <div class="filter-group">
                 <label for="timeFilter">Completion Time</label>
                 <select id="timeFilter" class="filter-select">
                     <option value="all">All Time</option>
@@ -1004,7 +965,6 @@
                 <select id="sortFilter" class="filter-select">
                     <option value="newest">Newest First</option>
                     <option value="oldest">Oldest First</option>
-                    <option value="priority">Priority</option>
                     <option value="category">Category</option>
                 </select>
             </div>
@@ -1024,15 +984,7 @@
             </button>
             
             <div style="flex: 1;"></div>
-            
-            <div class="view-toggle">
-                <button class="btn btn-icon active" id="tableViewBtn" title="Table View">
-                    <i class="fas fa-table"></i>
-                </button>
-                <button class="btn btn-icon" id="cardViewBtn" title="Card View">
-                    <i class="fas fa-th-large"></i>
-                </button>
-            </div>
+        
         </div>
         
         <div class="activities-section fade-in" style="animation-delay: 0.7s;">
@@ -1050,7 +1002,6 @@
                             <th>Task ID</th>
                             <th>Title</th>
                             <th>Category</th>
-                            <th>Priority</th>
                             <th>Completed Date</th>
                             <th>Completion Time</th>
                             <th>Assigned To</th>
@@ -1432,7 +1383,6 @@ function convertToDate(timestamp) {
                 <td>${maintenance.id}</td>
                 <td>${maintenance.title || 'N/A'}</td>
                 <td>${maintenance.category || 'N/A'}</td>
-                <td><span class="priority-${maintenance.priority || 'medium'}">${maintenance.priority || 'Medium'}</span></td>
                 <td>${completedDate}</td>
                 <td>${completionTime}</td>
                 <td>${maintenance.assignedTo || 'N/A'}</td>
@@ -1459,7 +1409,6 @@ function convertToDate(timestamp) {
     
     function filterMaintenance(maintenance) {
         const categoryFilter = document.getElementById('categoryFilter').value;
-        const priorityFilter = document.getElementById('priorityFilter').value;
         const timeFilter = document.getElementById('timeFilter').value;
         const sortFilter = document.getElementById('sortFilter').value;
         
@@ -1469,10 +1418,6 @@ function convertToDate(timestamp) {
                 return false;
             }
             
-            // Filter by priority
-            if (priorityFilter !== 'all' && item.priority !== priorityFilter) {
-                return false;
-            }
             
             // Filter by time
             if (timeFilter !== 'all' && item.dateCompleted) {
@@ -1516,12 +1461,6 @@ function convertToDate(timestamp) {
                     const dateA = convertToDate(a.dateCompleted);
                     const dateB = convertToDate(b.dateCompleted);
                     return dateA - dateB;
-                });
-                break;
-            case 'priority':
-                const priorityOrder = {high: 3, medium: 2, low: 1};
-                filtered.sort((a, b) => {
-                    return (priorityOrder[b.priority] || 0) - (priorityOrder[a.priority] || 0);
                 });
                 break;
             case 'category':
@@ -1708,7 +1647,6 @@ function convertToDate(timestamp) {
         // Populate modal with maintenance data
         document.getElementById('viewTitle').textContent = maintenance.title || 'N/A';
         document.getElementById('viewCategory').textContent = maintenance.category || 'N/A';
-        document.getElementById('viewPriority').textContent = maintenance.priority || 'N/A';
         
         // Format dates
         const createdDate = maintenance.dateCreated ? formatDate(convertToDate(maintenance.dateCreated)) : 'N/A';
@@ -1808,10 +1746,6 @@ document.addEventListener('DOMContentLoaded', function() {
         updateSolvedMaintenanceUI();
     });
     
-    document.getElementById('priorityFilter').addEventListener('change', function() {
-        currentPage = 1;
-        updateSolvedMaintenanceUI();
-    });
     
     document.getElementById('timeFilter').addEventListener('change', function() {
         currentPage = 1;
@@ -1884,13 +1818,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setupSolvedMaintenanceListener();
     });
     
-    // Set up view toggle buttons
-    document.getElementById('tableViewBtn').addEventListener('click', function() {
-        this.classList.add('active');
-        document.getElementById('cardViewBtn').classList.remove('active');
-        showToast("Table view enabled", "info");
-    });
-    
+
     document.getElementById('cardViewBtn').addEventListener('click', function() {
         this.classList.add('active');
         document.getElementById('tableViewBtn').classList.remove('active');
@@ -1903,6 +1831,91 @@ document.addEventListener('DOMContentLoaded', function() {
         updateSolvedMaintenanceUI();
     });
 });
+// Fungsi untuk memperbaiki modal view
+function fixViewModal() {
+    // Perbaiki styling modal overlay
+    const modalOverlay = document.getElementById('viewModal');
+    if (modalOverlay) {
+        modalOverlay.style.display = 'none';
+        modalOverlay.style.position = 'fixed';
+        modalOverlay.style.top = '0';
+        modalOverlay.style.left = '0';
+        modalOverlay.style.right = '0';
+        modalOverlay.style.bottom = '0';
+        modalOverlay.style.background = 'rgba(0, 0, 0, 0.5)';
+        modalOverlay.style.alignItems = 'center';
+        modalOverlay.style.justifyContent = 'center';
+        modalOverlay.style.zIndex = '1000';
+        modalOverlay.style.transition = 'all 0.3s ease';
+        modalOverlay.style.opacity = '0';
+        modalOverlay.style.visibility = 'hidden';
+    }
+
+    // Fungsi untuk menampilkan modal
+    window.showModal = function() {
+        if (modalOverlay) {
+            modalOverlay.style.display = 'flex';
+            setTimeout(() => {
+                modalOverlay.style.opacity = '1';
+                modalOverlay.style.visibility = 'visible';
+            }, 10);
+        }
+    };
+
+    // Fungsi untuk menyembunyikan modal
+    window.hideModal = function() {
+        if (modalOverlay) {
+            modalOverlay.style.opacity = '0';
+            modalOverlay.style.visibility = 'hidden';
+            setTimeout(() => {
+                modalOverlay.style.display = 'none';
+            }, 300);
+        }
+    };
+
+    // Tambahkan event listener untuk tombol close
+    const closeViewModal = document.getElementById('closeViewModal');
+    const closeViewBtn = document.getElementById('closeViewBtn');
+    
+    if (closeViewModal) {
+        closeViewModal.addEventListener('click', hideModal);
+    }
+    
+    if (closeViewBtn) {
+        closeViewBtn.addEventListener('click', hideModal);
+    }
+
+    // Close modal ketika klik di luar area modal
+    if (modalOverlay) {
+        modalOverlay.addEventListener('click', function(event) {
+            if (event.target === modalOverlay) {
+                hideModal();
+            }
+        });
+    }
+
+    // Pastikan event listener untuk tombol view terpasang dengan benar
+    document.addEventListener('click', function(event) {
+        if (event.target.closest('.btn-icon.view')) {
+            const button = event.target.closest('.btn-icon.view');
+            const maintenanceId = button.getAttribute('data-id');
+            if (maintenanceId) {
+                showMaintenanceDetails(maintenanceId);
+                showModal();
+            }
+        }
+    });
+
+    console.log("View modal functionality has been fixed");
+}
+
+// Panggil fungsi perbaikan setelah DOM selesai dimuat
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', fixViewModal);
+} else {
+    fixViewModal();
+}
     </script>
+    
 </body>
 </html>

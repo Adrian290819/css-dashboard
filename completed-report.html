@@ -1818,12 +1818,6 @@ document.addEventListener('DOMContentLoaded', function() {
         setupSolvedMaintenanceListener();
     });
     
-
-    document.getElementById('cardViewBtn').addEventListener('click', function() {
-        this.classList.add('active');
-        document.getElementById('tableViewBtn').classList.remove('active');
-        showToast("Card view coming soon", "info");
-    });
     
     // Set up search functionality
     document.getElementById('completedSearch').addEventListener('input', function() {

@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
     <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="styleglobal.css">
     
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-app-compat.js"></script>
@@ -335,34 +336,7 @@
             align-items: center;
         }
 
-        .view-toggle {
-            display: flex;
-            gap: var(--space-xs);
-            background: var(--bg-secondary);
-            padding: var(--space-xs);
-            border-radius: var(--radius-md);
-        }
-
-        .view-toggle .btn-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: transparent;
-            color: var(--text-secondary);
-            border: none;
-            cursor: pointer;
-            transition: all var(--transition-fast);
-        }
-
-        .view-toggle .btn-icon.active,
-        .view-toggle .btn-icon:hover {
-            background: var(--card-bg);
-            color: var(--primary);
-            box-shadow: var(--shadow-xs);
-        }
+        
 
         /* ========== PERBAIKAN TABLE ========== */
         .activities-section {

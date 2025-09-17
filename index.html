@@ -1740,6 +1740,12 @@
                 <div class="login-footer">
                     <p>Tidak punya akun? <a href="#" id="registerLink">Daftar di sini</a></p>
                 </div>
+                <div id="toastNotification" class="toast-notification" style="display: none;">
+    <div class="toast-content">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage"></span>
+    </div>
+</div>
             </div>
         </div>
     </div>
@@ -1793,10 +1799,10 @@
     let totalPages = 1;
 
         // Fungsi utama untuk memuat data dashboard
-       async function loadDashboardData() {
-        try {
-            console.log("Starting to load dashboard data...");
-            showLoading();
+async function loadDashboardData() {
+    try {
+        console.log("Starting to load dashboard data...");
+        showLoading();
             
             // Ambil data dari semua koleksi secara paralel
             const promises = [
@@ -1843,19 +1849,24 @@
                 ...doc.data() 
             }));
 
-            // Update UI dengan data yang diambil
-            updateStatistics();
-            updateRecentActivities();
-            
-            hideLoading();
-            hideError();
-            
-        } catch (error) {
-            console.error("Error loading dashboard data:", error);
-            showError("Failed to load dashboard data: " + error.message);
-            hideLoading();
-        }
+             updateStatistics();
+        updateRecentActivities();
+        
+        hideLoading();
+        hideError();
+        
+        // TAMPILKAN TOAST NOTIFICATION SAAT REFRESH BERHASIL
+        showToast('Data berhasil dimuat ulang', 'success');
+        
+    } catch (error) {
+        console.error("Error loading dashboard data:", error);
+        showError("Failed to load dashboard data: " + error.message);
+        hideLoading();
+        
+        // TAMPILKAN TOAST ERROR JIKA GAGAL
+        showToast('Gagal memuat data: ' + error.message, 'error');
     }
+}
 
        function updateStatistics() {
         try {
@@ -2121,32 +2132,43 @@
     }
 
     // Fungsi untuk menampilkan toast notifikasi
-    function showToast(message, type = 'info') {
-        // Buat elemen toast jika belum ada
-        let toast = document.getElementById('toastNotification');
-        if (!toast) {
-            toast = document.createElement('div');
-            toast.id = 'toastNotification';
-            toast.className = 'toast-notification';
-            document.body.appendChild(toast);
-        }
-        
-        // Set pesan dan jenis toast
-        toast.textContent = message;
-        toast.className = `toast-notification ${type}`;
-        
-        // Tampilkan toast
-        toast.style.display = 'block';
-        toast.style.opacity = '1';
-        
-        // Sembunyikan setelah 3 detik
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 300);
-        }, 3000);
+function showToast(message, type = 'info') {
+    const toast = document.getElementById('toastNotification');
+    const toastMessage = document.getElementById('toastMessage');
+    const toastIcon = toast.querySelector('i');
+    
+    if (!toast || !toastMessage) return;
+    
+    // Set pesan dan jenis toast
+    toastMessage.textContent = message;
+    toast.className = `toast-notification ${type}`;
+    
+    // Set icon berdasarkan type
+    switch(type) {
+        case 'success':
+            toastIcon.className = 'fas fa-check-circle';
+            break;
+        case 'error':
+            toastIcon.className = 'fas fa-exclamation-circle';
+            break;
+        case 'info':
+            toastIcon.className = 'fas fa-info-circle';
+            break;
     }
+    
+    // Tampilkan toast
+    toast.style.display = 'block';
+    toast.classList.remove('hide');
+    toast.style.opacity = '1';
+    
+    // Sembunyikan setelah 3 detik
+    setTimeout(() => {
+        toast.classList.add('hide');
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 400);
+    }, 3000);
+}
 
     // Fungsi untuk melihat detail aktivitas
     function viewActivity(activityId, activityType) {
@@ -2226,14 +2248,14 @@
             }
         });
         
-        // Set up event listeners
-        const refreshBtn = document.getElementById('refreshActivities');
-        if (refreshBtn) {
-            refreshBtn.addEventListener('click', loadDashboardData);
-            console.log("Refresh button event listener added");
-        } else {
-            console.error("Refresh button not found!");
-        }
+// Pastikan ini ada di DOMContentLoaded event listener
+const refreshBtn = document.getElementById('refreshActivities');
+if (refreshBtn) {
+    refreshBtn.addEventListener('click', loadDashboardData);
+    console.log("Refresh button event listener added");
+} else {
+    console.error("Refresh button not found!");
+}
         
         const resetBtn = document.getElementById('resetStatsBtn');
         if (resetBtn) {

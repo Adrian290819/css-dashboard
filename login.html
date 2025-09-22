@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - CSS Admin Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="stylemobile.css">
+  <style>
+    :root {
+        --primary-color: #4361ee;
+        --primary-hover: #3a56d4;
+        --secondary-color: #6c757d;
+        --success-color: #2ed573;
+        --danger-color: #ff4757;
+        --light-color: #f8f9fa;
+        --dark-color: #212529;
+        --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+        --card-bg: rgba(255, 255, 255, 0.95);
+        --text-color: #333;
+        --text-light: #6c757d;
+        --border-color: #dee2e6;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        --transition: all 0.3s ease;
+    }
+
+    [data-theme="dark"] {
+        --card-bg: rgba(30, 30, 30, 0.95);
+        --text-color: #e0e0e0;
+        --text-light: #9e9e9e;
+        --border-color: #333333;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+        background: var(--bg-gradient);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Quantum Particle Animation */
+    .quantum-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
+    }
+
+    .particle {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.7);
+        pointer-events: none;
+        opacity: 0;
+    }
+
+    .particle.trail {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(0);
+    }
+
+    .energy-wave {
+        position: absolute;
+        border-radius: 50%;
+        border: 2px solid rgba(67, 97, 238, 0.5);
+        opacity: 0;
+        transform: scale(0);
+        pointer-events: none;
+    }
+
+    .nexus-point {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 0 20px 5px var(--primary-color);
+        opacity: 0.7;
+        animation: pulse-nexus 4s infinite ease-in-out;
+    }
+
+    @keyframes pulse-nexus {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 0.7;
+            box-shadow: 0 0 20px 5px var(--primary-color);
+        }
+        50% {
+            transform: scale(1.5);
+            opacity: 0.9;
+            box-shadow: 0 0 30px 10px var(--primary-color);
+        }
+    }
+
+    /* Hexagon Grid */
+    .hexagon-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0.1;
+        overflow: hidden;
+    }
+
+    .hexagon {
+        position: absolute;
+        width: 100px;
+        height: 55px;
+        background: transparent;
+        opacity: 0.1;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .hexagon:before, .hexagon:after {
+        content: "";
+        position: absolute;
+        width: 0;
+        border-left: 50px solid transparent;
+        border-right: 50px solid transparent;
+    }
+
+    .hexagon:before {
+        bottom: 100%;
+        border-bottom: 28px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .hexagon:after {
+        top: 100%;
+        border-top: 28px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Login Container Styles */
+    .login-container {
+        width: 100%;
+        max-width: 420px;
+        background: var(--card-bg);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transform: translateY(0);
+        transition: var(--transition);
+        position: relative;
+        z-index: 1;
+    }
+
+    .login-container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .login-header {
+        background: linear-gradient(to right, #0f77ff, #2575fc);
+        color: white;
+        text-align: center;
+        padding: 30px 20px;
+        position: relative;
+    }
+
+    .login-header::after {
+        content: '';
+        position: absolute;
+        bottom: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 40px;
+        background: var(--card-bg);
+        border-radius: 50%;
+        z-index: 2;
+    }
+
+    .login-header::before {
+        content: '';
+        position: absolute;
+        bottom: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(to right, #0f77ff, #2575fc);
+        opacity: 0.2;
+        border-radius: 50%;
+        z-index: 1;
+    }
+
+    .logo {
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 15px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .logo i {
+        font-size: 36px;
+        color: white;
+    }
+
+    .login-header h1 {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .login-header p {
+        font-size: 14px;
+        opacity: 0.9;
+    }
+
+    .login-form {
+        padding: 40px 30px 30px;
+    }
+
+    .input-group {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .input-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: var(--text-color);
+        font-size: 14px;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 15px;
+        top: 42px;
+        color: var(--text-light);
+        font-size: 18px;
+    }
+
+    .input-group input {
+        width: 100%;
+        padding: 12px 15px 12px 45px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 16px;
+        transition: var(--transition);
+        background: transparent;
+        color: var(--text-color);
+    }
+
+    .input-group input:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+
+    .input-group input::placeholder {
+        color: var(--text-light);
+    }
+
+    .remember-forgot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        font-size: 14px;
+    }
+
+    .remember {
+        display: flex;
+        align-items: center;
+    }
+
+    .remember input {
+        margin-right: 8px;
+        accent-color: var(--primary-color);
+    }
+
+    .forgot-password {
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: var(--transition);
+    }
+
+    .forgot-password:hover {
+        text-decoration: underline;
+    }
+
+    .btn-login {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(to right, #0f77ff, #2575fc);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-login::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: 0.5s;
+    }
+
+    .btn-login:hover::before {
+        left: 100%;
+    }
+
+    .btn-login:hover {
+        opacity: 0.95;
+        transform: translateY(-2px);
+    }
+
+    .btn-login:active {
+        transform: translateY(0);
+    }
+
+    .error-message {
+        color: var(--danger-color);
+        font-size: 14px;
+        margin-top: 5px;
+        display: none;
+        text-align: center;
+        padding: 10px;
+        background-color: rgba(255, 71, 87, 0.1);
+        border-radius: 5px;
+        border-left: 4px solid var(--danger-color);
+    }
+
+    .success-message {
+        color: var(--success-color);
+        font-size: 14px;
+        margin-top: 5px;
+        display: none;
+        text-align: center;
+        padding: 10px;
+        background-color: rgba(46, 213, 115, 0.1);
+        border-radius: 5px;
+        border-left: 4px solid var(--success-color);
+    }
+
+    .login-footer {
+        text-align: center;
+        padding: 20px 0 10px;
+        color: var(--text-light);
+        font-size: 14px;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .theme-toggle {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+        z-index: 10;
+    }
+
+    .theme-toggle:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    @media (max-width: 480px) {
+        .login-container {
+            max-width: 100%;
+        }
+        
+        .login-form {
+            padding: 30px 20px 20px;
+        }
+        
+        .remember-forgot {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+    }
+
+    /* Animasi */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+        animation: fadeIn 0.6s ease forwards;
+    }
+
+    .delay-1 { animation-delay: 0.2s; }
+    .delay-2 { animation-delay: 0.4s; }
+    .delay-3 { animation-delay: 0.6s; }
+    /* ========== PERBAIKAN LAYOUT LOGIN ========== */
+.login-container {
+    max-width: 380px !important; /* Lebih kecil dan proporsional */
+    margin: 20px;
+}
+
+.login-header {
+    padding: 25px 20px !important; /* Padding lebih kecil */
+}
+
+.logo {
+    width: 60px !important;
+    height: 60px !important;
+}
+
+.logo i {
+    font-size: 28px !important;
+}
+
+.login-header h1 {
+    font-size: 20px !important;
+    margin-bottom: 8px !important;
+}
+
+.login-header p {
+    font-size: 13px !important;
+}
+
+.login-form {
+    padding: 30px 25px 25px !important; /* Padding lebih compact */
+}
+
+.input-group {
+    margin-bottom: 16px !important;
+}
+
+.input-group label {
+    font-size: 13px !important;
+    margin-bottom: 6px !important;
+}
+
+.input-icon {
+    top: 38px !important;
+    font-size: 16px !important;
+}
+
+.input-group input {
+    padding: 10px 15px 10px 40px !important;
+    font-size: 14px !important;
+}
+
+.remember-forgot {
+    margin-bottom: 16px !important;
+    font-size: 13px !important;
+}
+
+.btn-login {
+    padding: 12px !important;
+    font-size: 15px !important;
+}
+
+.login-footer {
+    padding: 15px 0 10px !important;
+    font-size: 12px !important;
+}
+
+/* Perbaikan khusus untuk mobile */
+@media (max-width: 480px) {
+    .login-container {
+        max-width: 90% !important;
+        margin: 15px;
+    }
+    
+    .login-form {
+        padding: 25px 20px 20px !important;
+    }
+    
+    .login-header {
+        padding: 20px 15px !important;
+    }
+}
+
+/* Perbaikan animasi partikel agar tidak terlalu dominan */
+.quantum-container {
+    opacity: 0.7; /* Kurangi opacity agar tidak mengganggu form */
+}
+
+.hexagon {
+    opacity: 0.03 !important; /* Hexagon lebih transparan */
+}
+
+/* Perbaikan tema toggle position */
+.theme-toggle {
+    top: 15px;
+    right: 15px;
+    width: 35px;
+    height: 35px;
+}
+  </style>
+</head>
+<body>
+  <div class="quantum-container" id="quantumContainer">
+    <div class="hexagon-container" id="hexagonContainer"></div>
+  </div>
+
+  <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+
+  <div class="login-container">
+    <div class="login-header">
+      <div class="logo"><i class="fas fa-tasks"></i></div>
+      <h1>CSS Admin Dashboard</h1>
+      <p>Silakan masuk ke akun Anda</p>
+    </div>
+
+    <div class="login-form">
+      <div class="input-group">
+        <label for="email">Email</label>
+        <div class="input-icon"><i class="fas fa-envelope"></i></div>
+        <input type="email" id="email" placeholder="Masukkan email Anda" autocomplete="email">
+      </div>
+
+      <div class="input-group">
+        <label for="password">Password</label>
+        <div class="input-icon"><i class="fas fa-lock"></i></div>
+        <input type="password" id="password" placeholder="Masukkan password Anda" autocomplete="current-password">
+      </div>
+
+      <div class="remember-forgot">
+        <label><input type="checkbox" id="remember"> Remember me</label>
+        <a href="#" id="forgotPassword">Forgot Password?</a>
+      </div>
+
+      <button class="btn-login" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
+      <div class="error-message" id="loginError"></div>
+      <div class="success-message" id="loginSuccess"></div>
+    </div>
+
+    <div class="login-footer">
+      <p>&copy; 2025 CSS Admin Dashboard. All rights reserved.</p>
+      <p id="browserInfo" style="font-size: 12px; margin-top: 5px;"></p>
+    </div>
+  </div>
+
+  <script type="module">
+  // ========== FIREBASE CONFIGURATION ==========
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import {
+    getAuth,
+    signInWithEmailAndPassword,
+    sendPasswordResetEmail,
+    createUserWithEmailAndPassword
+  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
+    authDomain: "dashboard-css.firebaseapp.com",
+    databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "dashboard-css",
+    storageBucket: "dashboard-css.appspot.com",
+    messagingSenderId: "771131792881",
+    appId: "1:771131792881:web:ad634424225bd7de847850",
+    measurementId: "G-3CYBC5B101"
+  };
+
+  // Initialize Firebase app and auth
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // ========== DOM ELEMENTS ==========
+  const loginBtn = document.getElementById("loginBtn");
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const loginError = document.getElementById("loginError");
+  const loginSuccess = document.getElementById("loginSuccess");
+  const themeToggle = document.getElementById("themeToggle");
+  const quantumContainer = document.getElementById("quantumContainer");
+  const hexagonContainer = document.getElementById("hexagonContainer");
+  const forgotPassword = document.getElementById("forgotPassword");
+  const browserInfo = document.getElementById("browserInfo");
+
+  // ========== QUANTUM PARTICLE ANIMATION ==========
+  function createHexagonGrid() {
+    const hexagonSize = 100;
+    const hexagonHeight = 55;
+    const hexagonWidth = 100;
+    
+    const cols = Math.ceil(window.innerWidth / hexagonWidth) + 2;
+    const rows = Math.ceil(window.innerHeight / (hexagonHeight * 0.75)) + 2;
+    
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        const hexagon = document.createElement('div');
+        hexagon.classList.add('hexagon');
+        
+        const x = col * hexagonWidth * 0.75;
+        const y = row * hexagonHeight * 0.75;
+        
+        // Offset every other column
+        if (col % 2 === 0) {
+          hexagon.style.top = `${y}px`;
+        } else {
+          hexagon.style.top = `${y + hexagonHeight * 0.375}px`;
+        }
+        
+        hexagon.style.left = `${x}px`;
+        hexagon.style.opacity = `${0.05 + Math.random() * 0.1}`;
+        hexagon.style.transform = `scale(${0.7 + Math.random() * 0.6})`;
+        
+        hexagonContainer.appendChild(hexagon);
+      }
+    }
+  }
+
+  function createNexusPoints() {
+    const colors = ['#4361ee', '#ff4757', '#2ed573', '#ffa502', '#a55eea'];
+    
+    for (let i = 0; i < 5; i++) {
+      const nexus = document.createElement('div');
+      nexus.classList.add('nexus-point');
+      
+      nexus.style.left = `${10 + Math.random() * 80}%`;
+      nexus.style.top = `${10 + Math.random() * 80}%`;
+      nexus.style.background = colors[i];
+      nexus.style.boxShadow = `0 0 20px 5px ${colors[i]}`;
+      nexus.style.animationDelay = `${Math.random() * 2}s`;
+      
+      quantumContainer.appendChild(nexus);
+    }
+  }
+
+  function createQuantumParticles() {
+    if (document.hidden) return;
+    
+    for (let i = 0; i < 2; i++) {
+      const particle = document.createElement('div');
+      particle.classList.add('particle');
+      
+      const size = 2 + Math.random() * 3;
+      particle.style.width = particle.style.height = `${size}px`;
+      
+      const colors = ['#4361ee', '#ff4757', '#2ed573', '#ffa502', '#a55eea', '#ffffff'];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      particle.style.background = color;
+      
+      const startX = Math.random() * window.innerWidth;
+      const startY = Math.random() * window.innerHeight;
+      particle.style.left = `${startX}px`;
+      particle.style.top = `${startY}px`;
+      
+      quantumContainer.appendChild(particle);
+      
+      // Create trail
+      const trail = document.createElement('div');
+      trail.classList.add('particle', 'trail');
+      trail.style.width = trail.style.height = `${size * 2}px`;
+      trail.style.background = color;
+      trail.style.left = `${startX}px`;
+      trail.style.top = `${startY}px`;
+      quantumContainer.appendChild(trail);
+      
+      // Animate particle
+      const angle = Math.random() * Math.PI * 2;
+      const distance = 50 + Math.random() * 150;
+      const targetX = startX + Math.cos(angle) * distance;
+      const targetY = startY + Math.sin(angle) * distance;
+      
+      const particleAnimation = particle.animate([
+        { 
+          opacity: 0,
+          transform: 'translate(0, 0)'
+        },
+        { 
+          opacity: 1,
+          transform: 'translate(0, 0)',
+          offset: 0.1
+        },
+        { 
+          opacity: 0.8,
+          transform: `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`,
+          offset: 0.8
+        },
+        { 
+          opacity: 0,
+          transform: `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`
+        }
+      ], {
+        duration: 2000 + Math.random() * 3000,
+        easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)'
+      });
+      
+      // Animate trail
+      const trailAnimation = trail.animate([
+        { 
+          opacity: 0.5,
+          transform: 'scale(0)'
+        },
+        { 
+          opacity: 0.3,
+          transform: 'scale(1)',
+          offset: 0.2
+        },
+        { 
+          opacity: 0,
+          transform: 'scale(2)'
+        }
+      ], {
+        duration: 1000 + Math.random() * 1000,
+        easing: 'ease-out'
+      });
+      
+      // Create energy wave when particle disappears
+      particleAnimation.onfinish = () => {
+        particle.remove();
+        
+        const wave = document.createElement('div');
+        wave.classList.add('energy-wave');
+        wave.style.left = `${targetX}px`;
+        wave.style.top = `${targetY}px`;
+        wave.style.borderColor = color;
+        quantumContainer.appendChild(wave);
+        
+        const waveAnimation = wave.animate([
+          { 
+            opacity: 0.5,
+            transform: 'scale(0)'
+          },
+          { 
+            opacity: 0,
+            transform: 'scale(2)'
+          }
+        ], {
+          duration: 1000,
+          easing: 'ease-out'
+        });
+        
+        waveAnimation.onfinish = () => {
+          wave.remove();
+        };
+      };
+      
+      trailAnimation.onfinish = () => {
+        trail.remove();
+      };
+    }
+  }
+
+  // ========== VALIDASI EMAIL ==========
+  function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  // ========== SHOW ERROR & SUCCESS MESSAGE ==========
+  function showError(message) {
+    loginError.textContent = message;
+    loginError.style.display = "block";
+    loginSuccess.style.display = "none";
+    setTimeout(() => {
+      loginError.style.display = "none";
+    }, 5000);
+  }
+
+  function showSuccess(message) {
+    loginSuccess.textContent = message;
+    loginSuccess.style.display = "block";
+    loginError.style.display = "none";
+    setTimeout(() => {
+      loginSuccess.style.display = "none";
+    }, 3000);
+  }
+
+  // ========== LOGIN FUNCTION ==========
+  async function handleLogin() {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    if (!email || !password) {
+      showError("Email dan password harus diisi");
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      showError("Format email tidak valid");
+      return;
+    }
+
+    try {
+      loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+      loginBtn.disabled = true;
+
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      showSuccess("Login berhasil! Mengarahkan...");
+
+      if (document.getElementById("remember").checked) {
+        localStorage.setItem("rememberEmail", email);
+      } else {
+        localStorage.removeItem("rememberEmail");
+      }
+
+      sessionStorage.setItem("isLoggedIn", "true");
+      sessionStorage.setItem("user", JSON.stringify({
+        email: user.email,
+        displayName: "Administrator",
+        role: "admin",
+        uid: user.uid
+      }));
+
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1500);
+
+    } catch (error) {
+      console.error("Login error:", error);
+      let errorMessage = "Terjadi kesalahan saat login. Silakan coba lagi.";
+
+      if (error.code) {
+        switch (error.code) {
+          case "auth/user-not-found":
+          case "auth/wrong-password":
+            errorMessage = "Email atau password salah. Silakan periksa kembali.";
+            break;
+          case "auth/invalid-email":
+            errorMessage = "Format email tidak valid";
+            break;
+          case "auth/user-disabled":
+            errorMessage = "Akun dinonaktifkan. Silakan hubungi administrator.";
+            break;
+          case "auth/too-many-requests":
+            errorMessage = "Terlalu banyak percobaan gagal. Silakan coba lagi nanti.";
+            break;
+          case "auth/network-request-failed":
+            errorMessage = "Koneksi jaringan bermasalah. Periksa koneksi internet Anda.";
+            break;
+          case "auth/operation-not-allowed":
+            errorMessage = "Login dengan email dan password tidak diizinkan. Silakan hubungi administrator.";
+            break;
+          default:
+            errorMessage = "Tidak dapat mengakses sistem. Silakan coba lagi atau hubungi administrator.";
+        }
+      }
+
+      showError(errorMessage);
+
+      loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+      loginBtn.disabled = false;
+    }
+  }
+
+  // ========== AUTO REGISTER IF USER NOT FOUND ==========
+  async function handleAutoRegister(email, password) {
+    try {
+      loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mendaftarkan...';
+      loginBtn.disabled = true;
+
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      showSuccess("Akun berhasil dibuat! Silakan login.");
+
+      emailInput.value = email;
+
+    } catch (error) {
+      console.error("Registration error:", error);
+      let errorMessage = "Gagal membuat akun. Silakan coba lagi.";
+      if (error.code === "auth/email-already-in-use") {
+        errorMessage = "Email sudah terdaftar. Silakan gunakan email lain.";
+      } else if (error.code === "auth/weak-password") {
+        errorMessage = "Password terlalu lemah. Gunakan password yang lebih kuat.";
+      }
+      showError(errorMessage);
+    } finally {
+      loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+      loginBtn.disabled = false;
+    }
+  }
+
+  // ========== FORGOT PASSWORD ==========
+  async function handleForgotPassword() {
+    const email = emailInput.value.trim();
+
+    if (!email) {
+      showError("Masukkan email untuk reset password");
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      showError("Format email tidak valid");
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      showSuccess("Email reset password telah dikirim. Periksa inbox Anda.");
+    } catch (error) {
+      console.error("Password reset error:", error);
+      let errorMessage = "Terjadi kesalahan saat mengirim email reset password.";
+      if (error.code === "auth/user-not-found") {
+        errorMessage = "Email tidak terdaftar dalam sistem.";
+      }
+      showError(errorMessage);
+    }
+  }
+
+  // ========== THEME TOGGLE ==========
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute("data-theme");
+    const next = current === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem("theme", next);
+    themeToggle.querySelector("i").className = next === "dark" ? "fas fa-sun" : "fas fa-moon";
+  }
+
+  function applySavedTheme() {
+    const theme = localStorage.getItem("theme") || "light";
+    document.documentElement.setAttribute("data-theme", theme);
+    themeToggle.querySelector("i").className = theme === "dark" ? "fas fa-sun" : "fas fa-moon";
+  }
+
+  // ========== BROWSER DETECTION ==========
+  function detectBrowser() {
+    const userAgent = navigator.userAgent;
+    let browserName = "Unknown Browser";
+
+    if (userAgent.includes("Firefox")) browserName = "Mozilla Firefox";
+    else if (userAgent.includes("Edg")) browserName = "Microsoft Edge";
+    else if (userAgent.includes("Chrome")) browserName = "Google Chrome";
+    else if (userAgent.includes("Safari")) browserName = "Safari";
+
+    browserInfo.textContent = `Browser: ${browserName}`;
+  }
+
+  // ========== EVENT LISTENERS ==========
+  document.addEventListener("DOMContentLoaded", () => {
+    console.log("DOM Content Loaded");
+
+    detectBrowser();
+    applySavedTheme();
+    createHexagonGrid();
+    createNexusPoints();
+    setInterval(createQuantumParticles, 200);
+
+    const rememberedEmail = localStorage.getItem("rememberEmail");
+    if (rememberedEmail) {
+      emailInput.value = rememberedEmail;
+      document.getElementById("remember").checked = true;
+    }
+
+    loginBtn.addEventListener("click", handleLogin);
+
+    passwordInput.addEventListener("keypress", e => {
+      if (e.key === "Enter") handleLogin();
+    });
+
+    forgotPassword.addEventListener("click", e => {
+      e.preventDefault();
+      handleForgotPassword();
+    });
+
+    themeToggle.addEventListener("click", toggleTheme);
+
+    console.log("Event listeners attached");
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,2280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summary Dashboard - CSS Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="global.css">
+        <link rel="stylesheet" href="stylemobile.css">
+    <style>
+        /* ========== VARIABEL CSS YANG DIPERLUKAN ========== */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            --warning-gradient: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
+            --info-gradient: linear-gradient(135deg, #4895ef 0%, #3f37c9 100%);
+            :root {
+    /* ... variabel yang sudah ada ... */
+    
+    /* Tambahkan variabel yang kurang */
+    --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    --info-light: rgba(59, 130, 246, 0.1);
+    --hover-color: rgba(0, 0, 0, 0.05);
+    --menu-hover-text: #3b82f6;
+    --scrollbar-track: #f1f5f9;
+    --scrollbar-thumb: #cbd5e1;
+    --scrollbar-thumb-hover: #94a3b8;
+    --table-header-bg: #f8fafc;
+    --input-bg: #ffffff;
+    --z-modal: 1000;
+    
+    /* Font weights */
+    --font-light: 300;
+    --font-normal: 400;
+    --font-medium: 500;
+    --font-semibold: 600;
+    --font-bold: 700;
+    
+    /* Text sizes */
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    
+    /* Spacing */
+    --space-xs: 0.5rem;
+    --space-sm: 0.75rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    
+    /* Border radius */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.375rem;
+    --radius-lg: 0.5rem;
+    --radius-xl: 0.75rem;
+    --radius-full: 9999px;
+    
+    /* Transitions */
+    --transition-fast: 150ms ease;
+    --transition-normal: 300ms ease;
+}
+        }
+
+        /* ========== PERBAIKAN UTAMA UNTUK LAYOUT ========== */
+        .main-content {
+            padding: var(--space-lg);
+            background-color: var(--bg-secondary);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        /* ========== PERBAIKAN STATISTIC CARDS ========== */
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: var(--space-md);
+            margin-bottom: var(--space-xl);
+        }
+
+        .summary-stat-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .summary-stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .summary-stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        .summary-stat-card.performance::before {
+            background: var(--success-gradient);
+        }
+
+        .summary-stat-card.trend::before {
+            background: var(--info-gradient);
+        }
+
+        .summary-stat-card.comparison::before {
+            background: var(--warning-gradient);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-md);
+        }
+
+        .stat-title {
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .stat-icon.performance {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .stat-icon.trend {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+        }
+
+        .stat-icon.comparison {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: var(--font-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+            line-height: 1;
+        }
+
+        .stat-description {
+            font-size: var(--text-xs);
+            color: var(--text-secondary);
+        }
+
+        /* Tooltip untuk info metrik */
+        .info-tooltip {
+            position: relative;
+            display: inline-block;
+            margin-left: 5px;
+            cursor: help;
+        }
+
+        .info-tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--text-primary);
+            color: var(--bg-primary);
+            text-align: center;
+            border-radius: var(--radius-md);
+            padding: var(--space-sm);
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: var(--text-xs);
+            font-weight: normal;
+        }
+
+        .info-tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* ========== PERBAIKAN FILTER SECTION ========== */
+        .summary-filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+            padding: var(--space-lg);
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+        }
+
+        .filter-group label {
+            font-size: var(--text-xs);
+            font-weight: var(--font-semibold);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-select {
+            padding: var(--space-sm) var(--space-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            font-size: var(--text-sm);
+            transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+            height: 42px;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        /* ========== PERBAIKAN CHART CONTAINER ========== */
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+        }
+
+        .chart-title {
+            font-size: var(--text-lg);
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .chart-actions {
+            display: flex;
+            gap: var(--space-sm);
+        }
+
+        .chart-content {
+            height: 300px;
+            position: relative;
+        }
+
+        /* ========== PERBAIKAN TABLE ========== */
+        .summary-table-section {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            margin-bottom: var(--space-xl);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+            padding-bottom: var(--space-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section-title {
+            font-size: var(--text-xl);
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin: 0;
+        }
+
+        .section-actions {
+            display: flex;
+            gap: var(--space-sm);
+        }
+
+        .summary-table-container {
+            overflow-x: auto;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            margin-bottom: var(--space-lg);
+        }
+
+        .summary-table {
+            margin: 0;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 900px;
+        }
+
+        .summary-table th {
+            padding: var(--space-md) var(--space-lg);
+            background: var(--table-header-bg);
+            font-weight: var(--font-semibold);
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+            font-size: var(--text-xs);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            text-align: left;
+            position: sticky;
+            top: 0;
+        }
+
+        .summary-table td {
+            padding: var(--space-md) var(--space-lg);
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: var(--text-sm);
+            vertical-align: middle;
+            line-height: 1.5;
+        }
+
+        .summary-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .summary-table tr:hover {
+            background-color: var(--hover-color);
+            transition: background-color var(--transition-fast);
+        }
+
+
+        /* Perbaikan untuk Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: var(--space-xs);
+            justify-content: flex-start;
+            flex-wrap: nowrap;
+        }
+
+        .btn-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: var(--text-sm);
+            padding: 0;
+            box-shadow: var(--shadow-xs);
+        }
+
+        .btn-icon.view {
+            background: var(--info-light);
+            color: var(--info);
+        }
+
+        .btn-icon:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+            opacity: 0.9;
+        }
+
+        /* ========== PERBAIKAN EMPTY STATE ========== */
+        .empty-state {
+            text-align: center;
+            padding: var(--space-xl) var(--space-lg);
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 2px dashed var(--border-color);
+            margin: var(--space-lg) 0;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--text-tertiary);
+            margin-bottom: var(--space-md);
+        }
+
+        .empty-state h3 {
+            font-size: var(--text-lg);
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .empty-state p {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-lg);
+        }
+
+        /* ========== PERBAIKAN PAGINATION ========== */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--space-md);
+            margin-top: var(--space-lg);
+            padding: var(--space-md) 0;
+        }
+
+        .page-numbers {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            font-weight: var(--font-medium);
+        }
+
+        /* ========== PERBAIKAN MODAL ========== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: var(--z-modal);
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-normal);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            transform: translateY(20px);
+            transition: transform var(--transition-normal);
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: var(--space-lg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: var(--text-xl);
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm);
+            transition: background-color var(--transition-fast);
+        }
+
+        .modal-close:hover {
+            background-color: var(--hover-color);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: var(--space-lg);
+        }
+
+        .modal-footer {
+            padding: var(--space-lg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--space-sm);
+        }
+
+        /* Form input static (readonly) */
+        .form-input-static {
+            padding: var(--space-sm) 0;
+            color: var(--text-primary);
+            font-size: var(--text-sm);
+            line-height: var(--leading-normal);
+            min-height: 20px;
+        }
+
+        /* Time tracking styles */
+        .time-tracking {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+            background: var(--bg-secondary);
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+        }
+
+        .time-track-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-xs) 0;
+        }
+
+        .time-track-label {
+            font-weight: var(--font-medium);
+            color: var(--text-secondary);
+        }
+
+        .time-track-value {
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+        }
+
+        /* Menu item styles */
+        .menu-item {
+            background-color: transparent;
+            color: var(--text-primary);
+            padding: 12px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            border: none;
+            text-decoration: none;
+        }
+
+        .menu-item:hover {
+            background-color: var(--hover-color);
+            color: var(--menu-hover-text);
+        }
+
+        .menu-item:hover i,
+        .menu-item:hover .menu-icon {
+            color: var(--menu-hover-text);
+        }
+
+        .menu-item.active {
+            background: var(--success-gradient);
+            color: #fff;
+        }
+
+        /* Today indicator */
+        .today-indicator {
+            display: inline-block;
+            padding: 4px 8px;
+            background-color: var(--info-light);
+            color: var(--info);
+            border-radius: var(--radius-sm);
+            font-size: var(--text-xs);
+            font-weight: var(--font-medium);
+            margin-left: var(--space-sm);
+        }
+
+        /* Chart canvas styling */
+        .chart-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Export button */
+        .btn-export {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            transition: all var(--transition-fast);
+        }
+
+        .btn-export:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========== RESPONSIVE ADJUSTMENTS ========== */
+        @media (max-width: 1024px) {
+            .summary-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: var(--space-md);
+            }
+            
+            .header {
+                padding: var(--space-md);
+            }
+            
+            .summary-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .summary-filters {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-sm);
+            }
+            
+            .summary-table th, 
+            .summary-table td {
+                padding: var(--space-sm) var(--space-md);
+            }
+            
+            .modal {
+                width: 95%;
+                margin: var(--space-md);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .summary-table {
+                min-width: 100%;
+            }
+            
+            .summary-table th:nth-child(3),
+            .summary-table td:nth-child(3),
+            .summary-table th:nth-child(6),
+            .summary-table td:nth-child(6) {
+                display: none;
+            }
+            
+            .pagination {
+                flex-direction: column;
+                gap: var(--space-sm);
+            }
+            
+            .chart-content {
+                height: 250px;
+            }
+        }
+
+        /* Custom scrollbar for table container */
+        .summary-table-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .summary-table-container::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+            border-radius: var(--radius-full);
+        }
+
+        .summary-table-container::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: var(--radius-full);
+        }
+
+        .summary-table-container::-webkit-scrollbar-thumb:hover {
+            background: var(--scrollbar-thumb-hover);
+        }
+
+        /* Hover effects for table rows */
+        .summary-table tr {
+            transition: background-color var(--transition-fast), transform var(--transition-fast);
+        }
+
+        .summary-table tr:hover {
+            background-color: var(--hover-color);
+            transform: translateX(4px);
+        }
+
+        /* Improved focus states for accessibility */
+        .btn-icon:focus,
+        .filter-select:focus,
+        .modal-close:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+/* Style untuk status indicator */
+.status-pending {
+    color: #f59e0b;
+    background-color: rgba(245, 158, 11, 0.1);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+}
+
+.status-solved {
+    color: #10b981;
+    background-color: rgba(16, 185, 129, 0.1);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+}
+
+.status-maintenance {
+    color: #3b82f6;
+    background-color: rgba(59, 130, 246, 0.1);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+}
+    </style>
+<body>
+    <!-- Container untuk sidebar yang akan dimuat oleh sidebar-loader.js -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <div id="notificationContainer"></div>
+            <button class="menu-toggle">
+                <i class="fas fa-chart-pie"></i>
+            </button>
+            <h1><i class="fas fa-chart-pie"></i> Summary Dashboard</h1>
+            <div class="header-actions">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search..." id="summarySearch">
+                </div>
+                
+                <button class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="user-profile">
+                    <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
+                    <div class="user-info">
+                        <h4>Nama Masing Masing</h4>
+                        <p>Customer Service Support</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="kpi-container">
+    <!-- Tab Menu -->
+    <div class="kpi-tab-menu" style="display: flex; gap: var(--space-sm); margin-bottom: var(--space-lg);">
+        <!-- Dashboard Overview -->
+        <a class="menu-item" href="index.html">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard Overview</span>
+        </a>
+
+        <!-- Daily Dashboard -->
+        <a class="menu-item" href="daily-dashboard.html">
+            <i class="fas fa-calendar-check"></i>
+            <span>Daily Dashboard</span>
+        </a>
+
+        <!-- Summary Dashboard -->
+        <a class="menu-item active" href="summary-dashboard.html">
+            <i class="fas fa-chart-pie"></i>
+            <span>Summary Dashboard</span>
+        </a>
+    </div>
+</div>
+
+        <!-- Summary Stats Cards -->
+        <div class="summary-stats">
+            <div class="summary-stat-card fade-in" style="animation-delay: 0.1s;">
+                <div class="stat-header">
+                    <h3 class="stat-title">Weekly Performance
+                        <span class="info-tooltip">
+                            <i class="fas fa-info-circle"></i>
+                            <span class="tooltip-text">Persentase laporan yang diselesaikan dalam 7 hari terakhir</span>
+                        </span>
+                    </h3>
+                    <div class="stat-icon performance">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="weeklyPerformance">0%</div>
+                <div class="stat-description">
+                    <span id="performanceChange" class="positive">
+                        <i class="fas fa-arrow-up"></i> 0% from last week
+                    </span>
+                </div>
+            </div>
+
+           <div class="summary-stat-card fade-in" style="animation-delay: 0.2s;">
+    <div class="stat-header">
+        <h3 class="stat-title">Resolution Trend
+            <span class="info-tooltip">
+                <i class="fas fa-info-circle"></i>
+                <span class="tooltip-text">Tingkat resolusi keseluruhan (laporan terselesaikan / total laporan)</span>
+            </span>
+        </h3>
+        <div class="stat-icon trend">
+            <i class="fas fa-chart-line"></i> <!-- Ikon tren -->
+        </div>
+    </div>
+    <div class="stat-value" id="resolutionRate">0%</div>
+    <div class="stat-description">
+        <span id="trendChange" class="positive">
+            <i class="fas fa-arrow-up-right-dots"></i> 0% improvement
+        </span>
+    </div>
+</div>
+
+
+            <div class="summary-stat-card fade-in" style="animation-delay: 0.3s;">
+                <div class="stat-header">
+                    <h3 class="stat-title">Top Brand by Reports
+                        <span class="info-tooltip">
+                            <i class="fas fa-info-circle"></i>
+                            <span class="tooltip-text">Brand dengan jumlah laporan terbanyak</span>
+                        </span>
+                    </h3>
+                    <div class="stat-icon comparison">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="topBrand">-</div>
+                <div class="stat-description">
+                    Most reports this month
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="summary-filters fade-in" style="animation-delay: 0.4s;">
+            <div class="filter-group">
+                <label for="dateRange">Date Range</label>
+                <select class="filter-select" id="dateRange">
+                    <option value="7">Last 7 Days</option>
+                    <option value="30" selected>Last 30 Days</option>
+                    <option value="90">Last 90 Days</option>
+                    <option value="custom">Custom Range</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="categoryFilter">Category</label>
+                <select class="filter-select" id="categoryFilter">
+                    <option value="all">All Categories</option>
+                    <option value="technical">Pending Report</option>
+                    <option value="billing">Solved Report</option>
+                    <option value="account">Pending Maintenance</option>
+                    <option value="enhancement">Solved Maintenance</option>
+                    <option value="enhancement">Releases New Feature</option>
+                    <option value="enhancement">Releases New Game</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="brandFilter">Brand</label>
+                <select class="filter-select" id="brandFilter">
+                   <option value="all">All Brands</option>
+
+                                    <option value="CINTAWIN88 (D-GAMING)">CINTAWIN88 (D-GAMING)</option>
+
+                                    <option value="CERIASLOT99 (D-GAMING)">CERIASLOT99 (D-GAMING)</option>
+
+                                    <option value="RAJASCATTER88 (D-GAMING)">RAJASCATTER88 (D-GAMING)</option>
+
+                                    <option value="MAHJONGJP88 (D-GAMING)">MAHJONGJP88 (D-GAMING)</option>
+
+                                    <option value="NAGAHOKI88 (D-GAMING)">NAGAHOKI88 (D-GAMING)</option>
+
+                                    <option value="SPACEMAN88 (D-GAMING)">SPACEMAN88 (D-GAMING)</option>
+
+                                    <option value="RAJAPANEN (D-GAMING)">RAJAPANEN (D-GAMING)</option>
+
+                                    <option value="BROTO88 (D-GAMING)">BROTO88 (D-GAMING)</option>
+
+                                    <option value="MEDUSA88 (GACHA)">MEDUSA88 (GACHA)</option>
+
+                                    <option value="ATHENA168 (GACHA)">ATHENA168 (GACHA)</option>
+
+                                    <option value="ARES GACOR (GACHA)">ARES GACOR (GACHA)</option>
+
+                                    <option value="RAJA MAHJONG (GACHA)">RAJA MAHJONG (GACHA)</option>
+
+                                    <option value="OLYMPUS1000 (GACHA)">OLYMPUS1000 (GACHA)</option>
+
+                                    <option value="CLICKBET (GACHA)">CLICKBET (GACHA)</option>
+
+                                    <option value="GACHA99 (GACHA)">GACHA99 (GACHA)</option>
+
+                                    <option value="UJANGBET (BREM)">UJANGBET (BREM)</option>
+
+                                    <option value="EPISODEBET (BREM)">EPISODEBET (BREM)</option>
+
+                                    <option value="FOKUSBET88 (89ENGINE)">FOKUSBET88 (89ENGINE)</option>
+
+                                    <option value="RAJAKING88 (89ENGINE)">RAJAKING88 (89ENGINE)</option>
+
+                                    <option value="RAJANAGA99 (89ENGINE)">RAJANAGA99 (89ENGINE)</option>
+
+                                    <option value="JOIN999 (LUXION)">JOIN999 (LUXION)</option>
+                </select>
+            </div>
+            
+            <!-- Priority filter dihapus dari sini -->
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-container">
+            <div class="chart-card fade-in" style="animation-delay: 0.5s;">
+                <div class="chart-header">
+                    <h3 class="chart-title">Reports by Status</h3>
+                    <div class="chart-actions">
+                        <button class="btn-icon view" title="View Details">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-content">
+                    <canvas id="statusChart" class="chart-canvas"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card fade-in" style="animation-delay: 0.6s;">
+                <div class="chart-header">
+                    <h3 class="chart-title">Weekly Resolution Trend</h3>
+                    <div class="chart-actions">
+                        <button class="btn-icon view" title="View Details">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-content">
+                    <canvas id="trendChart" class="chart-canvas"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card fade-in" style="animation-delay: 0.7s;">
+                <div class="chart-header">
+                    <h3 class="chart-title">Reports by Category</h3>
+                    <div class="chart-actions">
+                        <button class="btn-icon view" title="View Details">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-content">
+                    <canvas id="categoryChart" class="chart-canvas"></canvas>
+                </div>
+        
+            </div>
+        </div>
+
+        <!-- Detailed Summary Table -->
+        <div class="summary-table-section fade-in" style="animation-delay: 0.9s;">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-table"></i> Detailed Summary</h2>
+                <div class="section-actions">
+                    <button class="btn btn-primary" id="exportData">
+                        <i class="fas fa-download"></i> Export Data
+                    </button>
+                    <button class="btn btn-outline" id="refreshSummary">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+            </div>
+            
+            <div class="summary-table-container">
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Report ID</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Brand</th>
+                            <th>Resolution Time</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="summaryTableBody">
+                        <!-- Data akan dimuat secara dinamis -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="noSummaryData" class="empty-state" style="display: none;">
+                <i class="fas fa-inbox"></i>
+                <h3>No Summary Data</h3>
+                <p>There is no data available for the selected filters.</p>
+            </div>
+            
+            <div class="pagination">
+                <button class="btn btn-outline" id="prevPage">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                <span class="page-numbers">Page 1 of 1</span>
+                <button class="btn btn-outline" id="nextPage">
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <script src="sidebar-loader.js"></script>
+<script src="user-profile.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
+<script>
+    // ========== KONFIGURASI FIREBASE ==========
+    const firebaseConfig = {
+        apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
+        authDomain: "dashboard-css.firebaseapp.com",
+        databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "dashboard-css",
+        storageBucket: "dashboard-css.appspot.com",
+        messagingSenderId: "771131792881",
+        appId: "1:771131792881:web:ad634424225bd7de847850",
+        measurementId: "G-3CYBC5B101"
+    };
+
+    // Inisialisasi Firebase
+    try {
+        firebase.initializeApp(firebaseConfig);
+        console.log("Firebase initialized successfully");
+    } catch (error) {
+        console.error("Firebase initialization error:", error);
+    }
+
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    // ========== VARIABEL GLOBAL ==========
+    let allReportsData = [];
+    let reportsListener = null;
+    let dateRangeFilter = 30; // Default: 30 hari
+    let newGamesListener = null; // Listener untuk data game baru
+
+    // ========== DEFINISI SEMUA FUNGSI ==========
+    
+    // Fungsi untuk mendapatkan tanggal dengan offset hari
+    function getDateWithOffset(daysOffset) {
+        const now = new Date();
+        // Convert to Indonesia timezone (UTC+7)
+        const offset = 7; // UTC+7 for Indonesia Western Time
+        const localTime = now.getTime();
+        const localOffset = now.getTimezoneOffset() * 60000;
+        const utc = localTime + localOffset;
+        const indonesiaTime = new Date(utc + (3600000 * offset));
+        
+        // Subtract days offset
+        indonesiaTime.setDate(indonesiaTime.getDate() - daysOffset);
+        
+        // Set to start of day (00:00:00)
+        indonesiaTime.setHours(0, 0, 0, 0);
+        
+        // Convert back to UTC for Firestore query
+        const utcTime = new Date(indonesiaTime.getTime() - (3600000 * offset));
+        return utcTime;
+    }
+
+    // Fungsi untuk setup listener data laporan
+    function setupReportsListener() {
+        console.log("Setting up reports listener for date range:", dateRangeFilter);
+        
+        // Hentikan listener sebelumnya jika ada
+        if (reportsListener) {
+            reportsListener();
+        }
+        
+        const startDate = getDateWithOffset(dateRangeFilter);
+        const endDate = new Date(); // Sekarang
+        
+        console.log("Query range (UTC):", startDate, "to", endDate);
+        
+        // Setup listener untuk semua jenis data
+        const pendingQuery = db.collection('pendingReports')
+            .where('dateCreated', '>=', startDate)
+            .where('dateCreated', '<=', endDate);
+        
+        const solvedQuery = db.collection('solvedReports')
+            .where('dateCreated', '>=', startDate)
+            .where('dateCreated', '<=', endDate);
+        
+        const maintenanceQuery = db.collection('maintenanceReports')
+            .where('dateCreated', '>=', startDate)
+            .where('dateCreated', '<=', endDate);
+        
+        const solvedMaintenanceQuery = db.collection('solvedMaintenance')
+            .where('dateCompleted', '>=', startDate)
+            .where('dateCompleted', '<=', endDate);
+        
+        // Simpan unsubscribe functions
+        const unsubscribeFunctions = [];
+        
+        // Listener untuk pending reports
+        const pendingUnsubscribe = pendingQuery.onSnapshot(
+            (snapshot) => {
+                console.log(`[PENDING] Snapshot received: ${snapshot.docs.length} documents`);
+                processPendingSnapshot(snapshot);
+                updateCombinedReports();
+            },
+            (error) => {
+                console.error("[PENDING] Error listening to pending reports:", error);
+                showNotification('Gagal memuat data pending reports', 'error');
+            }
+        );
+        unsubscribeFunctions.push(pendingUnsubscribe);
+
+        // Listener untuk solved reports
+        const solvedUnsubscribe = solvedQuery.onSnapshot(
+            (snapshot) => {
+                console.log(`[SOLVED] Snapshot received: ${snapshot.docs.length} documents`);
+                processSolvedSnapshot(snapshot);
+                updateCombinedReports();
+            },
+            (error) => {
+                console.error("[SOLVED] Error listening to solved reports:", error);
+                showNotification('Gagal memuat data solved reports', 'error');
+            }
+        );
+        unsubscribeFunctions.push(solvedUnsubscribe);
+        
+        // Listener untuk maintenance reports
+        const maintenanceUnsubscribe = maintenanceQuery.onSnapshot(
+            (snapshot) => {
+                console.log("[MAINTENANCE] Snapshot received:", snapshot.docs.length, "documents");
+                processMaintenanceSnapshot(snapshot);
+                updateCombinedReports();
+            },
+            (error) => {
+                console.error("[MAINTENANCE] Error listening to maintenance reports:", error);
+                showNotification('Gagal memuat data maintenance', 'error');
+            }
+        );
+        unsubscribeFunctions.push(maintenanceUnsubscribe);
+        
+        // Listener untuk solved maintenance
+        const solvedMaintenanceUnsubscribe = solvedMaintenanceQuery.onSnapshot(
+            (snapshot) => {
+                console.log("[SOLVED MAINTENANCE] Snapshot received:", snapshot.docs.length, "documents");
+                processSolvedMaintenanceSnapshot(snapshot);
+                updateCombinedReports();
+            },
+            (error) => {
+                console.error("[SOLVED MAINTENANCE] Error listening to solved maintenance:", error);
+                showNotification('Gagal memuat data solved maintenance', 'error');
+            }
+        );
+        unsubscribeFunctions.push(solvedMaintenanceUnsubscribe);
+        
+        // Kembalikan fungsi untuk unsubscribe semua listener
+        reportsListener = () => {
+            unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
+            console.log("Reports listeners removed");
+        };
+    }
+
+    // Proses snapshot pending reports
+    function processPendingSnapshot(snapshot) {
+        const pendingReports = snapshot.docs.map(doc => {
+            const data = doc.data();
+            return { 
+                id: doc.id, 
+                ...data,
+                status: 'Pending',
+                collection: 'pendingReports',
+                date: data.dateCreated,
+                isSolved: false
+            };
+        });
+        
+        // Simpan di storage terpisah
+        window.pendingReportsCache = pendingReports;
+        console.log("Pending reports cached:", pendingReports.length);
+    }
+
+    // Proses snapshot solved reports
+    function processSolvedSnapshot(snapshot) {
+        const solvedReports = snapshot.docs.map(doc => {
+            const data = doc.data();
+            return { 
+                id: doc.id, 
+                ...data,
+                status: 'Solved',
+                collection: 'solvedReports',
+                date: data.dateCreated,
+                isSolved: true,
+                resolutionTime: calculateResolutionTime(data.dateCreated, data.dateSolved)
+            };
+        });
+        
+        // Simpan di storage terpisah
+        window.solvedReportsCache = solvedReports;
+        console.log("Solved reports cached:", solvedReports.length);
+    }
+
+    // Proses snapshot maintenance reports
+    function processMaintenanceSnapshot(snapshot) {
+        const maintenanceReports = snapshot.docs.map(doc => {
+            const data = doc.data();
+            return { 
+                id: doc.id, 
+                ...data,
+                status: 'Maintenance',
+                collection: 'maintenanceReports',
+                date: data.dateCreated,
+                isSolved: false,
+                category: data.category || 'Report Maintenance'
+            };
+        });
+        
+        // Simpan di storage terpisah
+        window.maintenanceReportsCache = maintenanceReports;
+        console.log("Maintenance reports cached:", maintenanceReports.length);
+    }
+
+    // Proses snapshot solved maintenance
+    function processSolvedMaintenanceSnapshot(snapshot) {
+        const solvedMaintenanceReports = snapshot.docs.map(doc => {
+            const data = doc.data();
+            return { 
+                id: doc.id, 
+                ...data,
+                status: 'Maintenance Solved',
+                collection: 'solvedMaintenance',
+                date: data.dateCompleted,
+                isSolved: true,
+                category: data.category || 'Report Maintenance',
+                resolutionTime: calculateResolutionTime(data.dateCreated, data.dateCompleted)
+            };
+        });
+        
+        // Simpan di storage terpisah
+        window.solvedMaintenanceCache = solvedMaintenanceReports;
+        console.log("Solved maintenance cached:", solvedMaintenanceReports.length);
+    }
+
+    // Hitung waktu resolusi dalam menit
+    function calculateResolutionTime(startDate, endDate) {
+        if (!startDate || !endDate) return 0;
+        
+        try {
+            const start = startDate.toDate ? startDate.toDate() : new Date(startDate);
+            const end = endDate.toDate ? endDate.toDate() : new Date(endDate);
+            
+            const diffMs = end - start;
+            return Math.round(diffMs / (1000 * 60)); // Convert to minutes
+        } catch (error) {
+            console.error("Error calculating resolution time:", error);
+            return 0;
+        }
+    }
+
+    // Gabungkan dan update semua laporan
+    function updateCombinedReports() {
+        const pending = window.pendingReportsCache || [];
+        const solved = window.solvedReportsCache || [];
+        const maintenance = window.maintenanceReportsCache || [];
+        const solvedMaintenance = window.solvedMaintenanceCache || [];
+        
+        console.log("Combining reports - Pending:", pending.length, "Solved:", solved.length, 
+                    "Maintenance:", maintenance.length, "Solved Maintenance:", solvedMaintenance.length);
+        
+        // Gabungkan semua laporan
+        allReportsData = [...pending, ...solved, ...maintenance, ...solvedMaintenance];
+            
+        console.log("Total reports after combining:", allReportsData.length);
+        
+        // Perbarui UI
+        updateDashboardStats(allReportsData);
+        updateCharts(allReportsData);
+        updateSummaryTable(allReportsData);
+    }
+
+    // ========== FUNGSI STATISTIK & UI UPDATE ==========
+
+    // Fungsi untuk menghitung statistik dashboard
+    function calculateRealStats(reports) {
+        // Hitung total reports
+        const totalReports = reports.length;
+        
+        // Hitung solved reports
+        const solvedReports = reports.filter(report => report.isSolved).length;
+        
+        // Hitung resolution rate
+        const resolutionRate = totalReports > 0 ? Math.round((solvedReports / totalReports) * 100) : 0;
+        
+        // Hitung rata-rata resolution time untuk reports yang sudah solved
+        let totalResolutionTime = 0;
+        let countWithResolutionTime = 0;
+        
+        reports.forEach(report => {
+            if (report.isSolved && report.resolutionTime) {
+                totalResolutionTime += report.resolutionTime;
+                countWithResolutionTime++;
+            }
+        });
+        
+        const avgResolutionTime = countWithResolutionTime > 0 ? 
+            Math.round(totalResolutionTime / countWithResolutionTime) : 0;
+        
+        // Hitung reports per brand
+        const brandCounts = {};
+        reports.forEach(report => {
+            if (report.brand) {
+                brandCounts[report.brand] = (brandCounts[report.brand] || 0) + 1;
+            }
+        });
+        
+        // Temukan brand dengan laporan terbanyak
+        let topBrand = { name: "None", count: 0 };
+        for (const brand in brandCounts) {
+            if (brandCounts[brand] > topBrand.count) {
+                topBrand = { name: brand, count: brandCounts[brand] };
+            }
+        }
+        
+        // Hitung reports per kategori
+        const categoryCounts = {};
+        reports.forEach(report => {
+            if (report.category) {
+                categoryCounts[report.category] = (categoryCounts[report.category] || 0) + 1;
+            }
+        });
+        
+        // Hitung reports per status
+        const statusCounts = {
+            'Pending': reports.filter(report => report.status === 'Pending').length,
+            'Solved': reports.filter(report => report.status === 'Solved').length,
+            'Maintenance': reports.filter(report => report.status === 'Maintenance').length,
+            'Maintenance Solved': reports.filter(report => report.status === 'Maintenance Solved').length
+        };
+        
+        return {
+            totalReports,
+            solvedCount: solvedReports,
+            pendingCount: statusCounts.Pending,
+            resolutionRate,
+            avgResolutionTime,
+            topBrand,
+            categoryCounts,
+            statusCounts
+        };
+    }
+
+    // Fungsi untuk memperbarui statistik dashboard
+    function updateDashboardStats(reports) {
+        const stats = calculateRealStats(reports);
+        
+        // Update weekly performance (menggunakan resolution rate)
+        document.getElementById('weeklyPerformance').textContent = `${stats.resolutionRate}%`;
+        
+        // Update resolution trend
+        document.getElementById('resolutionRate').textContent = `${stats.resolutionRate}%`;
+        
+        // Update top brand
+        document.getElementById('topBrand').textContent = stats.topBrand.name;
+        
+        // Update trend indicators (placeholder untuk perbandingan dengan periode sebelumnya)
+        document.getElementById('performanceChange').innerHTML = 
+            `<i class="fas fa-arrow-up"></i> ${Math.floor(Math.random() * 15) + 1}% from last week`;
+        
+        document.getElementById('trendChange').innerHTML = 
+            `<i class="fas fa-arrow-up"></i> ${Math.floor(Math.random() * 10) + 1}% improvement`;
+    }
+
+    // Fungsi untuk memperbarui chart
+    function updateCharts(reports) {
+        const stats = calculateRealStats(reports);
+        
+        // Update Status Chart
+        const statusCtx = document.getElementById('statusChart').getContext('2d');
+        if (window.statusChartInstance) {
+            window.statusChartInstance.destroy();
+        }
+        window.statusChartInstance = new Chart(statusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Solved', 'Pending', 'Maintenance', 'Maintenance Solved'],
+                datasets: [{
+                    data: [
+                        stats.statusCounts.Solved, 
+                        stats.statusCounts.Pending,
+                        stats.statusCounts.Maintenance,
+                        stats.statusCounts['Maintenance Solved']
+                    ],
+                    backgroundColor: ['#4cc9f0', '#f72585', '#4895ef', '#3a0ca3'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+        
+        // Update Trend Chart (data mingguan)
+        const trendCtx = document.getElementById('trendChart').getContext('2d');
+        if (window.trendChartInstance) {
+            window.trendChartInstance.destroy();
+        }
+        
+        // Generate weekly resolution data based on actual reports
+        const weeks = getLast4Weeks();
+        const resolutionData = calculateWeeklyResolutionData(reports, weeks);
+        
+        window.trendChartInstance = new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: weeks.map(w => w.label),
+                datasets: [{
+                    label: 'Resolution Rate',
+                    data: resolutionData,
+                    borderColor: '#4361ee',
+                    backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: Math.max(0, Math.min(...resolutionData) - 10),
+                        max: Math.min(100, Math.max(...resolutionData) + 10)
+                    }
+                }
+            }
+        });
+        
+        // Update Category Chart
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        if (window.categoryChartInstance) {
+            window.categoryChartInstance.destroy();
+        }
+        
+        // Siapkan data untuk chart kategori
+        const categoryLabels = Object.keys(stats.categoryCounts);
+        const categoryData = Object.values(stats.categoryCounts);
+        
+        window.categoryChartInstance = new Chart(categoryCtx, {
+            type: 'bar',
+            data: {
+                labels: categoryLabels,
+                datasets: [{
+                    label: 'Reports by Category',
+                    data: categoryData,
+                    backgroundColor: '#4895ef',
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    // Fungsi untuk mendapatkan label 4 minggu terakhir
+    function getLast4Weeks() {
+        const weeks = [];
+        const now = new Date();
+        
+        for (let i = 3; i >= 0; i--) {
+            const startDate = new Date(now);
+            startDate.setDate(now.getDate() - (i * 7));
+            
+            const endDate = new Date(startDate);
+            endDate.setDate(startDate.getDate() + 6);
+            
+            const weekLabel = `Minggu ${4-i}`;
+            weeks.push({
+                label: weekLabel,
+                start: startDate,
+                end: endDate
+            });
+        }
+        
+        return weeks;
+    }
+
+    // Fungsi untuk menghitung data resolusi mingguan
+    function calculateWeeklyResolutionData(reports, weeks) {
+        return weeks.map(week => {
+            const weekReports = reports.filter(report => {
+                const reportDate = report.date.toDate ? report.date.toDate() : new Date(report.date);
+                return reportDate >= week.start && reportDate <= week.end;
+            });
+            
+            if (weekReports.length === 0) return 0;
+            
+            const solvedCount = weekReports.filter(report => report.isSolved).length;
+            return Math.round((solvedCount / weekReports.length) * 100);
+        });
+    }
+
+    // Fungsi untuk memperbarui tabel data
+    function updateSummaryTable(reports) {
+    // Terapkan filter
+    const filteredReports = applyFilters(reports);
+    
+    // Setup pagination dengan data yang sudah difilter
+    setupPagination(filteredReports);
+}
+
+    // ========== FUNGSI FILTER ==========
+
+    function applyFilters(reports) {
+        const categoryFilter = document.getElementById('categoryFilter').value;
+        const brandFilter = document.getElementById('brandFilter').value;
+        
+        let filteredReports = reports;
+        
+        // Terapkan filter kategori
+        if (categoryFilter !== 'all') {
+            filteredReports = filteredReports.filter(report => 
+                report.category === categoryFilter
+            );
+        }
+        
+        // Terapkan filter brand
+        if (brandFilter !== 'all') {
+            filteredReports = filteredReports.filter(report => 
+                report.brand === brandFilter
+            );
+        }
+        
+        console.log("After filtering:", filteredReports.length, "reports");
+        return filteredReports;
+    }
+
+    // ========== FUNGSI UTILITY ==========
+
+    // Fungsi untuk melihat detail laporan
+    function viewReportDetails(reportId, collection) {
+        // Cari laporan di cache yang sesuai
+        let report = null;
+        
+        switch(collection) {
+            case 'pendingReports':
+                report = window.pendingReportsCache.find(r => r.id === reportId);
+                break;
+            case 'solvedReports':
+                report = window.solvedReportsCache.find(r => r.id === reportId);
+                break;
+            case 'maintenanceReports':
+                report = window.maintenanceReportsCache.find(r => r.id === reportId);
+                break;
+            case 'solvedMaintenance':
+                report = window.solvedMaintenanceCache.find(r => r.id === reportId);
+                break;
+        }
+        
+        if (!report) {
+            // Coba cari di semua data sebagai fallback
+            report = allReportsData.find(r => r.id === reportId);
+        }
+        
+        if (!report) {
+            showNotification('Report not found!', 'error');
+            return;
+        }
+        
+        // Tampilkan modal dengan detail laporan
+        showReportModal(report);
+    }
+
+    // Fungsi untuk menampilkan modal detail laporan
+    function showReportModal(report) {
+        // Buat modal element
+        const modalOverlay = document.createElement('div');
+        modalOverlay.className = 'modal-overlay';
+        modalOverlay.innerHTML = `
+            <div class="modal">
+                <div class="modal-header">
+                    <h3 class="modal-title">Report Details</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Report ID</label>
+                        <div class="form-input-static">${report.id || 'N/A'}</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <div class="form-input-static">${formatDateForDisplay(report.date)}</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <div class="form-input-static">${report.category || 'N/A'}</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Brand</label>
+                        <div class="form-input-static">${report.brand || 'N/A'}</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <div class="form-input-static">${report.status || (report.isSolved ? 'Solved' : 'Pending')}</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <div class="form-input-static">${report.description || 'No description provided'}</div>
+                    </div>
+                    ${report.resolutionTime ? `
+                    <div class="form-group">
+                        <label>Resolution Time</label>
+                        <div class="form-input-static">
+                            ${Math.floor(report.resolutionTime / 60)}h ${report.resolutionTime % 60}m
+                        </div>
+                    </div>
+                    ` : ''}
+                    ${report.notes ? `
+                    <div class="form-group">
+                        <label>Resolution Notes</label>
+                        <div class="form-input-static">${report.notes}</div>
+                    </div>
+                    ` : ''}
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline" id="closeModal">Close</button>
+                </div>
+            </div>
+        `;
+        
+        // Tambahkan modal ke body
+        document.body.appendChild(modalOverlay);
+        
+        // Tampilkan modal dengan animasi
+        setTimeout(() => {
+            modalOverlay.classList.add('active');
+        }, 10);
+        
+        // Event listener untuk tombol close
+        const closeModal = () => {
+            modalOverlay.classList.remove('active');
+            setTimeout(() => {
+                if (modalOverlay.parentNode) {
+                    modalOverlay.parentNode.removeChild(modalOverlay);
+                }
+            }, 300);
+        };
+        
+        modalOverlay.querySelector('.modal-close').addEventListener('click', closeModal);
+        modalOverlay.querySelector('#closeModal').addEventListener('click', closeModal);
+        
+        // Event listener untuk klik di luar modal
+        modalOverlay.addEventListener('click', function(e) {
+            if (e.target === modalOverlay) {
+                closeModal();
+            }
+        });
+    }
+
+    // Format tanggal untuk display
+    function formatDateForDisplay(dateValue) {
+        if (!dateValue) return 'N/A';
+        
+        try {
+            let date;
+            if (dateValue.toDate) {
+                date = dateValue.toDate();
+            } else {
+                date = new Date(dateValue);
+            }
+            
+            // Convert to Indonesia timezone (UTC+7)
+            const offset = 7;
+            const localTime = date.getTime();
+            const localOffset = date.getTimezoneOffset() * 60000;
+            const utc = localTime + localOffset;
+            const indonesiaTime = new Date(utc + (3600000 * offset));
+            
+            return indonesiaTime.toLocaleDateString('id-ID', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        } catch (error) {
+            console.error("Error formatting date for display:", error, dateValue);
+            return 'N/A';
+        }
+    }
+
+    // Fungsi untuk menampilkan notifikasi
+    function showNotification(message, type = 'info') {
+        // Buat elemen notifikasi
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Tampilkan notifikasi
+        setTimeout(() => notification.classList.add('show'), 100);
+        
+        // Sembunyikan setelah 3 detik
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 3000);
+    }
+
+    // ========== FUNGSI UNTUK NEW GAMES ==========
+    
+    function setupNewGamesListener() {
+        console.log("Setting up new games listener...");
+        
+        // Hentikan listener sebelumnya jika ada
+        if (newGamesListener) {
+            newGamesListener();
+        }
+        
+        try {
+            // Setup listener untuk koleksi newGame
+            newGamesListener = db.collection('newGame')
+                .onSnapshot(snapshot => {
+                    let newGamesData = [];
+                    
+                    snapshot.forEach(doc => {
+                        try {
+                            const gameData = doc.data();
+                            gameData.id = doc.id;
+                            newGamesData.push(gameData);
+                        } catch (e) {
+                            console.error("Error processing game document:", e);
+                        }
+                    });
+                    
+                    console.log(`Successfully fetched ${newGamesData.length} games from releases-newgame`);
+                    
+                    // Memproses data game yang diambil
+                    processNewGamesData(newGamesData);
+                    
+                }, error => {
+                    console.error("Error in new games listener:", error);
+                    showNotification('Gagal memuat data game baru', 'error');
+                });
+                
+            return newGamesListener;
+        } catch (error) {
+            console.error("Error setting up new games listener:", error);
+            showNotification('Error setting up game listener', 'error');
+            return () => {}; // Return empty unsubscribe function
+        }
+    }
+
+    function processNewGamesData(gamesData) {
+        // Hitung statistik dari data game
+        const totalGames = gamesData.length;
+        const upcomingGames = gamesData.filter(game => 
+            game.status && game.status.toLowerCase() === 'upcoming').length;
+        
+        // Filter game populer (rating >= 4.5)
+        const popularGames = gamesData.filter(game => {
+            // Pastikan rating ada dan berupa angka
+            const rating = parseFloat(game.rating);
+            return !isNaN(rating) && rating >= 4.5;
+        }).length;
+        
+        // Hitung jumlah kategori unik
+        const uniqueCategories = new Set();
+        gamesData.forEach(game => {
+            if (game.category) {
+                uniqueCategories.add(game.category);
+            }
+        });
+        const categoryCount = uniqueCategories.size;
+        
+        // Update UI dengan data yang diperoleh
+        updateNewGamesUI(totalGames, upcomingGames, popularGames, categoryCount);
+        
+        // Simpan data untuk penggunaan lain jika diperlukan
+        window.newGamesData = gamesData;
+    }
+
+    function updateNewGamesUI(total, upcoming, popular, categories) {
+        // Update elemen UI dengan data yang diperoleh
+        const totalElement = document.getElementById('totalGames');
+        const upcomingElement = document.getElementById('upcomingGames');
+        const popularElement = document.getElementById('popularGames');
+        const categoriesElement = document.getElementById('gameCategories');
+        
+        if (totalElement) totalElement.textContent = total;
+        if (upcomingElement) upcomingElement.textContent = upcoming;
+        if (popularElement) popularElement.textContent = popular;
+        if (categoriesElement) categoriesElement.textContent = categories;
+        
+        console.log(`Updated UI - Total: ${total}, Upcoming: ${upcoming}, Popular: ${popular}, Categories: ${categories}`);
+    }
+
+    // ========== EVENT LISTENERS ==========
+
+    // Event listener untuk filter changes
+    function setupEventListeners() {
+        // Pastikan elemen ada sebelum menambahkan event listener
+        const dateRangeElement = document.getElementById('dateRange');
+        const categoryFilterElement = document.getElementById('categoryFilter');
+        const brandFilterElement = document.getElementById('brandFilter');
+        const refreshSummaryElement = document.getElementById('refreshSummary');
+        const exportDataElement = document.getElementById('exportData');
+        
+        if (dateRangeElement) {
+            dateRangeElement.addEventListener('change', function() {
+                dateRangeFilter = parseInt(this.value);
+                if (reportsListener) {
+                    reportsListener();
+                }
+                setupReportsListener();
+                showNotification(`Date range changed to ${this.options[this.selectedIndex].text}`, 'info');
+            });
+        }
+        
+if (categoryFilterElement) {
+    categoryFilterElement.addEventListener('change', function() {
+        currentPage = 1; // Reset ke halaman pertama
+        updateSummaryTable(allReportsData);
+    });
+}
+
+if (brandFilterElement) {
+    brandFilterElement.addEventListener('change', function() {
+        currentPage = 1; // Reset ke halaman pertama
+        updateSummaryTable(allReportsData);
+    });
+}
+        
+        if (refreshSummaryElement) {
+            refreshSummaryElement.addEventListener('click', function() {
+                if (reportsListener) {
+                    reportsListener();
+                }
+                setupReportsListener();
+                showNotification('Summary data refreshed successfully!', 'success');
+            });
+        }
+        
+        if (exportDataElement) {
+            exportDataElement.addEventListener('click', function() {
+                // Simulasi export data
+                showNotification('Exporting summary data...', 'info');
+                
+                // Simulasi delay untuk export
+                setTimeout(() => {
+                    showNotification('Data exported successfully!', 'success');
+                }, 1500);
+            });
+        }
+    }
+
+    // ========== INISIALISASI ==========
+
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("Summary Dashboard initialized");
+        
+        // Inisialisasi semua cache
+        window.pendingReportsCache = [];
+        window.solvedReportsCache = [];
+        window.maintenanceReportsCache = [];
+        window.solvedMaintenanceCache = [];
+        
+        // Setup event listeners
+        setupEventListeners();
+        
+        // Setup listener untuk data
+        setupReportsListener();
+        
+        // Setup listener untuk data game baru
+        setupNewGamesListener();
+        
+        // Tambahkan animasi fade-in untuk elemen
+        const fadeElements = document.querySelectorAll('.fade-in');
+        fadeElements.forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        });
+        
+        // Trigger animasi setelah delay
+        setTimeout(() => {
+            fadeElements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        }, 300);
+    });
+
+    // Pastikan membersihkan listener ketika tab/window ditutup
+    window.addEventListener('beforeunload', function() {
+        if (reportsListener) {
+            reportsListener();
+        }
+        if (newGamesListener) {
+            newGamesListener();
+        }
+    });
+    // ========== VARIABEL PAGINATION ==========
+// ========== VARIABEL PAGINATION ==========
+let currentPage = 1;
+const itemsPerPage = 10;
+let totalPages = 1;
+
+// ========== FUNGSI PAGINATION ==========
+function setupPagination(reports) {
+    const filteredReports = applyFilters(reports);
+    totalPages = Math.ceil(filteredReports.length / itemsPerPage);
+    
+    // Update teks halaman
+    const pageNumbersElement = document.querySelector('.page-numbers');
+    if (pageNumbersElement) {
+        pageNumbersElement.textContent = `Page ${currentPage} of ${totalPages}`;
+    }
+    
+    // Enable/disable tombol berdasarkan halaman saat ini
+    const prevButton = document.getElementById('prevPage');
+    const nextButton = document.getElementById('nextPage');
+    
+    if (prevButton) prevButton.disabled = currentPage === 1;
+    if (nextButton) nextButton.disabled = currentPage === totalPages;
+    
+    // Tampilkan data untuk halaman saat ini
+    displayPageData(filteredReports);
+}
+
+function displayPageData(reports) {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const pageData = reports.slice(startIndex, endIndex);
+    
+    // Gunakan pageData untuk menampilkan data di tabel
+    renderTableData(pageData);
+}
+
+function renderTableData(reports) {
+    const tableBody = document.getElementById('summaryTableBody');
+    const emptyState = document.getElementById('noSummaryData');
+    
+    // Kosongkan tabel
+    if (tableBody) tableBody.innerHTML = '';
+    
+    // Tampilkan empty state jika tidak ada data
+    if (reports.length === 0) {
+        if (emptyState) emptyState.style.display = 'block';
+        return;
+    }
+    
+    // Sembunyikan empty state
+    if (emptyState) emptyState.style.display = 'none';
+    
+    // Tambahkan data ke tabel
+    reports.forEach(report => {
+        const row = document.createElement('tr');
+        
+        // Format tanggal
+        let reportDate;
+        try {
+            reportDate = report.date.toDate ? report.date.toDate() : new Date(report.date);
+            // Convert to Indonesia timezone (UTC+7)
+            const offset = 7;
+            const localTime = reportDate.getTime();
+            const localOffset = reportDate.getTimezoneOffset() * 60000;
+            const utc = localTime + localOffset;
+            const indonesiaTime = new Date(utc + (3600000 * offset));
+            
+            reportDate = indonesiaTime.toLocaleDateString('id-ID', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        } catch (error) {
+            console.error("Error formatting date:", error, report.date);
+            reportDate = 'N/A';
+        }
+        
+        // Format resolution time
+        let resolutionTime = 'N/A';
+        if (report.resolutionTime) {
+            const hours = Math.floor(report.resolutionTime / 60);
+            const minutes = report.resolutionTime % 60;
+            resolutionTime = `${hours}h ${minutes}m`;
+        }
+        
+        // Tentukan status dan class-nya
+        let statusClass = 'status-pending';
+        let statusText = report.status || 'Pending';
+        
+        if (statusText === 'Solved' || report.isSolved) {
+            statusClass = 'status-solved';
+        } else if (statusText.includes('Maintenance')) {
+            statusClass = 'status-maintenance';
+        }
+        
+        row.innerHTML = `
+            <td>${reportDate}</td>
+            <td>${report.id || 'N/A'}</td>
+            <td>${report.category || 'N/A'}</td>
+            <td><span class="${statusClass}">${statusText}</span></td>
+            <td>${report.brand || 'N/A'}</td>
+            <td>${resolutionTime}</td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn-icon view" title="View Details" onclick="viewReportDetails('${report.id}', '${report.collection}')">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+        
+        if (tableBody) tableBody.appendChild(row);
+    });
+}
+
+function goToPage(page) {
+    if (page >= 1 && page <= totalPages) {
+        currentPage = page;
+        setupPagination(allReportsData);
+    }
+}
+
+// ========== EVENT LISTENERS PAGINATION ==========
+function setupPaginationListeners() {
+    const prevButton = document.getElementById('prevPage');
+    const nextButton = document.getElementById('nextPage');
+    
+    if (prevButton) {
+        prevButton.addEventListener('click', () => {
+            goToPage(currentPage - 1);
+        });
+    }
+    
+    if (nextButton) {
+        nextButton.addEventListener('click', () => {
+            goToPage(currentPage + 1);
+        });
+    }
+}
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("Summary Dashboard initialized");
+    
+    // Inisialisasi semua cache
+    window.pendingReportsCache = [];
+    window.solvedReportsCache = [];
+    window.maintenanceReportsCache = [];
+    window.solvedMaintenanceCache = [];
+    
+    // Setup event listeners
+    setupEventListeners();
+    
+    // Setup pagination listeners
+    setupPaginationListeners();
+    
+    // Setup listener untuk data
+    setupReportsListener();
+    
+    // Setup listener untuk data game baru
+    setupNewGamesListener();
+    
+    // Tambahkan animasi fade-in untuk elemen
+    const fadeElements = document.querySelectorAll('.fade-in');
+    fadeElements.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    });
+    
+    // Trigger animasi setelah delay
+    setTimeout(() => {
+        fadeElements.forEach((el, index) => {
+            setTimeout(() => {
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    }, 300);
+});
+// ========== FUNGSI PENCARIAN ==========
+
+// Variabel global untuk pencarian
+let currentSearchTerm = '';
+
+// Fungsi untuk memfilter data berdasarkan kata kunci pencarian
+function filterDataBySearch(reports, searchTerm) {
+    if (!searchTerm || searchTerm.trim() === '') {
+        return reports; // Kembalikan semua data jika pencarian kosong
+    }
+    
+    const term = searchTerm.toLowerCase().trim();
+    
+    return reports.filter(report => {
+        // Cari di semua field yang relevan
+        return (
+            (report.id && report.id.toLowerCase().includes(term)) ||
+            (report.category && report.category.toLowerCase().includes(term)) ||
+            (report.status && report.status.toLowerCase().includes(term)) ||
+            (report.brand && report.brand.toLowerCase().includes(term)) ||
+            (report.description && report.description.toLowerCase().includes(term))
+        );
+    });
+}
+
+// Fungsi untuk menangani pencarian
+function handleSearch() {
+    const searchInput = document.getElementById('summarySearch');
+    if (!searchInput) return;
+    
+    const searchTerm = searchInput.value;
+    currentSearchTerm = searchTerm;
+    
+    // Reset ke halaman pertama saat pencarian
+    currentPage = 1;
+    
+    // Filter data berdasarkan pencarian
+    const filteredData = filterDataBySearch(allReportsData, searchTerm);
+    
+    // Perbarui UI dengan data yang sudah difilter
+    updateDashboardStats(filteredData);
+    updateCharts(filteredData);
+    updateSummaryTable(filteredData);
+    
+    // Tampilkan notifikasi jika tidak ada hasil
+    if (searchTerm && filteredData.length === 0) {
+        showNotification('No results found for: ' + searchTerm, 'info');
+    }
+}
+
+// Fungsi untuk setup event listener pencarian
+function setupSearchListener() {
+    const searchInput = document.getElementById('summarySearch');
+    if (!searchInput) return;
+    
+    // Debounce untuk menghindari terlalu banyak event
+    let searchTimeout;
+    
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            handleSearch();
+        }, 300); // Delay 300ms setelah user berhenti mengetik
+    });
+    
+    // Juga tangani ketika user menekan Enter
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            clearTimeout(searchTimeout);
+            handleSearch();
+        }
+    });
+}
+
+// ========== MODIFIKASI FUNGSI YANG SUDAH ADA ==========
+
+// Modifikasi fungsi updateSummaryTable untuk menangani pencarian
+function updateSummaryTable(reports) {
+    // Terapkan filter pencarian terlebih dahulu
+    let filteredReports = filterDataBySearch(reports, currentSearchTerm);
+    
+    // Kemudian terapkan filter lainnya (kategori, brand)
+    filteredReports = applyFilters(filteredReports);
+    
+    // Setup pagination dengan data yang sudah difilter
+    setupPagination(filteredReports);
+}
+
+// ========== INISIALISASI PENCARIAN ==========
+
+// Tambahkan setupSearchListener ke dalam event DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("Summary Dashboard initialized");
+    
+    // ... kode inisialisasi lainnya ...
+    
+    // Setup event listener untuk pencarian
+    setupSearchListener();
+    
+    // ... kode inisialisasi lainnya ...
+});
+</script>
+</body>
+</html>

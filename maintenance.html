@@ -39,108 +39,7 @@
             border: 1px solid var(--border-color);
         }
 
-        /* ========== PERBAIKAN STATISTIC CARDS ========== */
-        .maintenance-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: var(--space-md);
-            margin-bottom: var(--space-xl);
-        }
-
-        .maintenance-stat-card {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: var(--space-lg);
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-color);
-            transition: transform var(--transition-normal), box-shadow var(--transition-normal);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .maintenance-stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .maintenance-stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--primary-gradient);
-        }
-
-        .maintenance-stat-card.completed::before {
-            background: var(--success-gradient);
-        }
-
-        .maintenance-stat-card.this-week::before {
-            background: var(--info-gradient);
-        }
-
-        .maintenance-stat-card.this-month::before {
-            background: var(--warning-gradient);
-        }
-
-        .stat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: var(--space-md);
-        }
-
-        .stat-title {
-            font-size: var(--text-sm);
-            font-weight: var(--font-medium);
-            color: var(--text-secondary);
-            margin: 0;
-        }
-
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: var(--radius-full);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-        }
-
-        .stat-icon.completed {
-            background-color: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-
-        .stat-icon.this-week {
-            background-color: rgba(59, 130, 246, 0.1);
-            color: var(--info);
-        }
-
-        .stat-icon.this-month {
-            background-color: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
-        }
-
-        .stat-icon.average-time {
-            background-color: rgba(139, 92, 246, 0.1);
-            color: var(--purple);
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: var(--font-bold);
-            color: var(--text-primary);
-            margin-bottom: var(--space-xs);
-            line-height: 1;
-        }
-
-        .stat-description {
-            font-size: var(--text-xs);
-            color: var(--text-secondary);
-        }
+        
 
         /* ========== PERBAIKAN CHART SECTION ========== */
         .chart-section {
@@ -771,110 +670,7 @@
             }
         }
 
-        /* ========== RESPONSIVE ADJUSTMENTS ========== */
-        @media (max-width: 1024px) {
-            .chart-section {
-                grid-template-columns: 1fr;
-            }
-            
-            .maintenance-stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                padding: var(--space-md);
-            }
-            
-            .header {
-                padding: var(--space-md);
-            }
-            
-            .maintenance-stats {
-                grid-template-columns: 1fr;
-            }
-            
-            .maintenance-filters {
-                grid-template-columns: 1fr;
-            }
-            
-            .maintenance-actions {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .view-toggle {
-                align-self: center;
-            }
-            
-            .maintenance-table th, 
-            .maintenance-table td {
-                padding: var(--space-sm) var(--space-md);
-            }
-            
-            .section-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: var(--space-sm);
-            }
-            
-            .chart-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: var(--space-sm);
-            }
-            
-            .chart-header .filter-select {
-                width: 100%;
-            }
-            
-            .custom-bar-chart {
-                gap: 8px;
-            }
-            
-            .bar {
-                width: 20px;
-            }
-            
-            .bar-label {
-                font-size: 10px;
-            }
-            
-            .custom-pie-chart {
-                width: 140px;
-                height: 140px;
-            }
-            
-            .pie-center {
-                width: 50px;
-                height: 50px;
-                font-size: var(--text-xs);
-            }
-            
-            .modal {
-                width: 95%;
-                margin: var(--space-md);
-            }
-        }
-
-        @media (max-width: 640px) {
-            .maintenance-table {
-                min-width: 100%;
-            }
-            
-            .maintenance-table th:nth-child(3),
-            .maintenance-table td:nth-child(3),
-            .maintenance-table th:nth-child(6),
-            .maintenance-table td:nth-child(6) {
-                display: none;
-            }
-            
-            .pagination {
-                flex-direction: column;
-                gap: var(--space-sm);
-            }
-        }
+       
 
         /* Custom scrollbar for table container */
         .maintenance-table-container::-webkit-scrollbar {
@@ -943,52 +739,6 @@
             </div>
         </div>
         
-        <div class="maintenance-stats">
-            <div class="maintenance-stat-card fade-in" style="animation-delay: 0.1s;">
-                <div class="stat-header">
-                    <h3 class="stat-title">Pending Tasks</h3>
-                    <div class="stat-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                </div>
-                <div class="stat-value" id="pendingTasks">0</div>
-                <div class="stat-description">Tasks awaiting action</div>
-            </div>
-
-            <div class="maintenance-stat-card fade-in" style="animation-delay: 0.2s;">
-                <div class="stat-header">
-                    <h3 class="stat-title">In Progress</h3>
-                    <div class="stat-icon">
-                        <i class="fas fa-spinner"></i>
-                    </div>
-                </div>
-                <div class="stat-value" id="inProgressTasks">0</div>
-                <div class="stat-description">Tasks being worked on</div>
-            </div>
-
-            <div class="maintenance-stat-card fade-in" style="animation-delay: 0.3s;">
-                <div class="stat-header">
-                    <h3 class="stat-title">Completed</h3>
-                    <div class="stat-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                </div>
-                <div class="stat-value" id="completedTasks">0</div>
-                <div class="stat-description">Tasks finished this week</div>
-            </div>
-
-            <div class="maintenance-stat-card fade-in" style="animation-delay: 0.4s;">
-                <div class="stat-header">
-                    <h3 class="stat-title">Overdue</h3>
-                    <div class="stat-icon">
-                        <i class="fas fa-exclamation-triangle"></i>
-                    </div>
-                </div>
-                <div class="stat-value" id="overdueTasks">0</div>
-                <div class="stat-description">Tasks past due date</div>
-            </div>
-        </div>
-        
         <div class="maintenance-filters">
             <div class="filter-group">
                 <label for="statusFilter">Status</label>
@@ -996,7 +746,6 @@
                     <option value="all">All Status</option>
                     <option value="pending">Pending</option>
                     <option value="in-progress">In Progress</option>
-                    <option value="completed">Completed</option>
                 </select>
             </div>
             
@@ -1237,7 +986,7 @@
     function updateMaintenanceStats() {
         const pendingCount = maintenanceTasks.filter(task => task.status === 'pending').length;
         const inProgressCount = maintenanceTasks.filter(task => task.status === 'in-progress').length;
-        const completedCount = maintenanceTasks.filter(task => task.status === 'completed').length;
+
         
         // Calculate overdue tasks (pending or in-progress tasks with due date in the past)
         const overdueCount = maintenanceTasks.filter(task => {
@@ -1245,10 +994,7 @@
                    getDaysLeft(task.dueDate) < 0;
         }).length;
         
-        document.getElementById('pendingTasks').textContent = pendingCount;
-        document.getElementById('inProgressTasks').textContent = inProgressCount;
-        document.getElementById('completedTasks').textContent = completedCount;
-        document.getElementById('overdueTasks').textContent = overdueCount;
+
     }
 
     // Render maintenance table
@@ -1296,8 +1042,6 @@
                         const nextMonth = new Date(today);
                         nextMonth.setMonth(nextMonth.getMonth() + 1);
                         return dueDate >= today && dueDate <= nextMonth;
-                    case 'overdue':
-                        return dueDate < today && task.status !== 'completed';
                     default:
                         return true;
                 }

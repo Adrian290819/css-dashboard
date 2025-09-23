@@ -29,7 +29,7 @@ class SidebarLoader {
                 </div>
                 
                 <div class="sidebar-menu">
-                    <div class="menu-item" data-page="index.html">
+                    <div class="menu-item" data-page="summary-dashboard.html">
                         <div class="menu-icon">
                             <i class="fas fa-tachometer-alt"></i>
                         </div>

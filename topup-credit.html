@@ -584,6 +584,24 @@
     background-color: rgba(79, 70, 229, 0.1);
     font-weight: var(--font-semibold);
 }
+/* Pagination Styles */
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-md);
+    margin-top: var(--space-lg);
+    padding: var(--space-md);
+    background-color: var(--card-bg);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+}
+
+.pagination-controls span {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    font-weight: var(--font-medium);
+}
     </style>
 </head>
 <body>
@@ -771,7 +789,27 @@
         </div>
     </div>
 </div>
+<!-- Untuk regular history section -->
+<div class="pagination-controls" id="regularPagination" style="display: none;">
+    <button class="btn btn-outline" id="prevRegularPage">
+        <i class="fas fa-chevron-left"></i> Previous
+    </button>
+    <span id="regularPageInfo">Page 1 of 1</span>
+    <button class="btn btn-outline" id="nextRegularPage">
+        Next <i class="fas fa-chevron-right"></i>
+    </button>
+</div>
 
+<!-- Untuk masteragent history section -->
+<div class="pagination-controls" id="masteragentPagination" style="display: none;">
+    <button class="btn btn-outline" id="prevMasteragentPage">
+        <i class="fas fa-chevron-left"></i> Previous
+    </button>
+    <span id="masteragentPageInfo">Page 1 of 1</span>
+    <button class="btn btn-outline" id="nextMasteragentPage">
+        Next <i class="fas fa-chevron-right"></i>
+    </button>
+</div>
 
     <!-- Toast Notification -->
     <div id="toastNotification" class="toast-notification" style="display: none;">
@@ -1792,7 +1830,194 @@ function updateMasteragentHistoryTable() {
         }
     }
 }
+// Variabel untuk pagination
+const itemsPerPage = 15;
+let currentRegularPage = 1;
+let currentMasteragentPage = 1;
+let filteredRegularHistory = [];
+let filteredMasteragentHistory = [];
 
+// Fungsi untuk menerapkan pagination pada tabel
+function applyPagination(tableType, page) {
+    let tableBody, historyData, filteredData, pageInfo, paginationControls;
+    let currentPage, totalPages;
+    
+    if (tableType === 'regular') {
+        tableBody = document.getElementById('historyTableBody');
+        historyData = topupHistory;
+        filteredData = filteredRegularHistory.length > 0 ? filteredRegularHistory : historyData;
+        pageInfo = document.getElementById('regularPageInfo');
+        paginationControls = document.getElementById('regularPagination');
+        currentPage = currentRegularPage = page;
+        totalPages = Math.ceil(filteredData.length / itemsPerPage);
+    } else {
+        tableBody = document.getElementById('masteragentHistoryTableBody');
+        historyData = masteragentHistory;
+        filteredData = filteredMasteragentHistory.length > 0 ? filteredMasteragentHistory : historyData;
+        pageInfo = document.getElementById('masteragentPageInfo');
+        paginationControls = document.getElementById('masteragentPagination');
+        currentPage = currentMasteragentPage = page;
+        totalPages = Math.ceil(filteredData.length / itemsPerPage);
+    }
+    
+    // Tampilkan atau sembunyikan pagination controls
+    if (filteredData.length > itemsPerPage) {
+        paginationControls.style.display = 'flex';
+    } else {
+        paginationControls.style.display = 'none';
+    }
+    
+    // Update info halaman
+    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+    
+    // Hitung item yang akan ditampilkan
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
+    const paginatedData = filteredData.slice(startIndex, endIndex);
+    
+    // Render tabel
+    if (tableBody) {
+        tableBody.innerHTML = paginatedData.map(history => {
+            if (tableType === 'regular') {
+                return `
+                    <tr>
+                        <td>${history.date || 'N/A'}</td>
+                        <td>${history.brand || 'N/A'}</td>
+                        <td>${formatNumber(history.amount)}</td>
+                        <td>${formatNumber(history.before)}</td>
+                        <td>${formatNumber(history.after)}</td>
+                    </tr>
+                `;
+            } else {
+                return `
+                    <tr>
+                        <td>${history.date || 'N/A'}</td>
+                        <td>${history.category || 'N/A'}</td>
+                        <td>${formatNumber(history.amount)}</td>
+                        <td>${formatNumber(history.before)}</td>
+                        <td>${formatNumber(history.after)}</td>
+                    </tr>
+                `;
+            }
+        }).join('');
+    }
+    
+    // Enable/disable tombol previous dan next
+    const prevButton = document.getElementById(tableType === 'regular' ? 'prevRegularPage' : 'prevMasteragentPage');
+    const nextButton = document.getElementById(tableType === 'regular' ? 'nextRegularPage' : 'nextMasteragentPage');
+    
+    if (prevButton) prevButton.disabled = currentPage === 1;
+    if (nextButton) nextButton.disabled = currentPage === totalPages;
+}
+
+// Event listeners untuk tombol pagination
+document.getElementById('prevRegularPage')?.addEventListener('click', function() {
+    if (currentRegularPage > 1) {
+        applyPagination('regular', currentRegularPage - 1);
+    }
+});
+
+document.getElementById('nextRegularPage')?.addEventListener('click', function() {
+    const historyData = filteredRegularHistory.length > 0 ? filteredRegularHistory : topupHistory;
+    const totalPages = Math.ceil(historyData.length / itemsPerPage);
+    
+    if (currentRegularPage < totalPages) {
+        applyPagination('regular', currentRegularPage + 1);
+    }
+});
+
+document.getElementById('prevMasteragentPage')?.addEventListener('click', function() {
+    if (currentMasteragentPage > 1) {
+        applyPagination('masteragent', currentMasteragentPage - 1);
+    }
+});
+
+document.getElementById('nextMasteragentPage')?.addEventListener('click', function() {
+    const historyData = filteredMasteragentHistory.length > 0 ? filteredMasteragentHistory : masteragentHistory;
+    const totalPages = Math.ceil(historyData.length / itemsPerPage);
+    
+    if (currentMasteragentPage < totalPages) {
+        applyPagination('masteragent', currentMasteragentPage + 1);
+    }
+});
+
+// Modifikasi fungsi updateHistoryTable
+function updateHistoryTable() {
+    const noHistory = document.getElementById('noHistory');
+    const searchTerm = document.getElementById('dashboardSearch').value.toLowerCase().trim();
+    
+    // Reset filtered data
+    filteredRegularHistory = [];
+    
+    if (topupHistory.length === 0 && searchTerm === '') {
+        if (noHistory) noHistory.style.display = 'block';
+        document.getElementById('regularPagination').style.display = 'none';
+        return;
+    }
+    
+    if (noHistory) noHistory.style.display = 'none';
+    
+    // Filter data berdasarkan pencarian
+    if (searchTerm !== '') {
+        filteredRegularHistory = topupHistory.filter(history => {
+            return Object.values(history).some(value => 
+                value && value.toString().toLowerCase().includes(searchTerm)
+            );
+        });
+    }
+    
+    // Reset ke halaman 1
+    currentRegularPage = 1;
+    applyPagination('regular', 1);
+}
+
+// Modifikasi fungsi updateMasteragentHistoryTable
+function updateMasteragentHistoryTable() {
+    const noHistory = document.getElementById('noMasteragentHistory');
+    const searchTerm = document.getElementById('dashboardSearch').value.toLowerCase().trim();
+    
+    // Reset filtered data
+    filteredMasteragentHistory = [];
+    
+    if (masteragentHistory.length === 0 && searchTerm === '') {
+        if (noHistory) noHistory.style.display = 'block';
+        document.getElementById('masteragentPagination').style.display = 'none';
+        return;
+    }
+    
+    if (noHistory) noHistory.style.display = 'none';
+    
+    // Filter data berdasarkan pencarian
+    if (searchTerm !== '') {
+        filteredMasteragentHistory = masteragentHistory.filter(history => {
+            return Object.values(history).some(value => 
+                value && value.toString().toLowerCase().includes(searchTerm)
+            );
+        });
+    }
+    
+    // Reset ke halaman 1
+    currentMasteragentPage = 1;
+    applyPagination('masteragent', 1);
+}
+
+// Modifikasi fungsi resetSearch untuk mereset pagination juga
+function resetSearch() {
+    const searchInput = document.getElementById('dashboardSearch');
+    searchInput.value = '';
+    
+    // Reset filtered data
+    filteredRegularHistory = [];
+    filteredMasteragentHistory = [];
+    
+    // Reset ke halaman 1
+    currentRegularPage = 1;
+    currentMasteragentPage = 1;
+    
+    // Update tabel
+    updateHistoryTable();
+    updateMasteragentHistoryTable();
+}
 </script>
 </body>
 </html>

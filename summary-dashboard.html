@@ -7,60 +7,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="global.css">
-        <link rel="stylesheet" href="stylemobile.css">
+    <link rel="stylesheet" href="stylemobile.css">
     <style>
-        /* ========== VARIABEL CSS YANG DIPERLUKAN ========== */
+               /* ========== VARIABEL CSS YANG DIPERLUKAN ========== */
         :root {
             --primary-gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
             --warning-gradient: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
             --info-gradient: linear-gradient(135deg, #4895ef 0%, #3f37c9 100%);
-            :root {
-    /* ... variabel yang sudah ada ... */
-    
-    /* Tambahkan variabel yang kurang */
-    --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    --info-light: rgba(59, 130, 246, 0.1);
-    --hover-color: rgba(0, 0, 0, 0.05);
-    --menu-hover-text: #3b82f6;
-    --scrollbar-track: #f1f5f9;
-    --scrollbar-thumb: #cbd5e1;
-    --scrollbar-thumb-hover: #94a3b8;
-    --table-header-bg: #f8fafc;
-    --input-bg: #ffffff;
-    --z-modal: 1000;
-    
-    /* Font weights */
-    --font-light: 300;
-    --font-normal: 400;
-    --font-medium: 500;
-    --font-semibold: 600;
-    --font-bold: 700;
-    
-    /* Text sizes */
-    --text-xs: 0.75rem;
-    --text-sm: 0.875rem;
-    --text-base: 1rem;
-    --text-lg: 1.125rem;
-    --text-xl: 1.25rem;
-    
-    /* Spacing */
-    --space-xs: 0.5rem;
-    --space-sm: 0.75rem;
-    --space-md: 1rem;
-    --space-lg: 1.5rem;
-    --space-xl: 2rem;
-    
-    /* Border radius */
-    --radius-sm: 0.25rem;
-    --radius-md: 0.375rem;
-    --radius-lg: 0.5rem;
-    --radius-xl: 0.75rem;
-    --radius-full: 9999px;
-    
-    /* Transitions */
-    --transition-fast: 150ms ease;
-    --transition-normal: 300ms ease;
-}
         }
 
         /* ========== PERBAIKAN UTAMA UNTUK LAYOUT ========== */
@@ -77,6 +30,33 @@
             margin-bottom: var(--space-lg);
             box-shadow: var(--shadow-sm);
             border: 1px solid var(--border-color);
+        }
+        .header h1 {
+            font-size: var(--text-xl);
+            font-weight: var(--font-bold);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .user-info h4 {
+            font-size: var(--text-base);
+            font-weight: var(--font-semibold);
+            margin: 0;
+        }
+
+        .user-info p {
+            font-size: var(--text-xs);
+            margin: 0;
+            color: var(--text-secondary);
         }
 
         /* ========== PERBAIKAN STATISTIC CARDS ========== */
@@ -374,7 +354,6 @@
             transition: background-color var(--transition-fast);
         }
 
-
         /* Perbaikan untuk Action Buttons */
         .action-buttons {
             display: flex;
@@ -644,6 +623,47 @@
             transform: translateY(-2px);
         }
 
+        /* Button styles */
+        .btn {
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            transition: all var(--transition-fast);
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* KPI Container */
+        .kpi-container {
+            margin-bottom: var(--space-lg);
+        }
+
+        .kpi-tab-menu {
+            display: flex;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -758,34 +778,181 @@
             outline: 2px solid var(--primary);
             outline-offset: 2px;
         }
-/* Style untuk status indicator */
-.status-pending {
-    color: #f59e0b;
-    background-color: rgba(245, 158, 11, 0.1);
-    padding: 4px 8px;
-    border-radius: var(--radius-sm);
-    font-size: var(--text-xs);
+
+        /* Style untuk status indicator */
+        .status-pending {
+            color: #f59e0b;
+            background-color: rgba(245, 158, 11, 0.1);
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            font-size: var(--text-xs);
+            font-weight: var(--font-medium);
+        }
+
+        .status-solved {
+            color: #10b981;
+            background-color: rgba(16, 185, 129, 0.1);
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            font-size: var(--text-xs);
+            font-weight: var(--font-medium);
+        }
+
+        .status-maintenance {
+            color: #3b82f6;
+            background-color: rgba(59, 130, 246, 0.1);
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            font-size: var(--text-xs);
+            font-weight: var(--font-medium);
+        }
+
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            box-shadow: var(--shadow-lg);
+            border-left: 4px solid var(--info);
+            z-index: 1001;
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            max-width: 300px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            border-left-color: var(--success);
+        }
+
+        .notification.error {
+            border-left-color: #ef4444;
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .notification i {
+            font-size: 1.25rem;
+        }
+
+        .notification.success i {
+            color: var(--success);
+        }
+
+        .notification.error i {
+            color: #ef4444;
+        }
+         .chart-card.expanded {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90vw;
+            height: 90vh;
+            z-index: 1002;
+            animation: expandChart 0.3s ease;
+        }
+
+        .chart-card.expanded .chart-content {
+            height: calc(100% - 80px);
+        }
+
+        @keyframes expandChart {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+       /* ========== PERBAIKAN ADDITIONAL STATS ========== */
+.additional-stats {
+    margin-bottom: var(--space-lg);
+}
+
+.additional-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-md);
+}
+
+.additional-stat-card {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.additional-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.additional-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--primary-gradient);
+}
+
+.additional-stat-value {
+    font-size: 2rem;
+    font-weight: var(--font-bold);
+    color: var(--primary);
+    margin-bottom: var(--space-xs);
+    line-height: 1;
+}
+
+.additional-stat-label {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
     font-weight: var(--font-medium);
 }
 
-.status-solved {
-    color: #10b981;
-    background-color: rgba(16, 185, 129, 0.1);
-    padding: 4px 8px;
-    border-radius: var(--radius-sm);
-    font-size: var(--text-xs);
-    font-weight: var(--font-medium);
+/* Warna khusus untuk beberapa statistik */
+.additional-stat-card:nth-child(2)::before { background: var(--warning-gradient); }
+.additional-stat-card:nth-child(3)::before { background: var(--success-gradient); }
+.additional-stat-card:nth-child(4)::before { background: var(--info-gradient); }
+.additional-stat-card:nth-child(5)::before { background: #f72585; }
+.additional-stat-card:nth-child(6)::before { background: #7209b7; }
+.additional-stat-card:nth-child(7)::before { background: #3a0ca3; }
+.additional-stat-card:nth-child(8)::before { background: #4361ee; }
+
+/* Responsif untuk additional stats */
+@media (max-width: 1024px) {
+    .additional-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-.status-maintenance {
-    color: #3b82f6;
-    background-color: rgba(59, 130, 246, 0.1);
-    padding: 4px 8px;
-    border-radius: var(--radius-sm);
-    font-size: var(--text-xs);
-    font-weight: var(--font-medium);
+@media (max-width: 640px) {
+    .additional-stats-grid {
+        grid-template-columns: 1fr;
+    }
 }
     </style>
+</head>
 <body>
     <!-- Container untuk sidebar yang akan dimuat oleh sidebar-loader.js -->
     <div id="sidebar-container"></div>
@@ -797,7 +964,7 @@
             <button class="menu-toggle">
                 <i class="fas fa-chart-pie"></i>
             </button>
-            <h1><i class="fas fa-chart-pie"></i> Summary Dashboard</h1>
+            <h1><i class="fas fa-chart-pie"></i>Dashboard Overview</h1>
             <div class="header-actions">
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
@@ -818,27 +985,20 @@
         </div>
         
         <div class="kpi-container">
-    <!-- Tab Menu -->
-    <div class="kpi-tab-menu" style="display: flex; gap: var(--space-sm); margin-bottom: var(--space-lg);">
-        <!-- Dashboard Overview -->
-        <a class="menu-item" href="index.html">
-            <i class="fas fa-tachometer-alt"></i>
-            <span>Dashboard Overview</span>
-        </a>
-
-        <!-- Daily Dashboard -->
-        <a class="menu-item" href="daily-dashboard.html">
-            <i class="fas fa-calendar-check"></i>
-            <span>Daily Dashboard</span>
-        </a>
-
-        <!-- Summary Dashboard -->
-        <a class="menu-item active" href="summary-dashboard.html">
-            <i class="fas fa-chart-pie"></i>
-            <span>Summary Dashboard</span>
-        </a>
-    </div>
-</div>
+            <!-- Tab Menu -->
+            <div class="kpi-tab-menu">
+                <!-- Dashboard Overview -->
+                <a class="menu-item active" href="summary-dashboard.html">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </a>
+                <!-- Summary Dashboard -->
+                <a class="menu-item" href="index.html">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>History</span>
+                </a>
+            </div>
+        </div>
 
         <!-- Summary Stats Cards -->
         <div class="summary-stats">
@@ -863,25 +1023,24 @@
             </div>
 
            <div class="summary-stat-card fade-in" style="animation-delay: 0.2s;">
-    <div class="stat-header">
-        <h3 class="stat-title">Resolution Trend
-            <span class="info-tooltip">
-                <i class="fas fa-info-circle"></i>
-                <span class="tooltip-text">Tingkat resolusi keseluruhan (laporan terselesaikan / total laporan)</span>
-            </span>
-        </h3>
-        <div class="stat-icon trend">
-            <i class="fas fa-chart-line"></i> <!-- Ikon tren -->
-        </div>
-    </div>
-    <div class="stat-value" id="resolutionRate">0%</div>
-    <div class="stat-description">
-        <span id="trendChange" class="positive">
-            <i class="fas fa-arrow-up-right-dots"></i> 0% improvement
-        </span>
-    </div>
-</div>
-
+                <div class="stat-header">
+                    <h3 class="stat-title">Resolution Trend
+                        <span class="info-tooltip">
+                            <i class="fas fa-info-circle"></i>
+                            <span class="tooltip-text">Tingkat resolusi keseluruhan (laporan terselesaikan / total laporan)</span>
+                        </span>
+                    </h3>
+                    <div class="stat-icon trend">
+                        <i class="fas fa-chart-line"></i> <!-- Ikon tren -->
+                    </div>
+                </div>
+                <div class="stat-value" id="resolutionRate">0%</div>
+                <div class="stat-description">
+                    <span id="trendChange" class="positive">
+                        <i class="fas fa-arrow-up-right-dots"></i> 0% improvement
+                    </span>
+                </div>
+            </div>
 
             <div class="summary-stat-card fade-in" style="animation-delay: 0.3s;">
                 <div class="stat-header">
@@ -902,8 +1061,42 @@
             </div>
         </div>
 
+<div class="additional-stats fade-in" style="animation-delay: 0.4s;">
+    <div class="additional-stats-grid">
+        <div class="additional-stat-card">
+            <div class="additional-stat-value" id="totalReports">0</div>
+            <div class="additional-stat-label">Total Reports</div>
+        </div>
+        <div class="additional-stat-card">
+            <div class="additional-stat-value" id="solvedReports">0</div>
+            <div class="additional-stat-label">Solved Reports</div>
+        </div>
+        <div class="additional-stat-card">
+            <div class="additional-stat-value" id="pendingReports">0</div>
+            <div class="additional-stat-label">Pending Reports</div>
+        </div>
+        <div class="additional-stat-card">
+            <div class="additional-stat-value" id="maintenanceReports">0</div>
+            <div class="additional-stat-label">Maintenance Reports</div>
+        </div>
+        <div class="additional-stat-card">
+            <div class="additional-stat-value" id="solvedMaintenance">0</div>
+            <div class="additional-stat-label">Solved Maintenance</div>
+        </div>
+        <div class="additional-stat-card">
+            <div class="additional-stat-value" id="newGameReleases">0</div>
+            <div class="additional-stat-label">New Game Releases</div>
+        </div>
+        <div class="additional-stat-card">
+            <div class="additional-stat-value" id="newfeatureReleases">0</div>
+            <div class="additional-stat-label">New Feature Releases</div>
+        </div>
+    </div>
+</div>
+
+
         <!-- Filters Section -->
-        <div class="summary-filters fade-in" style="animation-delay: 0.4s;">
+        <div class="summary-filters fade-in" style="animation-delay: 0.5s;">
             <div class="filter-group">
                 <label for="dateRange">Date Range</label>
                 <select class="filter-select" id="dateRange">
@@ -922,8 +1115,8 @@
                     <option value="billing">Solved Report</option>
                     <option value="account">Pending Maintenance</option>
                     <option value="enhancement">Solved Maintenance</option>
-                    <option value="enhancement">Releases New Feature</option>
-                    <option value="enhancement">Releases New Game</option>
+                    <option value="feature">Releases New Feature</option>
+                    <option value="game">Releases New Game</option>
                 </select>
             </div>
             
@@ -931,57 +1124,34 @@
                 <label for="brandFilter">Brand</label>
                 <select class="filter-select" id="brandFilter">
                    <option value="all">All Brands</option>
-
-                                    <option value="CINTAWIN88 (D-GAMING)">CINTAWIN88 (D-GAMING)</option>
-
-                                    <option value="CERIASLOT99 (D-GAMING)">CERIASLOT99 (D-GAMING)</option>
-
-                                    <option value="RAJASCATTER88 (D-GAMING)">RAJASCATTER88 (D-GAMING)</option>
-
-                                    <option value="MAHJONGJP88 (D-GAMING)">MAHJONGJP88 (D-GAMING)</option>
-
-                                    <option value="NAGAHOKI88 (D-GAMING)">NAGAHOKI88 (D-GAMING)</option>
-
-                                    <option value="SPACEMAN88 (D-GAMING)">SPACEMAN88 (D-GAMING)</option>
-
-                                    <option value="RAJAPANEN (D-GAMING)">RAJAPANEN (D-GAMING)</option>
-
-                                    <option value="BROTO88 (D-GAMING)">BROTO88 (D-GAMING)</option>
-
-                                    <option value="MEDUSA88 (GACHA)">MEDUSA88 (GACHA)</option>
-
-                                    <option value="ATHENA168 (GACHA)">ATHENA168 (GACHA)</option>
-
-                                    <option value="ARES GACOR (GACHA)">ARES GACOR (GACHA)</option>
-
-                                    <option value="RAJA MAHJONG (GACHA)">RAJA MAHJONG (GACHA)</option>
-
-                                    <option value="OLYMPUS1000 (GACHA)">OLYMPUS1000 (GACHA)</option>
-
-                                    <option value="CLICKBET (GACHA)">CLICKBET (GACHA)</option>
-
-                                    <option value="GACHA99 (GACHA)">GACHA99 (GACHA)</option>
-
-                                    <option value="UJANGBET (BREM)">UJANGBET (BREM)</option>
-
-                                    <option value="EPISODEBET (BREM)">EPISODEBET (BREM)</option>
-
-                                    <option value="FOKUSBET88 (89ENGINE)">FOKUSBET88 (89ENGINE)</option>
-
-                                    <option value="RAJAKING88 (89ENGINE)">RAJAKING88 (89ENGINE)</option>
-
-                                    <option value="RAJANAGA99 (89ENGINE)">RAJANAGA99 (89ENGINE)</option>
-
-                                    <option value="JOIN999 (LUXION)">JOIN999 (LUXION)</option>
+                    <option value="CINTAWIN88 (D-GAMING)">CINTAWIN88 (D-GAMING)</option>
+                    <option value="CERIASLOT99 (D-GAMING)">CERIASLOT99 (D-GAMING)</option>
+                    <option value="RAJASCATTER88 (D-GAMING)">RAJASCATTER88 (D-GAMING)</option>
+                                        <option value="MAHJONGJP88 (D-GAMING)">MAHJONGJP88 (D-GAMING)</option>
+                    <option value="NAGAHOKI88 (D-GAMING)">NAGAHOKI88 (D-GAMING)</option>
+                    <option value="SPACEMAN88 (D-GAMING)">SPACEMAN88 (D-GAMING)</option>
+                    <option value="RAJAPANEN (D-GAMING)">RAJAPANEN (D-GAMING)</option>
+                    <option value="BROTO88 (D-GAMING)">BROTO88 (D-GAMING)</option>
+                    <option value="MEDUSA88 (GACHA)">MEDUSA88 (GACHA)</option>
+                    <option value="ATHENA168 (GACHA)">ATHENA168 (GACHA)</option>
+                    <option value="ARES GACOR (GACHA)">ARES GACOR (GACHA)</option>
+                    <option value="RAJA MAHJONG (GACHA)">RAJA MAHJONG (GACHA)</option>
+                    <option value="OLYMPUS1000 (GACHA)">OLYMPUS1000 (GACHA)</option>
+                    <option value="CLICKBET (GACHA)">CLICKBET (GACHA)</option>
+                    <option value="GACHA99 (GACHA)">GACHA99 (GACHA)</option>
+                    <option value="UJANGBET (BREM)">UJANGBET (BREM)</option>
+                    <option value="EPISODEBET (BREM)">EPISODEBET (BREM)</option>
+                    <option value="FOKUSBET88 (89ENGINE)">FOKUSBET88 (89ENGINE)</option>
+                    <option value="RAJAKING88 (89ENGINE)">RAJAKING88 (89ENGINE)</option>
+                    <option value="RAJANAGA99 (89ENGINE)">RAJANAGA99 (89ENGINE)</option>
+                    <option value="JOIN999 (LUXION)">JOIN999 (LUXION)</option>
                 </select>
             </div>
-            
-            <!-- Priority filter dihapus dari sini -->
         </div>
 
         <!-- Charts Section -->
         <div class="charts-container">
-            <div class="chart-card fade-in" style="animation-delay: 0.5s;">
+            <div class="chart-card fade-in" style="animation-delay: 0.6s;">
                 <div class="chart-header">
                     <h3 class="chart-title">Reports by Status</h3>
                     <div class="chart-actions">
@@ -995,7 +1165,7 @@
                 </div>
             </div>
             
-            <div class="chart-card fade-in" style="animation-delay: 0.6s;">
+            <div class="chart-card fade-in" style="animation-delay: 0.7s;">
                 <div class="chart-header">
                     <h3 class="chart-title">Weekly Resolution Trend</h3>
                     <div class="chart-actions">
@@ -1009,7 +1179,7 @@
                 </div>
             </div>
             
-            <div class="chart-card fade-in" style="animation-delay: 0.7s;">
+            <div class="chart-card fade-in" style="animation-delay: 0.8s;">
                 <div class="chart-header">
                     <h3 class="chart-title">Reports by Category</h3>
                     <div class="chart-actions">
@@ -1021,68 +1191,59 @@
                 <div class="chart-content">
                     <canvas id="categoryChart" class="chart-canvas"></canvas>
                 </div>
-        
             </div>
-        </div>
-
-        <!-- Detailed Summary Table -->
-        <div class="summary-table-section fade-in" style="animation-delay: 0.9s;">
-            <div class="section-header">
-                <h2 class="section-title"><i class="fas fa-table"></i> Detailed Summary</h2>
-                <div class="section-actions">
-                    <button class="btn btn-primary" id="exportData">
-                        <i class="fas fa-download"></i> Export Data
-                    </button>
-                    <button class="btn btn-outline" id="refreshSummary">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
+            
+            <div class="chart-card fade-in" style="animation-delay: 0.9s;">
+                <div class="chart-header">
+                    <h3 class="chart-title">Reports by Brand</h3>
+                    <div class="chart-actions">
+                        <button class="btn-icon view" title="View Details">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-content">
+                    <canvas id="brandChart" class="chart-canvas"></canvas>
                 </div>
             </div>
-            
-            <div class="summary-table-container">
-                <table class="summary-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Report ID</th>
-                            <th>Category</th>
-                            <th>Status</th>
-                            <th>Brand</th>
-                            <th>Resolution Time</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="summaryTableBody">
-                        <!-- Data akan dimuat secara dinamis -->
-                    </tbody>
-                </table>
-            </div>
-            
-            <div id="noSummaryData" class="empty-state" style="display: none;">
-                <i class="fas fa-inbox"></i>
-                <h3>No Summary Data</h3>
-                <p>There is no data available for the selected filters.</p>
-            </div>
-            
-            <div class="pagination">
-                <button class="btn btn-outline" id="prevPage">
-                    <i class="fas fa-chevron-left"></i> Previous
-                </button>
-                <span class="page-numbers">Page 1 of 1</span>
-                <button class="btn btn-outline" id="nextPage">
-                    Next <i class="fas fa-chevron-right"></i>
+ <div class="chart-card fade-in" style="animation-delay: 1.0s;">
+        <div class="chart-header">
+            <h3 class="chart-title">New Game Releases</h3>
+            <div class="chart-actions">
+                <button class="btn-icon view" title="View Details">
+                    <i class="fas fa-expand"></i>
                 </button>
             </div>
         </div>
+        <div class="chart-content">
+            <canvas id="gameReleasesChart" class="chart-canvas"></canvas>
+        </div>
     </div>
-    <script src="sidebar-loader.js"></script>
-<script src="user-profile.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    
+    <!-- NEW: Chart untuk New Feature Releases -->
+    <div class="chart-card fade-in" style="animation-delay: 1.1s;">
+        <div class="chart-header">
+            <h3 class="chart-title">New Feature Releases</h3>
+            <div class="chart-actions">
+                <button class="btn-icon view" title="View Details">
+                    <i class="fas fa-expand"></i>
+                </button>
+            </div>
+        </div>
+        <div class="chart-content">
+            <canvas id="featureReleasesChart" class="chart-canvas"></canvas>
+        </div>
+    </div>
+</div>
 
-<script>
+    <script src="sidebar-loader.js"></script>
+    <script src="user-profile.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
+    <script>
     // ========== KONFIGURASI FIREBASE ==========
     const firebaseConfig = {
         apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
@@ -1110,10 +1271,14 @@
     let allReportsData = [];
     let reportsListener = null;
     let dateRangeFilter = 30; // Default: 30 hari
-    let newGamesListener = null; // Listener untuk data game baru
+    let newGamesListener = null;
+    let currentPage = 1;
+    const itemsPerPage = 10;
+    let totalPages = 1;
+    let currentSearchTerm = '';
 
-    // ========== DEFINISI SEMUA FUNGSI ==========
-    
+    // ========== FUNGSI UTAMA ==========
+
     // Fungsi untuk mendapatkan tanggal dengan offset hari
     function getDateWithOffset(daysOffset) {
         const now = new Date();
@@ -1373,9 +1538,6 @@
             }
         });
         
-        const avgResolutionTime = countWithResolutionTime > 0 ? 
-            Math.round(totalResolutionTime / countWithResolutionTime) : 0;
-        
         // Hitung reports per brand
         const brandCounts = {};
         reports.forEach(report => {
@@ -1412,11 +1574,13 @@
             totalReports,
             solvedCount: solvedReports,
             pendingCount: statusCounts.Pending,
+            maintenanceCount: statusCounts.Maintenance,
+            solvedMaintenanceCount: statusCounts['Maintenance Solved'],
             resolutionRate,
-            avgResolutionTime,
             topBrand,
             categoryCounts,
-            statusCounts
+            statusCounts,
+            brandCounts
         };
     }
 
@@ -1424,21 +1588,92 @@
     function updateDashboardStats(reports) {
         const stats = calculateRealStats(reports);
         
-        // Update weekly performance (menggunakan resolution rate)
+        // Update semua statistik utama
         document.getElementById('weeklyPerformance').textContent = `${stats.resolutionRate}%`;
-        
-        // Update resolution trend
         document.getElementById('resolutionRate').textContent = `${stats.resolutionRate}%`;
-        
-        // Update top brand
         document.getElementById('topBrand').textContent = stats.topBrand.name;
         
-        // Update trend indicators (placeholder untuk perbandingan dengan periode sebelumnya)
-        document.getElementById('performanceChange').innerHTML = 
-            `<i class="fas fa-arrow-up"></i> ${Math.floor(Math.random() * 15) + 1}% from last week`;
+        // Update additional stats - SEMUA ELEMEN
+        document.getElementById('totalReports').textContent = stats.totalReports;
+        document.getElementById('solvedReports').textContent = stats.solvedCount;
+        document.getElementById('pendingReports').textContent = stats.pendingCount;
+        document.getElementById('maintenanceReports').textContent = stats.maintenanceCount;
+        document.getElementById('solvedMaintenance').textContent = stats.solvedMaintenanceCount;
         
+        // Update new game releases (ambil dari data game jika tersedia)
+        const newGameReleases = window.newGamesData ? window.newGamesData.length : 0;
+        document.getElementById('newGameReleases').textContent = newGameReleases;
+        
+        // Update trend indicators dengan data yang lebih realistis
+        const performanceChange = calculatePerformanceChange(reports);
+        document.getElementById('performanceChange').innerHTML = 
+            performanceChange >= 0 ? 
+            `<i class="fas fa-arrow-up"></i> ${performanceChange}% from last week` :
+            `<i class="fas fa-arrow-down"></i> ${Math.abs(performanceChange)}% from last week`;
+        
+        const trendChange = calculateTrendChange(reports);
         document.getElementById('trendChange').innerHTML = 
-            `<i class="fas fa-arrow-up"></i> ${Math.floor(Math.random() * 10) + 1}% improvement`;
+            trendChange >= 0 ? 
+            `<i class="fas fa-arrow-up"></i> ${trendChange}% improvement` :
+            `<i class="fas fa-arrow-down"></i> ${Math.abs(trendChange)}% decline`;
+    }
+
+    // Fungsi bantu untuk menghitung perubahan performa
+    function calculatePerformanceChange(reports) {
+        // Hitung performa minggu ini
+        const thisWeek = getDateWithOffset(7);
+        const thisWeekReports = reports.filter(report => {
+            const reportDate = report.date.toDate ? report.date.toDate() : new Date(report.date);
+            return reportDate >= thisWeek;
+        });
+        
+        const thisWeekSolved = thisWeekReports.filter(report => report.isSolved).length;
+        const thisWeekRate = thisWeekReports.length > 0 ? 
+            Math.round((thisWeekSolved / thisWeekReports.length) * 100) : 0;
+        
+        // Hitung performa minggu lalu
+        const lastWeekStart = getDateWithOffset(14);
+        const lastWeekEnd = getDateWithOffset(7);
+        const lastWeekReports = reports.filter(report => {
+            const reportDate = report.date.toDate ? report.date.toDate() : new Date(report.date);
+            return reportDate >= lastWeekStart && reportDate < lastWeekEnd;
+        });
+        
+        const lastWeekSolved = lastWeekReports.filter(report => report.isSolved).length;
+        const lastWeekRate = lastWeekReports.length > 0 ? 
+            Math.round((lastWeekSolved / lastWeekReports.length) * 100) : 0;
+        
+        // Hitung perubahan
+        return lastWeekRate > 0 ? thisWeekRate - lastWeekRate : 0;
+    }
+
+    // Fungsi bantu untuk menghitung perubahan tren
+    function calculateTrendChange(reports) {
+        // Hitung resolusi rate bulan ini
+        const thisMonth = getDateWithOffset(30);
+        const thisMonthReports = reports.filter(report => {
+            const reportDate = report.date.toDate ? report.date.toDate() : new Date(report.date);
+            return reportDate >= thisMonth;
+        });
+        
+        const thisMonthSolved = thisMonthReports.filter(report => report.isSolved).length;
+        const thisMonthRate = thisMonthReports.length > 0 ? 
+            Math.round((thisMonthSolved / thisMonthReports.length) * 100) : 0;
+        
+        // Hitung resolusi rate bulan lalu
+        const lastMonthStart = getDateWithOffset(60);
+        const lastMonthEnd = getDateWithOffset(30);
+        const lastMonthReports = reports.filter(report => {
+            const reportDate = report.date.toDate ? report.date.toDate() : new Date(report.date);
+            return reportDate >= lastMonthStart && reportDate < lastMonthEnd;
+        });
+        
+        const lastMonthSolved = lastMonthReports.filter(report => report.isSolved).length;
+        const lastMonthRate = lastMonthReports.length > 0 ? 
+            Math.round((lastMonthSolved / lastMonthReports.length) * 100) : 0;
+        
+        // Hitung perubahan
+        return lastMonthRate > 0 ? thisMonthRate - lastMonthRate : 0;
     }
 
     // Fungsi untuk memperbarui chart
@@ -1543,6 +1778,41 @@
                 }
             }
         });
+        
+        // Update Brand Chart
+        const brandCtx = document.getElementById('brandChart').getContext('2d');
+        if (window.brandChartInstance) {
+            window.brandChartInstance.destroy();
+        }
+        
+        // Siapkan data untuk chart brand (ambil top 10 brand)
+        const brandEntries = Object.entries(stats.brandCounts);
+        brandEntries.sort((a, b) => b[1] - a[1]);
+        const topBrands = brandEntries.slice(0, 10);
+        const brandLabels = topBrands.map(brand => brand[0]);
+        const brandData = topBrands.map(brand => brand[1]);
+        
+        window.brandChartInstance = new Chart(brandCtx, {
+            type: 'bar',
+            data: {
+                labels: brandLabels,
+                datasets: [{
+                    label: 'Reports by Brand',
+                    data: brandData,
+                    backgroundColor: '#f72585',
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
     }
 
     // Fungsi untuk mendapatkan label 4 minggu terakhir
@@ -1583,15 +1853,6 @@
         });
     }
 
-    // Fungsi untuk memperbarui tabel data
-    function updateSummaryTable(reports) {
-    // Terapkan filter
-    const filteredReports = applyFilters(reports);
-    
-    // Setup pagination dengan data yang sudah difilter
-    setupPagination(filteredReports);
-}
-
     // ========== FUNGSI FILTER ==========
 
     function applyFilters(reports) {
@@ -1618,186 +1879,168 @@
         return filteredReports;
     }
 
-    // ========== FUNGSI UTILITY ==========
+    // ========== FUNGSI PAGINATION ==========
 
-    // Fungsi untuk melihat detail laporan
-    function viewReportDetails(reportId, collection) {
-        // Cari laporan di cache yang sesuai
-        let report = null;
+    function setupPagination(reports) {
+        const filteredReports = applyFilters(reports);
+        const searchedReports = filterDataBySearch(filteredReports, currentSearchTerm);
+        totalPages = Math.ceil(searchedReports.length / itemsPerPage);
         
-        switch(collection) {
-            case 'pendingReports':
-                report = window.pendingReportsCache.find(r => r.id === reportId);
-                break;
-            case 'solvedReports':
-                report = window.solvedReportsCache.find(r => r.id === reportId);
-                break;
-            case 'maintenanceReports':
-                report = window.maintenanceReportsCache.find(r => r.id === reportId);
-                break;
-            case 'solvedMaintenance':
-                report = window.solvedMaintenanceCache.find(r => r.id === reportId);
-                break;
+        // Update teks halaman
+        const pageNumbersElement = document.querySelector('.page-numbers');
+        if (pageNumbersElement) {
+            pageNumbersElement.textContent = `Page ${currentPage} of ${totalPages}`;
         }
         
-        if (!report) {
-            // Coba cari di semua data sebagai fallback
-            report = allReportsData.find(r => r.id === reportId);
-        }
+        // Enable/disable tombol berdasarkan halaman saat ini
+        const prevButton = document.getElementById('prevPage');
+        const nextButton = document.getElementById('nextPage');
         
-        if (!report) {
-            showNotification('Report not found!', 'error');
+        if (prevButton) prevButton.disabled = currentPage === 1;
+        if (nextButton) nextButton.disabled = currentPage === totalPages;
+        
+        // Tampilkan data untuk halaman saat ini
+        displayPageData(searchedReports);
+    }
+
+    function displayPageData(reports) {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const pageData = reports.slice(startIndex, endIndex);
+        
+        // Gunakan pageData untuk menampilkan data di tabel
+        renderTableData(pageData);
+    }
+
+    function renderTableData(reports) {
+        const tableBody = document.getElementById('summaryTableBody');
+        const emptyState = document.getElementById('noSummaryData');
+        
+        // Kosongkan tabel
+        if (tableBody) tableBody.innerHTML = '';
+        
+        // Tampilkan empty state jika tidak ada data
+        if (reports.length === 0) {
+            if (emptyState) emptyState.style.display = 'block';
             return;
         }
         
-        // Tampilkan modal dengan detail laporan
-        showReportModal(report);
-    }
-
-    // Fungsi untuk menampilkan modal detail laporan
-    function showReportModal(report) {
-        // Buat modal element
-        const modalOverlay = document.createElement('div');
-        modalOverlay.className = 'modal-overlay';
-        modalOverlay.innerHTML = `
-            <div class="modal">
-                <div class="modal-header">
-                    <h3 class="modal-title">Report Details</h3>
-                    <button class="modal-close">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Report ID</label>
-                        <div class="form-input-static">${report.id || 'N/A'}</div>
-                    </div>
-                    <div class="form-group">
-                        <label>Date</label>
-                        <div class="form-input-static">${formatDateForDisplay(report.date)}</div>
-                    </div>
-                    <div class="form-group">
-                        <label>Category</label>
-                        <div class="form-input-static">${report.category || 'N/A'}</div>
-                    </div>
-                    <div class="form-group">
-                        <label>Brand</label>
-                        <div class="form-input-static">${report.brand || 'N/A'}</div>
-                    </div>
-                    <div class="form-group">
-                        <label>Status</label>
-                        <div class="form-input-static">${report.status || (report.isSolved ? 'Solved' : 'Pending')}</div>
-                    </div>
-                    <div class="form-group">
-                        <label>Description</label>
-                        <div class="form-input-static">${report.description || 'No description provided'}</div>
-                    </div>
-                    ${report.resolutionTime ? `
-                    <div class="form-group">
-                        <label>Resolution Time</label>
-                        <div class="form-input-static">
-                            ${Math.floor(report.resolutionTime / 60)}h ${report.resolutionTime % 60}m
-                        </div>
-                    </div>
-                    ` : ''}
-                    ${report.notes ? `
-                    <div class="form-group">
-                        <label>Resolution Notes</label>
-                        <div class="form-input-static">${report.notes}</div>
-                    </div>
-                    ` : ''}
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline" id="closeModal">Close</button>
-                </div>
-            </div>
-        `;
+        // Sembunyikan empty state
+        if (emptyState) emptyState.style.display = 'none';
         
-        // Tambahkan modal ke body
-        document.body.appendChild(modalOverlay);
-        
-        // Tampilkan modal dengan animasi
-        setTimeout(() => {
-            modalOverlay.classList.add('active');
-        }, 10);
-        
-        // Event listener untuk tombol close
-        const closeModal = () => {
-            modalOverlay.classList.remove('active');
-            setTimeout(() => {
-                if (modalOverlay.parentNode) {
-                    modalOverlay.parentNode.removeChild(modalOverlay);
-                }
-            }, 300);
-        };
-        
-        modalOverlay.querySelector('.modal-close').addEventListener('click', closeModal);
-        modalOverlay.querySelector('#closeModal').addEventListener('click', closeModal);
-        
-        // Event listener untuk klik di luar modal
-        modalOverlay.addEventListener('click', function(e) {
-            if (e.target === modalOverlay) {
-                closeModal();
+        // Tambahkan data ke tabel
+        reports.forEach(report => {
+            const row = document.createElement('tr');
+            
+            // Format tanggal
+            let reportDate;
+            try {
+                reportDate = report.date.toDate ? report.date.toDate() : new Date(report.date);
+                // Convert to Indonesia timezone (UTC+7)
+                const offset = 7;
+                const localTime = reportDate.getTime();
+                const localOffset = reportDate.getTimezoneOffset() * 60000;
+                const utc = localTime + localOffset;
+                const indonesiaTime = new Date(utc + (3600000 * offset));
+                
+                reportDate = indonesiaTime.toLocaleDateString('id-ID', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            } catch (error) {
+                console.error("Error formatting date:", error, report.date);
+                reportDate = 'N/A';
             }
+            
+            // Format resolution time
+            let resolutionTime = 'N/A';
+            if (report.resolutionTime) {
+                const hours = Math.floor(report.resolutionTime / 60);
+                const minutes = report.resolutionTime % 60;
+                resolutionTime = `${hours}h ${minutes}m`;
+            }
+            
+            // Tentukan status dan class-nya
+            let statusClass = 'status-pending';
+            let statusText = report.status || 'Pending';
+            
+            if (statusText === 'Solved' || report.isSolved) {
+                statusClass = 'status-solved';
+            } else if (statusText.includes('Maintenance')) {
+                statusClass = 'status-maintenance';
+            }
+            
+            row.innerHTML = `
+                <td>${reportDate}</td>
+                <td>${report.id || 'N/A'}</td>
+                <td>${report.category || 'N/A'}</td>
+                <td><span class="${statusClass}">${statusText}</span></td>
+                <td>${report.brand || 'N/A'}</td>
+                <td>${resolutionTime}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn-icon view" title="View Details" onclick="viewReportDetails('${report.id}', '${report.collection}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </td>
+            `;
+            
+            if (tableBody) tableBody.appendChild(row);
         });
     }
 
-    // Format tanggal untuk display
-    function formatDateForDisplay(dateValue) {
-        if (!dateValue) return 'N/A';
-        
-        try {
-            let date;
-            if (dateValue.toDate) {
-                date = dateValue.toDate();
-            } else {
-                date = new Date(dateValue);
-            }
-            
-            // Convert to Indonesia timezone (UTC+7)
-            const offset = 7;
-            const localTime = date.getTime();
-            const localOffset = date.getTimezoneOffset() * 60000;
-            const utc = localTime + localOffset;
-            const indonesiaTime = new Date(utc + (3600000 * offset));
-            
-            return indonesiaTime.toLocaleDateString('id-ID', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        } catch (error) {
-            console.error("Error formatting date for display:", error, dateValue);
-            return 'N/A';
+    function goToPage(page) {
+        if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+            setupPagination(allReportsData);
         }
     }
 
-    // Fungsi untuk menampilkan notifikasi
-    function showNotification(message, type = 'info') {
-        // Buat elemen notifikasi
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.innerHTML = `
-            <div class="notification-content">
-                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-                <span>${message}</span>
-            </div>
-        `;
+    // ========== FUNGSI PENCARIAN ==========
+
+    function filterDataBySearch(reports, searchTerm) {
+        if (!searchTerm || searchTerm.trim() === '') {
+            return reports; // Kembalikan semua data jika pencarian kosong
+        }
         
-        document.body.appendChild(notification);
+        const term = searchTerm.toLowerCase().trim();
         
-        // Tampilkan notifikasi
-        setTimeout(() => notification.classList.add('show'), 100);
+        return reports.filter(report => {
+            // Cari di semua field yang relevan
+            return (
+                (report.id && report.id.toLowerCase().includes(term)) ||
+                (report.category && report.category.toLowerCase().includes(term)) ||
+                (report.status && report.status.toLowerCase().includes(term)) ||
+                (report.brand && report.brand.toLowerCase().includes(term)) ||
+                (report.description && report.description.toLowerCase().includes(term))
+            );
+        });
+    }
+
+    function handleSearch() {
+        const searchInput = document.getElementById('summarySearch');
+        if (!searchInput) return;
         
-        // Sembunyikan setelah 3 detik
-        setTimeout(() => {
-            notification.classList.remove('show');
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.parentNode.removeChild(notification);
-                }
-            }, 300);
-        }, 3000);
+        const searchTerm = searchInput.value;
+        currentSearchTerm = searchTerm;
+        
+        // Reset ke halaman pertama saat pencarian
+        currentPage = 1;
+        
+        // Filter data berdasarkan pencarian
+        const filteredData = filterDataBySearch(allReportsData, searchTerm);
+        
+        // Perbarui UI dengan data yang sudah difilter
+        updateDashboardStats(filteredData);
+        updateCharts(filteredData);
+        updateSummaryTable(filteredData);
+        
+        // Tampilkan notifikasi jika tidak ada hasil
+        if (searchTerm && filteredData.length === 0) {
+            showNotification('No results found for: ' + searchTerm, 'info');
+        }
     }
 
     // ========== FUNGSI UNTUK NEW GAMES ==========
@@ -1885,108 +2128,262 @@
         if (popularElement) popularElement.textContent = popular;
         if (categoriesElement) categoriesElement.textContent = categories;
         
-        console.log(`Updated UI - Total: ${total}, Upcoming: ${upcoming}, Popular: ${popular}, Categories: ${categories}`);
+        console.log(`Updated games UI - Total: ${total}, Upcoming: ${upcoming}, Popular: ${popular}, Categories: ${categories}`);
+    }
+
+    // ========== FUNGSI UTILITAS ==========
+
+    // Fungsi untuk menampilkan notifikasi
+    function showNotification(message, type = 'info') {
+        const notificationContainer = document.getElementById('notificationContainer');
+        if (!notificationContainer) return;
+
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        
+        const icon = type === 'success' ? 'fa-check-circle' : 
+                    type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
+        
+        notification.innerHTML = `
+            <div class="notification-content">
+                <i class="fas ${icon}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+
+        notificationContainer.appendChild(notification);
+
+        // Tampilkan notifikasi
+        setTimeout(() => notification.classList.add('show'), 100);
+
+        // Hapus notifikasi setelah 5 detik
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 5000);
+    }
+
+    // Fungsi untuk melihat detail laporan
+    function viewReportDetails(reportId, collection) {
+        console.log(`Viewing report ${reportId} from ${collection}`);
+        
+        // Redirect ke halaman detail yang sesuai
+        if (collection === 'pendingReports') {
+            window.location.href = `detail-pending.html?id=${reportId}`;
+        } else if (collection === 'solvedReports') {
+            window.location.href = `detail-solved.html?id=${reportId}`;
+        } else if (collection === 'maintenanceReports') {
+            window.location.href = `detail-maintenance.html?id=${reportId}`;
+        } else if (collection === 'solvedMaintenance') {
+            window.location.href = `detail-solved-maintenance.html?id=${reportId}`;
+        } else {
+            showNotification('Cannot view details for this report type', 'error');
+        }
+    }
+
+    // Fungsi untuk memperbarui tabel summary
+    function updateSummaryTable(reports) {
+        const filteredReports = applyFilters(reports);
+        setupPagination(filteredReports);
+    }
+
+    // Fungsi untuk mengekspor data
+    function exportData() {
+        try {
+            const filteredReports = applyFilters(allReportsData);
+            
+            if (filteredReports.length === 0) {
+                showNotification('No data to export', 'info');
+                return;
+            }
+
+            // Siapkan data CSV
+            let csvContent = "Date,Report ID,Category,Status,Brand,Resolution Time\n";
+            
+            filteredReports.forEach(report => {
+                // Format tanggal
+                let reportDate;
+                try {
+                    reportDate = report.date.toDate ? report.date.toDate() : new Date(report.date);
+                    reportDate = reportDate.toLocaleDateString('id-ID');
+                } catch (error) {
+                    reportDate = 'N/A';
+                }
+                
+                // Format resolution time
+                let resolutionTime = 'N/A';
+                if (report.resolutionTime) {
+                    const hours = Math.floor(report.resolutionTime / 60);
+                    const minutes = report.resolutionTime % 60;
+                    resolutionTime = `${hours}h ${minutes}m`;
+                }
+                
+                const row = [
+                    reportDate,
+                    report.id || 'N/A',
+                    report.category || 'N/A',
+                    report.status || 'N/A',
+                    report.brand || 'N/A',
+                    resolutionTime
+                ].map(field => `"${field}"`).join(',');
+                
+                csvContent += row + '\n';
+            });
+
+            // Buat blob dan download
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `reports_export_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('Data exported successfully', 'success');
+            
+        } catch (error) {
+            console.error('Export error:', error);
+            showNotification('Failed to export data', 'error');
+        }
     }
 
     // ========== EVENT LISTENERS ==========
 
-    // Event listener untuk filter changes
-    function setupEventListeners() {
-        // Pastikan elemen ada sebelum menambahkan event listener
-        const dateRangeElement = document.getElementById('dateRange');
-        const categoryFilterElement = document.getElementById('categoryFilter');
-        const brandFilterElement = document.getElementById('brandFilter');
-        const refreshSummaryElement = document.getElementById('refreshSummary');
-        const exportDataElement = document.getElementById('exportData');
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("Dashboard initialized");
+    
+    // Inisialisasi cache
+    window.pendingReportsCache = [];
+    window.solvedReportsCache = [];
+    window.maintenanceReportsCache = [];
+    window.solvedMaintenanceCache = [];
+    window.newGamesData = [];
+    window.featuresData = [];
+
+    // Setup listeners
+    setupReportsListener();
+    setupNewReleasesListener();
+    setupReleasesListeners(); // ← TAMBAH BARIS INI
+
+       setTimeout(checkFirestoreCollections, 3000);
+
+        // Setup filter listeners
+        const categoryFilter = document.getElementById('categoryFilter');
+        const brandFilter = document.getElementById('brandFilter');
         
-        if (dateRangeElement) {
-            dateRangeElement.addEventListener('change', function() {
+        if (categoryFilter) {
+            categoryFilter.addEventListener('change', () => {
+                currentPage = 1;
+                updateSummaryTable(allReportsData);
+            });
+        }
+        
+        if (brandFilter) {
+            brandFilter.addEventListener('change', () => {
+                currentPage = 1;
+                updateSummaryTable(allReportsData);
+            });
+        }
+        
+        // Setup search listener
+        const searchInput = document.getElementById('summarySearch');
+        if (searchInput) {
+            searchInput.addEventListener('input', handleSearch);
+        }
+        
+        // Setup pagination listeners
+        const prevButton = document.getElementById('prevPage');
+        const nextButton = document.getElementById('nextPage');
+        
+        if (prevButton) {
+            prevButton.addEventListener('click', () => goToPage(currentPage - 1));
+        }
+        
+        if (nextButton) {
+            nextButton.addEventListener('click', () => goToPage(currentPage + 1));
+        }
+        
+        // Setup export button
+        const exportButton = document.getElementById('exportBtn');
+        if (exportButton) {
+            exportButton.addEventListener('click', exportData);
+        }
+        
+        // Setup date range filter
+        const dateRangeSelect = document.getElementById('dateRange');
+        if (dateRangeSelect) {
+            dateRangeSelect.addEventListener('change', function() {
                 dateRangeFilter = parseInt(this.value);
-                if (reportsListener) {
-                    reportsListener();
-                }
-                setupReportsListener();
-                showNotification(`Date range changed to ${this.options[this.selectedIndex].text}`, 'info');
-            });
-        }
-        
-if (categoryFilterElement) {
-    categoryFilterElement.addEventListener('change', function() {
-        currentPage = 1; // Reset ke halaman pertama
-        updateSummaryTable(allReportsData);
-    });
-}
-
-if (brandFilterElement) {
-    brandFilterElement.addEventListener('change', function() {
-        currentPage = 1; // Reset ke halaman pertama
-        updateSummaryTable(allReportsData);
-    });
-}
-        
-        if (refreshSummaryElement) {
-            refreshSummaryElement.addEventListener('click', function() {
-                if (reportsListener) {
-                    reportsListener();
-                }
-                setupReportsListener();
-                showNotification('Summary data refreshed successfully!', 'success');
-            });
-        }
-        
-        if (exportDataElement) {
-            exportDataElement.addEventListener('click', function() {
-                // Simulasi export data
-                showNotification('Exporting summary data...', 'info');
+                console.log("Date range changed to:", dateRangeFilter);
                 
-                // Simulasi delay untuk export
-                setTimeout(() => {
-                    showNotification('Data exported successfully!', 'success');
-                }, 1500);
+                // Setup ulang listener dengan range baru
+                setupReportsListener();
             });
         }
-    }
-
-    // ========== INISIALISASI ==========
-
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log("Summary Dashboard initialized");
         
-        // Inisialisasi semua cache
-        window.pendingReportsCache = [];
-        window.solvedReportsCache = [];
-        window.maintenanceReportsCache = [];
-        window.solvedMaintenanceCache = [];
-        
-        // Setup event listeners
-        setupEventListeners();
-        
-        // Setup listener untuk data
-        setupReportsListener();
-        
-        // Setup listener untuk data game baru
-        setupNewGamesListener();
-        
-        // Tambahkan animasi fade-in untuk elemen
-        const fadeElements = document.querySelectorAll('.fade-in');
-        fadeElements.forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        // Setup tab navigation
+        const tabButtons = document.querySelectorAll('.tab-button');
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const tabName = this.getAttribute('data-tab');
+                
+                // Update active tab
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show/hide tab content
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabName).classList.add('active');
+            });
         });
         
-        // Trigger animasi setelah delay
-        setTimeout(() => {
-            fadeElements.forEach((el, index) => {
-                setTimeout(() => {
-                    el.style.opacity = '1';
-                    el.style.transform = 'translateY(0)';
-                }, index * 100);
+        // Setup logout functionality
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to logout?')) {
+                    auth.signOut().then(() => {
+                        window.location.href = 'login.html';
+                    }).catch(error => {
+                        console.error('Logout error:', error);
+                        showNotification('Logout failed', 'error');
+                    });
+                }
             });
-        }, 300);
+        }
+        
+        // Setup responsive menu toggle
+        const menuToggle = document.querySelector('.menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+        
+        if (menuToggle && sidebar) {
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                menuToggle.classList.toggle('active');
+            });
+        }
+        
+        // Setup auth state listener
+        auth.onAuthStateChanged(user => {
+            if (!user) {
+                window.location.href = 'login.html';
+            }
+        });
     });
 
-    // Pastikan membersihkan listener ketika tab/window ditutup
+    // ========== CLEANUP FUNCTIONS ==========
+
+    // Fungsi untuk membersihkan listener saat halaman ditutup
     window.addEventListener('beforeunload', function() {
         if (reportsListener) {
             reportsListener();
@@ -1995,286 +2392,355 @@ if (brandFilterElement) {
             newGamesListener();
         }
     });
-    // ========== VARIABEL PAGINATION ==========
-// ========== VARIABEL PAGINATION ==========
-let currentPage = 1;
-const itemsPerPage = 10;
-let totalPages = 1;
-
-// ========== FUNGSI PAGINATION ==========
-function setupPagination(reports) {
-    const filteredReports = applyFilters(reports);
-    totalPages = Math.ceil(filteredReports.length / itemsPerPage);
+   // Fungsi untuk setup listener data game dan fitur baru
+// Fungsi untuk setup listener data game dan fitur baru
+function setupNewReleasesListener() {
+    console.log("Setting up new releases listener...");
     
-    // Update teks halaman
-    const pageNumbersElement = document.querySelector('.page-numbers');
-    if (pageNumbersElement) {
-        pageNumbersElement.textContent = `Page ${currentPage} of ${totalPages}`;
+    // Hentikan listener sebelumnya jika ada
+    if (newGamesListener) {
+        newGamesListener();
     }
     
-    // Enable/disable tombol berdasarkan halaman saat ini
-    const prevButton = document.getElementById('prevPage');
-    const nextButton = document.getElementById('nextPage');
-    
-    if (prevButton) prevButton.disabled = currentPage === 1;
-    if (nextButton) nextButton.disabled = currentPage === totalPages;
-    
-    // Tampilkan data untuk halaman saat ini
-    displayPageData(filteredReports);
-}
-
-function displayPageData(reports) {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const pageData = reports.slice(startIndex, endIndex);
-    
-    // Gunakan pageData untuk menampilkan data di tabel
-    renderTableData(pageData);
-}
-
-function renderTableData(reports) {
-    const tableBody = document.getElementById('summaryTableBody');
-    const emptyState = document.getElementById('noSummaryData');
-    
-    // Kosongkan tabel
-    if (tableBody) tableBody.innerHTML = '';
-    
-    // Tampilkan empty state jika tidak ada data
-    if (reports.length === 0) {
-        if (emptyState) emptyState.style.display = 'block';
-        return;
-    }
-    
-    // Sembunyikan empty state
-    if (emptyState) emptyState.style.display = 'none';
-    
-    // Tambahkan data ke tabel
-    reports.forEach(report => {
-        const row = document.createElement('tr');
-        
-        // Format tanggal
-        let reportDate;
-        try {
-            reportDate = report.date.toDate ? report.date.toDate() : new Date(report.date);
-            // Convert to Indonesia timezone (UTC+7)
-            const offset = 7;
-            const localTime = reportDate.getTime();
-            const localOffset = reportDate.getTimezoneOffset() * 60000;
-            const utc = localTime + localOffset;
-            const indonesiaTime = new Date(utc + (3600000 * offset));
+    try {
+        // Listener untuk new game releases
+        const unsubscribeGames = db.collection('newGame').onSnapshot(snapshot => {
+            const gameCount = snapshot.docs.length;
+            document.getElementById('newGameReleases').textContent = gameCount;
+            console.log("New Game Releases updated:", gameCount);
             
-            reportDate = indonesiaTime.toLocaleDateString('id-ID', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            });
-        } catch (error) {
-            console.error("Error formatting date:", error, report.date);
-            reportDate = 'N/A';
-        }
-        
-        // Format resolution time
-        let resolutionTime = 'N/A';
-        if (report.resolutionTime) {
-            const hours = Math.floor(report.resolutionTime / 60);
-            const minutes = report.resolutionTime % 60;
-            resolutionTime = `${hours}h ${minutes}m`;
-        }
-        
-        // Tentukan status dan class-nya
-        let statusClass = 'status-pending';
-        let statusText = report.status || 'Pending';
-        
-        if (statusText === 'Solved' || report.isSolved) {
-            statusClass = 'status-solved';
-        } else if (statusText.includes('Maintenance')) {
-            statusClass = 'status-maintenance';
-        }
-        
-        row.innerHTML = `
-            <td>${reportDate}</td>
-            <td>${report.id || 'N/A'}</td>
-            <td>${report.category || 'N/A'}</td>
-            <td><span class="${statusClass}">${statusText}</span></td>
-            <td>${report.brand || 'N/A'}</td>
-            <td>${resolutionTime}</td>
-            <td>
-                <div class="action-buttons">
-                    <button class="btn-icon view" title="View Details" onclick="viewReportDetails('${report.id}', '${report.collection}')">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </div>
-            </td>
-        `;
-        
-        if (tableBody) tableBody.appendChild(row);
-    });
-}
+            // Simpan data untuk penggunaan lain jika diperlukan
+            const gamesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            window.newGamesData = gamesData;
+            
+        }, error => {
+            console.error("Error fetching new games:", error);
+            showNotification('Gagal memuat data game baru', 'error');
+            document.getElementById('newGameReleases').textContent = '0';
+        });
 
-function goToPage(page) {
-    if (page >= 1 && page <= totalPages) {
-        currentPage = page;
-        setupPagination(allReportsData);
+        // Listener untuk new feature releases dengan error handling yang lebih baik
+        const unsubscribeFeatures = db.collection('releases').onSnapshot(snapshot => {
+            const featureCount = snapshot.docs.length;
+            document.getElementById('newfeatureReleases').textContent = featureCount;
+            console.log("New Feature Releases updated:", featureCount);
+        }, error => {
+            console.error("Error fetching new features:", error);
+            // Coba koleksi alternatif jika newFeatures tidak ada
+            tryAlternativeFeatureCollection();
+        });
+
+        // Simpan fungsi unsubscribe untuk pembersihan
+        newGamesListener = () => {
+            unsubscribeGames();
+            unsubscribeFeatures();
+            console.log("New releases listeners removed");
+        };
+        
+        return newGamesListener;
+        
+    } catch (error) {
+        console.error("Error setting up new releases listener:", error);
+        // Set nilai default jika error
+        document.getElementById('newGameReleases').textContent = '0';
+        document.getElementById('newfeatureReleases').textContent = '0';
+        return () => {}; // Return empty unsubscribe function
     }
 }
 
-// ========== EVENT LISTENERS PAGINATION ==========
-function setupPaginationListeners() {
-    const prevButton = document.getElementById('prevPage');
-    const nextButton = document.getElementById('nextPage');
+// Fungsi untuk mencoba koleksi alternatif jika newFeatures tidak ada
+function tryAlternativeFeatureCollection() {
+    console.log("Trying alternative feature collections...");
     
-    if (prevButton) {
-        prevButton.addEventListener('click', () => {
-            goToPage(currentPage - 1);
+    // Coba beberapa nama koleksi alternatif yang mungkin
+    const alternativeCollections = ['newFeature', 'features', 'featureReleases', 'releaseFeatures'];
+    
+    alternativeCollections.forEach(collectionName => {
+        db.collection(collectionName).get().then(snapshot => {
+            if (!snapshot.empty) {
+                console.log(`Found alternative collection: ${collectionName} with ${snapshot.docs.length} documents`);
+                const featureCount = snapshot.docs.length;
+                document.getElementById('newfeatureReleases').textContent = featureCount;
+                
+                // Setup listener untuk koleksi yang ditemukan
+                db.collection(collectionName).onSnapshot(snap => {
+                    document.getElementById('newfeatureReleases').textContent = snap.docs.length;
+                });
+                return; // Keluar setelah menemukan koleksi yang valid
+            }
+        }).catch(error => {
+            console.log(`Collection ${collectionName} not found or error:`, error);
         });
-    }
-    
-    if (nextButton) {
-        nextButton.addEventListener('click', () => {
-            goToPage(currentPage + 1);
-        });
-    }
-}
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("Summary Dashboard initialized");
-    
-    // Inisialisasi semua cache
-    window.pendingReportsCache = [];
-    window.solvedReportsCache = [];
-    window.maintenanceReportsCache = [];
-    window.solvedMaintenanceCache = [];
-    
-    // Setup event listeners
-    setupEventListeners();
-    
-    // Setup pagination listeners
-    setupPaginationListeners();
-    
-    // Setup listener untuk data
-    setupReportsListener();
-    
-    // Setup listener untuk data game baru
-    setupNewGamesListener();
-    
-    // Tambahkan animasi fade-in untuk elemen
-    const fadeElements = document.querySelectorAll('.fade-in');
-    fadeElements.forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(20px)';
-        el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
     });
     
-    // Trigger animasi setelah delay
+    // Jika tidak ada koleksi yang ditemukan, set default value
     setTimeout(() => {
-        fadeElements.forEach((el, index) => {
-            setTimeout(() => {
-                el.style.opacity = '1';
-                el.style.transform = 'translateY(0)';
-            }, index * 100);
+        if (document.getElementById('newfeatureReleases').textContent === '0') {
+            console.log("No feature collection found, setting default value");
+            document.getElementById('newfeatureReleases').textContent = '0';
+        }
+    }, 2000);
+}
+
+// Tambahkan juga fungsi untuk debugging
+function checkFirestoreCollections() {
+    console.log("Checking available Firestore collections...");
+    
+    // Anda bisa menambahkan logika untuk mengecek koleksi yang tersedia
+    // Ini membantu debugging jika koleksi tidak ada
+    const collectionsToCheck = ['newGame', 'newFeatures', 'newFeature', 'features'];
+    
+    collectionsToCheck.forEach(collectionName => {
+        db.collection(collectionName).get().then(snapshot => {
+            console.log(`Collection ${collectionName}: ${snapshot.docs.length} documents`);
+        }).catch(error => {
+            console.log(`Collection ${collectionName} does not exist or error:`, error);
         });
-    }, 300);
-});
-// ========== FUNGSI PENCARIAN ==========
-
-// Variabel global untuk pencarian
-let currentSearchTerm = '';
-
-// Fungsi untuk memfilter data berdasarkan kata kunci pencarian
-function filterDataBySearch(reports, searchTerm) {
-    if (!searchTerm || searchTerm.trim() === '') {
-        return reports; // Kembalikan semua data jika pencarian kosong
-    }
+    });
+}
+// Fungsi untuk setup listener data releases
+function setupReleasesListeners() {
+    console.log("Setting up releases listeners...");
     
-    const term = searchTerm.toLowerCase().trim();
-    
-    return reports.filter(report => {
-        // Cari di semua field yang relevan
-        return (
-            (report.id && report.id.toLowerCase().includes(term)) ||
-            (report.category && report.category.toLowerCase().includes(term)) ||
-            (report.status && report.status.toLowerCase().includes(term)) ||
-            (report.brand && report.brand.toLowerCase().includes(term)) ||
-            (report.description && report.description.toLowerCase().includes(term))
-        );
+    // Listener untuk new game releases
+    db.collection('newGame').onSnapshot(snapshot => {
+        const gamesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        window.newGamesData = gamesData;
+        console.log("New games data updated:", gamesData.length);
+        updateReleasesCharts();
+    }, error => {
+        console.error("Error fetching new games:", error);
+    });
+
+    // Listener untuk new feature releases
+    db.collection('releases').onSnapshot(snapshot => {
+        const featuresData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        window.featuresData = featuresData;
+        console.log("New features data updated:", featuresData.length);
+        updateReleasesCharts();
+    }, error => {
+        console.error("Error fetching new features:", error);
+        // Coba koleksi alternatif
+        tryAlternativeFeatureCollection();
     });
 }
 
-// Fungsi untuk menangani pencarian
-function handleSearch() {
-    const searchInput = document.getElementById('summarySearch');
-    if (!searchInput) return;
+// Fungsi untuk memperbarui chart releases
+function updateReleasesCharts() {
+    const gamesData = window.newGamesData || [];
+    const featuresData = window.featuresData || [];
     
-    const searchTerm = searchInput.value;
-    currentSearchTerm = searchTerm;
-    
-    // Reset ke halaman pertama saat pencarian
-    currentPage = 1;
-    
-    // Filter data berdasarkan pencarian
-    const filteredData = filterDataBySearch(allReportsData, searchTerm);
-    
-    // Perbarui UI dengan data yang sudah difilter
-    updateDashboardStats(filteredData);
-    updateCharts(filteredData);
-    updateSummaryTable(filteredData);
-    
-    // Tampilkan notifikasi jika tidak ada hasil
-    if (searchTerm && filteredData.length === 0) {
-        showNotification('No results found for: ' + searchTerm, 'info');
-    }
+    updateGameReleasesChart(gamesData);
+    updateFeatureReleasesChart(featuresData);
 }
 
-// Fungsi untuk setup event listener pencarian
-function setupSearchListener() {
-    const searchInput = document.getElementById('summarySearch');
-    if (!searchInput) return;
+// Fungsi untuk chart New Game Releases
+function updateGameReleasesChart(gamesData) {
+    const ctx = document.getElementById('gameReleasesChart').getContext('2d');
     
-    // Debounce untuk menghindari terlalu banyak event
-    let searchTimeout;
+    // Hancurkan chart sebelumnya jika ada
+    if (window.gameReleasesChartInstance) {
+        window.gameReleasesChartInstance.destroy();
+    }
     
-    searchInput.addEventListener('input', function() {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-            handleSearch();
-        }, 300); // Delay 300ms setelah user berhenti mengetik
-    });
+    // Analisis data game
+    const stats = analyzeGameData(gamesData);
     
-    // Juga tangani ketika user menekan Enter
-    searchInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            clearTimeout(searchTimeout);
-            handleSearch();
+    window.gameReleasesChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Total Games', 'Upcoming', 'Released', 'Popular (4.5+)'],
+            datasets: [{
+                label: 'Game Statistics',
+                data: [
+                    stats.totalGames,
+                    stats.upcomingGames,
+                    stats.releasedGames,
+                    stats.popularGames
+                ],
+                backgroundColor: [
+                    '#4361ee', // Total - Biru
+                    '#f72585', // Upcoming - Pink
+                    '#4cc9f0', // Released - Cyan
+                    '#3a0ca3'  // Popular - Ungu
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.dataset.label}: ${context.raw}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Number of Games'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Game Categories'
+                    }
+                }
+            }
         }
     });
 }
 
-// ========== MODIFIKASI FUNGSI YANG SUDAH ADA ==========
-
-// Modifikasi fungsi updateSummaryTable untuk menangani pencarian
-function updateSummaryTable(reports) {
-    // Terapkan filter pencarian terlebih dahulu
-    let filteredReports = filterDataBySearch(reports, currentSearchTerm);
+// Fungsi untuk chart New Feature Releases
+function updateFeatureReleasesChart(featuresData) {
+    const ctx = document.getElementById('featureReleasesChart').getContext('2d');
     
-    // Kemudian terapkan filter lainnya (kategori, brand)
-    filteredReports = applyFilters(filteredReports);
+    // Hancurkan chart sebelumnya jika ada
+    if (window.featureReleasesChartInstance) {
+        window.featureReleasesChartInstance.destroy();
+    }
     
-    // Setup pagination dengan data yang sudah difilter
-    setupPagination(filteredReports);
+    // Analisis data feature
+    const stats = analyzeFeatureData(featuresData);
+    
+    window.featureReleasesChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: stats.labels,
+            datasets: [{
+                data: stats.data,
+                backgroundColor: [
+                    '#4361ee', '#4cc9f0', '#4895ef', '#560bad', 
+                    '#f72585', '#b5179e', '#7209b7', '#3a0ca3'
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 12,
+                        font: {
+                            size: 11
+                        }
+                    }
+                }
+            }
+        }
+    });
 }
 
-// ========== INISIALISASI PENCARIAN ==========
+// Fungsi untuk menganalisis data game
+function analyzeGameData(gamesData) {
+    const totalGames = gamesData.length;
+    const upcomingGames = gamesData.filter(game => 
+        game.status && game.status.toLowerCase() === 'upcoming').length;
+    
+    const releasedGames = gamesData.filter(game => 
+        game.status && game.status.toLowerCase() === 'released').length;
+    
+    const popularGames = gamesData.filter(game => {
+        const rating = parseFloat(game.rating);
+        return !isNaN(rating) && rating >= 4.5;
+    }).length;
+    
+    return {
+        totalGames,
+        upcomingGames,
+        releasedGames,
+        popularGames
+    };
+}
 
-// Tambahkan setupSearchListener ke dalam event DOMContentLoaded
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("Summary Dashboard initialized");
+// Fungsi untuk menganalisis data feature
+function analyzeFeatureData(featuresData) {
+    // Kelompokkan berdasarkan status atau kategori
+    const statusCounts = {};
     
-    // ... kode inisialisasi lainnya ...
+    featuresData.forEach(feature => {
+        const status = feature.status || 'Unknown';
+        statusCounts[status] = (statusCounts[status] || 0) + 1;
+    });
     
-    // Setup event listener untuk pencarian
-    setupSearchListener();
+    // Jika tidak ada status, gunakan kategori atau buat default
+    if (Object.keys(statusCounts).length === 0) {
+        return {
+            labels: ['Features'],
+            data: [featuresData.length]
+        };
+    }
     
-    // ... kode inisialisasi lainnya ...
-});
+    return {
+        labels: Object.keys(statusCounts),
+        data: Object.values(statusCounts)
+    };
+}
+
+// Fungsi untuk analisis bulanan releases
+function getMonthlyReleasesData(gamesData, featuresData) {
+    const monthlyData = {};
+    const months = [];
+    
+    // Generate last 6 months
+    for (let i = 5; i >= 0; i--) {
+        const date = new Date();
+        date.setMonth(date.getMonth() - i);
+        const monthKey = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+        months.push(monthKey);
+        monthlyData[monthKey] = { games: 0, features: 0 };
+    }
+    
+    // Hitung releases per bulan untuk games
+    gamesData.forEach(game => {
+        if (game.releaseDate) {
+            try {
+                const releaseDate = game.releaseDate.toDate ? game.releaseDate.toDate() : new Date(game.releaseDate);
+                const monthKey = releaseDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+                
+                if (monthlyData[monthKey]) {
+                    monthlyData[monthKey].games++;
+                }
+            } catch (error) {
+                console.error("Error processing game release date:", error);
+            }
+        }
+    });
+    
+    // Hitung releases per bulan untuk features
+    featuresData.forEach(feature => {
+        if (feature.releaseDate) {
+            try {
+                const releaseDate = feature.releaseDate.toDate ? feature.releaseDate.toDate() : new Date(feature.releaseDate);
+                const monthKey = releaseDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+                
+                if (monthlyData[monthKey]) {
+                    monthlyData[monthKey].features++;
+                }
+            } catch (error) {
+                console.error("Error processing feature release date:", error);
+            }
+        }
+    });
+    
+    return {
+        months,
+        data: monthlyData
+    };
+}
 </script>
 </body>
 </html>

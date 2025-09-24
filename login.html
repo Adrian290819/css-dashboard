@@ -51,7 +51,7 @@
         overflow: hidden;
     }
 
-    /* Quantum Particle Animation */
+    /* Enhanced Quantum Animation */
     .quantum-container {
         position: absolute;
         top: 0;
@@ -62,28 +62,32 @@
         overflow: hidden;
     }
 
-    .particle {
+    /* Quantum Particles */
+    .quantum-particle {
         position: absolute;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.7);
         pointer-events: none;
         opacity: 0;
+        filter: blur(1px);
     }
 
-    .particle.trail {
-        background: rgba(255, 255, 255, 0.3);
+    .quantum-particle.trail {
         transform: scale(0);
+        filter: blur(3px);
     }
 
+    /* Quantum Energy Waves */
     .energy-wave {
         position: absolute;
         border-radius: 50%;
-        border: 2px solid rgba(67, 97, 238, 0.5);
+        border: 2px solid;
         opacity: 0;
         transform: scale(0);
         pointer-events: none;
+        filter: blur(1px);
     }
 
+    /* Quantum Nexus Points */
     .nexus-point {
         position: absolute;
         width: 10px;
@@ -93,6 +97,7 @@
         box-shadow: 0 0 20px 5px var(--primary-color);
         opacity: 0.7;
         animation: pulse-nexus 4s infinite ease-in-out;
+        z-index: 1;
     }
 
     @keyframes pulse-nexus {
@@ -108,7 +113,37 @@
         }
     }
 
-    /* Hexagon Grid */
+    /* Quantum Strings */
+    .quantum-string {
+        position: absolute;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+        transform-origin: left center;
+        pointer-events: none;
+        opacity: 0;
+        filter: blur(1px);
+    }
+
+    /* Quantum Portal */
+    .quantum-portal {
+        position: absolute;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        opacity: 0.05;
+        animation: portal-rotate 20s infinite linear;
+        transform-style: preserve-3d;
+    }
+
+    @keyframes portal-rotate {
+        0% {
+            transform: rotateX(60deg) rotateZ(0deg);
+        }
+        100% {
+            transform: rotateX(60deg) rotateZ(360deg);
+        }
+    }
+
+    /* Hexagon Grid Enhancement */
     .hexagon-container {
         position: absolute;
         width: 100%;
@@ -124,6 +159,7 @@
         background: transparent;
         opacity: 0.1;
         border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: opacity 0.5s ease;
     }
 
     .hexagon:before, .hexagon:after {
@@ -147,7 +183,7 @@
     /* Login Container Styles */
     .login-container {
         width: 100%;
-        max-width: 420px;
+        max-width: 380px;
         background: var(--card-bg);
         border-radius: 16px;
         overflow: hidden;
@@ -170,7 +206,7 @@
         background: linear-gradient(to right, #0f77ff, #2575fc);
         color: white;
         text-align: center;
-        padding: 30px 20px;
+        padding: 25px 20px;
         position: relative;
     }
 
@@ -202,8 +238,8 @@
     }
 
     .logo {
-        width: 80px;
-        height: 80px;
+        width: 60px;
+        height: 60px;
         background: rgba(255, 255, 255, 0.2);
         border-radius: 50%;
         display: flex;
@@ -214,52 +250,52 @@
     }
 
     .logo i {
-        font-size: 36px;
+        font-size: 28px;
         color: white;
     }
 
     .login-header h1 {
-        font-size: 24px;
+        font-size: 20px;
         font-weight: 600;
-        margin-bottom: 5px;
+        margin-bottom: 8px;
     }
 
     .login-header p {
-        font-size: 14px;
+        font-size: 13px;
         opacity: 0.9;
     }
 
     .login-form {
-        padding: 40px 30px 30px;
+        padding: 30px 25px 25px;
     }
 
     .input-group {
-        margin-bottom: 20px;
+        margin-bottom: 16px;
         position: relative;
     }
 
     .input-group label {
         display: block;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
         font-weight: 500;
         color: var(--text-color);
-        font-size: 14px;
+        font-size: 13px;
     }
 
     .input-icon {
         position: absolute;
         left: 15px;
-        top: 42px;
+        top: 38px;
         color: var(--text-light);
-        font-size: 18px;
+        font-size: 16px;
     }
 
     .input-group input {
         width: 100%;
-        padding: 12px 15px 12px 45px;
+        padding: 10px 15px 10px 40px;
         border: 1px solid var(--border-color);
         border-radius: 8px;
-        font-size: 16px;
+        font-size: 14px;
         transition: var(--transition);
         background: transparent;
         color: var(--text-color);
@@ -279,8 +315,8 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 20px;
-        font-size: 14px;
+        margin-bottom: 16px;
+        font-size: 13px;
     }
 
     .remember {
@@ -305,12 +341,12 @@
 
     .btn-login {
         width: 100%;
-        padding: 14px;
+        padding: 12px;
         background: linear-gradient(to right, #0f77ff, #2575fc);
         color: white;
         border: none;
         border-radius: 8px;
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 600;
         cursor: pointer;
         transition: var(--transition);
@@ -368,20 +404,20 @@
 
     .login-footer {
         text-align: center;
-        padding: 20px 0 10px;
+        padding: 15px 0 10px;
         color: var(--text-light);
-        font-size: 14px;
+        font-size: 12px;
         border-top: 1px solid var(--border-color);
     }
 
     .theme-toggle {
         position: absolute;
-        top: 20px;
-        right: 20px;
+        top: 15px;
+        right: 15px;
         background: rgba(255, 255, 255, 0.2);
         border: none;
-        width: 40px;
-        height: 40px;
+        width: 35px;
+        height: 35px;
         border-radius: 50%;
         color: white;
         cursor: pointer;
@@ -398,17 +434,16 @@
 
     @media (max-width: 480px) {
         .login-container {
-            max-width: 100%;
+            max-width: 90%;
+            margin: 15px;
         }
         
         .login-form {
-            padding: 30px 20px 20px;
+            padding: 25px 20px 20px;
         }
         
-        .remember-forgot {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 10px;
+        .login-header {
+            padding: 20px 15px;
         }
     }
 
@@ -425,104 +460,6 @@
     .delay-1 { animation-delay: 0.2s; }
     .delay-2 { animation-delay: 0.4s; }
     .delay-3 { animation-delay: 0.6s; }
-    /* ========== PERBAIKAN LAYOUT LOGIN ========== */
-.login-container {
-    max-width: 380px !important; /* Lebih kecil dan proporsional */
-    margin: 20px;
-}
-
-.login-header {
-    padding: 25px 20px !important; /* Padding lebih kecil */
-}
-
-.logo {
-    width: 60px !important;
-    height: 60px !important;
-}
-
-.logo i {
-    font-size: 28px !important;
-}
-
-.login-header h1 {
-    font-size: 20px !important;
-    margin-bottom: 8px !important;
-}
-
-.login-header p {
-    font-size: 13px !important;
-}
-
-.login-form {
-    padding: 30px 25px 25px !important; /* Padding lebih compact */
-}
-
-.input-group {
-    margin-bottom: 16px !important;
-}
-
-.input-group label {
-    font-size: 13px !important;
-    margin-bottom: 6px !important;
-}
-
-.input-icon {
-    top: 38px !important;
-    font-size: 16px !important;
-}
-
-.input-group input {
-    padding: 10px 15px 10px 40px !important;
-    font-size: 14px !important;
-}
-
-.remember-forgot {
-    margin-bottom: 16px !important;
-    font-size: 13px !important;
-}
-
-.btn-login {
-    padding: 12px !important;
-    font-size: 15px !important;
-}
-
-.login-footer {
-    padding: 15px 0 10px !important;
-    font-size: 12px !important;
-}
-
-/* Perbaikan khusus untuk mobile */
-@media (max-width: 480px) {
-    .login-container {
-        max-width: 90% !important;
-        margin: 15px;
-    }
-    
-    .login-form {
-        padding: 25px 20px 20px !important;
-    }
-    
-    .login-header {
-        padding: 20px 15px !important;
-    }
-}
-
-/* Perbaikan animasi partikel agar tidak terlalu dominan */
-.quantum-container {
-    opacity: 0.7; /* Kurangi opacity agar tidak mengganggu form */
-}
-
-.hexagon {
-    opacity: 0.03 !important; /* Hexagon lebih transparan */
-}
-
-/* Perbaikan tema toggle position */
-.theme-toggle {
-    top: 15px;
-    right: 15px;
-    width: 35px;
-    height: 35px;
-}
   </style>
 </head>
 <body>
@@ -605,7 +542,7 @@
   const forgotPassword = document.getElementById("forgotPassword");
   const browserInfo = document.getElementById("browserInfo");
 
-  // ========== QUANTUM PARTICLE ANIMATION ==========
+  // ========== ENHANCED QUANTUM ANIMATION ==========
   function createHexagonGrid() {
     const hexagonSize = 100;
     const hexagonHeight = 55;
@@ -630,13 +567,27 @@
         }
         
         hexagon.style.left = `${x}px`;
-        hexagon.style.opacity = `${0.05 + Math.random() * 0.1}`;
+        hexagon.style.opacity = `${0.03 + Math.random() * 0.05}`;
         hexagon.style.transform = `scale(${0.7 + Math.random() * 0.6})`;
+        
+        // Add subtle animation to hexagons
+        hexagon.style.animation = `hexagon-pulse ${10 + Math.random() * 20}s infinite ease-in-out`;
+        hexagon.style.animationDelay = `${Math.random() * 5}s`;
         
         hexagonContainer.appendChild(hexagon);
       }
     }
   }
+
+  // Add hexagon pulse animation
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes hexagon-pulse {
+      0%, 100% { opacity: 0.03; }
+      50% { opacity: 0.1; }
+    }
+  `;
+  document.head.appendChild(style);
 
   function createNexusPoints() {
     const colors = ['#4361ee', '#ff4757', '#2ed573', '#ffa502', '#a55eea'];
@@ -655,14 +606,73 @@
     }
   }
 
+  function createQuantumPortals() {
+    for (let i = 0; i < 3; i++) {
+      const portal = document.createElement('div');
+      portal.classList.add('quantum-portal');
+      
+      const size = 200 + Math.random() * 300;
+      portal.style.width = `${size}px`;
+      portal.style.height = `${size}px`;
+      
+      portal.style.left = `${Math.random() * 100}%`;
+      portal.style.top = `${Math.random() * 100}%`;
+      
+      const colors = ['#4361ee', '#ff4757', '#2ed573', '#ffa502', '#a55eea'];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      portal.style.borderColor = color;
+      
+      quantumContainer.appendChild(portal);
+    }
+  }
+
+  function createQuantumStrings() {
+    for (let i = 0; i < 10; i++) {
+      setTimeout(() => {
+        const string = document.createElement('div');
+        string.classList.add('quantum-string');
+        
+        const startX = Math.random() * window.innerWidth;
+        const startY = Math.random() * window.innerHeight;
+        const length = 50 + Math.random() * 150;
+        const angle = Math.random() * Math.PI * 2;
+        
+        string.style.left = `${startX}px`;
+        string.style.top = `${startY}px`;
+        string.style.width = `${length}px`;
+        string.style.transform = `rotate(${angle}rad)`;
+        
+        const colors = ['#4361ee', '#ff4757', '#2ed573', '#ffa502', '#a55eea', '#ffffff'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        string.style.background = `linear-gradient(90deg, transparent, ${color}, transparent)`;
+        
+        quantumContainer.appendChild(string);
+        
+        // Animate string
+        const animation = string.animate([
+          { opacity: 0, transform: `rotate(${angle}rad) scaleX(0)` },
+          { opacity: 0.7, transform: `rotate(${angle}rad) scaleX(1)` },
+          { opacity: 0, transform: `rotate(${angle}rad) scaleX(0)` }
+        ], {
+          duration: 2000 + Math.random() * 3000,
+          easing: 'ease-in-out'
+        });
+        
+        animation.onfinish = () => {
+          string.remove();
+        };
+      }, i * 500);
+    }
+  }
+
   function createQuantumParticles() {
     if (document.hidden) return;
     
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 3; i++) {
       const particle = document.createElement('div');
-      particle.classList.add('particle');
+      particle.classList.add('quantum-particle');
       
-      const size = 2 + Math.random() * 3;
+      const size = 2 + Math.random() * 4;
       particle.style.width = particle.style.height = `${size}px`;
       
       const colors = ['#4361ee', '#ff4757', '#2ed573', '#ffa502', '#a55eea', '#ffffff'];
@@ -678,20 +688,19 @@
       
       // Create trail
       const trail = document.createElement('div');
-      trail.classList.add('particle', 'trail');
-      trail.style.width = trail.style.height = `${size * 2}px`;
+      trail.classList.add('quantum-particle', 'trail');
+      trail.style.width = trail.style.height = `${size * 3}px`;
       trail.style.background = color;
       trail.style.left = `${startX}px`;
       trail.style.top = `${startY}px`;
       quantumContainer.appendChild(trail);
       
-      // Animate particle
+      // Animate particle with more complex path
       const angle = Math.random() * Math.PI * 2;
-      const distance = 50 + Math.random() * 150;
-      const targetX = startX + Math.cos(angle) * distance;
-      const targetY = startY + Math.sin(angle) * distance;
+      const distance = 100 + Math.random() * 200;
+      const curve = Math.random() * 0.5 - 0.25;
       
-      const particleAnimation = particle.animate([
+      const keyframes = [
         { 
           opacity: 0,
           transform: 'translate(0, 0)'
@@ -703,15 +712,23 @@
         },
         { 
           opacity: 0.8,
+          transform: `translate(${Math.cos(angle) * distance * 0.5 + Math.sin(angle) * distance * 0.5 * curve}px, 
+                              ${Math.sin(angle) * distance * 0.5 - Math.cos(angle) * distance * 0.5 * curve}px)`,
+          offset: 0.5
+        },
+        { 
+          opacity: 0.6,
           transform: `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`,
           offset: 0.8
         },
         { 
           opacity: 0,
-          transform: `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`
+          transform: `translate(${Math.cos(angle) * distance * 1.2}px, ${Math.sin(angle) * distance * 1.2}px)`
         }
-      ], {
-        duration: 2000 + Math.random() * 3000,
+      ];
+      
+      const particleAnimation = particle.animate(keyframes, {
+        duration: 3000 + Math.random() * 4000,
         easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)'
       });
       
@@ -731,7 +748,7 @@
           transform: 'scale(2)'
         }
       ], {
-        duration: 1000 + Math.random() * 1000,
+        duration: 1500 + Math.random() * 1000,
         easing: 'ease-out'
       });
       
@@ -741,22 +758,24 @@
         
         const wave = document.createElement('div');
         wave.classList.add('energy-wave');
-        wave.style.left = `${targetX}px`;
-        wave.style.top = `${targetY}px`;
+        const endX = startX + Math.cos(angle) * distance;
+        const endY = startY + Math.sin(angle) * distance;
+        wave.style.left = `${endX}px`;
+        wave.style.top = `${endY}px`;
         wave.style.borderColor = color;
         quantumContainer.appendChild(wave);
         
         const waveAnimation = wave.animate([
           { 
-            opacity: 0.5,
+            opacity: 0.7,
             transform: 'scale(0)'
           },
           { 
             opacity: 0,
-            transform: 'scale(2)'
+            transform: 'scale(3)'
           }
         ], {
-          duration: 1000,
+          duration: 1500,
           easing: 'ease-out'
         });
         
@@ -767,6 +786,49 @@
       
       trailAnimation.onfinish = () => {
         trail.remove();
+      };
+    }
+  }
+
+  function createQuantumExplosion(x, y) {
+    const particlesCount = 20;
+    const colors = ['#4361ee', '#ff4757', '#2ed573', '#ffa502', '#a55eea', '#ffffff'];
+    
+    for (let i = 0; i < particlesCount; i++) {
+      const particle = document.createElement('div');
+      particle.classList.add('quantum-particle');
+      
+      const size = 1 + Math.random() * 3;
+      particle.style.width = particle.style.height = `${size}px`;
+      
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      particle.style.background = color;
+      
+      particle.style.left = `${x}px`;
+      particle.style.top = `${y}px`;
+      
+      quantumContainer.appendChild(particle);
+      
+      const angle = Math.random() * Math.PI * 2;
+      const distance = 50 + Math.random() * 100;
+      const speed = 500 + Math.random() * 1000;
+      
+      const animation = particle.animate([
+        { 
+          opacity: 1,
+          transform: 'translate(0, 0)'
+        },
+        { 
+          opacity: 0,
+          transform: `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`
+        }
+      ], {
+        duration: speed,
+        easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)'
+      });
+      
+      animation.onfinish = () => {
+        particle.remove();
       };
     }
   }
@@ -964,7 +1026,14 @@
     applySavedTheme();
     createHexagonGrid();
     createNexusPoints();
-    setInterval(createQuantumParticles, 200);
+    createQuantumPortals();
+    setInterval(createQuantumParticles, 150);
+    setInterval(createQuantumStrings, 3000);
+
+    // Add click effect for quantum explosions
+    document.addEventListener('click', (e) => {
+      createQuantumExplosion(e.clientX, e.clientY);
+    });
 
     const rememberedEmail = localStorage.getItem("rememberEmail");
     if (rememberedEmail) {
@@ -973,20 +1042,50 @@
     }
 
     loginBtn.addEventListener("click", handleLogin);
-
-    passwordInput.addEventListener("keypress", e => {
-      if (e.key === "Enter") handleLogin();
-    });
-
-    forgotPassword.addEventListener("click", e => {
+    themeToggle.addEventListener("click", toggleTheme);
+    forgotPassword.addEventListener("click", (e) => {
       e.preventDefault();
       handleForgotPassword();
     });
 
-    themeToggle.addEventListener("click", toggleTheme);
+    // Enter key to login
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        handleLogin();
+      }
+    });
 
-    console.log("Event listeners attached");
+    // Add fade-in animations
+    const elements = document.querySelectorAll('.login-container, .input-group, .btn-login');
+    elements.forEach((el, index) => {
+      el.classList.add('fade-in', `delay-${index}`);
+    });
   });
-</script>
+
+  // ========== WINDOW RESIZE HANDLER ==========
+  window.addEventListener("resize", () => {
+    // Recreate hexagon grid on resize
+    hexagonContainer.innerHTML = '';
+    createHexagonGrid();
+  });
+
+  // ========== VISIBILITY CHANGE HANDLER ==========
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+      // Resume animations when page becomes visible
+      createQuantumParticles();
+    }
+  });
+
+  // ========== ERROR HANDLING ==========
+  window.addEventListener("error", (e) => {
+    console.error("Global error:", e.error);
+  });
+
+  window.addEventListener("unhandledrejection", (e) => {
+    console.error("Unhandled promise rejection:", e.reason);
+    e.preventDefault();
+  });
+  </script>
 </body>
 </html>

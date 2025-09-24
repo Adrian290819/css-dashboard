@@ -4,13 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pengaturan Admin - CSS Dashboard</title>
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="global.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="sidebar-loader.js"></script>
-        <link rel="stylesheet" href="stylemobile.css">
-    <style>
-</style>
+    <link rel="stylesheet" href="stylemobile.css">
+    
+    <!-- Firebase Configuration -->
+<!-- Firebase Configuration -->
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
+        authDomain: "dashboard-css.firebaseapp.com",
+        databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "dashboard-css",
+        storageBucket: "dashboard-css.appspot.com",
+        messagingSenderId: "771131792881",
+        appId: "1:771131792881:web:ad634424225bd7de847850",
+        measurementId: "G-3CYBC5B101"
+    };
+    
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+    
+    // Auto login dengan anonymous auth
+    auth.onAuthStateChanged((user) => {
+        if (!user) {
+            auth.signInAnonymously()
+                .then((userCredential) => {
+                    console.log('Anonymous user signed in:', userCredential.user.uid);
+                    // Buat document awal di Firestore
+                    return db.collection('users').doc(userCredential.user.uid).set({
+                        name: 'Admin',
+                        role: 'Customer Service Support',
+                        image: 'https://ui-avatars.com/api/?name=Admin&background=4361ee&color=fff',
+                        email: '',
+                        lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
+                })
+                .then(() => {
+                    console.log('Initial profile created in Firestore');
+                })
+                .catch((error) => {
+                    console.error('Anonymous auth failed:', error);
+                });
+        } else {
+            console.log('User already signed in:', user.uid);
+        }
+    });
+</script>
 </head>
 <body>
     <div id="sidebar-container"></div>
@@ -38,7 +85,7 @@
             </div>
         </div>
         
-         <div class="content-wrapper">
+        <div class="content-wrapper">
             <div class="breadcrumb">
                 <a href="index.html"><i class="fas fa-home"></i> Dashboard</a>
                 <i class="fas fa-chevron-right"></i>
@@ -193,23 +240,6 @@
                             </button>
                         </div>
                     </div>
-                    
-                    <div class="card danger-zone">
-                        <div class="card-header">
-                            <h2 class="card-title danger-title"><i class="fas fa-exclamation-triangle"></i> Zona Berbahaya</h2>
-                        </div>
-                        
-                        <div class="card-body">
-                            <p class="danger-text">
-                                Menghapus akun akan menghapus semua data yang terkait dengan akun ini secara permanen. 
-                                Tindakan ini tidak dapat dibatalkan.
-                            </p>
-                            
-                            <button id="deleteAccountBtn" class="btn btn-danger w-100">
-                                <i class="fas fa-trash-alt"></i> Hapus Akun
-                            </button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -221,9 +251,101 @@
     </div>
 
     <script>
+        
+        // Default profil
+        const DEFAULT_PROFILE = {
+            name: 'Admin',
+            role: 'Customer Service Support',
+            image: 'https://ui-avatars.com/api/?name=Admin&background=4361ee&color=fff'
+        };
+
+        // Fungsi untuk memperbarui profil di Firestore
+        async function updateProfileInFirestore(profile) {
+            try {
+                const user = auth.currentUser;
+                if (user) {
+                    await db.collection('users').doc(user.uid).set({
+                        name: profile.name,
+                        role: profile.role,
+                        image: profile.image,
+                        email: profile.email,
+                        lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
+                    return true;
+                }
+            } catch (error) {
+                console.error('Error updating profile in Firestore:', error);
+            }
+            return false;
+        }
+
+        // Fungsi untuk mendapatkan profil dari Firestore
+        // Fungsi untuk mendapatkan profil dari Firestore
+async function getProfileFromFirestore() {
+    try {
+        const user = auth.currentUser;
+        if (user) {
+            const doc = await db.collection('users').doc(user.uid).get();
+            if (doc.exists) {
+                const data = doc.data();
+                // Pastikan semua field ada
+                return {
+                    name: data.name || 'Admin',
+                    role: data.role || 'Customer Service Support',
+                    image: data.image || 'https://ui-avatars.com/api/?name=Admin&background=4361ee&color=fff',
+                    email: data.email || ''
+                };
+            } else {
+                // Jika document tidak ada, buat document baru
+                const defaultProfile = {
+                    name: 'Admin',
+                    role: 'Customer Service Support',
+                    image: 'https://ui-avatars.com/api/?name=Admin&background=4361ee&color=fff',
+                    email: ''
+                };
+                await db.collection('users').doc(user.uid).set({
+                    ...defaultProfile,
+                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                return defaultProfile;
+            }
+        }
+    } catch (error) {
+        console.error('Error getting profile from Firestore:', error);
+    }
+    return null;
+}   
+
+        // Fungsi untuk setup real-time listener
+        function setupProfileListener() {
+            const user = auth.currentUser;
+if (user) {
+    db.collection('users').doc(user.uid).onSnapshot((doc) => {
+        if (doc.exists) {
+            const profile = doc.data();
+            updateProfileDisplay(profile.name, profile.role, profile.image);
+            
+            // Update localStorage sebagai cache
+            localStorage.setItem('adminName', profile.name);
+            localStorage.setItem('adminRole', profile.role);
+            localStorage.setItem('adminProfileImage', profile.image);
+        }
+    });
+}
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Load data dari localStorage jika ada
-            loadSavedSettings();
+            // Setup auth state listener
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    // User signed in
+                    loadSavedSettings();
+                    setupProfileListener();
+                } else {
+                    // No user signed in, use localStorage only
+                    loadSavedSettings();
+                }
+            });
             
             // Event listener untuk upload gambar
             document.getElementById('changeImageBtn').addEventListener('click', function() {
@@ -234,12 +356,34 @@
                 if (e.target.files && e.target.files[0]) {
                     const reader = new FileReader();
                     
-                    reader.onload = function(event) {
-                        document.getElementById('profileImage').src = event.target.result;
-                        document.getElementById('profileImageMain').src = event.target.result;
-                        // Simpan ke localStorage
-                        localStorage.setItem('adminProfileImage', event.target.result);
-                        showToast('Foto profil berhasil diubah');
+                    reader.onload = async function(event) {
+                        const imageUrl = event.target.result;
+                        
+                        // Update tampilan
+                        document.getElementById('profileImage').src = imageUrl;
+                        document.getElementById('profileImageMain').src = imageUrl;
+                        
+                        // Simpan ke Firestore dan localStorage
+                        const user = auth.currentUser;
+                        if (user) {
+                            const currentProfile = await getProfileFromFirestore() || {};
+                            const success = await updateProfileInFirestore({
+                                ...currentProfile,
+                                image: imageUrl
+                            });
+                            
+                            if (success) {
+                                showToast('Foto profil berhasil diubah');
+                            } else {
+                                // Fallback ke localStorage
+                                localStorage.setItem('adminProfileImage', imageUrl);
+                                showToast('Foto profil berhasil diubah (offline)');
+                            }
+                        } else {
+                            // Jika tidak login, simpan ke localStorage saja
+                            localStorage.setItem('adminProfileImage', imageUrl);
+                            showToast('Foto profil berhasil diubah');
+                        }
                     }
                     
                     reader.readAsDataURL(e.target.files[0]);
@@ -247,38 +391,64 @@
             });
             
             // Simpan pengaturan profil
-            document.getElementById('saveProfileBtn').addEventListener('click', function() {
-    const adminName = document.getElementById('adminName').value;
-    const adminEmail = document.getElementById('adminEmail').value;
-    const adminRole = "Customer Service Support"; // Atau ambil dari input jika ada
-    
-    if (adminName.trim() === '') {
-        showToast('Nama admin tidak boleh kosong', 'error');
-        return;
-    }
-    
-    // Simpan ke localStorage
-    localStorage.setItem('adminName', adminName);
-    localStorage.setItem('adminEmail', adminEmail);
-    localStorage.setItem('adminRole', adminRole);
-    
-    // Update tampilan nama
-    updateProfileDisplay(adminName, adminRole);
-    
-    showToast('Profil berhasil diperbarui');
-});
-function updateProfileDisplay(name, role) {
-    document.getElementById('profileName').textContent = name;
-    document.getElementById('profileNameMain').textContent = name;
-    
-    // Perbarui juga elemen profil lainnya jika ada
-    const roleElements = document.querySelectorAll('.profile-role, .user-info p');
-    roleElements.forEach(el => {
-        el.textContent = role;
-    });
-}
+            document.getElementById('saveProfileBtn').addEventListener('click', async function() {
+                const adminName = document.getElementById('adminName').value;
+                const adminEmail = document.getElementById('adminEmail').value;
+                const adminRole = "Customer Service Support";
+                
+                if (adminName.trim() === '') {
+                    showToast('Nama admin tidak boleh kosong', 'error');
+                    return;
+                }
+                
+                const user = auth.currentUser;
+                if (user) {
+                    // Simpan ke Firestore
+                    const currentProfile = await getProfileFromFirestore() || {};
+                    const success = await updateProfileInFirestore({
+                        ...currentProfile,
+                        name: adminName,
+                        role: adminRole,
+                        email: adminEmail
+                    });
+                    
+                    if (success) {
+                        showToast('Profil berhasil diperbarui di cloud');
+                    } else {
+                        // Fallback ke localStorage
+                        localStorage.setItem('adminName', adminName);
+                        localStorage.setItem('adminEmail', adminEmail);
+                        localStorage.setItem('adminRole', adminRole);
+                        showToast('Profil berhasil diperbarui (offline)');
+                    }
+                } else {
+                    // Jika tidak login, simpan ke localStorage saja
+                    localStorage.setItem('adminName', adminName);
+                    localStorage.setItem('adminEmail', adminEmail);
+                    localStorage.setItem('adminRole', adminRole);
+                    showToast('Profil berhasil diperbarui');
+                }
+                
+                // Update tampilan
+                updateProfileDisplay(adminName, adminRole);
+            });
+
+            function updateProfileDisplay(name, role, image = null) {
+                document.getElementById('profileName').textContent = name;
+                document.getElementById('profileNameMain').textContent = name;
+                
+                if (image) {
+                    document.getElementById('profileImage').src = image;
+                    document.getElementById('profileImageMain').src = image;
+                }
+                
+                const roleElements = document.querySelectorAll('.profile-role, .user-info p');
+                roleElements.forEach(el => {
+                    el.textContent = role;
+                });
+            }
             
-            // Simpan pengaturan notifikasi
+            // Simpan pengaturan notifikasi (tetap di localStorage saja)
             document.getElementById('saveNotificationsBtn').addEventListener('click', function() {
                 const emailNotifications = document.getElementById('emailNotifications').checked;
                 const browserNotifications = document.getElementById('browserNotifications').checked;
@@ -292,7 +462,7 @@ function updateProfileDisplay(name, role) {
                 showToast('Pengaturan notifikasi berhasil disimpan');
             });
             
-            // Pengaturan tema
+            // Pengaturan tema (tetap di localStorage saja)
             const themeOptions = document.querySelectorAll('.theme-option');
             themeOptions.forEach(option => {
                 option.addEventListener('click', function() {
@@ -311,7 +481,7 @@ function updateProfileDisplay(name, role) {
                 });
             });
             
-            // Simpan pengaturan tampilan
+            // Simpan pengaturan tampilan (tetap di localStorage saja)
             document.getElementById('saveAppearanceBtn').addEventListener('click', function() {
                 const language = document.getElementById('languageSelect').value;
                 localStorage.setItem('language', language);
@@ -358,54 +528,69 @@ function updateProfileDisplay(name, role) {
             });
             
             // Fungsi untuk memuat pengaturan yang disimpan
-            function loadSavedSettings() {
-                // Load profil
-                const savedName = localStorage.getItem('adminName');
-                const savedEmail = localStorage.getItem('adminEmail');
-                const savedImage = localStorage.getItem('adminProfileImage');
-                
-                if (savedName) {
-                    document.getElementById('adminName').value = savedName;
-                    document.getElementById('profileName').textContent = savedName;
-                    document.getElementById('profileNameMain').textContent = savedName;
-                }
-                
-                if (savedEmail) {
-                    document.getElementById('adminEmail').value = savedEmail;
-                }
-                
-                if (savedImage) {
-                    document.getElementById('profileImage').src = savedImage;
-                    document.getElementById('profileImageMain').src = savedImage;
-                }
-                
-                // Load notifikasi
-                const emailNotif = localStorage.getItem('emailNotifications');
-                const browserNotif = localStorage.getItem('browserNotifications');
-                const dailyReminders = localStorage.getItem('dailyReminders');
-                
-                if (emailNotif !== null) {
-                    document.getElementById('emailNotifications').checked = emailNotif === 'true';
-                }
-                
-                if (browserNotif !== null) {
-                    document.getElementById('browserNotifications').checked = browserNotif === 'true';
-                }
-                
-                if (dailyReminders !== null) {
-                    document.getElementById('dailyReminders').checked = dailyReminders === 'true';
-                }
-                
-                // Load bahasa
-                const language = localStorage.getItem('language');
-                if (language) {
-                    document.getElementById('languageSelect').value = language;
-                }
-                
-                // Load tema yang aktif
-                const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-                document.querySelector(`.theme-option[data-theme="${currentTheme}"]`).classList.add('active');
-            }
+            async function loadSavedSettings() {
+    console.log('Loading saved settings...');
+    
+    // Coba load dari Firestore dulu
+    const firestoreProfile = await getProfileFromFirestore();
+    
+    if (firestoreProfile) {
+        console.log('Using Firestore data:', firestoreProfile);
+        
+        // Gunakan data dari Firestore
+        document.getElementById('adminName').value = firestoreProfile.name;
+        document.getElementById('adminEmail').value = firestoreProfile.email;
+        
+        updateProfileDisplay(
+            firestoreProfile.name,
+            firestoreProfile.role,
+            firestoreProfile.image
+        );
+        
+        // Simpan ke localStorage sebagai cache
+        localStorage.setItem('adminName', firestoreProfile.name);
+        localStorage.setItem('adminEmail', firestoreProfile.email);
+        localStorage.setItem('adminRole', firestoreProfile.role);
+        localStorage.setItem('adminProfileImage', firestoreProfile.image);
+    } else {
+        console.log('Using localStorage data');
+        // Fallback ke localStorage
+        const savedName = localStorage.getItem('adminName');
+        const savedEmail = localStorage.getItem('adminEmail');
+        const savedImage = localStorage.getItem('adminProfileImage');
+        const savedRole = localStorage.getItem('adminRole');
+        
+        document.getElementById('adminName').value = savedName || 'Admin';
+        document.getElementById('adminEmail').value = savedEmail || '';
+        
+        updateProfileDisplay(
+            savedName || 'Admin',
+            savedRole || 'Customer Service Support',
+            savedImage || 'https://ui-avatars.com/api/?name=Admin&background=4361ee&color=fff'
+        );
+    }
+    
+    // Load notifikasi (selalu dari localStorage)
+    const emailNotif = localStorage.getItem('emailNotifications');
+    const browserNotif = localStorage.getItem('browserNotifications');
+    const dailyReminders = localStorage.getItem('dailyReminders');
+    
+    document.getElementById('emailNotifications').checked = emailNotif === 'true';
+    document.getElementById('browserNotifications').checked = browserNotif === 'true';
+    document.getElementById('dailyReminders').checked = dailyReminders === 'true';
+    
+    // Load bahasa (selalu dari localStorage)
+    const language = localStorage.getItem('language');
+    if (language) {
+        document.getElementById('languageSelect').value = language;
+    }
+    
+    // Load tema yang aktif (selalu dari localStorage)
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    document.querySelector(`.theme-option[data-theme="${currentTheme}"]`).classList.add('active');
+}
+
             
             // Fungsi untuk menampilkan toast notifikasi
             function showToast(message, type = 'success') {
@@ -460,6 +645,7 @@ function updateProfileDisplay(name, role) {
             box-shadow: var(--shadow-sm);
             border: 1px solid var(--border-color);
         }
+        
         /* Custom styles specific to settings page */
         .settings-container {
             display: grid;

@@ -777,10 +777,6 @@
                 <i class="fas fa-plus"></i> Add New Task
             </button>
             
-            <button class="btn btn-outline" id="exportBtn">
-                <i class="fas fa-download"></i> Export
-            </button>
-            
             <button class="btn btn-outline" id="refreshBtn">
                 <i class="fas fa-sync-alt"></i> Refresh
             </button>
@@ -1415,11 +1411,6 @@
                 
                 // Add event listener to search input
                 document.getElementById('maintenanceSearch').addEventListener('input', renderMaintenanceTable);
-                
-                // Add event listener for export button
-                document.getElementById('exportBtn').addEventListener('click', () => {
-                    showNotification('Export functionality would be implemented here.', 'info');
-                });
                 
                 // Close modal when clicking outside
                 document.getElementById('maintenanceModal').addEventListener('click', (e) => {

@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
     <link rel="stylesheet" href="global.css">
-    <link rel="stylesheet" href="styleglobal.css">
+
     
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-app-compat.js"></script>
@@ -17,8 +17,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-analytics-compat.js"></script>
 
     <style>
-            /* ========== VARIABEL CSS YANG DIPERLUKAN ========== */
-       :root {
+ :root {
     --primary-gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
     --success-gradient: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);
     --warning-gradient: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
@@ -828,7 +827,7 @@
 }
 
 .modal-close {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgb(230, 210, 210);
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
@@ -1487,33 +1486,25 @@
             <h1><i class="fas fa-file-alt"></i> Pending Reports</h1>
 
             
-
-            <div class="header-actions">
-
+<div class="header-actions">
                 <div class="search-bar">
-
                     <i class="fas fa-search"></i>
-
-                    <input type="text" placeholder="Search reports..." id="dashboardSearch">
-
+                    <input type="text" placeholder="Search solved reports..." id="dashboardSearch">
                 </div>
+                
+<button class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
                 <div class="user-profile">
-
                     <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
-
                     <div class="user-info">
-
-                        <h4>Bang Pengshui</h4>
-
+                        <h4>Nama Masing Masing</h4>
                         <p>Customer Service Support</p>
-
                     </div>
-
                 </div>
-
             </div>
-
         </div>
+        
 
         
 
@@ -1762,6 +1753,7 @@
                                 <select class="filter-select" id="reportBrand" required>
 
                                     <option value="">Select Brand</option>
+                                    <option value="ALL BRAND">ALL BRAND</option>
 
                                     <option value="CINTAWIN88 (D-GAMING)">CINTAWIN88 (D-GAMING)</option>
 
@@ -1918,6 +1910,7 @@
                                 <select class="filter-select" id="editReportBrand" required>
 
                                     <option value="">Select Brand</option>
+                                    <option value="ALL BRAND">ALL BRAND</option>
 
                                     <option value="CINTAWIN88 (D-GAMING)">CINTAWIN88 (D-GAMING)</option>
 

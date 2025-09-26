@@ -32,6 +32,7 @@
             box-shadow: var(--shadow-sm);
             border: 1px solid var(--border-color);
         }
+        
 
         /* ========== PERBAIKAN STATISTIC CARDS ========== */
         .maintenance-stats {
@@ -1539,6 +1540,138 @@
         padding-top: max(var(--space-md), env(safe-area-inset-top));
     }
 }
+/* ========== REFRESH NOTIFICATION STYLES ========== */
+.refresh-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--success);
+    color: white;
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    z-index: var(--z-modal);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transform: translateX(150%);
+    transition: transform 0.3s ease;
+    max-width: 300px;
+}
+
+.refresh-notification.show {
+    transform: translateX(0);
+}
+
+.refresh-notification.error {
+    background: var(--danger);
+}
+
+.refresh-notification.info {
+    background: var(--info);
+}
+
+.refresh-notification i {
+    font-size: 1.2rem;
+}
+
+.refresh-notification-content {
+    flex: 1;
+}
+
+.refresh-notification-title {
+    font-weight: var(--font-semibold);
+    font-size: var(--text-sm);
+    margin: 0 0 2px 0;
+}
+
+.refresh-notification-message {
+    font-size: var(--text-xs);
+    opacity: 0.9;
+    margin: 0;
+}
+
+/* Notification close button */
+.refresh-notification-close {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: var(--radius-sm);
+    transition: background-color var(--transition-fast);
+}
+
+.refresh-notification-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* ========== IMPROVED ACTION BUTTON STYLES ========== */
+.action-buttons {
+    display: flex;
+    gap: var(--space-xs);
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+}
+
+.btn-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: var(--text-sm);
+    padding: 0;
+    box-shadow: var(--shadow-xs);
+}
+
+.btn-icon.view {
+    background: var(--info-light);
+    color: var(--info);
+}
+
+.btn-icon.edit {
+    background: var(--warning-light);
+    color: var(--warning);
+}
+
+.btn-icon.delete {
+    background: var(--danger-light);
+    color: var(--danger);
+}
+
+.btn-icon:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+    opacity: 0.9;
+}
+
+.btn-icon:active {
+    transform: translateY(0);
+}
+
+/* Improved focus states for accessibility */
+.btn-icon:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* Responsive adjustments for action buttons */
+@media (max-width: 768px) {
+    .action-buttons {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .btn-icon {
+        width: 36px;
+        height: 36px;
+    }
+}
     </style>
 </head>
 <body>
@@ -1606,7 +1739,17 @@
         </div>
     </div>
 </a>
-
+<!-- Refresh Notification -->
+<div id="refreshNotification" class="refresh-notification">
+    <i class="fas fa-check-circle"></i>
+    <div class="refresh-notification-content">
+        <div class="refresh-notification-title" id="refreshNotificationTitle">Berhasil</div>
+        <div class="refresh-notification-message" id="refreshNotificationMessage">Data berhasil dimuat ulang</div>
+    </div>
+    <button class="refresh-notification-close" onclick="hideRefreshNotification()">
+        <i class="fas fa-times"></i>
+    </button>
+</div>
     <!-- Pending Reports Card -->
 <a href="pending-reports.html" style="text-decoration: none; color: inherit;">
     <div class="stat-card fade-in" style="animation-delay: 0.2s;">
@@ -1798,7 +1941,7 @@ let dashboardData = {
 };
 
 let currentPage = 1;
-const activitiesPerPage = 10;
+const activitiesPerPage = 15;
 let totalPages = 1;
 
 // Fungsi utama untuk memuat data dashboard

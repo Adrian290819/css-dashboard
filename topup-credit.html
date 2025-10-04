@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="global.css">
+    <script src="global-time.js"></script>
         <link rel="stylesheet" href="stylemobile.css">
     <style>
         /* ========== VARIABEL CSS YANG DIPERLUKAN ========== */
@@ -244,46 +245,88 @@
             border: 1px solid var(--border-color);
         }
 
-        .history-table {
-            margin: 0;
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            min-width: 600px;
-        }
+       /* TAMBAHKAN CSS INI: */
 
-        .history-table th {
-            padding: var(--space-md) var(--space-lg);
-            background: var(--table-header-bg);
-            font-weight: var(--font-semibold);
-            color: var(--text-secondary);
-            border-bottom: 1px solid var(--border-color);
-            font-size: var(--text-xs);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
-            text-align: left;
-            position: sticky;
-            top: 0;
-        }
+/* Perbaikan alignment tabel */
+.history-table {
+    margin: 0;
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+    font-family: 'Poppins', sans-serif; /* Tetap gunakan Poppins */
+    table-layout: fixed;
+}
 
-        .history-table td {
-            padding: var(--space-md) var(--space-lg);
-            border-bottom: 1px solid var(--border-color);
-            color: var(--text-primary);
-            font-size: var(--text-sm);
-            vertical-align: middle;
-            line-height: 1.5;
-        }
+/* Lebar kolom yang presisi */
+.history-table th:nth-child(1),
+.history-table td:nth-child(1) {
+    width: 160px;
+    min-width: 160px;
+    white-space: nowrap;
+}
 
-        .history-table tr:last-child td {
-            border-bottom: none;
-        }
+.history-table th:nth-child(2),
+.history-table td:nth-child(2) {
+    width: 200px;
+    min-width: 200px;
+    white-space: nowrap;
+}
 
-        .history-table tr:hover {
-            background-color: var(--hover-color);
-            transition: background-color var(--transition-fast);
-        }
+/* Kolom angka - rata kanan dengan font yang konsisten */
+.history-table th:nth-child(3),
+.history-table td:nth-child(3),
+.history-table th:nth-child(4),
+.history-table td:nth-child(4),
+.history-table th:nth-child(5),
+.history-table td:nth-child(5) {
+    width: 150px;
+    min-width: 150px;
+    text-align: right;
+    font-family: 'Poppins', sans-serif; /* Tetap gunakan Poppins */
+    font-weight: var(--font-semibold);
+    letter-spacing: 0.5px; /* Tambahkan untuk alignment yang lebih baik */
+}
+
+/* Atau jika ingin lebih presisi dengan angka, gunakan: */
+.history-table th:nth-child(3),
+.history-table td:nth-child(3),
+.history-table th:nth-child(4),
+.history-table td:nth-child(4),
+.history-table th:nth-child(5),
+.history-table td:nth-child(5) {
+    width: 150px;
+    min-width: 150px;
+    text-align: right;
+    font-family: 'Poppins', monospace; /* Fallback ke monospace jika perlu */
+    font-weight: var(--font-semibold);
+    font-variant-numeric: tabular-nums; /* Fitur CSS modern untuk alignment angka */
+    -webkit-font-feature-settings: "tnum";
+    font-feature-settings: "tnum";
+}
+
+/* Container untuk tombol aksi */
+.action-buttons {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Tombol kecil untuk aksi */
+.btn-sm {
+    padding: 4px 8px;
+    font-size: var(--text-xs);
+    height: 28px;
+    min-width: 50px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.btn-sm i {
+    font-size: 0.7rem;
+}
 
         .empty-state {
             text-align: center;
@@ -602,6 +645,25 @@
     color: var(--text-secondary);
     font-weight: var(--font-medium);
 }
+/* GANTI kode CSS ini: */
+.history-table th:nth-child(6),
+.history-table td:nth-child(6) {
+    display: none;
+}
+
+/* DENGAN: */
+body.user-mode .history-table th:nth-child(6),
+body.user-mode .history-table td:nth-child(6) {
+    display: none;
+}
+
+body.admin-mode .history-table th:nth-child(6),
+body.admin-mode .history-table td:nth-child(6) {
+    display: table-cell;
+    width: 150px;
+    min-width: 150px;
+    text-align: center;
+}
     </style>
 </head>
 <body>
@@ -691,14 +753,15 @@
         <div class="history-table-container">
             <table class="history-table">
                 <thead>
-                    <tr>
-                        <th>Tanggal</th>
-                        <th>Brand</th>
-                        <th>Jumlah Top Up</th>
-                        <th>Credit Sebelum</th>
-                        <th>Credit Sesudah</th>
-                    </tr>
-                </thead>
+    <tr>
+        <th>Tanggal</th>
+        <th>Brand</th>
+        <th>Jumlah Top Up</th>
+        <th>Credit Sebelum</th>
+        <th>Credit Sesudah</th>
+        <th class="action-column">Aksi</th> <!-- TAMBAHKAN INI -->
+    </tr>
+</thead>
                 <tbody id="historyTableBody">
                     <!-- Data history akan dimuat di sini -->
                 </tbody>
@@ -768,15 +831,16 @@
         
         <div class="history-table-container">
             <table class="history-table">
-                <thead>
-                    <tr>
-                        <th>Tanggal</th>
-                        <th>Kategori</th>
-                        <th>Jumlah Top Up</th>
-                        <th>Credit Sebelum</th>
-                        <th>Credit Sesudah</th>
-                    </tr>
-                </thead>
+<thead>
+    <tr>
+        <th>Tanggal</th>
+        <th>Kategori</th>
+        <th>Jumlah Top Up</th>
+        <th>Credit Sebelum</th>
+        <th>Credit Sesudah</th>
+        <th class="action-column">Aksi</th> <!-- TAMBAHKAN INI -->
+    </tr>
+</thead>
                 <tbody id="masteragentHistoryTableBody">
                     <!-- Data history masteragent akan dimuat di sini -->
                 </tbody>
@@ -789,24 +853,14 @@
         </div>
     </div>
 </div>
-<!-- Untuk regular history section -->
-<div class="pagination-controls" id="regularPagination" style="display: none;">
-    <button class="btn btn-outline" id="prevRegularPage">
-        <i class="fas fa-chevron-left"></i> Previous
-    </button>
-    <span id="regularPageInfo">Page 1 of 1</span>
-    <button class="btn btn-outline" id="nextRegularPage">
-        Next <i class="fas fa-chevron-right"></i>
-    </button>
-</div>
 
-<!-- Untuk masteragent history section -->
-<div class="pagination-controls" id="masteragentPagination" style="display: none;">
-    <button class="btn btn-outline" id="prevMasteragentPage">
+<!-- SATU PAGINATION CONTROLS UNTUK SEMUA -->
+<div class="pagination-controls" id="paginationControls" style="display: none;">
+    <button class="btn btn-outline" id="prevPage">
         <i class="fas fa-chevron-left"></i> Previous
     </button>
-    <span id="masteragentPageInfo">Page 1 of 1</span>
-    <button class="btn btn-outline" id="nextMasteragentPage">
+    <span id="pageInfo">Page 1 of 1</span>
+    <button class="btn btn-outline" id="nextPage">
         Next <i class="fas fa-chevron-right"></i>
     </button>
 </div>
@@ -821,7 +875,43 @@
     ✅ Data berhasil disimpan!
 </div>
     </div>
+<!-- Modal untuk Edit Credit (Super Admin) -->
+<div id="editCreditModal" class="modal-overlay">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="fas fa-edit"></i> Edit Credit</h3>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="editCreditContainer">
+                <!-- Form edit credit akan diisi secara dinamis -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="document.getElementById('editCreditModal').classList.remove('active')">Batal</button>
+            <button class="btn btn-primary" id="saveCreditChanges">Simpan Perubahan</button>
+        </div>
+    </div>
+</div>
 
+<!-- Modal untuk Edit History (Super Admin) -->
+<div id="editHistoryModal" class="modal-overlay">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="fas fa-edit"></i> Edit Riwayat</h3>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="editHistoryContainer">
+                <!-- Form edit history akan diisi secara dinamis -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="document.getElementById('editHistoryModal').classList.remove('active')">Batal</button>
+            <button class="btn btn-primary" id="saveHistoryChanges">Simpan Perubahan</button>
+        </div>
+    </div>
+</div>
     <script src="sidebar-loader.js"></script>
     <script src="user-profile.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -908,6 +998,160 @@
     let unsubscribeCreditData = null;
     let unsubscribeTopupHistory = null;
     let unsubscribeMasteragentHistory = null;
+
+    // State aplikasi
+    let isSuperAdminUser = false;
+
+    // Variabel untuk pagination
+    const itemsPerPage = 15;
+    let currentRegularPage = 1;
+    let currentMasteragentPage = 1;
+    let filteredRegularHistory = [];
+    let filteredMasteragentHistory = [];
+
+    // ========== FUNGSI SUPER ADMIN ==========
+
+    // Fungsi untuk memeriksa dan setup super admin
+    async function checkAndSetupSuperAdmin() {
+        try {
+            const currentUser = firebase.auth().currentUser;
+            if (!currentUser) {
+                console.log('No user logged in');
+                setupAdminUI(false);
+                return false;
+            }
+            
+            console.log('🔄 Checking admin role for user:', currentUser.uid, currentUser.email);
+            
+            const userDoc = await db.collection('users').doc(currentUser.uid).get();
+            
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                console.log('📊 User data from Firestore:', userData);
+                
+                // Check role dengan berbagai kemungkinan field
+                const isAdmin = userData.role === 'super_admin' || 
+                               userData.isSuperAdmin === true ||
+                               userData.isAdmin === true ||
+                               (userData.email && userData.email.includes('admin')) ||
+                               userData.email === 'superadmin@gachaengine.com';
+                
+                console.log('✅ Final admin determination:', isAdmin);
+                
+                if (isAdmin) {
+                    setupAdminUI(true);
+                    isSuperAdminUser = true;
+                    return true;
+                }
+            }
+            
+            // Jika tidak ada dokumen user, buat dokumen default
+            console.log('📝 Creating default user document');
+            await db.collection('users').doc(currentUser.uid).set({
+                email: currentUser.email,
+                name: currentUser.displayName || 'User',
+                role: 'user',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+            
+            setupAdminUI(false);
+            isSuperAdminUser = false;
+            return false;
+            
+        } catch (error) {
+            console.error('❌ Error checking super admin:', error);
+            setupAdminUI(false);
+            isSuperAdminUser = false;
+            return false;
+        }
+    }
+
+    // Fungsi untuk setup UI admin
+    // GANTI fungsi setupAdminUI() - TAMBAHKAN class pada body
+function setupAdminUI(isAdmin) {
+    console.log('Setting up admin UI, isAdmin:', isAdmin);
+    
+    const headerActions = document.querySelector('.header-actions');
+    if (!headerActions) {
+        console.error('Header actions element not found');
+        return;
+    }
+    
+    // Hapus tombol edit credit yang sudah ada jika ada
+    const existingEditButton = document.querySelector('.edit-credit-btn');
+    if (existingEditButton) {
+        existingEditButton.remove();
+    }
+    
+    // TAMBAHKAN CLASS PADA BODY
+    if (isAdmin) {
+        document.body.classList.add('admin-mode');
+        document.body.classList.remove('user-mode');
+        
+        // Tambahkan tombol Edit Credit untuk super admin
+        const editButton = document.createElement('button');
+        editButton.className = 'btn btn-primary edit-credit-btn';
+        editButton.innerHTML = '<i class="fas fa-edit"></i> Edit Credit';
+        editButton.style.marginRight = '10px';
+        editButton.onclick = showEditCreditModal;
+        
+        headerActions.insertBefore(editButton, headerActions.firstChild);
+        
+        isSuperAdminUser = true;
+        console.log('Admin UI setup completed - Edit Credit button visible');
+    } else {
+        document.body.classList.add('user-mode');
+        document.body.classList.remove('admin-mode');
+        isSuperAdminUser = false;
+        console.log('Regular user UI setup completed - Edit Credit button hidden');
+    }
+}
+
+    // ========== FUNGSI UTILITAS ==========
+
+    // Format angka dengan pemisah ribuan
+    function formatNumber(num) {
+        if (isNaN(num) || num === null || num === undefined) {
+            return '0';
+        }
+        return new Intl.NumberFormat('id-ID').format(num);
+    }
+
+    // Parse angka dari format dengan pemisah
+    function parseFormattedNumber(formattedNum) {
+        if (!formattedNum) return 0;
+        return parseInt(formattedNum.toString().replace(/\./g, ''), 10) || 0;
+    }
+
+    // Tampilkan notifikasi toast
+    function showToast(message, type = 'success') {
+        // Hapus toast yang sudah ada
+        const existingToasts = document.querySelectorAll('.toast-notification');
+        existingToasts.forEach(toast => toast.remove());
+        
+        const toast = document.createElement('div');
+        toast.className = `toast-notification ${type}`;
+        toast.innerHTML = `
+            <div class="toast-content">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        document.body.appendChild(toast);
+
+        // Tampilkan toast
+        setTimeout(() => {
+            toast.classList.add('hide');
+        }, 3000);
+
+        toast.addEventListener('animationend', () => {
+            if (toast.classList.contains('hide')) {
+                toast.remove();
+            }
+        });
+    }
+
+    // ========== FUNGSI FIRESTORE ==========
 
     // Fungsi untuk memuat data dari Firestore
     function setupFirestoreListeners() {
@@ -1014,38 +1258,7 @@
             });
     }
 
-    // Format angka dengan pemisah ribuan
-    function formatNumber(num) {
-        return new Intl.NumberFormat('id-ID').format(num);
-    }
-
-    // Parse angka dari format dengan pemisah
-    function parseFormattedNumber(formattedNum) {
-        return parseInt(formattedNum.replace(/\./g, ''), 10);
-    }
-
-    // Tampilkan notifikasi toast
-    function showToast(message, type = 'success') {
-        const toast = document.getElementById('toastNotification');
-        const toastMessage = document.getElementById('toastMessage');
-        
-        if (!toast || !toastMessage) {
-            console.log("Toast elements not found");
-            return;
-        }
-        
-        toast.className = `toast-notification ${type}`;
-        toastMessage.textContent = message;
-        toast.style.display = 'block';
-        
-        setTimeout(() => {
-            toast.classList.add('hide');
-            setTimeout(() => {
-                toast.style.display = 'none';
-                toast.classList.remove('hide');
-            }, 400);
-        }, 3000);
-    }
+    // ========== FUNGSI UI UPDATE ==========
 
     // Update tampilan credit stats cards
     function updateCreditStats() {
@@ -1098,315 +1311,260 @@
         brandSelect.innerHTML = html;
     }
 
-    // Update nilai credit saat kategori masteragent dipilih
-    document.getElementById('masteragentCategory').addEventListener('change', function() {
-        const category = this.value;
-        const currentCreditInput = document.getElementById('masteragentCurrentCredit');
-        const topupAmountInput = document.getElementById('masteragentCredit');
-        const newCreditInput = document.getElementById('masteragentNewCredit');
-        
-        if (category && creditData[category]) {
-            currentCreditInput.value = formatNumber(creditData[category].credit);
-            topupAmountInput.value = '';
-            newCreditInput.value = formatNumber(creditData[category].credit);
-        } else {
-            currentCreditInput.value = '';
-            topupAmountInput.value = '';
-            newCreditInput.value = '';
-        }
-    });
-
-    // Hitung credit baru saat jumlah top up masteragent diinput
-    document.getElementById('masteragentCredit').addEventListener('input', function() {
-        const categorySelect = document.getElementById('masteragentCategory');
-        const currentCreditInput = document.getElementById('masteragentCurrentCredit');
-        const newCreditInput = document.getElementById('masteragentNewCredit');
-        
-        if (categorySelect.value && currentCreditInput.value) {
-            const currentCredit = parseFormattedNumber(currentCreditInput.value);
-            const topupAmount = parseInt(this.value) || 0;
-            
-            const newCredit = currentCredit + topupAmount;
-            newCreditInput.value = formatNumber(newCredit);
-            newCreditInput.style.color = "var(--text-primary)";
-        }
-    });
-
-    // Update nilai credit saat brand dipilih
-    document.getElementById('brandSelect').addEventListener('change', function() {
-        const brand = this.value;
-        const category = this.options[this.selectedIndex]?.dataset.category;
-        const currentCreditInput = document.getElementById('currentCredit');
-        const topupAmountInput = document.getElementById('topupAmount');
-        const newCreditInput = document.getElementById('newCredit');
-        
-        if (brand && category && creditData[category]) {
-            currentCreditInput.value = formatNumber(creditData[category].credit);
-            topupAmountInput.value = '';
-            newCreditInput.value = formatNumber(creditData[category].credit);
-            newCreditInput.style.color = "var(--text-primary)";
-        } else {
-            currentCreditInput.value = '';
-            topupAmountInput.value = '';
-            newCreditInput.value = '';
-        }
-    });
-
-    // Hitung credit baru saat jumlah top up diinput
-    document.getElementById('topupAmount').addEventListener('input', function() {
-        const brandSelect = document.getElementById('brandSelect');
-        const category = brandSelect.options[brandSelect.selectedIndex]?.dataset.category;
-        const currentCreditInput = document.getElementById('currentCredit');
-        const newCreditInput = document.getElementById('newCredit');
-        
-        if (brandSelect.value && currentCreditInput.value && category) {
-            const currentCredit = parseFormattedNumber(currentCreditInput.value);
-            const topupAmount = parseInt(this.value) || 0;
-            
-            if (topupAmount > currentCredit) {
-                newCreditInput.value = "Credit tidak mencukupi!";
-                newCreditInput.style.color = "var(--danger)";
-            } else {
-                const newCredit = currentCredit - topupAmount;
-                newCreditInput.value = formatNumber(newCredit);
-                newCreditInput.style.color = "var(--text-primary)";
-            }
-        }
-    });
-
-    // Update history table
+    // Update history table dengan tombol edit untuk super admin
     function updateHistoryTable() {
         const historyTableBody = document.getElementById('historyTableBody');
         const noHistory = document.getElementById('noHistory');
+        const searchTerm = document.getElementById('dashboardSearch')?.value.toLowerCase().trim() || '';
         
-        if (topupHistory.length === 0) {
+        // Reset filtered data
+        filteredRegularHistory = [];
+        
+        if (topupHistory.length === 0 && searchTerm === '') {
             if (noHistory) noHistory.style.display = 'block';
             if (historyTableBody) historyTableBody.innerHTML = '';
+            const regularPagination = document.getElementById('regularPagination');
+            if (regularPagination) regularPagination.style.display = 'none';
             return;
         }
         
         if (noHistory) noHistory.style.display = 'none';
         
-        // Render history table
+        // Filter data berdasarkan pencarian
+        if (searchTerm !== '') {
+            filteredRegularHistory = topupHistory.filter(history => {
+                return Object.values(history).some(value => 
+                    value && value.toString().toLowerCase().includes(searchTerm)
+                );
+            });
+        }
+        
+        // Render history table dengan tombol edit untuk super admin
         if (historyTableBody) {
-            historyTableBody.innerHTML = topupHistory.map(history => `
+            const dataToDisplay = filteredRegularHistory.length > 0 ? filteredRegularHistory : topupHistory;
+            const startIndex = (currentRegularPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, dataToDisplay.length);
+            const paginatedData = dataToDisplay.slice(startIndex, endIndex);
+            
+            historyTableBody.innerHTML = paginatedData.map(history => `
                 <tr>
                     <td>${history.date || 'N/A'}</td>
                     <td>${history.brand || 'N/A'}</td>
                     <td>${formatNumber(history.amount)}</td>
                     <td>${formatNumber(history.before)}</td>
                     <td>${formatNumber(history.after)}</td>
+                    <td>
+                        ${isSuperAdminUser ? `
+                        <button class="btn btn-sm btn-outline edit-history-btn" data-id="${history.id}" data-type="regular">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger delete-history-btn" data-id="${history.id}" data-type="regular">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
+                        ` : ''}
+                    </td>
                 </tr>
             `).join('');
+            
+            // Tambahkan event listeners untuk tombol edit dan hapus
+            if (isSuperAdminUser) {
+                document.querySelectorAll('.edit-history-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const historyId = this.dataset.id;
+                        const historyType = this.dataset.type;
+                        editHistoryItem(historyId, historyType);
+                    });
+                });
+                
+                document.querySelectorAll('.delete-history-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const historyId = this.dataset.id;
+                        const historyType = this.dataset.type;
+                        deleteHistoryItem(historyId, historyType);
+                    });
+                });
+            }
         }
+        
+        // Update pagination
+        updatePaginationUI('regular');
     }
 
-    // Update masteragent history table
+    // Update masteragent history table dengan tombol edit untuk super admin
     function updateMasteragentHistoryTable() {
         const historyTableBody = document.getElementById('masteragentHistoryTableBody');
         const noHistory = document.getElementById('noMasteragentHistory');
+        const searchTerm = document.getElementById('dashboardSearch')?.value.toLowerCase().trim() || '';
         
-        if (masteragentHistory.length === 0) {
+        // Reset filtered data
+        filteredMasteragentHistory = [];
+        
+        if (masteragentHistory.length === 0 && searchTerm === '') {
             if (noHistory) noHistory.style.display = 'block';
             if (historyTableBody) historyTableBody.innerHTML = '';
+            const masteragentPagination = document.getElementById('masteragentPagination');
+            if (masteragentPagination) masteragentPagination.style.display = 'none';
             return;
         }
         
         if (noHistory) noHistory.style.display = 'none';
         
-        // Render history table
+        // Filter data berdasarkan pencarian
+        if (searchTerm !== '') {
+            filteredMasteragentHistory = masteragentHistory.filter(history => {
+                return Object.values(history).some(value => 
+                    value && value.toString().toLowerCase().includes(searchTerm)
+                );
+            });
+        }
+        
+        // Render history table dengan tombol edit untuk super admin
         if (historyTableBody) {
-            historyTableBody.innerHTML = masteragentHistory.map(history => `
+            const dataToDisplay = filteredMasteragentHistory.length > 0 ? filteredMasteragentHistory : masteragentHistory;
+            const startIndex = (currentMasteragentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, dataToDisplay.length);
+            const paginatedData = dataToDisplay.slice(startIndex, endIndex);
+            
+            historyTableBody.innerHTML = paginatedData.map(history => `
                 <tr>
                     <td>${history.date || 'N/A'}</td>
                     <td>${history.category || 'N/A'}</td>
                     <td>${formatNumber(history.amount)}</td>
                     <td>${formatNumber(history.before)}</td>
                     <td>${formatNumber(history.after)}</td>
+                    <td>
+                        ${isSuperAdminUser ? `
+                        <button class="btn btn-sm btn-outline edit-history-btn" data-id="${history.id}" data-type="masteragent">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger delete-history-btn" data-id="${history.id}" data-type="masteragent">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
+                        ` : ''}
+                    </td>
                 </tr>
             `).join('');
+            
+            // Tambahkan event listeners untuk tombol edit dan hapus
+            if (isSuperAdminUser) {
+                document.querySelectorAll('.edit-history-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const historyId = this.dataset.id;
+                        const historyType = this.dataset.type;
+                        editHistoryItem(historyId, historyType);
+                    });
+                });
+                
+                document.querySelectorAll('.delete-history-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const historyId = this.dataset.id;
+                        const historyType = this.dataset.type;
+                        deleteHistoryItem(historyId, historyType);
+                    });
+                });
+            }
         }
+        
+        // Update pagination
+        updatePaginationUI('masteragent');
     }
 
-    // Proses form masteragent top up
-    document.getElementById('masteragentForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
+    // Fungsi pagination yang diperbaiki untuk menghindari rekursi
+    // Fungsi pagination yang diperbaiki - SATU UNTUK SEMUA
+function updatePaginationUI() {
+    const currentTab = document.querySelector('.tab.active').dataset.tab;
+    
+    let historyData, filteredData;
+    let currentPage, totalPages;
+    
+    if (currentTab === 'regular') {
+        historyData = topupHistory;
+        filteredData = filteredRegularHistory.length > 0 ? filteredRegularHistory : historyData;
+        currentPage = currentRegularPage;
+    } else {
+        historyData = masteragentHistory;
+        filteredData = filteredMasteragentHistory.length > 0 ? filteredMasteragentHistory : historyData;
+        currentPage = currentMasteragentPage;
+    }
+    
+    totalPages = Math.ceil(filteredData.length / itemsPerPage);
+    
+    const pageInfo = document.getElementById('pageInfo');
+    const paginationControls = document.getElementById('paginationControls');
+    
+    if (filteredData.length === 0) {
+        if (pageInfo) pageInfo.textContent = 'Tidak ada data';
+        if (paginationControls) paginationControls.style.display = 'none';
+        return;
+    }
+    
+    // Update info halaman
+    if (pageInfo) {
+        pageInfo.textContent = `Halaman ${currentPage} dari ${totalPages} (Total: ${filteredData.length} data)`;
+    }
+    
+    // Update tampilan pagination controls
+    if (paginationControls) {
+        paginationControls.style.display = 'flex';
         
-        const category = document.getElementById('masteragentCategory').value;
-        const credit = parseInt(document.getElementById('masteragentCredit').value);
+        const prevButton = document.getElementById('prevPage');
+        const nextButton = document.getElementById('nextPage');
         
-        if (!category || isNaN(credit) || credit <= 0) {
-            showToast('Semua field harus diisi dengan benar', 'error');
-            return;
+        if (prevButton) {
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = function() {
+                if (currentPage > 1) {
+                    if (currentTab === 'regular') {
+                        currentRegularPage--;
+                        updateHistoryTable();
+                    } else {
+                        currentMasteragentPage--;
+                        updateMasteragentHistoryTable();
+                    }
+                }
+            };
         }
         
-        // Tambahkan credit ke kategori yang dipilih
-        if (creditData[category]) {
-            const currentCredit = creditData[category].credit;
-            creditData[category].credit += credit;
-            
-            try {
-                // Simpan ke Firestore
-                await db.collection('creditData').doc('brands').set(creditData);
-                
-                // Tambahkan ke history masteragent
-                const historyEntry = {
-                    date: new Date().toLocaleString('id-ID'),
-                    category: category,
-                    amount: credit,
-                    before: currentCredit,
-                    after: currentCredit + credit,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                };
-                
-                // Simpan ke Firestore
-                await db.collection('masteragentHistory').add(historyEntry);
-                
-                // Update UI
-                updateCreditStats();
-                
-                // Reset form
-                this.reset();
-                document.getElementById('masteragentCurrentCredit').value = '';
-                document.getElementById('masteragentNewCredit').value = '';
-                
-                showToast(`Top up masteragent berhasil! ${formatNumber(credit)} credit ditambahkan ke kategori ${category}`);
-            } catch (error) {
-                console.error("Error saving masteragent topup:", error);
-                showToast("Gagal menyimpan data ke server", "error");
-                
-                // Simpan ke localStorage sebagai fallback
-                localStorage.setItem('creditData', JSON.stringify(creditData));
-                
-                // Tambahkan ke history lokal
-                masteragentHistory.push({
-                    date: new Date().toLocaleString('id-ID'),
-                    category: category,
-                    amount: credit,
-                    before: currentCredit,
-                    after: currentCredit + credit
-                });
-                localStorage.setItem('masteragentHistory', JSON.stringify(masteragentHistory));
-                
-                updateCreditStats();
-                updateMasteragentHistoryTable();
-                
-                showToast(`Top up masteragent berhasil (offline mode)! ${formatNumber(credit)} credit ditambahkan ke kategori ${category}`);
-            }
-        } else {
-            showToast('Kategori tidak valid', 'error');
+        if (nextButton) {
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = function() {
+                if (currentPage < totalPages) {
+                    if (currentTab === 'regular') {
+                        currentRegularPage++;
+                        updateHistoryTable();
+                    } else {
+                        currentMasteragentPage++;
+                        updateMasteragentHistoryTable();
+                    }
+                }
+            };
         }
-    });
-
-    // Proses form top up
-    document.getElementById('topupForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const brandSelect = document.getElementById('brandSelect');
-        const brand = brandSelect.value;
-        const category = brandSelect.options[brandSelect.selectedIndex]?.dataset.category;
-        const amount = parseInt(document.getElementById('topupAmount').value);
-        
-        if (!brand || !category || isNaN(amount) || amount <= 0) {
-            showToast('Semua field harus diisi dengan benar', 'error');
-            return;
-        }
-        
-        // Kurangi credit dari kategori yang dipilih
-        if (creditData[category].credit >= amount) {
-            const currentCredit = creditData[category].credit;
-            creditData[category].credit -= amount;
-            
-            try {
-                // Simpan ke Firestore
-                await db.collection('creditData').doc('brands').set(creditData);
-                
-                // Tambahkan ke history
-                const historyEntry = {
-                    date: new Date().toLocaleString('id-ID'),
-                    brand: brand,
-                    amount: amount,
-                    before: currentCredit,
-                    after: currentCredit - amount,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                };
-                
-                // Simpan ke Firestore
-                await db.collection('topupHistory').add(historyEntry);
-                
-                // Update UI
-                updateCreditStats();
-                
-                // Reset form
-                this.reset();
-                document.getElementById('currentCredit').value = '';
-                document.getElementById('newCredit').value = '';
-                
-                showToast(`Top up berhasil! ${formatNumber(amount)} credit dikurangi dari ${brand}`);
-            } catch (error) {
-                console.error("Error saving topup:", error);
-                showToast("Gagal menyimpan data ke server", "error");
-                
-                // Simpan ke localStorage sebagai fallback
-                localStorage.setItem('creditData', JSON.stringify(creditData));
-                
-                // Tambahkan ke history lokal
-                topupHistory.push({
-                    date: new Date().toLocaleString('id-ID'),
-                    brand: brand,
-                    amount: amount,
-                    before: currentCredit,
-                    after: currentCredit - amount
-                });
-                localStorage.setItem('topupHistory', JSON.stringify(topupHistory));
-                
-                updateCreditStats();
-                updateHistoryTable();
-                
-                showToast(`Top up berhasil (offline mode)! ${formatNumber(amount)} credit dikurangi dari ${brand}`);
-            }
-        } else {
-            showToast('Credit tidak mencukupi untuk melakukan top up', 'error');
-        }
-    });
-
-    // Refresh history
-    document.getElementById('refreshHistory')?.addEventListener('click', function() {
-        updateHistoryTable();
-        showToast('Riwayat diperbarui', 'info');
-    });
-
-
-    // Refresh masteragent history
-    document.getElementById('refreshMasteragentHistory')?.addEventListener('click', function() {
-        updateMasteragentHistoryTable();
-        showToast('Riwayat masteragent diperbarui', 'info');
-    });
-
-
-
-    // Tab functionality
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.addEventListener('click', function() {
-            const tabId = this.getAttribute('data-tab');
-            
-            // Update active tab
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Show active content
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            document.getElementById(`${tabId}Tab`).classList.add('active');
-        });
-    });
+    }
+}
+    // ========== FUNGSI EDIT CREDIT ==========
 
     // Fungsi untuk menampilkan modal edit credit
     function showEditCreditModal() {
+        console.log('📋 Showing edit credit modal...');
+        
+        if (!isSuperAdminUser) {
+            showToast('Hanya Super Admin yang dapat mengedit credit', 'error');
+            return;
+        }
+        
         const modal = document.getElementById('editCreditModal');
         const container = document.getElementById('editCreditContainer');
         
+        if (!modal || !container) {
+            console.error('❌ Modal or container not found');
+            showToast('Error: Modal tidak ditemukan', 'error');
+            return;
+        }
+        
         // Kosongkan container terlebih dahulu
         container.innerHTML = '';
+        
+        console.log('📝 Populating credit edit form...');
         
         // Buat form input untuk setiap kategori
         for (const [category, data] of Object.entries(creditData)) {
@@ -1416,7 +1574,7 @@
             div.innerHTML = `
                 <label for="edit-${category}">${category} Credit</label>
                 <input type="number" id="edit-${category}" class="form-input" 
-                       value="${data.credit}" min="0">
+                       value="${data.credit}" min="0" style="width: 100%;">
             `;
             
             container.appendChild(div);
@@ -1424,21 +1582,53 @@
         
         // Tampilkan modal
         modal.classList.add('active');
+        console.log('✅ Edit credit modal shown');
     }
 
     // Fungsi untuk menyimpan perubahan credit
     async function saveCreditChanges() {
+        console.log('💾 Saving credit changes...');
+        
+        if (!isSuperAdminUser) {
+            showToast('Hanya Super Admin yang dapat mengedit credit', 'error');
+            return;
+        }
+        
+        // Kumpulkan semua perubahan
+        const changes = {};
+        let hasChanges = false;
+        
         for (const [category, data] of Object.entries(creditData)) {
             const input = document.getElementById(`edit-${category}`);
             if (input) {
                 const newValue = parseInt(input.value) || 0;
-                if (newValue >= 0) {
-                    creditData[category].credit = newValue;
+                const oldValue = data.credit;
+                
+                if (newValue >= 0 && newValue !== oldValue) {
+                    changes[category] = {
+                        oldValue: oldValue,
+                        newValue: newValue
+                    };
+                    hasChanges = true;
+                    console.log(`📝 ${category}: ${oldValue} → ${newValue}`);
                 }
             }
         }
         
+        if (!hasChanges) {
+            showToast('Tidak ada perubahan yang dilakukan', 'info');
+            return;
+        }
+        
         try {
+            console.log('💾 Applying credit changes to local data...');
+            
+            // Update data lokal
+            for (const [category, change] of Object.entries(changes)) {
+                creditData[category].credit = change.newValue;
+            }
+            
+            console.log('🔥 Saving to Firestore...');
             // Simpan ke Firestore
             await db.collection('creditData').doc('brands').set(creditData);
             
@@ -1447,577 +1637,621 @@
             updateBrandDropdown();
             
             // Tutup modal
-            document.getElementById('editCreditModal').classList.remove('active');
+            const modal = document.getElementById('editCreditModal');
+            if (modal) {
+                modal.classList.remove('active');
+            }
             
-            showToast('Nominal credit berhasil diperbarui');
+            showToast('Nominal credit berhasil diperbarui!', 'success');
+            console.log('✅ Credit changes saved successfully');
+            
         } catch (error) {
-            console.error("Error saving credit changes:", error);
+            console.error("❌ Error saving credit changes:", error);
             showToast("Gagal menyimpan perubahan ke server", "error");
             
-            // Simpan ke localStorage sebagai fallback
-            localStorage.setItem('creditData', JSON.stringify(creditData));
-            
-            // Update UI
-            updateCreditStats();
-            updateBrandDropdown();
-            
-            // Tutup modal
-            document.getElementById('editCreditModal').classList.remove('active');
-            
-            showToast('Nominal credit berhasil diperbarui (offline mode)');
-        }
-    }
-
-    // Initialize page
-    document.addEventListener('DOMContentLoaded', function() {
-        // Setup Firestore listeners
-        setupFirestoreListeners();
-        
-        // Tambahkan tombol Edit Credit di header
-        const header = document.querySelector('.header');
-        if (header) {
-            const editButton = document.createElement('button');
-            editButton.className = 'btn btn-outline';
-            editButton.innerHTML = '<i class="fas fa-edit"></i> Edit Credit';
-            editButton.style.marginRight = '10px';
-            editButton.onclick = showEditCreditModal;
-            
-            // Sisipkan tombol sebelum user profile
-            const headerActions = document.querySelector('.header-actions');
-            if (headerActions) {
-                headerActions.insertBefore(editButton, headerActions.firstChild);
+            // Fallback ke localStorage
+            try {
+                localStorage.setItem('creditData', JSON.stringify(creditData));
+                updateCreditStats();
+                updateBrandDropdown();
+                
+                const modal = document.getElementById('editCreditModal');
+                if (modal) {
+                    modal.classList.remove('active');
+                }
+                
+                showToast('Nominal credit berhasil diperbarui (offline mode)', 'success');
+            } catch (fallbackError) {
+                console.error("❌ Fallback also failed:", fallbackError);
+                showToast("Gagal menyimpan perubahan", "error");
             }
         }
-        
-        // Buat modal untuk edit credit
-        const modalHTML = `
-<!-- Ganti modal HTML yang sudah ada dengan yang ini -->
-<div id="editCreditModal" class="modal-overlay">
-    <div class="modal">
-        <div class="modal-header">
-            <h3 class="modal-title"><i class="fas fa-edit"></i> Edit Nominal Credit</h3>
-            <button class="modal-close" onclick="document.getElementById('editCreditModal').classList.remove('active')">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="modal-body">
-            <!-- Password verification section -->
-            <div id="passwordSection">
-                <div class="form-group">
-                    <label for="adminPassword">Password Admin</label>
-                    <input type="password" id="adminPassword" class="form-input" placeholder="Masukkan password admin">
-                    <p class="error-message" id="passwordError" style="color: var(--danger); display: none; font-size: var(--text-xs); margin-top: 5px;">
-                        Password salah!
-                    </p>
-                </div>
-                <div class="form-actions">
-                    <button class="btn btn-primary" onclick="verifyPassword()">
-                        Verifikasi Password
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Credit edit section (initially hidden) -->
-            <div id="creditEditSection" style="display: none;">
-                <div id="editCreditContainer"></div>
-            </div>
-        </div>
-        <div class="modal-footer" id="editModalFooter" style="display: none;">
-            <button class="btn btn-outline" onclick="document.getElementById('editCreditModal').classList.remove('active')">
-                Batal
-            </button>
-            <button class="btn btn-primary" onclick="saveCreditChanges()">
-                Simpan Perubahan
-            </button>
-        </div>
-    </div>
-</div>
-        `;
-        
-        // Tambahkan modal ke body
-        document.body.insertAdjacentHTML('beforeend', modalHTML);
-    });
-    // Password yang diharapkan (dalam aplikasi nyata, ini harus disimpan dengan aman)
-const ADMIN_PASSWORD = "167669123"; // Ganti dengan password yang diinginkan
-
-// Fungsi untuk verifikasi password
-function verifyPassword() {
-    const passwordInput = document.getElementById('adminPassword');
-    const passwordError = document.getElementById('passwordError');
-    const passwordSection = document.getElementById('passwordSection');
-    const creditEditSection = document.getElementById('creditEditSection');
-    const editModalFooter = document.getElementById('editModalFooter');
-    
-    if (passwordInput.value === ADMIN_PASSWORD) {
-        // Password benar, tampilkan form edit credit
-        passwordSection.style.display = 'none';
-        creditEditSection.style.display = 'block';
-        editModalFooter.style.display = 'flex';
-        
-        // Isi form dengan data credit saat ini
-        const container = document.getElementById('editCreditContainer');
-        container.innerHTML = '';
-        
-        for (const [category, data] of Object.entries(creditData)) {
-            const div = document.createElement('div');
-            div.className = 'form-group';
-            
-            div.innerHTML = `
-                <label for="edit-${category}">${category} Credit</label>
-                <input type="number" id="edit-${category}" class="form-input" 
-                       value="${data.credit}" min="0">
-            `;
-            
-            container.appendChild(div);
-        }
-    } else {
-        // Password salah, tampilkan pesan error
-        passwordError.style.display = 'block';
-        passwordInput.style.borderColor = 'var(--danger)';
-        
-        // Reset input setelah 2 detik
-        setTimeout(() => {
-            passwordInput.value = '';
-            passwordInput.focus();
-        }, 2000);
     }
-}
 
-// Fungsi untuk reset modal ketika ditutup
-function resetEditModal() {
-    const passwordInput = document.getElementById('adminPassword');
-    const passwordError = document.getElementById('passwordError');
-    const passwordSection = document.getElementById('passwordSection');
-    const creditEditSection = document.getElementById('creditEditSection');
-    const editModalFooter = document.getElementById('editModalFooter');
+    // ========== FUNGSI EDIT HISTORY ==========
+
+    // Fungsi untuk mengedit item riwayat
+    // Fungsi untuk mengedit item riwayat - VERSI DIPERBAIKI
+function editHistoryItem(historyId, historyType) {
+    if (!isSuperAdminUser) {
+        showToast('Hanya Super Admin yang dapat mengedit riwayat', 'error');
+        return;
+    }
     
-    passwordInput.value = '';
-    passwordError.style.display = 'none';
-    passwordInput.style.borderColor = '';
-    passwordSection.style.display = 'block';
-    creditEditSection.style.display = 'none';
-    editModalFooter.style.display = 'none';
-}
-
-// Modifikasi fungsi showEditCreditModal
-function showEditCreditModal() {
-    const modal = document.getElementById('editCreditModal');
-    resetEditModal(); // Reset modal setiap kali dibuka
+    const historyData = historyType === 'regular' ? topupHistory : masteragentHistory;
+    const historyItem = historyData.find(item => item.id === historyId);
+    
+    if (!historyItem) {
+        showToast('Data riwayat tidak ditemukan', 'error');
+        return;
+    }
+    
+    // Tampilkan modal edit
+    const modal = document.getElementById('editHistoryModal');
+    const container = document.getElementById('editHistoryContainer');
+    
+    if (!modal || !container) {
+        showToast('Modal edit tidak ditemukan', 'error');
+        return;
+    }
+    
+    // Format angka untuk display (hilangkan pemisah ribuan untuk input)
+    const formatForInput = (num) => {
+        if (!num) return '0';
+        return num.toString().replace(/\./g, '');
+    };
+    
+    // Isi form dengan data yang ada - VERSI DIPERBAIKI
+    let formHTML = '';
+    
+    if (historyType === 'regular') {
+        formHTML = `
+            <div class="form-group">
+                <label for="edit-history-date">Tanggal</label>
+                <input type="text" id="edit-history-date" class="form-input" value="${historyItem.date || ''}">
+            </div>
+            <div class="form-group">
+                <label for="edit-history-brand">Brand</label>
+                <input type="text" id="edit-history-brand" class="form-input" value="${historyItem.brand || ''}">
+            </div>
+            <div class="form-group">
+                <label for="edit-history-amount">Jumlah Top Up</label>
+                <input type="text" id="edit-history-amount" class="form-input formatted-input" 
+                       value="${formatForInput(historyItem.amount)}" 
+                       oninput="formatNumberInput(this)">
+                <small class="input-hint">Format: 1000000 (tanpa titik)</small>
+            </div>
+            <div class="form-group">
+                <label for="edit-history-before">Credit Sebelum</label>
+                <input type="text" id="edit-history-before" class="form-input formatted-input" 
+                       value="${formatForInput(historyItem.before)}" 
+                       oninput="formatNumberInput(this)">
+                <small class="input-hint">Format: 1000000 (tanpa titik)</small>
+            </div>
+            <div class="form-group">
+                <label for="edit-history-after">Credit Sesudah</label>
+                <input type="text" id="edit-history-after" class="form-input formatted-input" 
+                       value="${formatForInput(historyItem.after)}" 
+                       oninput="formatNumberInput(this)">
+                <small class="input-hint">Format: 1000000 (tanpa titik)</small>
+            </div>
+        `;
+    } else {
+        formHTML = `
+            <div class="form-group">
+                <label for="edit-history-date">Tanggal</label>
+                <input type="text" id="edit-history-date" class="form-input" value="${historyItem.date || ''}">
+            </div>
+            <div class="form-group">
+                <label for="edit-history-category">Kategori</label>
+                <input type="text" id="edit-history-category" class="form-input" value="${historyItem.category || ''}">
+            </div>
+            <div class="form-group">
+                <label for="edit-history-amount">Jumlah Top Up</label>
+                <input type="text" id="edit-history-amount" class="form-input formatted-input" 
+                       value="${formatForInput(historyItem.amount)}" 
+                       oninput="formatNumberInput(this)">
+                <small class="input-hint">Format: 1000000 (tanpa titik)</small>
+            </div>
+            <div class="form-group">
+                <label for="edit-history-before">Credit Sebelum</label>
+                <input type="text" id="edit-history-before" class="form-input formatted-input" 
+                       value="${formatForInput(historyItem.before)}" 
+                       oninput="formatNumberInput(this)">
+                <small class="input-hint">Format: 1000000 (tanpa titik)</small>
+            </div>
+            <div class="form-group">
+                <label for="edit-history-after">Credit Sesudah</label>
+                <input type="text" id="edit-history-after" class="form-input formatted-input" 
+                       value="${formatForInput(historyItem.after)}" 
+                       oninput="formatNumberInput(this)">
+                <small class="input-hint">Format: 1000000 (tanpa titik)</small>
+            </div>
+        `;
+    }
+    
+    container.innerHTML = formHTML;
+    
+    // Simpan data untuk update
+    modal.dataset.historyId = historyId;
+    modal.dataset.historyType = historyType;
+    
     modal.classList.add('active');
 }
 
-// Tambahkan event listener untuk mereset modal ketika ditutup
-document.addEventListener('DOMContentLoaded', function() {
-    const modal = document.getElementById('editCreditModal');
-    const closeButton = modal.querySelector('.modal-close');
+// Fungsi untuk memformat input angka - BARU
+function formatNumberInput(input) {
+    // Hapus semua karakter non-digit
+    let value = input.value.replace(/[^\d]/g, '');
     
-    closeButton.addEventListener('click', resetEditModal);
+    // Simpan nilai asli tanpa format
+    input.dataset.rawValue = value;
     
-    // Juga reset ketika mengklik latar belakang modal
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            resetEditModal();
-        }
-    });
-});
-function showToast(message, type = 'info', duration = 3000) {
-    const toast = document.createElement('div');
-    toast.className = `toast-notification ${type}`;
-    toast.textContent = message;
-    document.body.appendChild(toast);
-
-    setTimeout(() => {
-        toast.classList.add('hide');
-    }, duration);
-
-    toast.addEventListener('animationend', () => {
-        if (toast.classList.contains('hide')) {
-            toast.remove();
-        }
-    });
+    // Format dengan pemisah ribuan untuk preview (opsional)
+    const formatted = formatNumber(parseInt(value) || 0);
+    input.style.borderColor = value ? 'var(--success)' : 'var(--border-color)';
 }
 
-// Fungsi untuk melakukan pencarian
-function handleSearch() {
-    const searchTerm = document.getElementById('dashboardSearch').value.toLowerCase().trim();
+// Fungsi untuk menyimpan perubahan riwayat - VERSI DIPERBAIKI
+async function saveHistoryChanges() {
+    if (!isSuperAdminUser) {
+        showToast('Hanya Super Admin yang dapat mengedit riwayat', 'error');
+        return;
+    }
     
-    // Cari di kedua tabel (regular dan masteragent)
-    searchInTable('historyTableBody', searchTerm);
-    searchInTable('masteragentHistoryTableBody', searchTerm);
-}
-
-// Fungsi untuk mencari dalam tabel tertentu
-function searchInTable(tableId, searchTerm) {
-    const tableBody = document.getElementById(tableId);
-    if (!tableBody) return;
+    const modal = document.getElementById('editHistoryModal');
+    const historyId = modal.dataset.historyId;
+    const historyType = modal.dataset.historyType;
     
-    const rows = tableBody.getElementsByTagName('tr');
-    let hasMatch = false;
+    if (!historyId || !historyType) {
+        showToast('Data tidak valid', 'error');
+        return;
+    }
     
-    for (let i = 0; i < rows.length; i++) {
-        const row = rows[i];
-        const rowText = row.textContent.toLowerCase();
+    try {
+        // Ambil nilai dari input (gunakan raw value jika ada)
+        const getRawValue = (inputId) => {
+            const input = document.getElementById(inputId);
+            return input.dataset.rawValue ? parseInt(input.dataset.rawValue) : 
+                   parseInt(input.value.replace(/[^\d]/g, '')) || 0;
+        };
         
-        if (rowText.includes(searchTerm)) {
-            row.style.display = '';
-            hasMatch = true;
+        const updatedData = {
+            date: document.getElementById('edit-history-date').value,
+            amount: getRawValue('edit-history-amount'),
+            before: getRawValue('edit-history-before'),
+            after: getRawValue('edit-history-after'),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        
+        // Validasi data
+        if (!updatedData.date || !updatedData.amount || !updatedData.before || !updatedData.after) {
+            showToast('Semua field harus diisi dengan benar', 'error');
+            return;
+        }
+        
+        // Tambahkan field khusus berdasarkan tipe
+        if (historyType === 'regular') {
+            updatedData.brand = document.getElementById('edit-history-brand').value;
+            if (!updatedData.brand) {
+                showToast('Brand harus diisi', 'error');
+                return;
+            }
         } else {
-            row.style.display = 'none';
+            updatedData.category = document.getElementById('edit-history-category').value;
+            if (!updatedData.category) {
+                showToast('Kategori harus diisi', 'error');
+                return;
+            }
         }
-    }
-    
-    // Tampilkan pesan jika tidak ada hasil
-    const noHistoryElement = tableId === 'historyTableBody' 
-        ? document.getElementById('noHistory') 
-        : document.getElementById('noMasteragentHistory');
-    
-    if (noHistoryElement) {
-        if (!hasMatch && searchTerm !== '') {
-            noHistoryElement.style.display = 'block';
-            noHistoryElement.innerHTML = `
-                <i class="fas fa-search"></i>
-                <h3>Tidak Ada Hasil Pencarian</h3>
-                <p>Tidak ditemukan hasil untuk "${searchTerm}"</p>
-            `;
+        
+        const collectionName = historyType === 'regular' ? 'topupHistory' : 'masteragentHistory';
+        await db.collection(collectionName).doc(historyId).update(updatedData);
+        
+        showToast('Riwayat berhasil diperbarui', 'success');
+        modal.classList.remove('active');
+        
+        // Refresh tabel
+        if (historyType === 'regular') {
+            updateHistoryTable();
         } else {
-            noHistoryElement.style.display = 'none';
+            updateMasteragentHistoryTable();
         }
+    } catch (error) {
+        console.error('Error updating history:', error);
+        showToast('Gagal memperbarui riwayat', 'error');
     }
 }
 
-// Fungsi untuk mereset pencarian
-function resetSearch() {
-    const searchInput = document.getElementById('dashboardSearch');
-    searchInput.value = '';
-    
-    // Tampilkan semua baris kembali
-    const tables = ['historyTableBody', 'masteragentHistoryTableBody'];
-    tables.forEach(tableId => {
-        const tableBody = document.getElementById(tableId);
-        if (tableBody) {
-            const rows = tableBody.getElementsByTagName('tr');
-            for (let i = 0; i < rows.length; i++) {
-                rows[i].style.display = '';
-            }
-        }
-    });
-    
-    // Sembunyikan pesan tidak ada hasil
-    const noHistoryElements = ['noHistory', 'noMasteragentHistory'];
-    noHistoryElements.forEach(elementId => {
-        const element = document.getElementById(elementId);
-        if (element) {
-            element.style.display = 'none';
-        }
-    });
-    
-    // Kembalikan ke tampilan normal jika tidak ada data
-    updateHistoryTable();
-    updateMasteragentHistoryTable();
-}
+    // ========== FUNGSI EVENT LISTENERS ==========
 
-// Event listener untuk input pencarian
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('dashboardSearch');
-    
-    // Pencarian saat mengetik
-    searchInput.addEventListener('input', function() {
-        handleSearch();
-    });
-    
-    // Pencarian saat menekan Enter
-    searchInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            handleSearch();
-        }
-    });
-    
-    // Tambahkan tombol clear di search bar
-    const searchBar = document.querySelector('.search-bar');
-    if (searchBar) {
-        const clearButton = document.createElement('button');
-        clearButton.type = 'button';
-        clearButton.className = 'clear-search';
-        clearButton.innerHTML = '<i class="fas fa-times"></i>';
-        clearButton.style.background = 'none';
-        clearButton.style.border = 'none';
-        clearButton.style.cursor = 'pointer';
-        clearButton.style.color = 'var(--text-secondary)';
-        clearButton.style.marginLeft = '5px';
-        clearButton.style.display = 'none';
+    // Fungsi untuk setup semua event listeners
+    function setupEventListeners() {
+        console.log('🔧 Setting up event listeners...');
         
-        clearButton.addEventListener('click', function() {
-            resetSearch();
-            this.style.display = 'none';
+        // Event listener untuk save credit changes
+        const saveCreditBtn = document.getElementById('saveCreditChanges');
+        if (saveCreditBtn) {
+            console.log('✅ Found saveCreditChanges button');
+            saveCreditBtn.addEventListener('click', saveCreditChanges);
+        } else {
+            console.error('❌ saveCreditChanges button not found!');
+        }
+        
+        // Event listener untuk save history changes
+        const saveHistoryBtn = document.getElementById('saveHistoryChanges');
+        if (saveHistoryBtn) {
+            console.log('✅ Found saveHistoryChanges button');
+            saveHistoryBtn.addEventListener('click', saveHistoryChanges);
+        } else {
+            console.error('❌ saveHistoryChanges button not found!');
+        }
+        
+        // Event listener untuk menutup modal
+        document.querySelectorAll('.modal-close').forEach(button => {
+            button.addEventListener('click', function() {
+                const modal = this.closest('.modal-overlay');
+                if (modal) {
+                    modal.classList.remove('active');
+                }
+            });
         });
         
-        searchBar.appendChild(clearButton);
+        // Event listener untuk menutup modal saat klik di luar
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
         
-        // Tampilkan tombol clear ketika ada input
-        searchInput.addEventListener('input', function() {
-            if (this.value.trim() !== '') {
-                clearButton.style.display = 'block';
+        // Event listener untuk refresh history
+        const refreshHistoryBtn = document.getElementById('refreshHistory');
+        if (refreshHistoryBtn) {
+            refreshHistoryBtn.addEventListener('click', function() {
+                updateHistoryTable();
+                showToast('Riwayat diperbarui', 'info');
+            });
+        }
+        
+        // Event listener untuk refresh masteragent history
+        const refreshMasteragentHistoryBtn = document.getElementById('refreshMasteragentHistory');
+        if (refreshMasteragentHistoryBtn) {
+            refreshMasteragentHistoryBtn.addEventListener('click', function() {
+                updateMasteragentHistoryTable();
+                showToast('Riwayat masteragent diperbarui', 'info');
+            });
+        }
+        
+        // Event listener untuk tab functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                
+                // Update active tab
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show active content
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                document.getElementById(`${tabId}Tab`).classList.add('active');
+                
+                // Reset pagination saat ganti tab
+                if (tabId === 'regular') {
+                    currentRegularPage = 1;
+                    updateHistoryTable();
+                } else {
+                    currentMasteragentPage = 1;
+                    updateMasteragentHistoryTable();
+                }
+            });
+        });
+        
+        // Event listener untuk form input changes
+        document.getElementById('masteragentCategory')?.addEventListener('change', function() {
+            const category = this.value;
+            const currentCreditInput = document.getElementById('masteragentCurrentCredit');
+            const topupAmountInput = document.getElementById('masteragentCredit');
+            const newCreditInput = document.getElementById('masteragentNewCredit');
+            
+            if (category && creditData[category]) {
+                currentCreditInput.value = formatNumber(creditData[category].credit);
+                topupAmountInput.value = '';
+                newCreditInput.value = formatNumber(creditData[category].credit);
             } else {
-                clearButton.style.display = 'none';
-                resetSearch();
+                currentCreditInput.value = '';
+                topupAmountInput.value = '';
+                newCreditInput.value = '';
             }
         });
-    }
-});
-
-// Modifikasi fungsi updateHistoryTable dan updateMasteragentHistoryTable
-// untuk menyembunyikan pesan "Tidak Ada Riwayat" saat melakukan pencarian
-function updateHistoryTable() {
-    const historyTableBody = document.getElementById('historyTableBody');
-    const noHistory = document.getElementById('noHistory');
-    const searchTerm = document.getElementById('dashboardSearch').value.toLowerCase().trim();
-    
-    if (topupHistory.length === 0 && searchTerm === '') {
-        if (noHistory) noHistory.style.display = 'block';
-        if (historyTableBody) historyTableBody.innerHTML = '';
-        return;
-    }
-    
-    if (noHistory) noHistory.style.display = 'none';
-    
-    // Render history table
-    if (historyTableBody) {
-        historyTableBody.innerHTML = topupHistory.map(history => `
-            <tr>
-                <td>${history.date || 'N/A'}</td>
-                <td>${history.brand || 'N/A'}</td>
-                <td>${formatNumber(history.amount)}</td>
-                <td>${formatNumber(history.before)}</td>
-                <td>${formatNumber(history.after)}</td>
-            </tr>
-        `).join('');
         
-        // Jika sedang dalam mode pencarian, filter hasil
-        if (searchTerm !== '') {
-            handleSearch();
-        }
-    }
-}
-
-function updateMasteragentHistoryTable() {
-    const historyTableBody = document.getElementById('masteragentHistoryTableBody');
-    const noHistory = document.getElementById('noMasteragentHistory');
-    const searchTerm = document.getElementById('dashboardSearch').value.toLowerCase().trim();
-    
-    if (masteragentHistory.length === 0 && searchTerm === '') {
-        if (noHistory) noHistory.style.display = 'block';
-        if (historyTableBody) historyTableBody.innerHTML = '';
-        return;
-    }
-    
-    if (noHistory) noHistory.style.display = 'none';
-    
-    // Render history table
-    if (historyTableBody) {
-        historyTableBody.innerHTML = masteragentHistory.map(history => `
-            <tr>
-                <td>${history.date || 'N/A'}</td>
-                <td>${history.category || 'N/A'}</td>
-                <td>${formatNumber(history.amount)}</td>
-                <td>${formatNumber(history.before)}</td>
-                <td>${formatNumber(history.after)}</td>
-            </tr>
-        `).join('');
+        document.getElementById('masteragentCredit')?.addEventListener('input', function() {
+            const categorySelect = document.getElementById('masteragentCategory');
+            const currentCreditInput = document.getElementById('masteragentCurrentCredit');
+            const newCreditInput = document.getElementById('masteragentNewCredit');
+            
+            if (categorySelect.value && currentCreditInput.value) {
+                const currentCredit = parseFormattedNumber(currentCreditInput.value);
+                const topupAmount = parseInt(this.value) || 0;
+                
+                const newCredit = currentCredit + topupAmount;
+                newCreditInput.value = formatNumber(newCredit);
+                newCreditInput.style.color = "var(--text-primary)";
+            }
+        });
         
-        // Jika sedang dalam mode pencarian, filter hasil
-        if (searchTerm !== '') {
-            handleSearch();
-        }
-    }
-}
-// Variabel untuk pagination
-const itemsPerPage = 15;
-let currentRegularPage = 1;
-let currentMasteragentPage = 1;
-let filteredRegularHistory = [];
-let filteredMasteragentHistory = [];
-
-// Fungsi untuk menerapkan pagination pada tabel
-function applyPagination(tableType, page) {
-    let tableBody, historyData, filteredData, pageInfo, paginationControls;
-    let currentPage, totalPages;
-    
-    if (tableType === 'regular') {
-        tableBody = document.getElementById('historyTableBody');
-        historyData = topupHistory;
-        filteredData = filteredRegularHistory.length > 0 ? filteredRegularHistory : historyData;
-        pageInfo = document.getElementById('regularPageInfo');
-        paginationControls = document.getElementById('regularPagination');
-        currentPage = currentRegularPage = page;
-        totalPages = Math.ceil(filteredData.length / itemsPerPage);
-    } else {
-        tableBody = document.getElementById('masteragentHistoryTableBody');
-        historyData = masteragentHistory;
-        filteredData = filteredMasteragentHistory.length > 0 ? filteredMasteragentHistory : historyData;
-        pageInfo = document.getElementById('masteragentPageInfo');
-        paginationControls = document.getElementById('masteragentPagination');
-        currentPage = currentMasteragentPage = page;
-        totalPages = Math.ceil(filteredData.length / itemsPerPage);
-    }
-    
-    // Tampilkan atau sembunyikan pagination controls
-    if (filteredData.length > itemsPerPage) {
-        paginationControls.style.display = 'flex';
-    } else {
-        paginationControls.style.display = 'none';
-    }
-    
-    // Update info halaman
-    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-    
-    // Hitung item yang akan ditampilkan
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
-    const paginatedData = filteredData.slice(startIndex, endIndex);
-    
-    // Render tabel
-    if (tableBody) {
-        tableBody.innerHTML = paginatedData.map(history => {
-            if (tableType === 'regular') {
-                return `
-                    <tr>
-                        <td>${history.date || 'N/A'}</td>
-                        <td>${history.brand || 'N/A'}</td>
-                        <td>${formatNumber(history.amount)}</td>
-                        <td>${formatNumber(history.before)}</td>
-                        <td>${formatNumber(history.after)}</td>
-                    </tr>
-                `;
+        document.getElementById('brandSelect')?.addEventListener('change', function() {
+            const brand = this.value;
+            const category = this.options[this.selectedIndex]?.dataset.category;
+            const currentCreditInput = document.getElementById('currentCredit');
+            const topupAmountInput = document.getElementById('topupAmount');
+            const newCreditInput = document.getElementById('newCredit');
+            
+            if (brand && category && creditData[category]) {
+                currentCreditInput.value = formatNumber(creditData[category].credit);
+                topupAmountInput.value = '';
+                newCreditInput.value = formatNumber(creditData[category].credit);
+                newCreditInput.style.color = "var(--text-primary)";
             } else {
-                return `
-                    <tr>
-                        <td>${history.date || 'N/A'}</td>
-                        <td>${history.category || 'N/A'}</td>
-                        <td>${formatNumber(history.amount)}</td>
-                        <td>${formatNumber(history.before)}</td>
-                        <td>${formatNumber(history.after)}</td>
-                    </tr>
-                `;
+                currentCreditInput.value = '';
+                topupAmountInput.value = '';
+                newCreditInput.value = '';
             }
-        }).join('');
-    }
-    
-    // Enable/disable tombol previous dan next
-    const prevButton = document.getElementById(tableType === 'regular' ? 'prevRegularPage' : 'prevMasteragentPage');
-    const nextButton = document.getElementById(tableType === 'regular' ? 'nextRegularPage' : 'nextMasteragentPage');
-    
-    if (prevButton) prevButton.disabled = currentPage === 1;
-    if (nextButton) nextButton.disabled = currentPage === totalPages;
-}
-
-// Event listeners untuk tombol pagination
-document.getElementById('prevRegularPage')?.addEventListener('click', function() {
-    if (currentRegularPage > 1) {
-        applyPagination('regular', currentRegularPage - 1);
-    }
-});
-
-document.getElementById('nextRegularPage')?.addEventListener('click', function() {
-    const historyData = filteredRegularHistory.length > 0 ? filteredRegularHistory : topupHistory;
-    const totalPages = Math.ceil(historyData.length / itemsPerPage);
-    
-    if (currentRegularPage < totalPages) {
-        applyPagination('regular', currentRegularPage + 1);
-    }
-});
-
-document.getElementById('prevMasteragentPage')?.addEventListener('click', function() {
-    if (currentMasteragentPage > 1) {
-        applyPagination('masteragent', currentMasteragentPage - 1);
-    }
-});
-
-document.getElementById('nextMasteragentPage')?.addEventListener('click', function() {
-    const historyData = filteredMasteragentHistory.length > 0 ? filteredMasteragentHistory : masteragentHistory;
-    const totalPages = Math.ceil(historyData.length / itemsPerPage);
-    
-    if (currentMasteragentPage < totalPages) {
-        applyPagination('masteragent', currentMasteragentPage + 1);
-    }
-});
-
-// Modifikasi fungsi updateHistoryTable
-function updateHistoryTable() {
-    const noHistory = document.getElementById('noHistory');
-    const searchTerm = document.getElementById('dashboardSearch').value.toLowerCase().trim();
-    
-    // Reset filtered data
-    filteredRegularHistory = [];
-    
-    if (topupHistory.length === 0 && searchTerm === '') {
-        if (noHistory) noHistory.style.display = 'block';
-        document.getElementById('regularPagination').style.display = 'none';
-        return;
-    }
-    
-    if (noHistory) noHistory.style.display = 'none';
-    
-    // Filter data berdasarkan pencarian
-    if (searchTerm !== '') {
-        filteredRegularHistory = topupHistory.filter(history => {
-            return Object.values(history).some(value => 
-                value && value.toString().toLowerCase().includes(searchTerm)
-            );
         });
-    }
-    
-    // Reset ke halaman 1
-    currentRegularPage = 1;
-    applyPagination('regular', 1);
-}
-
-// Modifikasi fungsi updateMasteragentHistoryTable
-function updateMasteragentHistoryTable() {
-    const noHistory = document.getElementById('noMasteragentHistory');
-    const searchTerm = document.getElementById('dashboardSearch').value.toLowerCase().trim();
-    
-    // Reset filtered data
-    filteredMasteragentHistory = [];
-    
-    if (masteragentHistory.length === 0 && searchTerm === '') {
-        if (noHistory) noHistory.style.display = 'block';
-        document.getElementById('masteragentPagination').style.display = 'none';
-        return;
-    }
-    
-    if (noHistory) noHistory.style.display = 'none';
-    
-    // Filter data berdasarkan pencarian
-    if (searchTerm !== '') {
-        filteredMasteragentHistory = masteragentHistory.filter(history => {
-            return Object.values(history).some(value => 
-                value && value.toString().toLowerCase().includes(searchTerm)
-            );
+        
+        document.getElementById('topupAmount')?.addEventListener('input', function() {
+            const brandSelect = document.getElementById('brandSelect');
+            const category = brandSelect.options[brandSelect.selectedIndex]?.dataset.category;
+            const currentCreditInput = document.getElementById('currentCredit');
+            const newCreditInput = document.getElementById('newCredit');
+            
+            if (brandSelect.value && currentCreditInput.value && category) {
+                const currentCredit = parseFormattedNumber(currentCreditInput.value);
+                const topupAmount = parseInt(this.value) || 0;
+                
+                if (topupAmount > currentCredit) {
+                    newCreditInput.value = "Credit tidak mencukupi!";
+                    newCreditInput.style.color = "var(--danger)";
+                } else {
+                    const newCredit = currentCredit - topupAmount;
+                    newCreditInput.value = formatNumber(newCredit);
+                    newCreditInput.style.color = "var(--text-primary)";
+                }
+            }
         });
+        
+        // Event listener untuk form submissions
+        document.getElementById('masteragentForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const category = document.getElementById('masteragentCategory').value;
+            const credit = parseInt(document.getElementById('masteragentCredit').value);
+            
+            if (!category || isNaN(credit) || credit <= 0) {
+                showToast('Semua field harus diisi dengan benar', 'error');
+                return;
+            }
+            
+            // Tambahkan credit ke kategori yang dipilih
+            if (creditData[category]) {
+                const currentCredit = creditData[category].credit;
+                creditData[category].credit += credit;
+                
+                try {
+                    // Simpan ke Firestore
+                    await db.collection('creditData').doc('brands').set(creditData);
+                    
+                    // Tambahkan ke history masteragent
+                    const historyEntry = {
+                        date: new Date().toLocaleString('id-ID'),
+                        category: category,
+                        amount: credit,
+                        before: currentCredit,
+                        after: currentCredit + credit,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                    
+                    // Simpan ke Firestore
+                    await db.collection('masteragentHistory').add(historyEntry);
+                    
+                    // Update UI
+                    updateCreditStats();
+                    
+                    // Reset form
+                    this.reset();
+                    document.getElementById('masteragentCurrentCredit').value = '';
+                    document.getElementById('masteragentNewCredit').value = '';
+                    
+                    showToast(`Top up masteragent berhasil! ${formatNumber(credit)} credit ditambahkan ke kategori ${category}`);
+                } catch (error) {
+                    console.error("Error saving masteragent topup:", error);
+                    showToast("Gagal menyimpan data ke server", "error");
+                }
+            } else {
+                showToast('Kategori tidak valid', 'error');
+            }
+        });
+        
+        document.getElementById('topupForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const brandSelect = document.getElementById('brandSelect');
+            const brand = brandSelect.value;
+            const category = brandSelect.options[brandSelect.selectedIndex]?.dataset.category;
+            const amount = parseInt(document.getElementById('topupAmount').value);
+            
+            if (!brand || !category || isNaN(amount) || amount <= 0) {
+                showToast('Semua field harus diisi dengan benar', 'error');
+                return;
+            }
+            
+            // Kurangi credit dari kategori yang dipilih
+            if (creditData[category].credit >= amount) {
+                const currentCredit = creditData[category].credit;
+                creditData[category].credit -= amount;
+                
+                try {
+                    // Simpan ke Firestore
+                    await db.collection('creditData').doc('brands').set(creditData);
+                    
+                    // Tambahkan ke history
+                    const historyEntry = {
+                        date: new Date().toLocaleString('id-ID'),
+                        brand: brand,
+                        amount: amount,
+                        before: currentCredit,
+                        after: currentCredit - amount,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                    
+                    // Simpan ke Firestore
+                    await db.collection('topupHistory').add(historyEntry);
+                    
+                    // Update UI
+                    updateCreditStats();
+                    
+                    // Reset form
+                    this.reset();
+                    document.getElementById('currentCredit').value = '';
+                    document.getElementById('newCredit').value = '';
+                    
+                    showToast(`Top up berhasil! ${formatNumber(amount)} credit dikurangi dari ${brand}`);
+                } catch (error) {
+                    console.error("Error saving topup:", error);
+                    showToast("Gagal menyimpan data ke server", "error");
+                }
+            } else {
+                showToast('Credit tidak mencukupi untuk melakukan top up', 'error');
+            }
+        });
+        
+        // Event listener untuk pagination buttons
+        document.getElementById('prevRegularPage')?.addEventListener('click', function() {
+            if (currentRegularPage > 1) {
+                currentRegularPage--;
+                updateHistoryTable();
+            }
+        });
+        
+        document.getElementById('nextRegularPage')?.addEventListener('click', function() {
+            const dataToDisplay = filteredRegularHistory.length > 0 ? filteredRegularHistory : topupHistory;
+            const totalPages = Math.ceil(dataToDisplay.length / itemsPerPage);
+            if (currentRegularPage < totalPages) {
+                currentRegularPage++;
+                updateHistoryTable();
+            }
+        });
+        
+        document.getElementById('prevMasteragentPage')?.addEventListener('click', function() {
+            if (currentMasteragentPage > 1) {
+                currentMasteragentPage--;
+                updateMasteragentHistoryTable();
+            }
+        });
+        
+        document.getElementById('nextMasteragentPage')?.addEventListener('click', function() {
+            const dataToDisplay = filteredMasteragentHistory.length > 0 ? filteredMasteragentHistory : masteragentHistory;
+            const totalPages = Math.ceil(dataToDisplay.length / itemsPerPage);
+            if (currentMasteragentPage < totalPages) {
+                currentMasteragentPage++;
+                updateMasteragentHistoryTable();
+            }
+        });
+        
+        // Event listener untuk pencarian
+        document.getElementById('dashboardSearch')?.addEventListener('input', function() {
+            currentRegularPage = 1;
+            currentMasteragentPage = 1;
+            updateHistoryTable();
+            updateMasteragentHistoryTable();
+        });
+        
+        console.log('✅ All event listeners setup completed');
     }
-    
-    // Reset ke halaman 1
-    currentMasteragentPage = 1;
-    applyPagination('masteragent', 1);
-}
 
-// Modifikasi fungsi resetSearch untuk mereset pagination juga
-function resetSearch() {
-    const searchInput = document.getElementById('dashboardSearch');
-    searchInput.value = '';
-    
-    // Reset filtered data
-    filteredRegularHistory = [];
-    filteredMasteragentHistory = [];
-    
-    // Reset ke halaman 1
-    currentRegularPage = 1;
-    currentMasteragentPage = 1;
-    
-    // Update tabel
-    updateHistoryTable();
-    updateMasteragentHistoryTable();
-}
+    // ========== INISIALISASI APLIKASI ==========
+
+    // Inisialisasi aplikasi saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🚀 Initializing Top Up Credit Dashboard...');
+        
+        // Setup authentication state observer
+        firebase.auth().onAuthStateChanged(async (user) => {
+            if (user) {
+                console.log('✅ User is signed in:', user.email);
+                
+                // Check super admin status
+                await checkAndSetupSuperAdmin();
+                
+                // Setup Firestore listeners
+                setupFirestoreListeners();
+                
+            } else {
+                console.log('❌ No user signed in');
+                
+                // Clear listeners
+                if (unsubscribeCreditData) unsubscribeCreditData();
+                if (unsubscribeTopupHistory) unsubscribeTopupHistory();
+                if (unsubscribeMasteragentHistory) unsubscribeMasteragentHistory();
+                
+                // Load data from localStorage sebagai fallback
+                const localData = localStorage.getItem('creditData');
+                if (localData) {
+                    creditData = JSON.parse(localData);
+                    updateCreditStats();
+                    updateBrandDropdown();
+                } else {
+                    creditData = defaultBrands;
+                    updateCreditStats();
+                    updateBrandDropdown();
+                }
+                
+                const localHistory = localStorage.getItem('topupHistory');
+                if (localHistory) {
+                    topupHistory = JSON.parse(localHistory);
+                    updateHistoryTable();
+                }
+                
+                const localMasteragentHistory = localStorage.getItem('masteragentHistory');
+                if (localMasteragentHistory) {
+                    masteragentHistory = JSON.parse(localMasteragentHistory);
+                    updateMasteragentHistoryTable();
+                }
+            }
+        });
+        
+        // Setup semua event listeners
+        setupEventListeners();
+        
+        console.log('✅ Top Up Credit Dashboard initialized successfully');
+    });
+
+    // ========== FUNGSI DEBUG ==========
+
+    // Fungsi debug untuk testing
+    window.debugTopup = function() {
+        console.log('=== DEBUG TOPUP CREDIT ===');
+        console.log('Current User:', firebase.auth().currentUser);
+        console.log('Is Super Admin:', isSuperAdminUser);
+        console.log('Credit Data:', creditData);
+        console.log('Topup History:', topupHistory);
+        console.log('Masteragent History:', masteragentHistory);
+        console.log('Modal Elements:', {
+            editCreditModal: document.getElementById('editCreditModal'),
+            editHistoryModal: document.getElementById('editHistoryModal'),
+            saveCreditChanges: document.getElementById('saveCreditChanges'),
+            saveHistoryChanges: document.getElementById('saveHistoryChanges')
+        });
+    };
+
+    // Force enable super admin untuk testing
+    window.forceSuperAdminTopup = function() {
+        isSuperAdminUser = true;
+        setupAdminUI(true);
+        console.log('🔓 Super admin forced enabled for topup');
+        showToast('Super Admin mode diaktifkan secara manual', 'info');
+    };
 </script>
 </body>
 </html>

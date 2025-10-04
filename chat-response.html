@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="global.css">
         <link rel="stylesheet" href="stylemobile.css">
+        <script src="global-time.js"></script>
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
@@ -662,10 +663,13 @@
                     <input type="text" placeholder="Cari chat response..." id="chatSearch">
                 </div>
                 
+<button class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
                 <div class="user-profile">
                     <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
                     <div class="user-info">
-                        <h4>Adrian Abdul Arif</h4>
+                        <h4>Nama Masing Masing</h4>
                         <p>Customer Service Support</p>
                     </div>
                 </div>
@@ -790,353 +794,750 @@
         </div>   
     <script src="sidebar-loader.js"></script>
     <script src="user-profile.js"></script>
-    
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script>
-    // Data Chat Response
-    let chatData = JSON.parse(localStorage.getItem('chatData')) || [];
-    const chatTarget = 4; // Target chat response per bulan
+    // Konfigurasi Firebase
+// Konfigurasi Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
+    authDomain: "dashboard-css.firebaseapp.com",
+    databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "dashboard-css",
+    storageBucket: "dashboard-css.appspot.com",
+    messagingSenderId: "771131792881",
+    appId: "1:771131792881:web:ad634424225bd7de847850",
+    measurementId: "G-3CYBC5B101"
+};
 
-    // Elemen DOM
-    const chatItemsContainer = document.getElementById('chat-items');
-    const chatForm = document.getElementById('chat-form');
-    const newChatForm = document.getElementById('new-chat-form');
-    const addChatBtn = document.getElementById('add-chat-btn');
-    const cancelChatBtn = document.getElementById('cancel-chat-btn');
-    const notificationContainer = document.getElementById('notificationContainer');
-    const connectionStatus = document.getElementById('connectionStatus');
+// Inisialisasi Firebase
+const app = firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
 
-    // Statistik elements
-    const totalChatsEl = document.getElementById('total-chats');
-    const avgResponseTimeEl = document.getElementById('avg-response-time');
-    const fastResponsesEl = document.getElementById('fast-responses');
-    const kpiChatEl = document.getElementById('kpi-chat');
+// Data Chat Response
+let chatData = [];
+let currentEditId = null;
+let currentUser = null;
+let currentUserData = null;
+let unsubscribeChats = null;
 
-    // Fungsi untuk menyimpan data ke localStorage
-    function saveChatData() {
+// Target KPI
+const chatTarget = 4; // Target chat response per bulan
+
+// Elemen DOM
+const chatItemsContainer = document.getElementById('chat-items');
+const chatFormElement = document.getElementById('chat-form');
+const newChatForm = document.getElementById('new-chat-form');
+const addChatBtn = document.getElementById('add-chat-btn');
+const cancelChatBtn = document.getElementById('cancel-chat-btn');
+const notificationContainer = document.getElementById('notificationContainer');
+const chatSearch = document.getElementById('chatSearch');
+
+// Statistik elements
+const totalChatsEl = document.getElementById('total-chats');
+const avgResponseTimeEl = document.getElementById('avg-response-time');
+const fastResponsesEl = document.getElementById('fast-responses');
+const kpiChatEl = document.getElementById('kpi-chat');
+
+// Buat elemen status koneksi jika belum ada
+let connectionStatus = document.getElementById('connectionStatus');
+if (!connectionStatus) {
+    connectionStatus = document.createElement('div');
+    connectionStatus.id = 'connectionStatus';
+    connectionStatus.className = 'connection-status status-connected';
+    connectionStatus.innerHTML = '<i class="fas fa-check-circle"></i> Terhubung dengan Firebase';
+    document.body.appendChild(connectionStatus);
+    
+    setTimeout(() => {
+        connectionStatus.style.display = 'none';
+    }, 3000);
+}
+
+// Fungsi untuk menampilkan notifikasi
+function showNotification(message, type = 'info') {
+    if (!notificationContainer) {
+        console.error('Notification container not found');
+        return;
+    }
+    
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+        <span>${message}</span>
+        <button class="notification-close">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    
+    notificationContainer.appendChild(notification);
+    
+    const closeBtn = notification.querySelector('.notification-close');
+    closeBtn.addEventListener('click', function() {
+        closeNotification(notification);
+    });
+    
+    const timeoutId = setTimeout(() => {
+        closeNotification(notification);
+    }, 5000);
+    
+    notification.dataset.timeoutId = timeoutId;
+}
+
+function closeNotification(notification) {
+    if (notification.dataset.timeoutId) {
+        clearTimeout(parseInt(notification.dataset.timeoutId));
+    }
+    
+    notification.classList.add('hiding');
+    
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notificationContainer.removeChild(notification);
+        }
+    }, 500);
+}
+
+// Fungsi untuk memastikan user document ada (FIXED VERSION)
+async function ensureUserDocument(user) {
     try {
-        localStorage.setItem('chatData', JSON.stringify(chatData));
-        console.log('Data berhasil disimpan ke localStorage:', chatData);
-        return true;
+        const userRef = db.collection('users').doc(user.uid);
+        const userDoc = await userRef.get();
+        
+        // Daftar email super admin
+        const superAdminEmails = [
+            "superadmin@gachaengine.com",
+            "admin@gachaengine.com"
+        ];
+        
+        const isSuperAdmin = superAdminEmails.includes(user.email);
+        
+        if (userDoc.exists) {
+            // Document sudah ada - update tanpa overwrite role/isSuperAdmin
+            const currentData = userDoc.data();
+            const updateData = {
+                lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                email: user.email,
+                displayName: user.displayName || currentData.displayName || user.email
+            };
+            
+            // Hanya update role/isSuperAdmin jika belum ada atau user baru
+            if (!currentData.hasOwnProperty('role')) {
+                updateData.role = isSuperAdmin ? 'super_admin' : 'user';
+            }
+            if (!currentData.hasOwnProperty('isSuperAdmin')) {
+                updateData.isSuperAdmin = isSuperAdmin;
+            }
+            
+            await userRef.update(updateData);
+            console.log('User document updated for:', user.uid, 'Role:', currentData.role || updateData.role);
+            
+            // Return user data dengan role yang sudah diupdate
+            return { ...currentData, ...updateData };
+        } else {
+            // Document baru - buat dengan role dan isSuperAdmin yang benar
+            const newUserDoc = {
+                email: user.email,
+                displayName: user.displayName || user.email,
+                role: isSuperAdmin ? 'super_admin' : 'user',
+                isSuperAdmin: isSuperAdmin,
+                lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            await userRef.set(newUserDoc);
+            console.log('New user document created for:', user.uid, 'Role:', newUserDoc.role);
+            
+            return newUserDoc;
+        }
     } catch (error) {
-        console.error('Error menyimpan data ke localStorage:', error);
-        showNotification('Gagal menyimpan data: ' + error.message, 'error');
-        return false;
+        console.error('Error ensuring user document:', error);
+        throw error;
     }
 }
 
-    // Fungsi untuk menampilkan notifikasi
-    function showNotification(message, type = 'info') {
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.innerHTML = `
-            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-            <span>${message}</span>
-            <button class="notification-close">
-                <i class="fas fa-times"></i>
-            </button>
-        `;
-        
-        notificationContainer.appendChild(notification);
-        
-        // Tambahkan event listener untuk tombol close
-        const closeBtn = notification.querySelector('.notification-close');
-        closeBtn.addEventListener('click', function() {
-            closeNotification(notification);
-        });
-        
-        // Hapus notifikasi setelah 5 detik
-        const timeoutId = setTimeout(() => {
-            closeNotification(notification);
-        }, 5000);
-        
-        // Simpan timeout ID untuk bisa dibatalkan jika user menutup manual
-        notification.dataset.timeoutId = timeoutId;
-    }
-
-    function closeNotification(notification) {
-        // Batalkan timeout jika masih ada
-        if (notification.dataset.timeoutId) {
-            clearTimeout(parseInt(notification.dataset.timeoutId));
-        }
-        
-        // Tambahkan animasi keluar
-        notification.classList.add('hiding');
-        
-        // Hapus elemen setelah animasi selesai
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.remove();
-            }
-        }, 300);
-    }
-
-    function updateChatStats() {
-        const totalChats = chatData.length;
-        const fastResponses = chatData.filter(item => parseFloat(item.responseTime) <= 3).length;
-        const totalResponseTime = chatData.reduce((sum, item) => sum + parseFloat(item.responseTime), 0);
-        const avgResponseTime = totalChats > 0 ? (totalResponseTime / totalChats).toFixed(1) : 0;
-        
-        // Hitung KPI Chat Response (persentase respons cepat)
-        const kpiChat = totalChats > 0 ? Math.round((fastResponses / totalChats) * 100) : 0;
-        
-        // Update elemen statistik
-        totalChatsEl.textContent = totalChats;
-        avgResponseTimeEl.textContent = `${avgResponseTime} menit`;
-        fastResponsesEl.textContent = fastResponses;
-        kpiChatEl.textContent = `${kpiChat}%`;
-        
-        // Update progress bars
-        document.querySelectorAll('.progress-fill').forEach((bar, index) => {
-            setTimeout(() => {
-                if (index === 0) {
-                    // Progress bar untuk total chat
-                    bar.style.width = `${Math.min(100, (totalChats / 10) * 100)}%`;
-                } else if (index === 1) {
-                    // Progress bar untuk rata-rata waktu respons
-                    const avgTimePercent = avgResponseTime > 0 ? Math.max(0, 100 - (avgResponseTime / 10 * 100)) : 0;
-                    bar.style.width = `${Math.min(100, avgTimePercent)}%`;
-                } else if (index === 2) {
-                    // Progress bar untuk respons cepat
-                    bar.style.width = `${totalChats > 0 ? (fastResponses / totalChats) * 100 : 0}%`;
-                } else if (index === 3) {
-                    // Progress bar untuk KPI
-                    bar.style.width = `${kpiChat}%`;
+// Fungsi untuk memeriksa autentikasi pengguna (MODIFIED VERSION)
+async function checkAuth() {
+    return new Promise((resolve, reject) => {
+        const unsubscribe = auth.onAuthStateChanged(async user => {
+            unsubscribe();
+            if (user) {
+                currentUser = user;
+                try {
+                    // Dapatkan data user yang lengkap termasuk role
+                    currentUserData = await ensureUserDocument(user);
+                    resolve(user);
+                } catch (error) {
+                    reject(error);
                 }
-            }, 100);
+            } else {
+                reject(new Error('User not authenticated'));
+            }
         });
-        
-        // Kirim event ke KPI CSS
-        window.dispatchEvent(new CustomEvent('chatDataChanged'));
-    }
+    });
+}
 
-    // Fungsi untuk mendapatkan status berdasarkan waktu respons
-    function getResponseStatus(responseTime) {
-        if (responseTime <= 3) {
-            return { status: 'fast', text: 'Cepat' };
-        } else if (responseTime <= 5) {
-            return { status: 'medium', text: 'Sedang' };
+// Fungsi untuk mendapatkan data chat dari Firestore (MODIFIED VERSION)
+async function getChatData() {
+    try {
+        await checkAuth();
+        
+        let query;
+        
+        // Jika super admin, ambil semua data tanpa filter user
+        if (currentUserData && currentUserData.isSuperAdmin) {
+            query = db.collection('chats');
+            console.log('Super admin mode: Loading all chat data');
         } else {
-            return { status: 'slow', text: 'Lambat' };
-        }
-    }
-
-    // Fungsi untuk merender daftar chat response
-    function renderChatList() {
-        chatItemsContainer.innerHTML = '';
-        
-        if (chatData.length === 0) {
-            chatItemsContainer.innerHTML = `
-                <div style="text-align: center; padding: 20px; color: var(--text-secondary);">
-                    <i class="fas fa-comments" style="font-size: 48px; margin-bottom: 10px;"></i>
-                    <p>Belum ada data chat response. Tambahkan data untuk memulai.</p>
-                </div>
-            `;
-            return;
+            // Jika user biasa, hanya ambil data miliknya sendiri
+            query = db.collection('chats').where('userId', '==', currentUser.uid);
+            console.log('User mode: Loading user-specific chat data');
         }
         
-        // Urutkan data berdasarkan tanggal (terbaru pertama)
-        const sortedData = [...chatData].sort((a, b) => new Date(b.date) - new Date(a.date));
+        const snapshot = await query.get();
         
-        sortedData.forEach((chat, index) => {
-            const status = getResponseStatus(chat.responseTime);
-            
-            const chatItem = document.createElement('div');
-            chatItem.className = 'chat-item';
-            chatItem.innerHTML = `
-                <div class="chat-info">
-                    <div class="chat-name">${chat.customer} - ${chat.platform}</div>
-                    <div class="chat-desc">Topik: ${chat.topic}</div>
-                    <div class="chat-date">Tanggal: ${formatDate(chat.date)}</div>
-                </div>
-                <div class="chat-actions">
-                    <span class="chat-status status-${status.status}">
-                        <span class="response-time">${chat.responseTime}m</span> - ${status.text}
-                    </span>
-                    <button class="action-btn delete-chat" data-id="${chat.customer}-${chat.date}-${chat.responseTime}">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            `;
-            
-            chatItemsContainer.appendChild(chatItem);
+        chatData = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+        
+        // Sort secara manual di client side
+        chatData.sort((a, b) => {
+            const dateA = a.date ? (a.date.toDate ? a.date.toDate() : new Date(a.date)) : new Date(0);
+            const dateB = b.date ? (b.date.toDate ? b.date.toDate() : new Date(b.date)) : new Date(0);
+            return dateB - dateA;
         });
         
-        // Tambahkan event listener untuk tombol hapus
-        document.querySelectorAll('.delete-chat').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const dataId = this.dataset.id;
-                deleteChat(dataId);
-            });
-        });
+        renderChatList();
+        updateChatStats();
+        
+    } catch (error) {
+        console.error('Error getting chat data:', error);
+        showNotification('Gagal memuat data chat response', 'error');
     }
+}
 
-    // Fungsi untuk menghapus chat response
-    function deleteChat(dataId) {
-        if (confirm('Apakah Anda yakin ingin menghapus data chat response ini?')) {
-            // Temukan index data berdasarkan ID unik
-            const index = chatData.findIndex(item => 
-                `${item.customer}-${item.date}-${item.responseTime}` === dataId
-            );
-            
-            if (index !== -1) {
-                chatData.splice(index, 1);
-                // Simpan data ke localStorage
-                if (saveChatData()) {
-                    renderChatList();
-                    updateChatStats();
-                    showNotification('Chat response berhasil dihapus', 'success');
-                }
-            }
+// Fungsi untuk menyimpan chat ke Firestore
+async function saveChat(chatData) {
+    try {
+        await checkAuth();
+        
+        const chatWithUser = {
+            customer: chatData.customer,
+            platform: chatData.platform,
+            topic: chatData.topic,
+            responseTime: parseFloat(chatData.responseTime),
+            date: chatData.date,
+            userId: currentUser.uid,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        if (chatData.id) {
+            // Update existing chat
+            await db.collection('chats').doc(chatData.id).update(chatWithUser);
+            return chatData.id;
+        } else {
+            // Add new chat
+            chatWithUser.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+            const docRef = await db.collection('chats').add(chatWithUser);
+            return docRef.id;
         }
+    } catch (error) {
+        console.error('Error saving chat:', error);
+        throw error;
     }
+}
 
-    // Fungsi untuk memformat tanggal
-    function formatDate(dateString) {
-        const date = new Date(dateString);
+// Fungsi untuk menghapus chat dari Firestore
+async function deleteChatFromFirestore(chatId) {
+    try {
+        await checkAuth();
+        await db.collection('chats').doc(chatId).delete();
+    } catch (error) {
+        console.error('Error deleting chat:', error);
+        throw error;
+    }
+}
+
+// Fungsi untuk memperbarui statistik chat
+function updateChatStats() {
+    if (!totalChatsEl || !avgResponseTimeEl || !fastResponsesEl || !kpiChatEl) {
+        console.error('Statistic elements not found');
+        return;
+    }
+    
+    const totalChats = chatData.length;
+    const fastResponses = chatData.filter(item => parseFloat(item.responseTime) <= 3).length;
+    const totalResponseTime = chatData.reduce((sum, item) => sum + parseFloat(item.responseTime), 0);
+    const avgResponseTime = totalChats > 0 ? (totalResponseTime / totalChats).toFixed(1) : 0;
+    
+    // Hitung KPI Chat Response (persentase respons cepat)
+    const kpiChat = totalChats > 0 ? Math.round((fastResponses / totalChats) * 100) : 0;
+    
+    // Update elemen statistik
+    totalChatsEl.textContent = totalChats;
+    avgResponseTimeEl.textContent = `${avgResponseTime} menit`;
+    fastResponsesEl.textContent = fastResponses;
+    kpiChatEl.textContent = `${kpiChat}%`;
+    
+    // Update progress bars
+    const progressBars = document.querySelectorAll('.progress-fill');
+    if (progressBars.length >= 4) {
+        setTimeout(() => {
+            progressBars[0].style.width = `${Math.min(100, (totalChats / 10) * 100)}%`;
+            progressBars[1].style.width = `${avgResponseTime > 0 ? Math.max(0, 100 - (avgResponseTime / 10 * 100)) : 0}%`;
+            progressBars[2].style.width = `${totalChats > 0 ? (fastResponses / totalChats) * 100 : 0}%`;
+            progressBars[3].style.width = `${kpiChat}%`;
+        }, 100);
+    }
+    
+    updateChatKPI(totalChats, kpiChat);
+}
+
+// Fungsi untuk memperbarui KPI chat
+function updateChatKPI(count, kpiScore) {
+    localStorage.setItem('chatCount', count);
+    localStorage.setItem('chatKPI', kpiScore);
+    
+    window.dispatchEvent(new CustomEvent('chatDataChanged', { 
+        detail: { 
+            chatCount: count,
+            chatKPI: kpiScore
+        } 
+    }));
+    
+    if (connectionStatus) {
+        connectionStatus.className = 'connection-status status-connected';
+        connectionStatus.innerHTML = '<i class="fas fa-check-circle"></i> Data chat tersimpan di Firebase';
+        connectionStatus.style.display = 'flex';
+        
+        setTimeout(() => {
+            connectionStatus.style.display = 'none';
+        }, 3000);
+    }
+}
+
+// Fungsi untuk mendapatkan status berdasarkan waktu respons
+function getResponseStatus(responseTime) {
+    if (responseTime <= 3) {
+        return { status: 'fast', text: 'Cepat' };
+    } else if (responseTime <= 5) {
+        return { status: 'medium', text: 'Sedang' };
+    } else {
+        return { status: 'slow', text: 'Lambat' };
+    }
+}
+
+// Fungsi untuk memformat tanggal
+function formatDate(dateString) {
+    if (!dateString) return 'Tanggal tidak tersedia';
+    
+    try {
+        const date = dateString.toDate ? dateString.toDate() : new Date(dateString);
         return date.toLocaleDateString('id-ID', {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric'
         });
+    } catch (error) {
+        console.error('Error formatting date:', error);
+        return 'Format tanggal tidak valid';
     }
+}
 
-    // Ganti event listener submit form dengan ini
-newChatForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Ambil nilai dari form
-    const customer = document.getElementById('chat-customer').value.trim();
-    const platform = document.getElementById('chat-platform').value;
-    const topic = document.getElementById('chat-topic').value.trim();
-    const responseTime = parseFloat(document.getElementById('chat-time').value);
-    const date = document.getElementById('chat-date').value;
-    
-    // Validasi input
-    if (!customer || !platform || !topic || isNaN(responseTime) || responseTime <= 0 || !date) {
-        showNotification('Harap isi semua field dengan benar. Waktu respons harus lebih dari 0.', 'error');
+// Fungsi untuk merender daftar chat (MODIFIED VERSION)
+function renderChatList(filteredChats = null) {
+    if (!chatItemsContainer) {
+        console.error('chatItemsContainer not found');
         return;
     }
     
-    // Tambahkan data baru
-    chatData.push({
-        customer,
-        platform,
-        topic,
-        responseTime,
-        date
-    });
+    const chatsToRender = filteredChats || chatData;
     
-    // Simpan data ke localStorage
-    if (saveChatData()) {
-        // Reset form
-        newChatForm.reset();
-        
-        // Perbarui UI
-        renderChatList();
-        updateChatStats();
-        
-        // Trigger event untuk update KPI
-        window.dispatchEvent(new CustomEvent('chatDataChanged'));
-        
-        showNotification('Chat response berhasil ditambahkan', 'success');
+    chatItemsContainer.innerHTML = '';
+    
+    if (chatsToRender.length === 0) {
+        chatItemsContainer.innerHTML = `
+            <div style="text-align: center; padding: 20px; color: var(--text-secondary);">
+                <i class="fas fa-comments" style="font-size: 48px; margin-bottom: 10px;"></i>
+                <p>Belum ada data chat response. ${currentUserData && currentUserData.isSuperAdmin ? 'Data dari semua user akan muncul di sini.' : 'Tambahkan data untuk memulai.'}</p>
+            </div>
+        `;
+        return;
     }
-});
-
-    // Event listener untuk tombol batal
-    cancelChatBtn.addEventListener('click', function() {
-        newChatForm.reset();
-    });
-
-    // Event listener untuk pencarian
-    document.getElementById('chatSearch').addEventListener('input', function(e) {
-        const searchTerm = e.target.value.toLowerCase();
+    
+    chatsToRender.forEach((chat) => {
+        const status = getResponseStatus(chat.responseTime);
         
-        if (searchTerm === '') {
-            renderChatList();
-            return;
-        }
+        // Tampilkan info pemilik chat untuk super admin
+        const ownerInfo = currentUserData && currentUserData.isSuperAdmin ? 
+            `<p class="chat-owner" style="font-size: var(--text-xs); color: var(--text-tertiary); margin-bottom: 5px;">
+                <i class="fas fa-user"></i> User ID: ${chat.userId}
+            </p>` : '';
         
-        const filteredData = chatData.filter(chat => 
-            chat.customer.toLowerCase().includes(searchTerm) ||
-            chat.platform.toLowerCase().includes(searchTerm) ||
-            chat.topic.toLowerCase().includes(searchTerm)
-        );
-        
-        // Render hasil pencarian
-        chatItemsContainer.innerHTML = '';
-        
-        if (filteredData.length === 0) {
-            chatItemsContainer.innerHTML = `
-                <div style="text-align: center; padding: 20px; color: var(--text-secondary);">
-                    <i class="fas fa-search" style="font-size: 48px; margin-bottom: 10px;"></i>
-                    <p>Tidak ada hasil untuk "${searchTerm}"</p>
-                </div>
-            `;
-            return;
-        }
-        
-        filteredData.forEach((chat, index) => {
-            const status = getResponseStatus(chat.responseTime);
-            
-            const chatItem = document.createElement('div');
-            chatItem.className = 'chat-item';
-            chatItem.innerHTML = `
-                <div class="chat-info">
-                    <div class="chat-name">${chat.customer} - ${chat.platform}</div>
-                    <div class="chat-desc">Topik: ${chat.topic}</div>
-                    <div class="chat-date">Tanggal: ${formatDate(chat.date)}</div>
-                </div>
-                <div class="chat-actions">
-                    <span class="chat-status status-${status.status}">
-                        <span class="response-time">${chat.responseTime}m</span> - ${status.text}
-                    </span>
-                    <button class="action-btn delete-chat" data-id="${chat.customer}-${chat.date}-${chat.responseTime}">
+        const chatItem = document.createElement('div');
+        chatItem.className = 'chat-item fade-in';
+        chatItem.innerHTML = `
+            <div class="chat-info">
+                ${ownerInfo}
+                <div class="chat-name">${chat.customer} - ${chat.platform}</div>
+                <div class="chat-desc">Topik: ${chat.topic}</div>
+                <div class="chat-date">Tanggal: ${formatDate(chat.date)}</div>
+            </div>
+            <div class="chat-actions">
+                <span class="chat-status status-${status.status}">
+                    <span class="response-time">${chat.responseTime}m</span> - ${status.text}
+                </span>
+                ${currentUserData && (currentUserData.isSuperAdmin || chat.userId === currentUser.uid) ? `
+                    <button class="action-btn edit-btn" data-id="${chat.id}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="action-btn delete-btn" data-id="${chat.id}">
                         <i class="fas fa-trash"></i>
                     </button>
-                </div>
-            `;
-            
-            chatItemsContainer.appendChild(chatItem);
-        });
-        // Sebelum menyimpan, batasi jumlah data
-const saveChatData = (chatData) => {
-  // Hanya simpan 100 pesan terakhir
-  const limitedData = chatData.slice(-100);
-  localStorage.setItem('chatData', JSON.stringify(limitedData));
-}
-        // Tambahkan event listener untuk tombol hapus pada hasil pencarian
-        document.querySelectorAll('.delete-chat').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const dataId = this.dataset.id;
-                deleteChat(dataId);
-            });
+                ` : `
+                    <span style="color: var(--text-secondary); font-size: var(--text-xs);">Read Only</span>
+                `}
+            </div>
+        `;
+        
+        chatItemsContainer.appendChild(chatItem);
+    });
+    
+    // Tambahkan event listeners untuk tombol edit dan delete
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            editChat(id);
         });
     });
+    
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            deleteChat(id);
+        });
+    });
+}
 
-    // Inisialisasi halaman
-    function initPage() {
-        // Set tanggal default ke hari ini
-        document.getElementById('chat-date').valueAsDate = new Date();
+// Fungsi untuk menambah chat baru
+async function addChat(e) {
+    e.preventDefault();
+    
+    if (!newChatForm) {
+        console.error('newChatForm not found');
+        return;
+    }
+    
+    const customer = document.getElementById('chat-customer')?.value.trim() || '';
+    const platform = document.getElementById('chat-platform')?.value || '';
+    const topic = document.getElementById('chat-topic')?.value.trim() || '';
+    const responseTime = document.getElementById('chat-time')?.value || '';
+    const date = document.getElementById('chat-date')?.value || '';
+    
+    // Validasi input
+    if (!customer || !platform || !topic || !responseTime || !date) {
+        showNotification('Harap isi semua field dengan benar', 'error');
+        return;
+    }
+    
+    if (parseFloat(responseTime) <= 0) {
+        showNotification('Waktu respons harus lebih dari 0', 'error');
+        return;
+    }
+    
+    try {
+        const chatToSave = {
+            customer,
+            platform,
+            topic,
+            responseTime: parseFloat(responseTime),
+            date
+        };
+
+        if (currentEditId) {
+            // Update existing chat
+            chatToSave.id = currentEditId;
+            await saveChat(chatToSave);
+            showNotification('Chat response berhasil diperbarui', 'success');
+        } else {
+            // Add new chat
+            await saveChat(chatToSave);
+            showNotification('Chat response berhasil ditambahkan', 'success');
+        }
         
-        // Render data awal
+        resetForm();
+        
+    } catch (error) {
+        console.error('Error saving chat:', error);
+        showNotification('Gagal menyimpan chat response: ' + error.message, 'error');
+    }
+}
+
+// Fungsi untuk mengedit chat (MODIFIED VERSION)
+function editChat(chatId) {
+    const chat = chatData.find(item => item.id === chatId);
+    if (!chat) return;
+    
+    // Cek izin: hanya super admin atau pemilik chat yang bisa mengedit
+    if (!currentUserData.isSuperAdmin && chat.userId !== currentUser.uid) {
+        showNotification('Anda tidak memiliki izin untuk mengedit chat response ini', 'error');
+        return;
+    }
+    
+    currentEditId = chatId;
+    
+    // Isi form dengan data chat
+    const customerInput = document.getElementById('chat-customer');
+    const platformInput = document.getElementById('chat-platform');
+    const topicInput = document.getElementById('chat-topic');
+    const responseTimeInput = document.getElementById('chat-time');
+    const dateInput = document.getElementById('chat-date');
+    
+    if (customerInput) customerInput.value = chat.customer || '';
+    if (platformInput) platformInput.value = chat.platform || '';
+    if (topicInput) topicInput.value = chat.topic || '';
+    if (responseTimeInput) responseTimeInput.value = chat.responseTime || '';
+    
+    // Format tanggal untuk input date
+    if (dateInput && chat.date) {
+        try {
+            const dateObj = chat.date.toDate ? chat.date.toDate() : new Date(chat.date);
+            const formattedDate = dateObj.toISOString().split('T')[0];
+            dateInput.value = formattedDate;
+        } catch (error) {
+            console.error('Error formatting date for input:', error);
+            dateInput.value = '';
+        }
+    }
+    
+    // Scroll ke form
+    if (chatFormElement) {
+        chatFormElement.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    showNotification('Anda sedang dalam mode edit. Perbarui data dan klik "Simpan Response" untuk menyimpan perubahan.', 'info');
+}
+
+// Fungsi untuk menghapus chat (MODIFIED VERSION)
+async function deleteChat(chatId) {
+    const chat = chatData.find(item => item.id === chatId);
+    if (!chat) return;
+    
+    // Cek izin: hanya super admin atau pemilik chat yang bisa menghapus
+    if (!currentUserData.isSuperAdmin && chat.userId !== currentUser.uid) {
+        showNotification('Anda tidak memiliki izin untuk menghapus chat response ini', 'error');
+        return;
+    }
+    
+    if (confirm('Apakah Anda yakin ingin menghapus data chat response ini?')) {
+        try {
+            await deleteChatFromFirestore(chatId);
+            showNotification('Chat response berhasil dihapus', 'success');
+            
+            // Jika sedang mengedit chat yang dihapus, reset form
+            if (currentEditId === chatId) {
+                resetForm();
+            }
+            
+        } catch (error) {
+            console.error('Error deleting chat:', error);
+            showNotification('Gagal menghapus chat response', 'error');
+        }
+    }
+}
+
+// Fungsi untuk mereset form
+function resetForm() {
+    if (newChatForm) newChatForm.reset();
+    currentEditId = null;
+    
+    // Set tanggal default ke hari ini
+    const dateInput = document.getElementById('chat-date');
+    if (dateInput) {
+        dateInput.valueAsDate = new Date();
+    }
+}
+
+// Fungsi untuk mencari chat
+function searchChat() {
+    const searchTerm = chatSearch?.value.toLowerCase() || '';
+    
+    if (searchTerm === '') {
+        renderChatList();
+        return;
+    }
+    
+    const filteredChats = chatData.filter(chat => 
+        chat.customer.toLowerCase().includes(searchTerm) ||
+        chat.platform.toLowerCase().includes(searchTerm) ||
+        chat.topic.toLowerCase().includes(searchTerm)
+    );
+    
+    renderChatList(filteredChats);
+}
+
+// Setup real-time listener untuk data chat (MODIFIED VERSION)
+function setupRealTimeListener() {
+    if (unsubscribeChats) {
+        unsubscribeChats();
+    }
+    
+    let query;
+    
+    // Jika super admin, ambil semua data tanpa filter user
+    if (currentUserData && currentUserData.isSuperAdmin) {
+        query = db.collection('chats');
+        console.log('Super admin mode: Loading all chat data');
+    } else {
+        // Jika user biasa, hanya ambil data miliknya sendiri
+        query = db.collection('chats').where('userId', '==', currentUser.uid);
+        console.log('User mode: Loading user-specific chat data');
+    }
+    
+    unsubscribeChats = query.onSnapshot(snapshot => {
+        chatData = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+        
+        // Sort secara manual di client side
+        chatData.sort((a, b) => {
+            const dateA = a.date ? (a.date.toDate ? a.date.toDate() : new Date(a.date)) : new Date(0);
+            const dateB = b.date ? (b.date.toDate ? b.date.toDate() : new Date(b.date)) : new Date(0);
+            return dateB - dateA;
+        });
+        
         renderChatList();
         updateChatStats();
-    }
-// Pastikan initPage dipanggil setelah DOM siap
-document.addEventListener('DOMContentLoaded', function() {
-    initPage();
-    
-    // Juga dengarkan event dari modul lain
-    window.addEventListener('storage', function(e) {
-        if (e.key === 'chatData') {
-            chatData = JSON.parse(e.newValue || '[]');
-            renderChatList();
-            updateChatStats();
+        
+        // Tampilkan info mode akses
+        if (currentUserData && currentUserData.isSuperAdmin) {
+            showNotification(`Super Admin Mode: Memuat ${chatData.length} chat response dari semua user`, 'info');
         }
+    }, error => {
+        console.error('Error in real-time listener:', error);
+        showNotification('Gagal memuat data real-time', 'error');
     });
+}
+
+// Update user profile info (MODIFIED VERSION)
+function updateUserProfile(user) {
+    const userProfile = document.querySelector('.user-info h4');
+    const userRole = document.querySelector('.user-info p');
+    
+    if (userProfile) {
+        userProfile.textContent = user.displayName || user.email || 'User';
+    }
+    if (userRole) {
+        const roleText = currentUserData && currentUserData.isSuperAdmin ? 
+            'Super Administrator' : 
+            'Customer Service Support';
+        userRole.textContent = roleText;
+        
+        // Tambahkan badge super admin jika diperlukan
+        if (currentUserData && currentUserData.isSuperAdmin) {
+            const headerTitle = document.querySelector('.header h1');
+            if (headerTitle && !headerTitle.querySelector('.super-admin-badge')) {
+                const badge = document.createElement('span');
+                badge.className = 'super-admin-badge';
+                badge.style.background = 'var(--warning-gradient)';
+                badge.style.color = 'white';
+                badge.style.padding = '2px 8px';
+                badge.style.borderRadius = '12px';
+                badge.style.fontSize = 'var(--text-xs)';
+                badge.style.marginLeft = '8px';
+                badge.textContent = 'Super Admin';
+                headerTitle.appendChild(badge);
+            }
+        }
+    }
+}
+
+// Event Listeners
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('DOM Content Loaded - Initializing Chat Response Dashboard');
+    
+    try {
+        // Periksa autentikasi pengguna
+        await checkAuth();
+        await ensureUserDocument(currentUser);
+        
+        console.log('User authenticated:', currentUser.uid);
+        
+        // Setup real-time listener
+        setupRealTimeListener();
+        
+        // Setup event listeners
+        if (newChatForm) {
+            newChatForm.addEventListener('submit', addChat);
+        }
+        
+        if (addChatBtn) {
+            addChatBtn.addEventListener('click', function() {
+                resetForm();
+                if (chatFormElement) {
+                    chatFormElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        }
+        
+        if (cancelChatBtn) {
+            cancelChatBtn.addEventListener('click', resetForm);
+        }
+        
+        if (chatSearch) {
+            chatSearch.addEventListener('input', searchChat);
+        }
+        
+        // Update user profile info
+        updateUserProfile(currentUser);
+        
+        // Set tanggal default ke hari ini
+        const dateInput = document.getElementById('chat-date');
+        if (dateInput) {
+            dateInput.valueAsDate = new Date();
+        }
+        
+        console.log('Chat response dashboard initialized successfully');
+        
+    } catch (error) {
+        console.error('Authentication error:', error);
+        showNotification('Silakan login untuk mengakses dashboard chat response', 'error');
+        
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 3000);
+    }
 });
-    // Jalankan inisialisasi saat halaman dimuat
-    document.addEventListener('DOMContentLoaded', initPage);
+
+// Handle auth state changes
+auth.onAuthStateChanged(async user => {
+    if (user) {
+        currentUser = user;
+        currentUserData = await ensureUserDocument(user);
+        console.log('User is signed in:', user.uid);
+        
+        if (unsubscribeChats) {
+            unsubscribeChats();
+        }
+        setupRealTimeListener();
+        updateUserProfile(user);
+        
+    } else {
+        console.log('User is signed out');
+        if (unsubscribeChats) {
+            unsubscribeChats();
+        }
+        showNotification('Anda telah logout', 'info');
+        
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 2000);
+    }
+});
 </script>
 </body>
 </html>

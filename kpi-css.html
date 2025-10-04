@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="global.css">
         <link rel="stylesheet" href="stylemobile.css">
+        <script src="global-time.js"></script>
     <style>
         /* CSS yang sudah ada (dipertahankan) */
 :root {
@@ -1040,6 +1041,150 @@
         margin-top: 20px;
     }
 }
+.btn-reset {
+    background: var(--warning-gradient);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--text-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-sm);
+    margin-left: auto;
+}
+
+.btn-reset:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-reset:active {
+    transform: translateY(0);
+}
+
+/* Untuk layout yang lebih baik pada container tombol */
+.action-buttons {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+    margin-left: auto;
+}
+
+/* Atau jika ingin tombol reset berada di sebelah tombol Edit All */
+.kpi-container > div:first-child {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: var(--space-sm);
+}
+
+.kpi-container > div:first-child > div {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+}
+.kpi-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+}
+
+.kpi-actions {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .kpi-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-sm);
+    }
+    
+    .kpi-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .btn-edit-all,
+    .btn-reset {
+        flex: 1;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .kpi-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn-edit-all,
+    .btn-reset {
+        width: 100%;
+    }
+}
+.user-filter {
+    display: flex;
+    align-items: center;
+}
+
+.filter-select {
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--input-bg);
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+    cursor: pointer;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+/* CSS untuk menyembunyikan tombol */
+.btn-edit-all,
+.btn-reset {
+    display: none;
+}
+
+.btn-edit-all.admin-visible,
+.btn-reset.admin-visible {
+    display: flex;
+}
+/* Responsive design untuk tombol admin */
+.btn-edit-all.admin-visible,
+.btn-reset.admin-visible {
+    display: flex !important;
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Sembunyikan tombol secara default */
+.btn-edit-all,
+.btn-reset {
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+
+    
+    .kpi-actions {
+        flex-direction: column;
+    }
+}
     </style>
 </head>
 <body>
@@ -1059,32 +1204,12 @@
                 <div class="user-profile">
                     <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
                     <div class="user-info">
-                        <h4>Adrian Abdul Arif</h4>
+                        <h4>Nama Masing Masing</h4>
                         <p>Customer Service Support</p>
                     </div>
                 </div>
             </div>
         </div>
-
-            <!-- Modal Reset Data -->
-            <div class="reset-modal" id="reset-modal">
-                <div class="reset-modal-content">
-                    <div class="reset-modal-header">
-                        <div class="reset-modal-icon">
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </div>
-                        <h3 class="reset-modal-title">Konfirmasi Reset Data</h3>
-                    </div>
-                    <div class="reset-modal-body">
-                        <p class="reset-modal-text">Masukkan password untuk reset data KPI:</p>
-                        <input type="password" id="reset-password" class="reset-modal-input" placeholder="Password">
-                    </div>
-                    <div class="reset-modal-actions">
-                        <button class="reset-modal-btn reset-modal-btn-cancel" id="reset-cancel">Batal</button>
-                        <button class="reset-modal-btn reset-modal-btn-confirm" id="reset-confirm">Reset</button>
-                    </div>
-                </div>
-            </div>
             
             <div class="dashboard active" id="dashboard-kpi">
                 <div class="summary-container">
@@ -1176,7 +1301,7 @@
                                 <th colspan="2">Indikator</th>
                                 <th>Skor Akhir</th>
                                 <th>Bulan</th>
-                                <th id="current-month-header">September</th>
+                                <th id="current-month-header">October</th>
                                 <th rowspan="2">Action</th>
                             </tr>
                             <tr>
@@ -1375,8 +1500,27 @@
     <script src="sidebar-loader.js"></script>
     <script src="user-profile.js"></script>
 
-    <script>
-    // ========== SCRIPT INTEGRASI SISTEM KPI CSS ==========
+ <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+<script>
+    // Konfigurasi Firebase
+    // Konfigurasi Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
+        authDomain: "dashboard-css.firebaseapp.com",
+        databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "dashboard-css",
+        storageBucket: "dashboard-css.appspot.com",
+        messagingSenderId: "771131792881",
+        appId: "1:771131792881:web:ad634424225bd7de847850",
+        measurementId: "G-3CYBC5B101"
+    };
+
+    // Inisialisasi Firebase
+    firebase.initializeApp(firebaseConfig);
+
     // Data KPI
     const kpiData = [
         { 
@@ -1384,7 +1528,7 @@
             area: "B2B & B2C (Count.)",
             target: 3, 
             weight: 25, 
-            description: "Pembelajaran W18 / Agent baru",
+            description: "Pembukaan WLB / Agent baru",
             note: "Semakin Besar Semakin Bagus",
             realization: 0, 
             score: 0 
@@ -1406,7 +1550,7 @@
             weight: 20, 
             description: "Aktif memberikan ide, Saran & Masukan",
             note: "Semakin Besar Semakin Bagus",
-            realization: parseInt(localStorage.getItem('ideasCount') || '0'), 
+            realization: 0, 
             score: 0 
         },
         { 
@@ -1464,13 +1608,403 @@
 
     // State aplikasi
     let isEditMode = false;
+    let unsubscribeFunctions = [];
+    let currentFilter = 'current';
+    let isSuperAdminUser = false;
+
+    async function checkAndSetupSuperAdmin() {
+        try {
+            const currentUser = firebase.auth().currentUser;
+            if (!currentUser) {
+                console.log('No user logged in');
+                setupAdminUI(false); // Pastikan tombol disembunyikan jika tidak ada user
+                return false;
+            }
+            
+            console.log('🔄 Checking admin role for user:', currentUser.uid, currentUser.email);
+            
+            const db = firebase.firestore();
+            const userDoc = await db.collection('users').doc(currentUser.uid).get();
+            
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                console.log('📊 User data from Firestore:', userData);
+                
+                // Check role dengan berbagai kemungkinan field
+                const isAdmin = userData.role === 'super_admin' || 
+                            userData.isSuperAdmin === true ||
+                            userData.isAdmin === true ||
+                            (userData.email && userData.email.includes('admin')) ||
+                            userData.email === 'superadmin@gachaengine.com';
+                
+                console.log('✅ Final admin determination:', isAdmin);
+                
+                if (isAdmin) {
+                    setupAdminUI(true);
+                    isSuperAdminUser = true;
+                    return true;
+                }
+            }
+            
+            // Jika tidak ada dokumen user, buat dokumen default
+            console.log('📝 Creating default user document');
+            await db.collection('users').doc(currentUser.uid).set({
+                email: currentUser.email,
+                name: currentUser.displayName || 'User',
+                role: 'user',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+            
+            setupAdminUI(false);
+            isSuperAdminUser = false;
+            return false;
+            
+        } catch (error) {
+            console.error('❌ Error checking super admin:', error);
+            setupAdminUI(false); // Pastikan tombol disembunyikan jika error
+            isSuperAdminUser = false;
+            return false;
+        }
+    }
+
+    // Fungsi untuk setup UI admin
+    // Fungsi untuk setup UI admin
+    function setupAdminUI(isAdmin) {
+        console.log('Setting up admin UI, isAdmin:', isAdmin);
+        
+        const headerActions = document.querySelector('.header-actions');
+        if (!headerActions) {
+            console.error('Header actions element not found');
+            return;
+        }
+        
+        // Hapus filter yang sudah ada jika ada
+        const existingFilter = document.getElementById('userFilterContainer');
+        if (existingFilter) {
+            existingFilter.remove();
+        }
+        
+        // Dapatkan semua tombol yang perlu diatur visibility-nya
+        const editAllBtn = document.getElementById('edit-all-btn');
+        const resetBtn = document.getElementById('reset-data-btn');
+        const submenuEditButtons = document.querySelectorAll('.submenu-container .btn-edit-all');
+        const criteriaEditButtons = document.querySelectorAll('.criteria-list .btn-primary');
+        
+        if (isAdmin) {
+            // Tampilkan semua tombol untuk super admin
+            if (editAllBtn) editAllBtn.classList.add('admin-visible');
+            if (resetBtn) resetBtn.classList.add('admin-visible');
+            submenuEditButtons.forEach(btn => btn.classList.add('admin-visible'));
+            criteriaEditButtons.forEach(btn => btn.classList.add('admin-visible'));
+            
+            // Tambahkan filter dropdown untuk super admin
+            const filterHTML = `
+                <div class="user-filter" id="userFilterContainer">
+                    <select id="userFilter" class="filter-select">
+                        <option value="current">Data Saya</option>
+                        <option value="all">Semua User</option>
+                    </select>
+                </div>
+            `;
+            
+            // Sisipkan sebelum user profile
+            const userProfile = headerActions.querySelector('.user-profile');
+            if (userProfile) {
+                userProfile.insertAdjacentHTML('beforebegin', filterHTML);
+                
+                // Event listener untuk filter
+                document.getElementById('userFilter').addEventListener('change', function() {
+                    currentFilter = this.value;
+                    console.log('Filter changed to:', currentFilter);
+                    loadKpiData(currentFilter);
+                });
+                
+                isSuperAdminUser = true;
+                console.log('Admin UI setup completed - Buttons visible');
+            }
+        } else {
+            // Sembunyikan semua tombol untuk user biasa
+            if (editAllBtn) editAllBtn.classList.remove('admin-visible');
+            if (resetBtn) resetBtn.classList.remove('admin-visible');
+            submenuEditButtons.forEach(btn => btn.classList.remove('admin-visible'));
+            criteriaEditButtons.forEach(btn => btn.classList.remove('admin-visible'));
+            
+            isSuperAdminUser = false;
+            console.log('Regular user UI setup completed - Buttons hidden');
+        }
+    }
+
+    // ========== FUNGSI UNTUK MENGAMBIL DATA DARI FIRESTORE ==========
+
+    // Fungsi untuk mengambil data Ideas dari Firestore
+    async function getIdeasData(userId = null) {
+        try {
+            const currentUser = firebase.auth().currentUser;
+            if (!currentUser) {
+                console.log('User not authenticated for ideas data');
+                return { count: 0, totalPoints: 0, data: [] };
+            }
+            
+            const db = firebase.firestore();
+            let query = db.collection('ideas');
+            
+            if (userId) {
+                query = query.where('userId', '==', userId);
+            } else {
+                query = query.where('userId', '==', currentUser.uid);
+            }
+            
+            const snapshot = await query.get();
+            
+            const ideasData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            
+            return {
+                count: ideasData.length,
+                totalPoints: ideasData.reduce((sum, idea) => sum + (parseInt(idea.points) || 0), 0),
+                data: ideasData
+            };
+        } catch (error) {
+            console.error('Error getting ideas data from Firestore:', error);
+            return { count: 0, totalPoints: 0, data: [] };
+        }
+    }
+
+    // Fungsi untuk mengambil data Research dari Firestore
+    async function getResearchData(userId = null) {
+        try {
+            const currentUser = firebase.auth().currentUser;
+            if (!currentUser) {
+                console.log('User not authenticated for research data');
+                return { count: 0, totalPoints: 0, data: [] };
+            }
+            
+            const db = firebase.firestore();
+            let query = db.collection('research');
+            
+            if (userId) {
+                query = query.where('userId', '==', userId);
+            } else {
+                query = query.where('userId', '==', currentUser.uid);
+            }
+            
+            const snapshot = await query.get();
+            
+            const researchData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            
+            return {
+                count: researchData.length,
+                totalPoints: researchData.reduce((sum, research) => sum + (parseInt(research.points) || 0), 0),
+                data: researchData
+            };
+        } catch (error) {
+            console.error('Error getting research data from Firestore:', error);
+            return { count: 0, totalPoints: 0, data: [] };
+        }
+    }
+
+    // Fungsi untuk mengambil data Chat Response dari Firestore
+    async function getChatData(userId = null) {
+        try {
+            const currentUser = firebase.auth().currentUser;
+            if (!currentUser) {
+                console.log('User not authenticated for chat data');
+                return { count: 0, missedChats: 0, averageResponseTime: 0, data: [] };
+            }
+            
+            const db = firebase.firestore();
+            let query = db.collection('chats');
+            
+            if (userId) {
+                query = query.where('userId', '==', userId);
+            } else {
+                query = query.where('userId', '==', currentUser.uid);
+            }
+            
+            const snapshot = await query.get();
+            
+            const chatData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            
+            const missedChats = chatData.filter(chat => parseFloat(chat.responseTime) > 3).length;
+            const averageResponseTime = chatData.length > 0 ? 
+                chatData.reduce((sum, chat) => sum + parseFloat(chat.responseTime), 0) / chatData.length : 0;
+            
+            return {
+                count: chatData.length,
+                missedChats: missedChats,
+                averageResponseTime: averageResponseTime,
+                data: chatData
+            };
+        } catch (error) {
+            console.error('Error getting chat data from Firestore:', error);
+            return { count: 0, missedChats: 0, averageResponseTime: 0, data: [] };
+        }
+    }
+
+    // Fungsi untuk mengambil data Problem Solving dari Firestore
+    async function getProblemSolvingData(userId = null) {
+        try {
+            const currentUser = firebase.auth().currentUser;
+            if (!currentUser) {
+                console.log('User not authenticated for problem solving data');
+                return { count: 0, totalPoints: 0, data: [] };
+            }
+            
+            const db = firebase.firestore();
+            let query = db.collection('problems');
+            
+            if (userId) {
+                query = query.where('userId', '==', userId);
+            } else {
+                query = query.where('userId', '==', currentUser.uid);
+            }
+            
+            const snapshot = await query.get();
+            
+            const problemData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            
+            return {
+                count: problemData.length,
+                totalPoints: problemData.reduce((sum, problem) => sum + (parseInt(problem.points) || 0), 0),
+                data: problemData
+            };
+        } catch (error) {
+            console.error('Error getting problem solving data from Firestore:', error);
+            return { count: 0, totalPoints: 0, data: [] };
+        }
+    }
+
+    // Fungsi untuk mengambil data B2B & B2C dari Firestore
+    async function getB2BData(userId = null) {
+        try {
+            const currentUser = firebase.auth().currentUser;
+            if (!currentUser) {
+                console.log('User not authenticated for B2B data');
+                return { count: 0, totalPoints: 0, data: [] };
+            }
+            
+            const db = firebase.firestore();
+            let query = db.collection('b2b');
+            
+            if (userId) {
+                query = query.where('userId', '==', userId);
+            } else {
+                query = query.where('userId', '==', currentUser.uid);
+            }
+            
+            const snapshot = await query.get();
+            
+            const b2bData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            
+            return {
+                count: b2bData.length,
+                totalPoints: b2bData.reduce((sum, b2b) => sum + (parseInt(b2b.points) || 0), 0),
+                data: b2bData
+            };
+        } catch (error) {
+            console.error('Error getting B2B data from Firestore:', error);
+            return { count: 0, totalPoints: 0, data: [] };
+        }
+    }
+
+    // Fungsi untuk mengambil data Attitude dari Firestore
+    async function getAttitudeData(userId = null) {
+        try {
+            const currentUser = firebase.auth().currentUser;
+            if (!currentUser) {
+                console.log('User not authenticated for attitude data');
+                return { count: 0, totalPoints: 0, averageScore: 0, data: [] };
+            }
+            
+            const db = firebase.firestore();
+            let query = db.collection('attitude');
+            
+            if (userId) {
+                query = query.where('userId', '==', userId);
+            } else {
+                query = query.where('userId', '==', currentUser.uid);
+            }
+            
+            const snapshot = await query.get();
+            
+            const attitudeData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            
+            const averageScore = attitudeData.length > 0 ? 
+                attitudeData.reduce((sum, attitude) => sum + (parseInt(attitude.score) || 0), 0) / attitudeData.length : 0;
+            
+            return {
+                count: attitudeData.length,
+                totalPoints: attitudeData.reduce((sum, attitude) => sum + (parseInt(attitude.points) || 0), 0),
+                averageScore: averageScore,
+                data: attitudeData
+            };
+        } catch (error) {
+            console.error('Error getting attitude data from Firestore:', error);
+            return { count: 0, totalPoints: 0, averageScore: 0, data: [] };
+        }
+    }
+
+    // Fungsi untuk mengambil data Disiplin dari Firestore
+    async function getDisciplineData(userId = null) {
+        try {
+            const currentUser = firebase.auth().currentUser;
+            if (!currentUser) {
+                console.log('User not authenticated for discipline data');
+                return { count: 0, totalPoints: 0, data: [] };
+            }
+            
+            const db = firebase.firestore();
+            let query = db.collection('discipline');
+            
+            if (userId) {
+                query = query.where('userId', '==', userId);
+            } else {
+                query = query.where('userId', '==', currentUser.uid);
+            }
+            
+            const snapshot = await query.get();
+            
+            const disciplineData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            
+            return {
+                count: disciplineData.length,
+                totalPoints: disciplineData.reduce((sum, discipline) => sum + (parseInt(discipline.points) || 0), 0),
+                data: disciplineData
+            };
+        } catch (error) {
+            console.error('Error getting discipline data from Firestore:', error);
+            return { count: 0, totalPoints: 0, data: [] };
+        }
+    }
+
+    // ========== FUNGSI UTAMA PERHITUNGAN KPI ==========
 
     // Fungsi untuk menghitung skor
     function calculateScore(target, realization, isSmallerBetter = false, index = -1) {
         if (isSmallerBetter && index === 3) {
             // Untuk metrik "Semakin Kecil Semakin Bagus" (Chat Response)
-            const chatData = JSON.parse(localStorage.getItem('chatData')) || [];
-            const missedChats = chatData.filter(chat => parseFloat(chat.responseTime) > 3).length;
+            const chatData = getChatDataSync();
+            const missedChats = chatData.missedChats;
             const penalty = missedChats * 25;
             return Math.max(0, 100 - penalty);
         } else {
@@ -1478,6 +2012,45 @@
             if (realization >= target) return 100;
             if (realization <= 0) return 0;
             return (realization / target) * 100;
+        }
+    }
+
+    // Fungsi synchronous untuk mendapatkan data chat (untuk perhitungan)
+    function getChatDataSync() {
+        return window.chatDataForCalculation || { missedChats: 0, count: 0 };
+    }
+
+    // Fungsi untuk memperbarui semua data KPI dari Firestore
+    async function updateAllKpiData(userId = null) {
+        try {
+            // Ambil data dari semua modul
+            const ideasData = await getIdeasData(userId);
+            const researchData = await getResearchData(userId);
+            const chatData = await getChatData(userId);
+            const problemData = await getProblemSolvingData(userId);
+            const b2bData = await getB2BData(userId);
+            const attitudeData = await getAttitudeData(userId);
+            const disciplineData = await getDisciplineData(userId);
+
+            // Update data KPI berdasarkan modul yang sesuai
+            kpiData[0].realization = b2bData.count;
+            kpiData[1].realization = problemData.count;
+            kpiData[2].realization = ideasData.count;
+            kpiData[3].realization = chatData.count;
+            kpiData[4].realization = researchData.count;
+            kpiData[5].realization = attitudeData.averageScore;
+            kpiData[6].realization = disciplineData.count;
+
+            // Simpan data chat untuk perhitungan synchronous
+            window.chatDataForCalculation = chatData;
+
+            // Hitung ulang semua skor
+            updateKPI();
+            
+            console.log('KPI data updated successfully from Firestore for user:', userId || 'current');
+        } catch (error) {
+            console.error('Error updating KPI data from Firestore:', error);
+            showNotification('Gagal memperbarui data KPI dari Firestore', 'error');
         }
     }
 
@@ -1490,22 +2063,29 @@
             const row = document.querySelector(`.kpi-table tbody tr:nth-child(${index + 1})`);
             const isSmallerBetter = item.note.includes("Semakin Kecil");
             
-            // Hitung skor - tambahkan parameter index
+            // Hitung skor
             item.score = calculateScore(item.target, item.realization, isSmallerBetter, index);
             
             // Perbarui tampilan
-            row.querySelector('.realization-cell').textContent = item.realization;
-            
-            const scoreCell = row.querySelector('td:nth-child(9)');
-            scoreCell.textContent = item.score.toFixed(2) + '%';
-            scoreCell.className = '';
-            
-            if (item.score >= 100) {
-                scoreCell.classList.add('target-achieved');
-            } else if (item.score >= 70) {
-                scoreCell.classList.add('target-partial');
-            } else {
-                scoreCell.classList.add('target-missed');
+            if (row) {
+                const realizationCell = row.querySelector('.realization-cell');
+                if (realizationCell) {
+                    realizationCell.textContent = item.realization;
+                }
+                
+                const scoreCell = row.querySelector('td:nth-child(9)');
+                if (scoreCell) {
+                    scoreCell.textContent = item.score.toFixed(2) + '%';
+                    scoreCell.className = '';
+                    
+                    if (item.score >= 100) {
+                        scoreCell.classList.add('target-achieved');
+                    } else if (item.score >= 70) {
+                        scoreCell.classList.add('target-partial');
+                    } else {
+                        scoreCell.classList.add('target-missed');
+                    }
+                }
             }
             
             // Hitung total
@@ -1513,147 +2093,402 @@
             totalRealization += item.realization;
             
             // Update untuk dashboard tertentu
-            if (index === 2) { // Ideas
-                document.getElementById('ideas-score').textContent = item.score.toFixed(2) + '%';
-                document.getElementById('ideas-realization').textContent = item.realization;
-                document.getElementById('ideas-points').textContent = item.score.toFixed(2) + '%';
-                document.querySelector('.summary-card:nth-child(2) .progress-fill').style.width = Math.min(item.score, 100) + '%';
-            } else if (index === 3) { // Chat Response
-                document.getElementById('chat-score').textContent = item.score.toFixed(2) + '%';
-                document.getElementById('chat-realization').textContent = item.realization;
-                document.getElementById('chat-points').textContent = item.score.toFixed(2) + '%';
-                document.querySelector('.summary-card:nth-child(4) .progress-fill').style.width = Math.min(item.score, 100) + '%';
-            } else if (index === 4) { // Research
-                document.getElementById('research-score').textContent = item.score.toFixed(2) + '%';
-                document.getElementById('research-realization').textContent = item.realization;
-                document.getElementById('research-points').textContent = item.score.toFixed(2) + '%';
-                document.querySelector('.summary-card:nth-child(3) .progress-fill').style.width = Math.min(item.score, 100) + '%';
+            if (index === 2) {
+                updateElementText('ideas-score', item.score.toFixed(2) + '%');
+                updateElementText('ideas-realization', item.realization);
+                updateElementText('ideas-points', item.score.toFixed(2) + '%');
+                updateProgressBar('.summary-card:nth-child(2) .progress-fill', Math.min(item.score, 100));
+            } else if (index === 3) {
+                updateElementText('chat-score', item.score.toFixed(2) + '%');
+                updateElementText('chat-realization', item.realization);
+                updateElementText('chat-points', item.score.toFixed(2) + '%');
+                updateProgressBar('.summary-card:nth-child(4) .progress-fill', Math.min(item.score, 100));
+            } else if (index === 4) {
+                updateElementText('research-score', item.score.toFixed(2) + '%');
+                updateElementText('research-realization', item.realization);
+                updateElementText('research-points', item.score.toFixed(2) + '%');
+                updateProgressBar('.summary-card:nth-child(3) .progress-fill', Math.min(item.score, 100));
             }
         });
         
         // Update total
-        document.getElementById('total-score').textContent = totalScore.toFixed(2) + '%';
-        document.getElementById('total-realization').textContent = totalRealization;
-        document.getElementById('total-kpi').textContent = totalScore.toFixed(2) + '%';
-        document.querySelector('.summary-card:first-child .progress-fill').style.width = Math.min(totalScore, 100) + '%';
+        updateElementText('total-score', totalScore.toFixed(2) + '%');
+        updateElementText('total-realization', totalRealization);
+        updateElementText('total-kpi', totalScore.toFixed(2) + '%');
+        updateProgressBar('.summary-card:first-child .progress-fill', Math.min(totalScore, 100));
         
         // Update class untuk total score
         const totalScoreCell = document.getElementById('total-score');
-        totalScoreCell.className = '';
-        if (totalScore >= 70) {
-            totalScoreCell.classList.add('target-achieved');
-        } else if (totalScore >= 50) {
-            totalScoreCell.classList.add('target-partial');
-        } else {
-            totalScoreCell.classList.add('target-missed');
-        }
-    }
-
-    // Fungsi untuk memperbarui data Ideas dari localStorage
-    function updateIdeasFromStorage() {
-        const ideasCount = parseInt(localStorage.getItem('ideasCount') || '0');
-        
-        // Update data KPI untuk Ideas (index 2 adalah Ideas)
-        if (kpiData[2]) {
-            kpiData[2].realization = ideasCount;
-            kpiData[2].score = calculateScore(kpiData[2].target, ideasCount, false);
-            
-            // Perbarui tampilan
-            updateKPI();
-        }
-    }
-
-    // Fungsi untuk memperbarui data Research dari localStorage
-    function updateResearchFromStorage() {
-        const researchCount = parseInt(localStorage.getItem('researchCount') || '0');
-        
-        // Update data KPI untuk Research (index 4 adalah Research)
-        if (kpiData[4]) {
-            kpiData[4].realization = researchCount;
-            kpiData[4].score = calculateScore(kpiData[4].target, researchCount, false);
-            
-            // Perbarui tampilan
-            updateKPI();
-        }
-    }
-
-    // Fungsi untuk memperbarui data Chat dari localStorage
-    function updateChatFromStorage() {
-        try {
-            const chatData = JSON.parse(localStorage.getItem('chatData')) || [];
-            const chatCount = chatData.length;
-            
-            // Hitung jumlah chat yang melebihi waktu target (missed chat)
-            const missedChats = chatData.filter(chat => {
-                const responseTime = parseFloat(chat.responseTime);
-                return responseTime > 3;
-            }).length;
-            
-            // Update data KPI untuk Chat Response (index 3 adalah Chat Response)
-            if (kpiData[3]) {
-                // Gunakan jumlah chat total sebagai realisasi
-                kpiData[3].realization = chatCount;
-                
-                // Hitung skor berdasarkan jumlah missed chats
-                const penalty = missedChats * 25;
-                kpiData[3].score = Math.max(0, 100 - penalty);
-                
-                // Perbarui tampilan
-                updateKPI();
+        if (totalScoreCell) {
+            totalScoreCell.className = '';
+            if (totalScore >= 70) {
+                totalScoreCell.classList.add('target-achieved');
+            } else if (totalScore >= 50) {
+                totalScoreCell.classList.add('target-partial');
+            } else {
+                totalScoreCell.classList.add('target-missed');
             }
-        } catch (error) {
-            console.error('Error updating chat from storage:', error);
         }
     }
+
+    // Fungsi helper untuk update teks elemen
+    function updateElementText(id, text) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = text;
+        }
+    }
+
+    // Fungsi helper untuk update progress bar
+    function updateProgressBar(selector, percentage) {
+        const progressBar = document.querySelector(selector);
+        if (progressBar) {
+            progressBar.style.width = percentage + '%';
+        }
+    }
+
+    // ========== SISTEM FILTER BERDASARKAN USER ==========
+
+    // Fungsi untuk memuat data KPI berdasarkan filter
+    // Fungsi untuk memuat data KPI berdasarkan filter
+    async function loadKpiData(filter = 'current', specificUserId = null) {
+        try {
+            const currentUser = firebase.auth().currentUser;
+            if (!currentUser) {
+                console.log('No user logged in');
+                return;
+            }
+            
+            console.log('🔄 Loading KPI data with filter:', filter, 'specificUserId:', specificUserId);
+            
+            if (filter === 'current' || specificUserId) {
+                const userId = specificUserId || currentUser.uid;
+                console.log('👤 Loading data for user:', userId);
+                await updateAllKpiData(userId);
+                
+            } else if (filter === 'all' && isSuperAdminUser) {
+                console.log('👥 Loading ALL users data as super admin');
+                await loadAllUsersData(); // PASTIKAN ini dipanggil
+            } else {
+                console.log('❌ Cannot load all data - not super admin');
+                showNotification('Hanya Super Admin yang dapat melihat semua data', 'error');
+            }
+            
+        } catch (error) {
+            console.error('❌ Error loading KPI data:', error);
+            showNotification('Error memuat data KPI: ' + error.message, 'error');
+        }
+    }
+
+    // Fungsi untuk load data semua user - VERSI DIPERBAIKI
+    async function loadAllUsersData() {
+        try {
+            console.log('📥 Loading all users data from Firestore...');
+            const db = firebase.firestore();
+            
+            // Ambil semua data user
+            const usersSnapshot = await db.collection('users').get();
+            console.log(`👥 Found ${usersSnapshot.size} users`);
+            
+            const usersData = [];
+            
+            // Untuk setiap user, ambil data KPI-nya
+            for (const userDoc of usersSnapshot.docs) {
+                const userData = userDoc.data();
+                const userId = userDoc.id;
+                
+                console.log(`🔍 Processing user: ${userData.name || userData.email}`);
+                
+                // Ambil data dari semua koleksi untuk user ini
+                const [
+                    ideasData,
+                    researchData, 
+                    chatData,
+                    problemData,
+                    b2bData,
+                    attitudeData,
+                    disciplineData,
+                    kpiDoc
+                ] = await Promise.all([
+                    getIdeasData(userId),
+                    getResearchData(userId),
+                    getChatData(userId),
+                    getProblemSolvingData(userId),
+                    getB2BData(userId),
+                    getAttitudeData(userId),
+                    getDisciplineData(userId),
+                    db.collection('kpiData').doc(userId).get()
+                ]);
+                
+                // Hitung scores berdasarkan data aktual
+                const ideasScore = calculateIdeasScore(ideasData);
+                const researchScore = calculateResearchScore(researchData);
+                const chatScore = calculateChatScore(chatData);
+                const problemScore = calculateProblemScore(problemData);
+                const b2bScore = calculateB2BScore(b2bData);
+                const attitudeScore = calculateAttitudeScore(attitudeData);
+                const disciplineScore = calculateDisciplineScore(disciplineData);
+                
+                // Hitung total score
+                const totalScore = (
+                    (ideasScore * 0.20) +
+                    (researchScore * 0.10) +
+                    (chatScore * 0.10) +
+                    (problemScore * 0.20) +
+                    (b2bScore * 0.25) +
+                    (attitudeScore * 0.10) +
+                    (disciplineScore * 0.05)
+                );
+                
+                // Format last updated
+                const lastUpdated = kpiDoc.exists && kpiDoc.data().updatedAt ? 
+                    new Date(kpiDoc.data().updatedAt.toDate()).toLocaleDateString('id-ID') : 
+                    '-';
+                
+                usersData.push({
+                    userId: userId,
+                    userName: userData.name || userData.email || 'Unknown User',
+                    userEmail: userData.email || userId,
+                    totalScore: totalScore.toFixed(2),
+                    ideasScore: ideasScore.toFixed(2),
+                    researchScore: researchScore.toFixed(2),
+                    chatScore: chatScore.toFixed(2),
+                    problemScore: problemScore.toFixed(2),
+                    lastUpdated: lastUpdated
+                });
+            }
+            
+            console.log('✅ Final processed users data:', usersData);
+            
+            if (usersData.length === 0) {
+                showNotification('Tidak ada data user yang ditemukan', 'warning');
+            }
+            
+            displayAllUsersData(usersData);
+            
+        } catch (error) {
+            console.error('❌ Error loading all users data:', error);
+            showNotification('Error memuat data semua user: ' + error.message, 'error');
+        }
+    }
+    // Fungsi helper untuk menghitung score masing-masing kategori
+    function calculateIdeasScore(ideasData) {
+        const target = 3; // Target ideas per bulan
+        if (ideasData.count >= target) return 100;
+        return (ideasData.count / target) * 100;
+    }
+
+    function calculateResearchScore(researchData) {
+        const target = 28; // Target research per bulan
+        if (researchData.count >= target) return 100;
+        return (researchData.count / target) * 100;
+    }
+
+    function calculateChatScore(chatData) {
+        // Untuk chat response, semakin kecil response time semakin baik
+        const maxAllowedTime = 3; // 3 menit
+        const penalty = chatData.missedChats * 25; // 25% penalty per chat yang missed
+        return Math.max(0, 100 - penalty);
+    }
+
+    function calculateProblemScore(problemData) {
+        const target = 6; // Target problem solving per bulan
+        if (problemData.count >= target) return 100;
+        return (problemData.count / target) * 100;
+    }
+
+    function calculateB2BScore(b2bData) {
+        const target = 3; // Target B2B per bulan
+        if (b2bData.count >= target) return 100;
+        return (b2bData.count / target) * 100;
+    }
+
+    function calculateAttitudeScore(attitudeData) {
+        const target = 8; // Target attitude score
+        if (attitudeData.averageScore >= target) return 100;
+        return (attitudeData.averageScore / target) * 100;
+    }
+
+    function calculateDisciplineScore(disciplineData) {
+        const target = 28; // Target days per bulan
+        if (disciplineData.count >= target) return 100;
+        return (disciplineData.count / target) * 100;
+    }
+    // Fungsi untuk menampilkan data semua user
+    function displayAllUsersData(usersData) {
+        const container = document.querySelector('.kpi-container');
+        if (!container) {
+            console.error('KPI container not found');
+            return;
+        }
+        
+        console.log('Displaying data for', usersData.length, 'users');
+        
+        const existingTable = container.querySelector('.all-users-table');
+        if (existingTable) {
+            existingTable.remove();
+        }
+        
+        const regularTable = container.querySelector('.kpi-table');
+        if (regularTable) {
+            regularTable.style.display = 'none';
+        }
+        
+        const actionButtons = container.querySelector('.kpi-actions');
+        if (actionButtons) {
+            actionButtons.style.display = 'none';
+        }
+        
+        const tableHtml = `
+            <div class="all-users-table">
+                <h3><i class="fas fa-users"></i> Data KPI Semua User (${usersData.length} users)</h3>
+                <table class="kpi-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Total KPI</th>
+                            <th>Ideas</th>
+                            <th>Research</th>
+                            <th>Chat Response</th>
+                            <th>Problem Solving</th>
+                            <th>Terakhir Update</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${usersData.map((user, index) => `
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${user.userName}</td>
+                                <td>${user.userEmail}</td>
+                                <td class="${user.totalScore >= 70 ? 'target-achieved' : user.totalScore >= 50 ? 'target-partial' : 'target-missed'}">
+                                    ${user.totalScore}%
+                                </td>
+                                <td>${user.ideasScore}%</td>
+                                <td>${user.researchScore}%</td>
+                                <td>${user.chatScore}%</td>
+                                <td>${user.problemScore}%</td>
+                                <td>${user.lastUpdated}</td>
+                                <td>
+                                    <button class="btn-view-user" data-uid="${user.userId}">
+                                        <i class="fas fa-eye"></i> Lihat Detail
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+        
+        container.insertAdjacentHTML('beforeend', tableHtml);
+        
+        container.querySelectorAll('.btn-view-user').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const userId = this.dataset.uid;
+                console.log('Viewing detail for user:', userId);
+                viewUserDetail(userId);
+            });
+        });
+        
+        showNotification(`Menampilkan data ${usersData.length} user`, 'info');
+    }
+
+    // Fungsi untuk melihat detail user tertentu
+    function viewUserDetail(userId) {
+        const regularTable = document.querySelector('.kpi-table');
+        if (regularTable) {
+            regularTable.style.display = '';
+        }
+        
+        const actionButtons = document.querySelector('.kpi-actions');
+        if (actionButtons) {
+            actionButtons.style.display = 'flex';
+        }
+        
+        const allUsersTable = document.querySelector('.all-users-table');
+        if (allUsersTable) {
+            allUsersTable.remove();
+        }
+        
+        loadKpiData('current', userId);
+        
+        const userFilter = document.getElementById('userFilter');
+        if (userFilter) {
+            userFilter.value = 'current';
+        }
+        
+        showNotification('Memuat data user...', 'info');
+    }
+
+    // Fungsi untuk menghitung total score - VERSI DIPERBAIKI
+    function calculateTotalScore(kpiDataArray) {
+        if (!kpiDataArray || !Array.isArray(kpiDataArray)) {
+            console.warn('⚠️ Invalid KPI data for calculation:', kpiDataArray);
+            return 0;
+        }
+        
+        try {
+            const total = kpiDataArray.reduce((sum, item) => {
+                const score = parseFloat(item.score) || 0;
+                const weight = parseFloat(item.weight) || 0;
+                return sum + (score * weight) / 100;
+            }, 0);
+            
+            return parseFloat(total.toFixed(2));
+        } catch (error) {
+            console.error('❌ Error calculating total score:', error);
+            return 0;
+        }
+    }
+
+    // ========== FUNGSI EDIT MODE ==========
 
     // Fungsi untuk mengaktifkan mode edit
     function enableEditMode() {
+        if (!isSuperAdminUser && currentFilter !== 'current') {
+            showNotification('Hanya bisa mengedit data sendiri', 'error');
+            return;
+        }
+        
         isEditMode = true;
         document.querySelector('.kpi-container').classList.add('edit-mode');
         
-        // Ubah tombol edit all menjadi simpan
         editAllBtn.innerHTML = '<i class="fas fa-save"></i> Simpan Semua';
         editAllBtn.classList.add('btn-success');
         editAllBtn.classList.remove('btn-primary');
         
-        // Tambahkan input field untuk setiap bidang yang dapat diedit
         const rows = document.querySelectorAll('.kpi-table tbody tr:not(.result-row)');
         rows.forEach((row, index) => {
             if (index < kpiData.length) {
                 const data = kpiData[index];
                 
-                // Area Kinerja Utama
                 const areaCell = row.querySelector('td:nth-child(2)');
                 areaCell.innerHTML = `<input type="text" class="edit-input" value="${data.area}" data-field="area" data-index="${index}">`;
                 
-                // Target
                 const targetCell = row.querySelector('td:nth-child(3)');
                 targetCell.innerHTML = `<input type="number" class="edit-input" value="${data.target}" min="0" data-field="target" data-index="${index}">`;
                 
-                // Bobot
                 const weightCell = row.querySelector('td:nth-child(4)');
                 weightCell.innerHTML = `<input type="number" class="edit-input" value="${data.weight}" min="0" max="100" data-field="weight" data-index="${index}">`;
                 
-                // Deskripsi KPI
                 const descCell = row.querySelector('td:nth-child(5)');
                 descCell.innerHTML = `<input type="text" class="edit-input" value="${data.description}" data-field="description" data-index="${index}">`;
                 
-                // Keterangan
                 const noteCell = row.querySelector('td:nth-child(6)');
                 noteCell.innerHTML = `<input type="text" class="edit-input" value="${data.note}" data-field="note" data-index="${index}">`;
                 
-                // Realisasi
                 const realizationCell = row.querySelector('td.realization-cell');
                 if (realizationCell) {
-                    realizationCell.innerHTML = `<input type="number" class="edit-input" value="${data.realization}" min="0" data-field="realization" data-index="${index}">`;
+                    realizationCell.innerHTML = `<span>${data.realization}</span>`;
                 }
             }
         });
         
-        // Tambahkan event listener untuk input changes
         addEditInputListeners();
-        
-        showNotification('Mode edit diaktifkan. Silakan ubah nilai yang diperlukan.', 'info');
+        showNotification('Mode edit diaktifkan. Anda dapat mengubah target dan bobot KPI.', 'info');
     }
 
     // Fungsi untuk menambahkan event listener pada input edit
@@ -1665,12 +2500,10 @@
                 const field = this.dataset.field;
                 let value = this.value;
                 
-                // Konversi ke number jika field numerik
-                if (field === 'target' || field === 'weight' || field === 'realization') {
+                if (field === 'target' || field === 'weight') {
                     value = parseFloat(value) || 0;
                 }
                 
-                // Update data
                 kpiData[index][field] = value;
             });
         });
@@ -1681,65 +2514,98 @@
         isEditMode = false;
         document.querySelector('.kpi-container').classList.remove('edit-mode');
         
-        // Kembalikan tombol edit all
         editAllBtn.innerHTML = '<i class="fas fa-edit"></i> Edit All';
         editAllBtn.classList.remove('btn-success');
         editAllBtn.classList.add('btn-primary');
         
-        // Simpan nilai dari input field
         const inputs = document.querySelectorAll('.edit-input');
         inputs.forEach(input => {
             const index = parseInt(input.dataset.index);
             const field = input.dataset.field;
             let value = input.value;
             
-            // Konversi ke number jika field numerik
-            if (field === 'target' || field === 'weight' || field === 'realization') {
+            if (field === 'target' || field === 'weight') {
                 value = parseFloat(value) || 0;
             }
             
             kpiData[index][field] = value;
         });
         
-        // Perbarui tampilan dengan nilai baru
+        saveKpiDataToFirestore();
         updateDisplay();
-        
-        showNotification('Perubahan berhasil disimpan.', 'success');
+        showNotification('Perubahan KPI berhasil disimpan.', 'success');
     }
 
     // Fungsi untuk memperbarui tampilan dengan data terbaru
-    function updateDisplay() {
-        const rows = document.querySelectorAll('.kpi-table tbody tr:not(.result-row)');
-        rows.forEach((row, index) => {
-            if (index < kpiData.length) {
-                const data = kpiData[index];
-                
-                // Area Kinerja Utama
-                row.querySelector('td:nth-child(2)').textContent = data.area;
-                
-                // Target
-                row.querySelector('td:nth-child(3)').textContent = data.target;
-                
-                // Bobot
-                row.querySelector('td:nth-child(4)').textContent = data.weight;
-                
-                // Deskripsi KPI
-                row.querySelector('td:nth-child(5)').textContent = data.description;
-                
-                // Keterangan
-                row.querySelector('td:nth-child(6)').textContent = data.note;
-                
-                // Realisasi
-                row.querySelector('.realization-cell').textContent = data.realization;
+    // Fungsi untuk memperbarui tampilan dengan data terbaru - VERSI DIPERBAIKI
+function updateDisplay() {
+    console.log('🔄 Updating display with current data...');
+    
+    const rows = document.querySelectorAll('.kpi-table tbody tr:not(.result-row)');
+    rows.forEach((row, index) => {
+        if (index < kpiData.length) {
+            const data = kpiData[index];
+            
+            // Pastikan semua nilai ada
+            const safeTarget = data.target || 0;
+            const safeWeight = data.weight || 0;
+            const safeRealization = data.realization || 0;
+            const safeScore = data.score || 0;
+            
+            row.querySelector('td:nth-child(2)').textContent = data.area || '';
+            row.querySelector('td:nth-child(3)').textContent = safeTarget;
+            row.querySelector('td:nth-child(4)').textContent = safeWeight.toFixed(2) + '%';
+            row.querySelector('td:nth-child(5)').textContent = data.description || '';
+            row.querySelector('td:nth-child(6)').textContent = data.note || '';
+            
+            const realizationCell = row.querySelector('.realization-cell');
+            if (realizationCell) {
+                realizationCell.textContent = safeRealization;
             }
-        });
-        
-        // Hitung ulang skor
-        updateKPI();
-    }
+            
+            const scoreCell = row.querySelector('td:nth-child(9)');
+            if (scoreCell) {
+                scoreCell.textContent = safeScore.toFixed(2) + '%';
+                scoreCell.className = '';
+                
+                if (safeScore >= 100) {
+                    scoreCell.classList.add('target-achieved');
+                } else if (safeScore >= 70) {
+                    scoreCell.classList.add('target-partial');
+                } else {
+                    scoreCell.classList.add('target-missed');
+                }
+            }
+            
+            // Update tombol action
+            const actionCell = row.querySelector('td:last-child');
+            if (actionCell && isSuperAdminUser) {
+                actionCell.innerHTML = `
+                    <button class="btn-edit-cell" onclick="editSingleRow(${index})">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                `;
+            } else if (actionCell) {
+                actionCell.innerHTML = ''; // Kosongkan untuk user biasa
+            }
+        }
+    });
+    
+    // Update total
+    updateKPI();
+    
+    console.log('✅ Display updated successfully');
+}
+
+    // ========== FUNGSI NOTIFICATION ==========
 
     // Fungsi untuk menampilkan notifikasi
     function showNotification(message, type = 'info') {
+        if (!notificationContainer) {
+            console.error('Notification container not found');
+            return;
+        }
+        
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
         notification.innerHTML = `
@@ -1752,32 +2618,26 @@
         
         notificationContainer.appendChild(notification);
         
-        // Tambahkan event listener untuk tombol close
         const closeBtn = notification.querySelector('.notification-close');
         closeBtn.addEventListener('click', function() {
             closeNotification(notification);
         });
         
-        // Hapus notifikasi setelah 5 detik
         const timeoutId = setTimeout(() => {
             closeNotification(notification);
         }, 5000);
         
-        // Simpan timeout ID untuk bisa dibatalkan jika user menutup manual
         notification.dataset.timeoutId = timeoutId;
     }
 
     // Fungsi untuk menutup notifikasi
     function closeNotification(notification) {
-        // Batalkan timeout jika masih ada
         if (notification.dataset.timeoutId) {
             clearTimeout(parseInt(notification.dataset.timeoutId));
         }
         
-        // Tambahkan animasi keluar
         notification.classList.add('hiding');
         
-        // Hapus elemen setelah animasi selesai
         setTimeout(() => {
             if (notification.parentElement) {
                 notification.remove();
@@ -1785,101 +2645,1543 @@
         }, 300);
     }
 
-    // Event Listeners
-    editAllBtn.addEventListener('click', () => {
+    // ========== FUNGSI RESET DATA ==========
+
+    // Fungsi untuk reset data KPI
+    function resetKpiData() {
+        if (!isSuperAdminUser && currentFilter !== 'current') {
+            showNotification('Hanya bisa mereset data sendiri', 'error');
+            return;
+        }
+        
+        const defaults = [
+            { area: "B2B & B2C (Count.)", target: 3, weight: 25, description: "Pembukaan WLB / Agent baru", note: "Semakin Besar Semakin Bagus", realization: 0 },
+            { area: "Problem Solving (Count.)", target: 6, weight: 20, description: "Kemampuan dalam menyelesaikan setiap masalah", note: "Semakin Besar Semakin Bagus", realization: 0 },
+            { area: "Idea (Count.)", target: 3, weight: 20, description: "Aktif memberikan ide, Saran & Masukan", note: "Semakin Besar Semakin Bagus", realization: 0 },
+            { area: "Response Chat (Count.)", target: 4, weight: 10, description: "Kecepatan dan ketepatan dalam Merespon Chat (Max 3 Menit)", note: "Semakin Kecil Semakin Bagus", realization: 0 },
+            { area: "Research (Count.)", target: 28, weight: 10, description: "Research keunggulan Platform / Agent Lain", note: "Semakin Besar Semakin Bagus", realization: 0 },
+            { area: "Attitude (Skor.)", target: 8, weight: 10, description: "Attitude dalam mengikuti SOP / Arahan", note: "Semakin Besar Semakin Bagus", realization: 0 },
+            { area: "Disiplin (Day.)", target: 28, weight: 5, description: "Jumlah kedisiplinan setiap bulan", note: "Semakin Besar Semakin Bagus", realization: 0 }
+        ];
+        
+        kpiData.forEach((item, index) => {
+            Object.assign(item, defaults[index]);
+        });
+        
+        saveKpiDataToFirestore();
+        updateDisplay();
+        showNotification('Data KPI berhasil direset ke nilai default.', 'success');
+    }
+
+// ========== FUNGSI SAVE YANG DIPERBAIKI ==========
+async function saveKpiDataToFirestore() {
+    try {
+        const currentUser = firebase.auth().currentUser;
+        if (!currentUser) {
+            console.error('❌ No user logged in');
+            return false;
+        }
+
+        const db = firebase.firestore();
+        
+        // Tentukan user ID target
+        let targetUserId = currentUser.uid;
+        
+        // Jika Super Admin sedang melihat user lain, simpan ke user tersebut
+        if (isSuperAdminUser && currentFilter !== 'current') {
+            // Dapatkan user ID dari data yang sedang dilihat
+            const viewingUserId = getCurrentViewingUserId();
+            if (viewingUserId && viewingUserId !== currentUser.uid) {
+                targetUserId = viewingUserId;
+            }
+        }
+        
+        console.log('💾 SAVING to Firestore for user:', targetUserId);
+        console.log('📊 Data to save:', kpiData);
+
+        // Format data sesuai dengan struktur Firestore
+        const kpiDoc = {
+            kpiData: kpiData.map(item => ({
+                id: item.id,
+                area: item.area,
+                target: item.target,
+                weight: item.weight,
+                description: item.description,
+                note: item.note,
+                realization: item.realization,
+                score: item.score
+            })),
+            userId: targetUserId,
+            userName: currentUser.displayName || currentUser.email,
+            userEmail: currentUser.email,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            totalScore: calculateTotalScore(kpiData),
+            lastUpdatedBy: currentUser.uid // Track siapa yang mengedit
+        };
+
+        // Gunakan set() dengan merge: true untuk update/create
+        await db.collection('kpiData').doc(targetUserId).set(kpiDoc, { merge: true });
+        
+        console.log('✅ SUCCESS: Data saved to Firestore for user:', targetUserId);
+        
+        // Juga update data di collections terpisah (ideas, research, dll)
+        await updateModuleCollections(targetUserId);
+        
+        return true;
+        
+    } catch (error) {
+        console.error('❌ ERROR saving to Firestore:', error);
+        showNotification('Gagal menyimpan data: ' + error.message, 'error');
+        return false;
+    }
+}
+
+// Fungsi untuk mendapatkan user ID yang sedang dilihat
+function getCurrentViewingUserId() {
+    // Cek dari URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('userId')) {
+        return urlParams.get('userId');
+    }
+    
+    // Cek dari state aplikasi
+    if (window.currentViewingUserId) {
+        return window.currentViewingUserId;
+    }
+    
+    // Fallback ke current user
+    const currentUser = firebase.auth().currentUser;
+    return currentUser ? currentUser.uid : null;
+}
+
+// Fungsi untuk update collections terpisah
+async function updateModuleCollections(userId) {
+    try {
+        const db = firebase.firestore();
+        
+        // Update ideas collection
+        const ideasData = kpiData.find(item => item.id === 3);
+        if (ideasData) {
+            await updateIdeasCollection(userId, ideasData.realization);
+        }
+        
+        // Update research collection  
+        const researchData = kpiData.find(item => item.id === 5);
+        if (researchData) {
+            await updateResearchCollection(userId, researchData.realization);
+        }
+        
+        // Update chat collection
+        const chatData = kpiData.find(item => item.id === 4);
+        if (chatData) {
+            await updateChatCollection(userId, chatData.realization);
+        }
+        
+        console.log('✅ Module collections updated');
+        
+    } catch (error) {
+        console.error('Error updating module collections:', error);
+    }
+}
+
+// Update Ideas Collection
+async function updateIdeasCollection(userId, realization) {
+    const db = firebase.firestore();
+    
+    // Hapus data lama
+    const oldIdeas = await db.collection('ideas')
+        .where('userId', '==', userId)
+        .get();
+    
+    const deletePromises = oldIdeas.docs.map(doc => doc.ref.delete());
+    await Promise.all(deletePromises);
+    
+    // Buat data baru sesuai realization
+    for (let i = 0; i < realization; i++) {
+        await db.collection('ideas').add({
+            userId: userId,
+            title: `Idea ${i + 1}`,
+            points: 1,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+    }
+}
+
+// Update Research Collection  
+async function updateResearchCollection(userId, realization) {
+    const db = firebase.firestore();
+    
+    const oldResearch = await db.collection('research')
+        .where('userId', '==', userId)
+        .get();
+    
+    const deletePromises = oldResearch.docs.map(doc => doc.ref.delete());
+    await Promise.all(deletePromises);
+    
+    for (let i = 0; i < realization; i++) {
+        await db.collection('research').add({
+            userId: userId,
+            title: `Research ${i + 1}`,
+            points: 1,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+    }
+}
+
+// Update Chat Collection
+async function updateChatCollection(userId, realization) {
+    const db = firebase.firestore();
+    
+    const oldChats = await db.collection('chats')
+        .where('userId', '==', userId)
+        .get();
+    
+    const deletePromises = oldChats.docs.map(doc => doc.ref.delete());
+    await Promise.all(deletePromises);
+    
+    for (let i = 0; i < realization; i++) {
+        await db.collection('chats').add({
+            userId: userId,
+            responseTime: 2.5, // Default value
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+    }
+}
+// Fungsi untuk mendapatkan user ID yang sedang dilihat
+function getCurrentViewingUserId() {
+    // Coba dapatkan dari berbagai sumber
+    const userBadge = document.querySelector('.user-name-badge');
+    if (userBadge) {
+        // Jika ada data attribute di badge
+        return userBadge.dataset.userId;
+    }
+    
+    // Cek dari URL parameter atau state
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('userId')) {
+        return urlParams.get('userId');
+    }
+    
+    // Fallback: return current user ID
+    const currentUser = firebase.auth().currentUser;
+    return currentUser ? currentUser.uid : null;
+}
+// Fungsi untuk memuat data KPI dari Firestore - VERSI DIPERBAIKI
+// PERBAIKAN: Fungsi load data yang lebih robust
+async function loadKpiDataFromFirestore(userId = null) {
+    try {
+        const currentUser = firebase.auth().currentUser;
+        if (!currentUser) {
+            console.log('User not authenticated');
+            return false;
+        }
+        
+        const targetUserId = userId || currentUser.uid;
+        const db = firebase.firestore();
+        
+        console.log('📥 Loading KPI data from Firestore for user:', targetUserId);
+        
+        const doc = await db.collection('kpiData').doc(targetUserId).get();
+        
+        if (doc.exists) {
+            const savedData = doc.data();
+            console.log('✅ Data loaded from Firestore:', savedData);
+            
+            if (savedData.kpiData && Array.isArray(savedData.kpiData)) {
+                // Clear dan replace kpiData
+                kpiData.length = 0;
+                
+                savedData.kpiData.forEach(savedItem => {
+                    kpiData.push({
+                        id: savedItem.id || 0,
+                        area: savedItem.area || '',
+                        target: savedItem.target || 0,
+                        weight: savedItem.weight || 0,
+                        description: savedItem.description || '',
+                        note: savedItem.note || '',
+                        realization: savedItem.realization || 0,
+                        score: savedItem.score || 0
+                    });
+                });
+                
+                console.log('✅ kpiData updated from Firestore');
+                return true;
+            }
+        } else {
+            console.log('📭 No data in Firestore, will create default data');
+            // Buat data default
+            await saveKpiDataToFirestore();
+        }
+        
+        return false;
+        
+    } catch (error) {
+        console.error('❌ Error loading from Firestore:', error);
+        return false;
+    }
+}   
+
+    // Setup real-time listeners untuk semua koleksi - VERSI DIPERBAIKI
+function setupRealTimeListeners() {
+    const currentUser = firebase.auth().currentUser;
+    if (!currentUser) return;
+    
+    const db = firebase.firestore();
+    
+    // Hentikan listeners sebelumnya
+    unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
+    unsubscribeFunctions = [];
+    
+    // Tentukan user ID target untuk listener
+    const targetUserId = getCurrentViewingUserId() || currentUser.uid;
+    
+    // Listener untuk kpiData
+    const kpiUnsubscribe = db.collection('kpiData')
+        .doc(targetUserId)
+        .onSnapshot((doc) => {
+            if (doc.exists) {
+                console.log('🔄 Real-time update received from Firestore for user:', targetUserId);
+                const savedData = doc.data();
+                if (savedData.kpiData) {
+                    // Update kpiData
+                    kpiData.length = 0;
+                    savedData.kpiData.forEach(item => kpiData.push(item));
+                    updateDisplay();
+                    showNotification('Data diperbarui secara real-time', 'info', 2000);
+                }
+            }
+        }, error => {
+            console.error('Error in kpiData real-time listener:', error);
+        });
+    unsubscribeFunctions.push(kpiUnsubscribe);
+    
+    console.log('Real-time listeners setup successfully for user:', targetUserId);
+}
+
+    // ========== EVENT LISTENERS ==========
+
+    // Event Listeners untuk tombol edit
+    // Event Listeners untuk tombol edit dengan protection
+    if (editAllBtn) {
+        editAllBtn.addEventListener('click', (e) => {
+            if (!isSuperAdminUser) {
+                e.preventDefault();
+                e.stopPropagation();
+                showNotification('Hanya Super Admin yang dapat mengedit data', 'error');
+                return;
+            }
+            
+            if (!isEditMode) {
+                enableEditMode();
+            } else {
+                disableEditMode();
+            }
+        });
+    }
+
+    // Event Listeners untuk reset modal dengan protection
+    if (resetBtn) {
+        resetBtn.addEventListener('click', (e) => {
+            if (!isSuperAdminUser) {
+                e.preventDefault();
+                e.stopPropagation();
+                showNotification('Hanya Super Admin yang dapat mereset data', 'error');
+                return;
+            }
+            resetModal.style.display = 'flex';
+        });
+    }
+
+    // Protection untuk tombol edit di submenu
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.submenu-container .btn-edit-all') || 
+            e.target.closest('.criteria-list .btn-primary')) {
+            if (!isSuperAdminUser) {
+                e.preventDefault();
+                e.stopPropagation();
+                showNotification('Hanya Super Admin yang dapat mengedit data', 'error');
+            }
+        }
+    });
+
+    // ========== INISIALISASI SAAT HALAMAN DIMUAT ==========
+
+    // Modifikasi bagian inisialisasi di DOMContentLoaded
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('🚀 KPI Integration initialized');
+    
+    if (typeof firebase !== 'undefined' && firebase.auth()) {
+        firebase.auth().onAuthStateChanged(async (user) => {
+            if (user) {
+                console.log('✅ User authenticated:', user.email);
+                
+                // Setup admin UI
+                await checkAndSetupSuperAdmin();
+                
+                // PERBAIKAN: Tunggu sampai data di-load sebelum setup lainnya
+                const loadSuccess = await loadKpiDataFromFirestore();
+                
+                if (loadSuccess) {
+                    console.log('✅ Data loaded successfully from Firestore');
+                } else {
+                    console.log('ℹ️ Using default data');
+                    // Jika tidak ada data, simpan data default
+                    await saveKpiDataToFirestore();
+                }
+                
+                // Setup real-time listeners
+                setupRealTimeListeners();
+                
+                // Load data berdasarkan filter yang aktif
+                await loadKpiData(currentFilter);
+                
+                // Update tampilan
+                updateDisplay();
+                
+                console.log('✅ KPI Dashboard initialized successfully');
+                
+            } else {
+                console.log('❌ User not authenticated');
+                setupAdminUI(false);
+            }
+        });
+    }
+});
+    // ========== FUNGSI TAMBAHAN UNTUK INTEGRASI ==========
+
+    // Fungsi untuk mendapatkan ringkasan performa KPI
+    function getKpiSummary() {
+        const totalScore = kpiData.reduce((sum, item) => sum + (item.score * item.weight) / 100, 0);
+        const totalRealization = kpiData.reduce((sum, item) => sum + item.realization, 0);
+        
+        return {
+            totalScore: totalScore.toFixed(2),
+            totalRealization: totalRealization,
+            status: totalScore >= 70 ? 'Excellent' : totalScore >= 50 ? 'Good' : 'Need Improvement',
+            details: kpiData.map(item => ({
+                area: item.area,
+                score: item.score.toFixed(2),
+                realization: item.realization,
+                target: item.target,
+                weight: item.weight
+            }))
+        };
+    }
+
+    // Export fungsi untuk digunakan di modul lain
+    window.KPIDashboard = {
+        getSummary: getKpiSummary,
+        updateData: updateAllKpiData,
+        getKpiData: () => kpiData,
+        setupRealTimeListeners: setupRealTimeListeners,
+        isSuperAdmin: () => isSuperAdminUser
+    };
+
+    // Fungsi untuk setup super admin (jalankan di console browser)
+    window.setupSuperAdmin = async function(email) {
+        const db = firebase.firestore();
+        const users = await db.collection('users').get();
+        
+        let targetUser = null;
+        users.forEach(doc => {
+            if (doc.data().email === email) {
+                targetUser = doc;
+            }
+        });
+        
+        if (targetUser) {
+            await db.collection('users').doc(targetUser.id).update({
+                role: 'super_admin',
+                isSuperAdmin: true
+            });
+            console.log('Super admin berhasil di setup untuk email:', email);
+            return true;
+        } else {
+            console.log('User dengan email tersebut tidak ditemukan');
+            return false;
+        }
+    };
+    // ========== FUNGSI DEBUG ==========
+
+    // Fungsi untuk debug manual di console browser
+    window.debugKPI = function() {
+        console.log('=== DEBUG KPI DASHBOARD ===');
+        console.log('Current User:', firebase.auth().currentUser);
+        console.log('Is Super Admin:', isSuperAdminUser);
+        console.log('Current Filter:', currentFilter);
+        console.log('KPI Data:', kpiData);
+        console.log('Firestore Config:', firebaseConfig);
+        
+        // Check Firestore data
+        const db = firebase.firestore();
+        db.collection('kpiData').get().then(snapshot => {
+            console.log('Total KPI Documents:', snapshot.size);
+            snapshot.forEach(doc => {
+                console.log('KPI Doc:', doc.id, doc.data());
+            });
+        });
+        
+        db.collection('users').get().then(snapshot => {
+            console.log('Total User Documents:', snapshot.size);
+            snapshot.forEach(doc => {
+                console.log('User Doc:', doc.id, doc.data());
+            });
+        });
+    };
+
+    // Force enable super admin untuk testing
+    window.forceSuperAdmin = function() {
+        isSuperAdminUser = true;
+        setupAdminUI(true);
+        console.log('🔓 Super admin forced enabled');
+        showNotification('Super Admin mode diaktifkan secara manual', 'info');
+        
+        // Refresh data dengan filter all
+        loadKpiData('all');
+    };
+
+    // Test load all data
+    window.testLoadAll = function() {
+        console.log('🧪 Testing load all data');
+        loadKpiData('all');
+    };
+    // Fungsi untuk debug detail koleksi
+    window.debugCollections = async function() {
+        console.log('=== DEBUG COLLECTIONS ===');
+        const db = firebase.firestore();
+        
+        try {
+            const [kpiSnapshot, usersSnapshot] = await Promise.all([
+                db.collection('kpiData').get(),
+                db.collection('users').get()
+            ]);
+            
+            console.log(`📁 KPI Documents (${kpiSnapshot.size}):`);
+            kpiSnapshot.forEach(doc => {
+                console.log(`  📄 ${doc.id}:`, doc.data());
+            });
+            
+            console.log(`📁 User Documents (${usersSnapshot.size}):`);
+            usersSnapshot.forEach(doc => {
+                console.log(`  👤 ${doc.id}:`, doc.data());
+            });
+            
+            // Check if user IDs match
+            const kpiUserIds = [];
+            kpiSnapshot.forEach(doc => kpiUserIds.push(doc.id));
+            
+            const userUserIds = [];
+            usersSnapshot.forEach(doc => userUserIds.push(doc.id));
+            
+            console.log('🔗 User ID Matching:');
+            console.log('  KPI User IDs:', kpiUserIds);
+            console.log('  User User IDs:', userUserIds);
+            console.log('  Matching IDs:', kpiUserIds.filter(id => userUserIds.includes(id)));
+            
+        } catch (error) {
+            console.error('❌ Debug error:', error);
+        }
+    };
+    // ========== FUNGSI RESET DATA TANPA PASSWORD ==========
+
+    // Fungsi untuk reset data KPI
+    async function resetKpiData() {
+        if (!isSuperAdminUser && currentFilter !== 'current') {
+            showNotification('Hanya bisa mereset data sendiri', 'error');
+            return;
+        }
+        
+        // Konfirmasi sederhana sebelum reset
+        const userConfirmed = confirm('Apakah Anda yakin ingin mereset semua data KPI ke nilai default?');
+        
+        if (!userConfirmed) {
+            showNotification('Reset data dibatalkan', 'info');
+            return;
+        }
+        
+        try {
+            console.log('🔄 Resetting KPI data to defaults...');
+            
+            // Data default
+            const defaults = [
+                { area: "B2B & B2C (Count.)", target: 3, weight: 25, description: "Pembukaan WLB / Agent baru", note: "Semakin Besar Semakin Bagus", realization: 0, score: 0 },
+                { area: "Problem Solving (Count.)", target: 6, weight: 20, description: "Kemampuan dalam menyelesaikan setiap masalah", note: "Semakin Besar Semakin Bagus", realization: 0, score: 0 },
+                { area: "Idea (Count.)", target: 3, weight: 20, description: "Aktif memberikan ide, Saran & Masukan", note: "Semakin Besar Semakin Bagus", realization: 0, score: 0 },
+                { area: "Response Chat (Count.)", target: 4, weight: 10, description: "Kecepatan dan ketepatan dalam Merespon Chat (Max 3 Menit)", note: "Semakin Kecil Semakin Bagus", realization: 0, score: 0 },
+                { area: "Research (Count.)", target: 28, weight: 10, description: "Research keunggulan Platform / Agent Lain", note: "Semakin Besar Semakin Bagus", realization: 0, score: 0 },
+                { area: "Attitude (Skor.)", target: 8, weight: 10, description: "Attitude dalam mengikuti SOP / Arahan", note: "Semakin Besar Semakin Bagus", realization: 0, score: 0 },
+                { area: "Disiplin (Day.)", target: 28, weight: 5, description: "Jumlah kedisiplinan setiap bulan", note: "Semakin Besar Semakin Bagus", realization: 0, score: 0 }
+            ];
+            
+            // Reset data KPI
+            kpiData.forEach((item, index) => {
+                if (defaults[index]) {
+                    Object.assign(item, defaults[index]);
+                }
+            });
+            
+            // Simpan ke Firestore
+            await saveKpiDataToFirestore();
+            
+            // Update tampilan
+            updateDisplay();
+            
+            // Reset data real-time dari Firestore (ideas, research, chat, dll)
+            await resetFirestoreData();
+            
+            showNotification('✅ Data KPI berhasil direset ke nilai default!', 'success');
+            
+            console.log('✅ KPI data reset successfully');
+            
+        } catch (error) {
+            console.error('❌ Error resetting KPI data:', error);
+            showNotification('❌ Gagal mereset data KPI: ' + error.message, 'error');
+        }
+    }
+
+    // Fungsi untuk reset data di Firestore collections
+    async function resetFirestoreData() {
+        try {
+            const currentUser = firebase.auth().currentUser;
+            if (!currentUser) return;
+            
+            const db = firebase.firestore();
+            const userId = currentFilter === 'all' && isSuperAdminUser ? null : currentUser.uid;
+            
+            // Daftar collections yang perlu direset
+            const collections = ['ideas', 'research', 'chats', 'problems', 'b2b', 'attitude', 'discipline'];
+            
+            for (const collectionName of collections) {
+                let query = db.collection(collectionName);
+                
+                // Jika bukan super admin atau filter current, reset hanya data user sendiri
+                if (userId) {
+                    query = query.where('userId', '==', userId);
+                }
+                
+                const snapshot = await query.get();
+                
+                // Hapus semua dokumen dalam collection
+                const deletePromises = snapshot.docs.map(doc => doc.ref.delete());
+                await Promise.all(deletePromises);
+                
+                console.log(`✅ Reset ${collectionName}: ${snapshot.size} documents deleted`);
+            }
+            
+        } catch (error) {
+            console.error('Error resetting Firestore data:', error);
+            // Tidak perlu show notification di sini, karena reset KPI utama sudah berhasil
+        }
+    }
+
+    // ========== EVENT LISTENERS YANG DIPERBAIKI ==========
+
+    // Event Listener untuk tombol reset
+    if (resetBtn) {
+        resetBtn.addEventListener('click', (e) => {
+            if (!isSuperAdminUser && currentFilter !== 'current') {
+                e.preventDefault();
+                e.stopPropagation();
+                showNotification('Hanya bisa mereset data sendiri', 'error');
+                return;
+            }
+            
+            // Langsung jalankan reset tanpa modal konfirmasi password
+            resetKpiData();
+        });
+    }
+
+    // HAPUS event listeners untuk modal reset yang sudah tidak ada
+    // resetCancel, resetConfirm, dll.
+    // ========== FUNGSI UNTUK MENAMPILKAN NAMA USER ==========
+
+// Fungsi untuk menampilkan nama user di header
+function displayUserNameInHeader(userName = null) {
+    const kpiHeader = document.querySelector('.kpi-container h2');
+    if (!kpiHeader) return;
+    
+    // Hapus elemen nama user yang sudah ada
+    const existingUserBadge = document.querySelector('.user-name-badge');
+    if (existingUserBadge) {
+        existingUserBadge.remove();
+    }
+    
+    // Jika tidak ada nama user atau melihat data sendiri, tampilkan default
+    if (!userName || currentFilter === 'current') {
+        kpiHeader.textContent = 'Data KPI Performance';
+        return;
+    }
+    
+    // Tambahkan badge nama user di samping judul
+    const userBadge = document.createElement('span');
+    userBadge.className = 'user-name-badge';
+    userBadge.innerHTML = `<i class="fas fa-user"></i> ${userName}`;
+    userBadge.style.cssText = `
+        background: var(--primary-gradient);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        margin-left: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        vertical-align: middle;
+    `;
+    
+    kpiHeader.textContent = 'Data KPI Performance ';
+    kpiHeader.appendChild(userBadge);
+}
+
+// ========== MODIFIKASI FUNGSI YANG SUDAH ADA ==========
+
+// Modifikasi fungsi viewUserDetail untuk menampilkan nama user
+function viewUserDetail(userId) {
+    const regularTable = document.querySelector('.kpi-table');
+    if (regularTable) {
+        regularTable.style.display = '';
+    }
+    
+    const actionButtons = document.querySelector('.kpi-actions');
+    if (actionButtons) {
+        actionButtons.style.display = 'flex';
+    }
+    
+    const allUsersTable = document.querySelector('.all-users-table');
+    if (allUsersTable) {
+        allUsersTable.remove();
+    }
+    
+    // Dapatkan nama user sebelum memuat data
+    getUserNameById(userId).then(userName => {
+        displayUserNameInHeader(userName);
+        loadKpiData('current', userId);
+    });
+    
+    const userFilter = document.getElementById('userFilter');
+    if (userFilter) {
+        userFilter.value = 'current';
+    }
+    
+    showNotification('Memuat data user...', 'info');
+}
+
+// Fungsi untuk mendapatkan nama user berdasarkan ID
+async function getUserNameById(userId) {
+    try {
+        const db = firebase.firestore();
+        const userDoc = await db.collection('users').doc(userId).get();
+        
+        if (userDoc.exists) {
+            const userData = userDoc.data();
+            return userData.name || userData.email || 'Unknown User';
+        }
+        return 'Unknown User';
+    } catch (error) {
+        console.error('Error getting user name:', error);
+        return 'Unknown User';
+    }
+}
+
+// Modifikasi fungsi displayAllUsersData untuk menyimpan informasi user
+function displayAllUsersData(usersData) {
+    const container = document.querySelector('.kpi-container');
+    if (!container) {
+        console.error('KPI container not found');
+        return;
+    }
+    
+    console.log('Displaying data for', usersData.length, 'users');
+    
+    const existingTable = container.querySelector('.all-users-table');
+    if (existingTable) {
+        existingTable.remove();
+    }
+    
+    const regularTable = container.querySelector('.kpi-table');
+    if (regularTable) {
+        regularTable.style.display = 'none';
+    }
+    
+    const actionButtons = container.querySelector('.kpi-actions');
+    if (actionButtons) {
+        actionButtons.style.display = 'none';
+    }
+    
+    // Reset header ke default saat melihat semua user
+    displayUserNameInHeader();
+    
+    const tableHtml = `
+        <div class="all-users-table">
+            <h3><i class="fas fa-users"></i> Data KPI Semua User (${usersData.length} users)</h3>
+            <table class="kpi-table">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Total KPI</th>
+                        <th>Ideas</th>
+                        <th>Research</th>
+                        <th>Chat Response</th>
+                        <th>Problem Solving</th>
+                        <th>Terakhir Update</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${usersData.map((user, index) => `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${user.userName}</td>
+                            <td>${user.userEmail}</td>
+                            <td class="${user.totalScore >= 70 ? 'target-achieved' : user.totalScore >= 50 ? 'target-partial' : 'target-missed'}">
+                                ${user.totalScore}%
+                            </td>
+                            <td>${user.ideasScore}%</td>
+                            <td>${user.researchScore}%</td>
+                            <td>${user.chatScore}%</td>
+                            <td>${user.problemScore}%</td>
+                            <td>${user.lastUpdated}</td>
+                            <td>
+                                <button class="btn-view-user" data-uid="${user.userId}" data-name="${user.userName}">
+                                    <i class="fas fa-eye"></i> Lihat Detail
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
+    
+    container.insertAdjacentHTML('beforeend', tableHtml);
+    
+    container.querySelectorAll('.btn-view-user').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const userId = this.dataset.uid;
+            const userName = this.dataset.name;
+            console.log('Viewing detail for user:', userName);
+            
+            // Tampilkan nama user di header
+            displayUserNameInHeader(userName);
+            viewUserDetail(userId);
+        });
+    });
+    
+    showNotification(`Menampilkan data ${usersData.length} user`, 'info');
+}
+
+// Modifikasi fungsi loadKpiData untuk menangani tampilan nama user
+async function loadKpiData(filter = 'current', specificUserId = null) {
+    try {
+        const currentUser = firebase.auth().currentUser;
+        if (!currentUser) {
+            console.log('No user logged in');
+            return;
+        }
+        
+        console.log('🔄 Loading KPI data with filter:', filter, 'specificUserId:', specificUserId);
+        
+        if (filter === 'current' || specificUserId) {
+            const userId = specificUserId || currentUser.uid;
+            console.log('👤 Loading data for user:', userId);
+            
+            // Jika melihat user lain, tampilkan nama user
+            if (specificUserId && specificUserId !== currentUser.uid) {
+                const userName = await getUserNameById(specificUserId);
+                displayUserNameInHeader(userName);
+            } else {
+                // Jika melihat data sendiri, reset ke default
+                displayUserNameInHeader();
+            }
+            
+            await updateAllKpiData(userId);
+            
+        } else if (filter === 'all' && isSuperAdminUser) {
+            console.log('👥 Loading ALL users data as super admin');
+            // Saat melihat semua user, reset header ke default
+            displayUserNameInHeader();
+            await loadAllUsersData();
+        } else {
+            console.log('❌ Cannot load all data - not super admin');
+            showNotification('Hanya Super Admin yang dapat melihat semua data', 'error');
+        }
+        
+    } catch (error) {
+        console.error('❌ Error loading KPI data:', error);
+        showNotification('Error memuat data KPI: ' + error.message, 'error');
+    }
+}
+
+// ========== CSS UNTUK STYLING BADGE NAMA USER ==========
+
+// Tambahkan CSS ini ke dalam tag <style> yang sudah ada
+const additionalCSS = `
+    .user-name-badge {
+        background: var(--primary-gradient);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        margin-left: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        vertical-align: middle;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    .kpi-container h2 {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    @media (max-width: 768px) {
+        .kpi-container h2 {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        
+        .user-name-badge {
+            margin-left: 0;
+            align-self: flex-start;
+        }
+    }
+`;
+
+// Inject CSS tambahan
+const style = document.createElement('style');
+style.textContent = additionalCSS;
+document.head.appendChild(style);
+
+// ========== INISIALISASI ==========
+
+// Pastikan header direset saat kembali ke dashboard utama
+document.addEventListener('DOMContentLoaded', function() {
+    // Reset header saat berpindah dashboard
+    const menuItems = document.querySelectorAll('.menu-item');
+    menuItems.forEach(item => {
+        item.addEventListener('click', function() {
+            if (this.dataset.target === 'dashboard-kpi') {
+                // Kembali ke data sendiri, reset header
+                displayUserNameInHeader();
+                const userFilter = document.getElementById('userFilter');
+                if (userFilter) {
+                    userFilter.value = 'current';
+                }
+                currentFilter = 'current';
+                loadKpiData('current');
+            }
+        });
+    });
+});
+// ========== FUNGSI EDIT REALISASI UNTUK SUPER ADMIN ==========
+
+// Fungsi untuk mengaktifkan mode edit realisasi
+function enableRealisasiEditMode() {
+    if (!isSuperAdminUser) {
+        showNotification('Hanya Super Admin yang dapat mengedit realisasi', 'error');
+        return;
+    }
+    
+    isEditMode = true;
+    document.querySelector('.kpi-container').classList.add('edit-mode');
+    
+    editAllBtn.innerHTML = '<i class="fas fa-save"></i> Simpan Semua';
+    editAllBtn.classList.add('btn-success');
+    editAllBtn.classList.remove('btn-primary');
+    
+    const rows = document.querySelectorAll('.kpi-table tbody tr:not(.result-row)');
+    rows.forEach((row, index) => {
+        if (index < kpiData.length) {
+            const data = kpiData[index];
+            
+            // Hanya edit realisasi (kolom ke-8) - bukan area, target, bobot, dll
+            const realizationCell = row.querySelector('.realization-cell');
+            if (realizationCell) {
+                realizationCell.innerHTML = `
+                    <input type="number" 
+                           class="edit-input realization-input" 
+                           value="${data.realization}" 
+                           min="0" 
+                           data-field="realization" 
+                           data-index="${index}"
+                           placeholder="Realisasi">
+                `;
+            }
+            
+            // Tambahkan tombol edit untuk kolom lain (opsional, tetap hanya super admin)
+            const actionCell = row.querySelector('td:last-child');
+            if (actionCell && actionCell.innerHTML.trim() === '') {
+                actionCell.innerHTML = `
+                    <button class="btn-edit-cell" onclick="editSingleRow(${index})">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                `;
+            }
+        }
+    });
+    
+    addRealisasiEditListeners();
+    showNotification('Mode edit realisasi diaktifkan. Hanya Super Admin yang dapat mengubah data.', 'info');
+}
+
+// Fungsi untuk edit satu baris (full edit untuk super admin)
+function editSingleRow(index) {
+    if (!isSuperAdminUser) {
+        showNotification('Hanya Super Admin yang dapat mengedit data', 'error');
+        return;
+    }
+    
+    const row = document.querySelector(`.kpi-table tbody tr:nth-child(${index + 1})`);
+    const data = kpiData[index];
+    
+    if (row) {
+        // Edit semua field untuk baris ini
+        const areaCell = row.querySelector('td:nth-child(2)');
+        areaCell.innerHTML = `<input type="text" class="edit-input" value="${data.area}" data-field="area" data-index="${index}">`;
+        
+        const targetCell = row.querySelector('td:nth-child(3)');
+        targetCell.innerHTML = `<input type="number" class="edit-input" value="${data.target}" min="0" data-field="target" data-index="${index}">`;
+        
+        const weightCell = row.querySelector('td:nth-child(4)');
+        weightCell.innerHTML = `<input type="number" class="edit-input" value="${data.weight}" min="0" max="100" data-field="weight" data-index="${index}">`;
+        
+        const descCell = row.querySelector('td:nth-child(5)');
+        descCell.innerHTML = `<input type="text" class="edit-input" value="${data.description}" data-field="description" data-index="${index}">`;
+        
+        const noteCell = row.querySelector('td:nth-child(6)');
+        noteCell.innerHTML = `<input type="text" class="edit-input" value="${data.note}" data-field="note" data-index="${index}">`;
+        
+        const realizationCell = row.querySelector('.realization-cell');
+        if (realizationCell) {
+            realizationCell.innerHTML = `<input type="number" class="edit-input realization-input" value="${data.realization}" min="0" data-field="realization" data-index="${index}">`;
+        }
+        
+        // Update tombol action
+        const actionCell = row.querySelector('td:last-child');
+        if (actionCell) {
+            actionCell.innerHTML = `
+                <button class="btn-save-cell" onclick="saveSingleRow(${index})">
+                    <i class="fas fa-check"></i> Simpan
+                </button>
+                <button class="btn-cancel-cell" onclick="cancelSingleRow(${index})">
+                    <i class="fas fa-times"></i> Batal
+                </button>
+            `;
+        }
+        
+        addEditInputListeners();
+    }
+}
+
+// Fungsi untuk menyimpan satu baris
+function saveSingleRow(index) {
+    const row = document.querySelector(`.kpi-table tbody tr:nth-child(${index + 1})`);
+    const inputs = row.querySelectorAll('.edit-input');
+    
+    inputs.forEach(input => {
+        const field = input.dataset.field;
+        let value = input.value;
+        
+        if (field === 'target' || field === 'weight' || field === 'realization') {
+            value = parseFloat(value) || 0;
+        }
+        
+        kpiData[index][field] = value;
+    });
+    
+    // Hitung ulang skor untuk baris ini
+    const data = kpiData[index];
+    const isSmallerBetter = data.note.includes("Semakin Kecil");
+    data.score = calculateScore(data.target, data.realization, isSmallerBetter, index);
+    
+    updateDisplay();
+    saveKpiDataToFirestore();
+    showNotification(`Data ${data.area} berhasil diperbarui`, 'success');
+}
+
+// Fungsi untuk membatalkan edit satu baris
+function cancelSingleRow(index) {
+    updateDisplay();
+    showNotification('Edit dibatalkan', 'info');
+}
+
+// Fungsi untuk menambahkan event listener khusus realisasi
+function addRealisasiEditListeners() {
+    const inputs = document.querySelectorAll('.realization-input');
+    inputs.forEach(input => {
+        input.addEventListener('change', function() {
+            const index = parseInt(this.dataset.index);
+            const value = parseFloat(this.value) || 0;
+            
+            kpiData[index].realization = value;
+            
+            // Auto-update score ketika realisasi berubah
+            const data = kpiData[index];
+            const isSmallerBetter = data.note.includes("Semakin Kecil");
+            data.score = calculateScore(data.target, data.realization, isSmallerBetter, index);
+            
+            // Update tampilan sementara
+            const scoreCell = document.querySelector(`.kpi-table tbody tr:nth-child(${index + 1}) td:nth-child(9)`);
+            if (scoreCell) {
+                scoreCell.textContent = data.score.toFixed(2) + '%';
+                scoreCell.className = '';
+                
+                if (data.score >= 100) {
+                    scoreCell.classList.add('target-achieved');
+                } else if (data.score >= 70) {
+                    scoreCell.classList.add('target-partial');
+                } else {
+                    scoreCell.classList.add('target-missed');
+                }
+            }
+        });
+    });
+}
+
+// ========== MODIFIKASI FUNGSI YANG SUDAH ADA ==========
+
+// Ganti fungsi enableEditMode yang lama
+function enableEditMode() {
+    if (!isSuperAdminUser) {
+        showNotification('Hanya Super Admin yang dapat mengedit data', 'error');
+        return;
+    }
+    
+    // Tampilkan modal pilihan edit
+    showEditOptionsModal();
+}
+
+// Fungsi untuk menampilkan modal pilihan edit
+function showEditOptionsModal() {
+    const modalHtml = `
+        <div class="reset-modal" id="edit-options-modal" style="display: flex;">
+            <div class="reset-modal-content">
+                <div class="reset-modal-header">
+                    <div class="reset-modal-icon">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <h3 class="reset-modal-title">Pilihan Edit</h3>
+                </div>
+                <div class="reset-modal-body">
+                    <p class="reset-modal-text">Pilih jenis edit yang ingin dilakukan:</p>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin: 20px 0;">
+                        <button class="edit-option-btn" data-type="realisasi">
+                            <i class="fas fa-chart-bar"></i>
+                            Edit Realisasi Saja
+                            <small>Hanya mengubah nilai realisasi</small>
+                        </button>
+                        <button class="edit-option-btn" data-type="full">
+                            <i class="fas fa-cogs"></i>
+                            Edit Semua Data
+                            <small>Edit target, bobot, deskripsi, dll</small>
+                        </button>
+                    </div>
+                </div>
+                <div class="reset-modal-actions">
+                    <button class="reset-modal-btn reset-modal-btn-cancel" id="edit-options-cancel">
+                        Batal
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Event listeners untuk modal
+    document.getElementById('edit-options-cancel').addEventListener('click', function() {
+        document.getElementById('edit-options-modal').remove();
+    });
+    
+    document.querySelectorAll('.edit-option-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const editType = this.dataset.type;
+            document.getElementById('edit-options-modal').remove();
+            
+            if (editType === 'realisasi') {
+                enableRealisasiEditMode();
+            } else if (editType === 'full') {
+                enableFullEditMode();
+            }
+        });
+    });
+}
+
+// Fungsi untuk edit semua data (seperti fungsi enableEditMode yang lama)
+function enableFullEditMode() {
+    isEditMode = true;
+    document.querySelector('.kpi-container').classList.add('edit-mode');
+    
+    editAllBtn.innerHTML = '<i class="fas fa-save"></i> Simpan Semua';
+    editAllBtn.classList.add('btn-success');
+    editAllBtn.classList.remove('btn-primary');
+    
+    const rows = document.querySelectorAll('.kpi-table tbody tr:not(.result-row)');
+    rows.forEach((row, index) => {
+        if (index < kpiData.length) {
+            const data = kpiData[index];
+            
+            const areaCell = row.querySelector('td:nth-child(2)');
+            areaCell.innerHTML = `<input type="text" class="edit-input" value="${data.area}" data-field="area" data-index="${index}">`;
+            
+            const targetCell = row.querySelector('td:nth-child(3)');
+            targetCell.innerHTML = `<input type="number" class="edit-input" value="${data.target}" min="0" data-field="target" data-index="${index}">`;
+            
+            const weightCell = row.querySelector('td:nth-child(4)');
+            weightCell.innerHTML = `<input type="number" class="edit-input" value="${data.weight}" min="0" max="100" data-field="weight" data-index="${index}">`;
+            
+            const descCell = row.querySelector('td:nth-child(5)');
+            descCell.innerHTML = `<input type="text" class="edit-input" value="${data.description}" data-field="description" data-index="${index}">`;
+            
+            const noteCell = row.querySelector('td:nth-child(6)');
+            noteCell.innerHTML = `<input type="text" class="edit-input" value="${data.note}" data-field="note" data-index="${index}">`;
+            
+            const realizationCell = row.querySelector('.realization-cell');
+            if (realizationCell) {
+                realizationCell.innerHTML = `<input type="number" class="edit-input realization-input" value="${data.realization}" min="0" data-field="realization" data-index="${index}">`;
+            }
+            
+            const actionCell = row.querySelector('td:last-child');
+            if (actionCell && actionCell.innerHTML.trim() === '') {
+                actionCell.innerHTML = `
+                    <button class="btn-edit-cell" onclick="editSingleRow(${index})">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                `;
+            }
+        }
+    });
+    
+    addEditInputListeners();
+    showNotification('Mode edit penuh diaktifkan. Semua data dapat diubah.', 'info');
+}
+
+// ========== CSS TAMBAHAN ==========
+
+const realisasiEditCSS = `
+    .realization-input {
+        background: #fff3cd !important;
+        border: 2px solid #ffc107 !important;
+        font-weight: bold;
+    }
+    
+    .edit-option-btn {
+        padding: 15px;
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius-md);
+        background: var(--card-bg);
+        color: var(--text-primary);
+        text-align: left;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .edit-option-btn:hover {
+        border-color: var(--primary);
+        background: var(--hover-color);
+        transform: translateY(-2px);
+    }
+    
+    .edit-option-btn i {
+        font-size: 20px;
+        margin-bottom: 5px;
+        color: var(--primary);
+    }
+    
+    .edit-option-btn small {
+        color: var(--text-secondary);
+        font-size: 12px;
+    }
+    
+    .btn-edit-cell, .btn-save-cell, .btn-cancel-cell {
+        padding: 6px 12px;
+        border: none;
+        border-radius: var(--radius-md);
+        font-size: var(--text-xs);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        transition: all var(--transition-fast);
+    }
+    
+    .btn-edit-cell {
+        background: var(--primary);
+        color: white;
+    }
+    
+    .btn-save-cell {
+        background: var(--success);
+        color: white;
+    }
+    
+    .btn-cancel-cell {
+        background: var(--overdue-color);
+        color: white;
+    }
+    
+    .btn-edit-cell:hover, .btn-save-cell:hover, .btn-cancel-cell:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+    
+    .kpi-table td:last-child {
+        min-width: 120px;
+    }
+`;
+
+// Inject CSS
+const styleElement = document.createElement('style');
+styleElement.textContent = realisasiEditCSS;
+document.head.appendChild(styleElement);
+
+// ========== UPDATE EVENT LISTENERS ==========
+
+// Ganti event listener untuk tombol Edit All
+if (editAllBtn) {
+    editAllBtn.addEventListener('click', (e) => {
+        if (!isSuperAdminUser) {
+            e.preventDefault();
+            e.stopPropagation();
+            showNotification('Hanya Super Admin yang dapat mengedit data', 'error');
+            return;
+        }
+        
         if (!isEditMode) {
-            enableEditMode();
+            enableEditMode(); // Sekarang akan menampilkan modal pilihan
         } else {
             disableEditMode();
         }
     });
+}
 
-    resetBtn.addEventListener('click', () => {
-        resetModal.style.display = 'flex';
-    });
-
-    resetCancel.addEventListener('click', () => {
-        resetModal.style.display = 'none';
-        resetPassword.value = '';
-    });
-
-    resetConfirm.addEventListener('click', () => {
-        if (resetPassword.value === 'admin123') {
-            // Reset semua data ke nilai default
-            const defaults = [
-                { area: "B2B & B2C (Count.)", target: 3, weight: 25, description: "Pembelajaran W18 / Agent baru", note: "Semakin Besar Semakin Bagus", realization: 0 },
-                { area: "Problem Solving (Count.)", target: 6, weight: 20, description: "Kemampuan dalam menyelesaikan setiap masalah", note: "Semakin Besar Semakin Bagus", realization: 0 },
-                { area: "Idea (Count.)", target: 3, weight: 20, description: "Aktif memberikan ide, Saran & Masukan", note: "Semakin Besar Semakin Bagus", realization: 0 },
-                { area: "Response Chat (Count.)", target: 4, weight: 10, description: "Kecepatan dan ketepatan dalam Merespon Chat (Max 3 Menit)", note: "Semakin Kecil Semakin Bagus", realization: 0 },
-                { area: "Research (Count.)", target: 28, weight: 10, description: "Research keunggulan Platform / Agent Lain", note: "Semakin Besar Semakin Bagus", realization: 0 },
-                { area: "Attitude (Skor.)", target: 8, weight: 10, description: "Attitude dalam mengikuti SOP / Arahan", note: "Semakin Besar Semakin Bagus", realization: 0 },
-                { area: "Disiplin (Day.)", target: 28, weight: 5, description: "Jumlah kedisiplinan setiap bulan", note: "Semakin Besar Semakin Bagus", realization: 0 }
-            ];
+// Fungsi disableEditMode tetap sama
+// Fungsi untuk menonaktifkan mode edit - VERSI DIPERBAIKI
+// Fungsi untuk menonaktifkan mode edit - VERSI DIPERBAIKI
+// PERBAIKAN FUNGSI disableEditMode
+async function disableEditMode() {
+    try {
+        console.log('🔄 Disabling edit mode...');
+        
+        isEditMode = false;
+        document.querySelector('.kpi-container').classList.remove('edit-mode');
+        
+        // Update tombol
+        editAllBtn.innerHTML = '<i class="fas fa-edit"></i> Edit All';
+        editAllBtn.classList.remove('btn-success');
+        editAllBtn.classList.add('btn-primary');
+        
+        // Kumpulkan dan simpan semua perubahan
+        const inputs = document.querySelectorAll('.edit-input');
+        let hasChanges = false;
+        
+        console.log('📝 Processing', inputs.length, 'input fields...');
+        
+        inputs.forEach(input => {
+            const index = parseInt(input.dataset.index);
+            const field = input.dataset.field;
+            let value = input.value;
             
-            kpiData.forEach((item, index) => {
-                Object.assign(item, defaults[index]);
-            });
+            if (field === 'target' || field === 'weight' || field === 'realization') {
+                value = parseFloat(value) || 0;
+            }
             
-            // Reset localStorage
-            localStorage.removeItem('ideasCount');
-            localStorage.removeItem('researchCount');
-            localStorage.removeItem('chatData');
-            
-            // Perbarui tampilan
-            updateDisplay();
-            
-            // Tutup modal
-            resetModal.style.display = 'none';
-            resetPassword.value = '';
-            
-            showNotification('Data KPI berhasil direset ke nilai default.', 'success');
-        } else {
-            showNotification('Password salah. Data tidak direset.', 'error');
-        }
-    });
-
-    // Navigasi menu
-    menuItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const target = item.dataset.target;
-            
-            // Update menu aktif
-            menuItems.forEach(mi => mi.classList.remove('active'));
-            item.classList.add('active');
-            
-            // Tampilkan dashboard yang sesuai
-            dashboards.forEach(d => d.classList.remove('active'));
-            document.getElementById(target).classList.add('active');
+            // Simpan perubahan ke kpiData
+            const oldValue = kpiData[index][field];
+            if (oldValue != value) {
+                hasChanges = true;
+                console.log(`🔄 Changing ${field} from ${oldValue} to ${value}`);
+                kpiData[index][field] = value;
+                
+                // Hitung ulang score jika realisasi berubah
+                if (field === 'realization') {
+                    const data = kpiData[index];
+                    const isSmallerBetter = data.note.includes("Semakin Kecil");
+                    data.score = calculateScore(data.target, data.realization, isSmallerBetter, index);
+                    console.log(`📊 Recalculated score: ${data.score}`);
+                }
+            }
         });
-    });
-
-    // Dengarkan event perubahan data
-    window.addEventListener('ideasDataChanged', updateIdeasFromStorage);
-    window.addEventListener('researchDataChanged', updateResearchFromStorage);
-    window.addEventListener('chatDataChanged', updateChatFromStorage);
-
-    // Inisialisasi saat halaman dimuat
-    document.addEventListener('DOMContentLoaded', function() {
-        // Perbarui data dari storage
-        updateIdeasFromStorage();
-        updateResearchFromStorage();
-        updateChatFromStorage();
         
-        // Hitung ulang KPI
-        updateKPI();
+        if (hasChanges) {
+            console.log('💾 Changes detected, saving to Firestore...');
+            
+            // Update tampilan sementara
+            updateKPI();
+            
+            // SIMPAN KE FIRESTORE - INI YANG PENTING!
+            const saveResult = await saveKpiDataToFirestore();
+            
+            if (saveResult) {
+                showNotification('✅ Perubahan berhasil disimpan ke database!', 'success');
+                console.log('✅ Save successful');
+                
+                // Verifikasi dengan load ulang data
+                setTimeout(async () => {
+                    await loadKpiDataFromFirestore();
+                    updateDisplay();
+                }, 500);
+                
+            } else {
+                showNotification('❌ Gagal menyimpan perubahan ke database', 'error');
+                console.error('❌ Save failed');
+            }
+        } else {
+            console.log('ℹ️ No changes to save');
+            showNotification('Tidak ada perubahan yang disimpan', 'info');
+        }
         
-        // Animasi progress bar
-        setTimeout(() => {
-            document.querySelectorAll('.progress-fill').forEach(bar => {
-                const width = bar.style.width;
-                bar.style.width = '0';
-                setTimeout(() => {
-                    bar.style.width = width;
-                }, 100);
-            });
-        }, 500);
-    });
-    </script>
+    } catch (error) {
+        console.error('❌ Error in disableEditMode:', error);
+        showNotification('Error: ' + error.message, 'error');
+    }
+}
+// ========== FUNGSI DEBUG TAMBAHAN ==========
+
+// Fungsi untuk test save/load
+window.testSaveLoad = async function() {
+    console.log('🧪 Testing save/load functionality...');
+    
+    // Simpan data dulu
+    console.log('💾 Saving current data...');
+    await saveKpiDataToFirestore();
+    
+    // Tunggu sebentar
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Load data kembali
+    console.log('📥 Loading data back...');
+    await loadKpiDataFromFirestore();
+    
+    // Update tampilan
+    updateDisplay();
+    
+    console.log('✅ Save/load test completed');
+    showNotification('Test save/load completed!', 'success');
+};
+
+// Fungsi untuk melihat data di Firestore
+window.checkFirestoreData = async function() {
+    const db = firebase.firestore();
+    const currentUser = firebase.auth().currentUser;
+    
+    if (!currentUser) {
+        console.log('❌ No user logged in');
+        return;
+    }
+    
+    const doc = await db.collection('kpiData').doc(currentUser.uid).get();
+    
+    if (doc.exists) {
+        console.log('📋 Firestore data:', doc.data());
+        showNotification('Data Firestore ditemukan! Lihat console.', 'success');
+    } else {
+        console.log('📭 No data in Firestore');
+        showNotification('Tidak ada data di Firestore', 'warning');
+    }
+};
+// Fungsi untuk debug data
+window.debugData = function() {
+    console.log('=== DEBUG DATA ===');
+    console.log('kpiData:', kpiData);
+    console.log('isSuperAdminUser:', isSuperAdminUser);
+    console.log('currentFilter:', currentFilter);
+    console.log('isEditMode:', isEditMode);
+    
+    // Check Firestore data
+    const db = firebase.firestore();
+    const currentUser = firebase.auth().currentUser;
+    
+    if (currentUser) {
+        db.collection('kpiData').doc(currentUser.uid).get().then(doc => {
+            if (doc.exists) {
+                console.log('Firestore data:', doc.data());
+            } else {
+                console.log('No data in Firestore');
+            }
+        });
+    }
+};
+// Fungsi debug untuk memeriksa data
+window.debugSaveIssue = async function() {
+    console.log('=== DEBUG SAVE ISSUE ===');
+    
+    const currentUser = firebase.auth().currentUser;
+    const db = firebase.firestore();
+    
+    // Check current kpiData
+    console.log('Current kpiData:', kpiData);
+    
+    // Check Firestore data before save
+    const beforeDoc = await db.collection('kpiData').doc(currentUser.uid).get();
+    console.log('Firestore data BEFORE save:', beforeDoc.exists ? beforeDoc.data() : 'No data');
+    
+    // Simpan data
+    console.log('Saving data...');
+    await saveKpiDataToFirestore();
+    
+    // Check Firestore data after save
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Tunggu 1 detik
+    const afterDoc = await db.collection('kpiData').doc(currentUser.uid).get();
+    console.log('Firestore data AFTER save:', afterDoc.exists ? afterDoc.data() : 'No data');
+    
+    // Load data kembali
+    console.log('Loading data back...');
+    await loadKpiDataFromFirestore();
+    console.log('kpiData after reload:', kpiData);
+};
+// FUNGSI TEST SAVE - tambahkan ini
+window.testSaveNow = async function() {
+    console.log('🧪 TEST: Saving current data...');
+    
+    const success = await saveKpiDataToFirestore();
+    if (success) {
+        alert('✅ Data berhasil disimpan ke Firestore!');
+        // Refresh data untuk memverifikasi
+        await loadKpiDataFromFirestore();
+        updateDisplay();
+    } else {
+        alert('❌ Gagal menyimpan data');
+    }
+};
+
+// Fungsi untuk memeriksa data di Firestore
+window.checkFirestoreData = async function() {
+    const db = firebase.firestore();
+    const currentUser = firebase.auth().currentUser;
+    
+    if (!currentUser) {
+        console.log('❌ No user logged in');
+        return;
+    }
+    
+    console.log('🔍 Checking Firestore data for user:', currentUser.uid);
+    
+    const doc = await db.collection('kpiData').doc(currentUser.uid).get();
+    
+    if (doc.exists) {
+        console.log('✅ Data ditemukan di Firestore:', doc.data());
+        alert('Data ditemukan di Firestore! Lihat console untuk detail.');
+    } else {
+        console.log('❌ TIDAK ADA DATA di Firestore');
+        alert('TIDAK ADA DATA di Firestore!');
+    }
+};
+</script>
 </body>
 
 </html>

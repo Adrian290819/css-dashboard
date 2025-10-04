@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="global.css">
         <link rel="stylesheet" href="stylemobile.css">
+        <script src="global-time.js"></script>
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore-compat.js"></script>
@@ -2386,6 +2387,459 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
+    // ========== FUNGSI VIEW GAME DETAILS ==========
+function viewGame(gameId) {
+    const game = games.find(g => g.id === gameId);
+    if (!game) {
+        showNotification('Game not found!', 'error');
+        return;
+    }
+    
+    // Create detail modal if it doesn't exist
+    let detailModal = document.getElementById('gameDetailModal');
+    if (!detailModal) {
+        detailModal = document.createElement('div');
+        detailModal.id = 'gameDetailModal';
+        detailModal.className = 'modal-overlay';
+        detailModal.innerHTML = `
+            <div class="modal" style="max-width: 900px;">
+                <div class="modal-header">
+                    <h3 class="modal-title"><i class="fas fa-info-circle"></i> Game Details</h3>
+                    <button class="modal-close" id="closeGameDetailModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: start;">
+                        <!-- Image Section -->
+                        <div>
+                            <div style="position: relative;">
+                                <img id="gameDetailImage" src="" alt="Game Image" 
+                                     style="width: 100%; height: 300px; object-fit: cover; border-radius: 12px; border: 2px solid var(--border-color); cursor: pointer;"
+                                     onclick="openGameImageFullscreen(this.src)">
+                                <div id="gameDetailBadge" class="game-badge" 
+                                     style="position: absolute; top: 12px; right: 12px;">
+                                </div>
+                            </div>
+                            <div style="text-align: center; margin-top: 15px;">
+                                <button class="btn btn-outline btn-sm" onclick="openGameImageFullscreen(document.getElementById('gameDetailImage').src)" style="margin: 5px;">
+                                    <i class="fas fa-expand"></i> View Full Size
+                                </button>
+                                <button class="btn btn-outline btn-sm" onclick="downloadGameImage(document.getElementById('gameDetailImage').src, document.getElementById('gameDetailTitle').textContent)" style="margin: 5px;">
+                                    <i class="fas fa-download"></i> Download
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Details Section -->
+                        <div>
+                            <h3 id="gameDetailTitle" style="margin-top: 0; color: var(--text-primary); border-bottom: 2px solid var(--primary); padding-bottom: 10px;"></h3>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                                <div class="detail-item">
+                                    <strong style="color: var(--text-secondary); font-size: 0.9rem;">Category:</strong>
+                                    <p id="gameDetailCategory" style="margin: 5px 0; font-weight: 500;"></p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong style="color: var(--text-secondary); font-size: 0.9rem;">Provider:</strong>
+                                    <p id="gameDetailProvider" style="margin: 5px 0; font-weight: 500;"></p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong style="color: var(--text-secondary); font-size: 0.9rem;">Release Date:</strong>
+                                    <p id="gameDetailDate" style="margin: 5px 0; font-weight: 500;"></p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong style="color: var(--text-secondary); font-size: 0.9rem;">Status:</strong>
+                                    <p id="gameDetailStatus" style="margin: 5px 0; font-weight: 500;"></p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong style="color: var(--text-secondary); font-size: 0.9rem;">Rating:</strong>
+                                    <p id="gameDetailRating" style="margin: 5px 0; font-weight: 500;"></p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong style="color: var(--text-secondary); font-size: 0.9rem;">Platforms:</strong>
+                                    <p id="gameDetailPlatforms" style="margin: 5px 0; font-weight: 500;"></p>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <strong style="color: var(--text-secondary); font-size: 0.9rem;">Description:</strong>
+                                <p id="gameDetailDescription" style="margin: 10px 0; line-height: 1.6; background: var(--bg-secondary); padding: 15px; border-radius: 8px; border-left: 4px solid var(--primary);"></p>
+                            </div>
+                            
+                            <!-- Additional Info -->
+                            <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border-color);">
+                                <strong style="color: var(--text-secondary); font-size: 0.9rem;">Additional Information:</strong>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                                    <div>
+                                        <small style="color: var(--text-secondary);">Created:</small>
+                                        <p style="margin: 2px 0; font-size: 0.85rem;" id="gameDetailCreated">${formatDate(game.dateCreated) || 'Not available'}</p>
+                                    </div>
+                                    <div>
+                                        <small style="color: var(--text-secondary);">Last Updated:</small>
+                                        <p style="margin: 2px 0; font-size: 0.85rem;" id="gameDetailUpdated">${formatDate(game.dateUpdated) || 'Not available'}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline" id="closeGameDetail">Close</button>
+                    <button class="btn btn-primary" onclick="editGameFromDetail('${game.id}')">
+                        <i class="fas fa-edit"></i> Edit Game
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(detailModal);
+        
+        // Add event listeners for the new modal
+        document.getElementById('closeGameDetailModal').addEventListener('click', closeGameDetailModal);
+        document.getElementById('closeGameDetail').addEventListener('click', closeGameDetailModal);
+        
+        // Close modal when clicking outside
+        detailModal.addEventListener('click', (e) => {
+            if (e.target === detailModal) {
+                closeGameDetailModal();
+            }
+        });
+    }
+    
+    // Fill the detail modal with game data
+    document.getElementById('gameDetailTitle').textContent = game.title || 'No title';
+    document.getElementById('gameDetailCategory').textContent = game.category || 'Not specified';
+    document.getElementById('gameDetailProvider').textContent = game.provider || 'Not specified';
+    document.getElementById('gameDetailDate').textContent = formatDisplayDate(game.releaseDate);
+    document.getElementById('gameDetailStatus').textContent = game.status || 'active';
+    document.getElementById('gameDetailRating').textContent = game.rating ? `${game.rating}/5` : 'N/A';
+    document.getElementById('gameDetailPlatforms').textContent = game.platforms ? game.platforms.join(', ') : 'Web';
+    document.getElementById('gameDetailDescription').textContent = game.description || 'No description available';
+    document.getElementById('gameDetailCreated').textContent = formatDate(game.dateCreated) || 'Not available';
+    document.getElementById('gameDetailUpdated').textContent = formatDate(game.dateUpdated) || 'Not available';
+    
+    // Set the image
+    const gameDetailImage = document.getElementById('gameDetailImage');
+    if (game.image) {
+        gameDetailImage.src = game.image;
+        gameDetailImage.alt = game.title || 'Game Image';
+        
+        // Add loading state
+        gameDetailImage.onload = function() {
+            gameDetailImage.style.opacity = '1';
+        };
+        gameDetailImage.style.opacity = '0.7';
+        gameDetailImage.style.transition = 'opacity 0.3s ease';
+    } else {
+        gameDetailImage.src = `https://via.placeholder.com/400x300/4361ee/ffffff?text=${encodeURIComponent(game.title || 'No Image Available')}`;
+        gameDetailImage.alt = 'Default Game Image';
+    }
+    
+    // Set badge
+    const gameDetailBadge = document.getElementById('gameDetailBadge');
+    if (gameDetailBadge) {
+        let badgeClass = '';
+        let badgeText = '';
+        
+        if (game.status === 'upcoming') {
+            badgeClass = 'badge-upcoming';
+            badgeText = 'Upcoming';
+        } else if (game.rating >= 4.7) {
+            badgeClass = 'badge-popular';
+            badgeText = 'Popular';
+        } else if (new Date(game.releaseDate) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)) {
+            badgeClass = 'badge-new';
+            badgeText = 'New';
+        } else {
+            badgeClass = 'badge-upcoming';
+            badgeText = game.status || 'Active';
+        }
+        
+        gameDetailBadge.className = `game-badge ${badgeClass}`;
+        gameDetailBadge.textContent = badgeText;
+    }
+    
+    // Update edit button with current game ID
+    const editBtn = detailModal.querySelector('.btn-primary');
+    if (editBtn) {
+        editBtn.onclick = function() {
+            closeGameDetailModal();
+            openEditGameModal(game.id);
+        };
+    }
+    
+    // Show the detail modal
+    detailModal.classList.add('active');
+}
+
+// ========== FUNGSI FULLSCREEN GAME IMAGE ==========
+function openGameImageFullscreen(imageSrc) {
+    // Create fullscreen overlay
+    const fullscreenOverlay = document.createElement('div');
+    fullscreenOverlay.id = 'gameImageFullscreenOverlay';
+    fullscreenOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    `;
+    
+    // Create image container
+    const imageContainer = document.createElement('div');
+    imageContainer.style.cssText = `
+        position: relative;
+        max-width: 90%;
+        max-height: 90%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    `;
+    
+    // Create fullscreen image
+    const fullscreenImage = document.createElement('img');
+    fullscreenImage.src = imageSrc;
+    fullscreenImage.style.cssText = `
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        transform: scale(0.8);
+        transition: transform 0.3s ease;
+    `;
+    
+    // Create close button
+    const closeButton = document.createElement('button');
+    closeButton.innerHTML = '&times;';
+    closeButton.style.cssText = `
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        font-size: 2rem;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s ease;
+    `;
+    
+    // Create download button
+    const downloadButton = document.createElement('button');
+    downloadButton.innerHTML = '<i class="fas fa-download"></i>';
+    downloadButton.style.cssText = `
+        position: absolute;
+        top: -40px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s ease;
+    `;
+    
+    // Create image info
+    const imageInfo = document.createElement('div');
+    imageInfo.style.cssText = `
+        position: absolute;
+        bottom: -50px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        color: white;
+        font-size: 0.9rem;
+        opacity: 0.8;
+    `;
+    imageInfo.textContent = 'Click outside image or press ESC to close';
+    
+    // Add event listeners
+    closeButton.addEventListener('click', closeGameFullscreen);
+    downloadButton.addEventListener('click', () => {
+        const gameTitle = document.getElementById('gameDetailTitle')?.textContent || 'game';
+        downloadGameImage(imageSrc, gameTitle);
+    });
+    fullscreenOverlay.addEventListener('click', (e) => {
+        if (e.target === fullscreenOverlay) {
+            closeGameFullscreen();
+        }
+    });
+    
+    // Keyboard support
+    const handleKeydown = (e) => {
+        if (e.key === 'Escape') {
+            closeGameFullscreen();
+        }
+    };
+    
+    function closeGameFullscreen() {
+        fullscreenOverlay.style.opacity = '0';
+        setTimeout(() => {
+            if (fullscreenOverlay.parentNode) {
+                fullscreenOverlay.remove();
+            }
+        }, 300);
+        document.removeEventListener('keydown', handleKeydown);
+    }
+    
+    // Assemble and show
+    imageContainer.appendChild(fullscreenImage);
+    imageContainer.appendChild(closeButton);
+    imageContainer.appendChild(downloadButton);
+    imageContainer.appendChild(imageInfo);
+    fullscreenOverlay.appendChild(imageContainer);
+    document.body.appendChild(fullscreenOverlay);
+    document.addEventListener('keydown', handleKeydown);
+    
+    // Animate in
+    setTimeout(() => {
+        fullscreenOverlay.style.opacity = '1';
+        fullscreenImage.style.transform = 'scale(1)';
+    }, 10);
+}
+
+// ========== FUNGSI DOWNLOAD GAME IMAGE ==========
+function downloadGameImage(imageSrc, fileName) {
+    // Create temporary anchor element
+    const link = document.createElement('a');
+    link.href = imageSrc;
+    link.download = `${fileName.replace(/[^a-z0-9]/gi, '_')}_game_image.jpg`;
+    
+    // Check if it's a data URL (base64) or external URL
+    if (imageSrc.startsWith('data:')) {
+        // For base64 images
+        link.click();
+    } else {
+        // For external URLs, we need to fetch and convert
+        fetch(imageSrc)
+            .then(response => response.blob())
+            .then(blob => {
+                const blobUrl = URL.createObjectURL(blob);
+                link.href = blobUrl;
+                link.click();
+                
+                // Clean up
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+            })
+            .catch(error => {
+                console.error('Error downloading game image:', error);
+                showNotification('Error downloading game image. Please try again.', 'error');
+                
+                // Fallback: try direct download
+                link.click();
+            });
+    }
+    
+    showNotification('Game image download started!', 'success');
+}
+
+// ========== FUNGSI EDIT GAME DARI DETAIL ==========
+function editGameFromDetail(gameId) {
+    closeGameDetailModal();
+    openEditGameModal(gameId);
+}
+
+// ========== FUNGSI CLOSE GAME DETAIL MODAL ==========
+function closeGameDetailModal() {
+    const gameDetailModal = document.getElementById('gameDetailModal');
+    if (gameDetailModal) {
+        gameDetailModal.classList.remove('active');
+    }
+}
+
+// ========== FUNGSI FORMAT DATE TAMBAHAN ==========
+function formatDate(dateString) {
+    try {
+        if (!dateString) return 'Not set';
+        const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+    } catch (error) {
+        return dateString || 'Invalid date';
+    }
+}
+
+// ========== STYLING TAMBAHAN UNTUK GAME DETAIL ==========
+// Tambahkan styling untuk detail view
+const gameDetailStyles = `
+    .game-detail-item {
+        margin-bottom: 15px;
+    }
+    
+    .game-detail-item strong {
+        display: block;
+        margin-bottom: 5px;
+    }
+    
+    .game-detail-item p {
+        margin: 0;
+        word-break: break-word;
+    }
+    
+    #gameImageFullscreenOverlay button:hover {
+        background: rgba(255, 255, 255, 0.3) !important;
+    }
+    
+    .game-image-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 15px;
+    }
+    
+    /* Zoom effect on game image hover */
+    .game-image {
+        overflow: hidden;
+    }
+    
+    .game-image img {
+        transition: transform 0.3s ease;
+    }
+    
+    .game-card:hover .game-image img {
+        transform: scale(1.05);
+    }
+    
+    /* Rating stars styling */
+    .rating-stars {
+        display: flex;
+        gap: 2px;
+        margin-top: 5px;
+    }
+    
+    .rating-star {
+        color: var(--warning);
+        font-size: 0.9rem;
+    }
+    
+    .rating-star.empty {
+        color: var(--text-tertiary);
+    }
+`;
+
+// Inject styles jika belum ada
+if (!document.getElementById('game-detail-styles')) {
+    const styleElement = document.createElement('style');
+    styleElement.id = 'game-detail-styles';
+    styleElement.textContent = gameDetailStyles;
+    document.head.appendChild(styleElement);
+}
 </script>
 </body>
 </html>

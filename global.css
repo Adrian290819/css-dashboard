@@ -4218,6 +4218,159 @@ body, html {
         .notification.info .notification-content i {
             color: var(--info);
         }
-        
-        
-        
+        /* Berikan efek hover pada elemen profil */
+.user-profile:hover, 
+.profile-picture:hover, 
+.profile-img-container:hover {
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.user-profile img:hover,
+.user-info:hover {
+    opacity: 0.8;
+}
+       /* ========== PERBAIKAN REFRESH NOTIFICATION ========== */
+.refresh-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #10b981; /* Green background */
+    color: white !important;
+    padding: 15px 20px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    z-index: var(--z-modal);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transform: translateX(150%);
+    transition: transform 0.3s ease;
+    max-width: 350px;
+    border: none;
+    opacity: 1 !important;
+}
+
+.refresh-notification.show {
+    transform: translateX(0);
+}
+
+.refresh-notification.error {
+    background: #ef4444; /* Red for error */
+}
+
+.refresh-notification.info {
+    background: #3b82f6; /* Blue for info */
+}
+
+.refresh-notification i {
+    font-size: 1.2rem;
+    color: white !important;
+}
+
+.refresh-notification-content {
+    flex: 1;
+    color: white !important;
+}
+
+.refresh-notification-title {
+    font-weight: var(--font-semibold);
+    font-size: var(--text-sm);
+    margin: 0 0 4px 0;
+    color: white !important;
+}
+
+.refresh-notification-message {
+    font-size: var(--text-xs);
+    opacity: 0.9;
+    margin: 0;
+    color: white !important;
+    line-height: 1.4;
+}
+
+/* Notification close button */
+.refresh-notification-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: var(--radius-sm);
+    transition: background-color var(--transition-fast);
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.refresh-notification-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.refresh-notification-close i {
+    font-size: 0.9rem;
+    color: white !important;
+} 
+   /* global-styles.css - Additional styles for time display */
+
+/* Time Display Styles */
+.time-display {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-right: 20px;
+    padding: 8px 16px;
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    min-width: 140px;
+    box-shadow: var(--shadow-sm);
+}
+
+.current-time {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.current-date {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.2;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .time-display {
+        margin-right: 10px;
+        padding: 6px 12px;
+        min-width: 120px;
+    }
+    
+    .current-time {
+        font-size: 1rem;
+    }
+    
+    .current-date {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-actions {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .time-display {
+        order: -1;
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+}     

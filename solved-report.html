@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
     <link rel="stylesheet" href="global.css">
         <link rel="stylesheet" href="stylemobile.css">
+        <script src="global-time.js"></script>
     <style>
 :root {
     --primary-gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
@@ -1487,6 +1488,10 @@
     background-color: #f59e0b;
     color: white;
 }
+/* Styling untuk filter kategori */
+.filter-group select#categoryFilter {
+    /* Style sama dengan filter lainnya */
+}
 </style>
 </head>
 <body>
@@ -2556,6 +2561,152 @@ document.addEventListener('DOMContentLoaded', function() {
     setupSearchFunctionality();
     
     // ... kode yang sudah ada ...
+});
+// Fungsi untuk memperbarui filter kategori berdasarkan status solved
+function updateCategoryFilter() {
+    const categoryFilter = document.getElementById('categoryFilter');
+    
+    // Hapus opsi kategori yang ada (kecuali opsi "All Categories")
+    while (categoryFilter.children.length > 1) {
+        categoryFilter.removeChild(categoryFilter.lastChild);
+    }
+    
+    // Dapatkan semua kategori unik dari laporan yang solved
+    const uniqueCategories = [...new Set(solvedReports.map(report => report.category))].filter(category => category);
+    
+    // Tambahkan opsi kategori ke dropdown
+    uniqueCategories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        categoryFilter.appendChild(option);
+    });
+}
+
+// Fungsi untuk memfilter laporan berdasarkan kategori
+function filterReports(reports) {
+    const brandFilter = document.getElementById('brandFilter').value;
+    const statusFilter = document.getElementById('statusFilter').value;
+    const categoryFilter = document.getElementById('categoryFilter').value;
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    
+    return reports.filter(report => {
+        // Filter by brand
+        if (brandFilter && report.brand !== brandFilter) {
+            return false;
+        }
+        
+        // Filter by status
+        if (statusFilter && report.status !== statusFilter) {
+            return false;
+        }
+        
+        // Filter by category - TAMBAHAN BARU
+        if (categoryFilter && report.category !== categoryFilter) {
+            return false;
+        }
+        
+        // Filter by date range - gunakan dateSolved yang sesuai dengan Firestore
+        if (startDate && report.dateSolved) {
+            const solvedDate = report.dateSolved.toDate().toISOString().split('T')[0];
+            if (solvedDate < startDate) {
+                return false;
+            }
+        }
+        
+        if (endDate && report.dateSolved) {
+            const solvedDate = report.dateSolved.toDate().toISOString().split('T')[0];
+            if (solvedDate > endDate) {
+                return false;
+            }
+        }
+        
+        return true;
+    });
+}
+
+// Perbarui fungsi setupSolvedReportsListener untuk menambahkan update kategori
+function setupSolvedReportsListener() {
+    if (unsubscribeSolved) {
+        unsubscribeSolved();
+    }
+    
+    const reportsRef = db.collection('solvedReports');
+
+    unsubscribeSolved = reportsRef
+        .orderBy('dateSolved', 'desc')
+        .onSnapshot(snapshot => {
+            solvedReports = [];
+            snapshot.forEach(doc => {
+                const report = doc.data();
+                report.id = doc.id;
+                
+                // Pastikan data yang diperlukan ada
+                if (report.dateCreated && report.dateSolved && report.status) {
+                    solvedReports.push(report);
+                } else {
+                    console.warn("Invalid report data:", report);
+                }
+            });
+
+            updateSolvedReportsUI();
+            updateStatistics();
+            updateCategoryFilter(); // TAMBAHAN: Perbarui filter kategori
+
+        }, error => {
+            console.error("Error fetching solved reports:", error);
+            showToast("Error loading solved reports", "error");
+        });
+}
+
+// Tambahkan HTML untuk filter kategori di dalam Filter Panel
+// Tambahkan kode ini di dalam div.filter-grid, setelah filter status
+document.addEventListener('DOMContentLoaded', function() {
+    // Tunggu sampai DOM sepenuhnya dimuat
+    setTimeout(() => {
+        const filterGrid = document.querySelector('.filter-grid');
+        
+        // Buat elemen filter kategori
+        const categoryFilterGroup = document.createElement('div');
+        categoryFilterGroup.className = 'filter-group';
+        categoryFilterGroup.innerHTML = `
+            <label class="filter-label">Category</label>
+            <select class="filter-select" id="categoryFilter">
+                <option value="">All Categories</option>
+                <!-- Opsi kategori akan diisi oleh JavaScript -->
+            </select>
+        `;
+        
+        // Sisipkan filter kategori setelah filter status
+        const statusFilterGroup = document.querySelector('.filter-group:nth-child(2)');
+        if (statusFilterGroup) {
+            statusFilterGroup.parentNode.insertBefore(categoryFilterGroup, statusFilterGroup.nextSibling);
+        } else {
+            // Jika tidak menemukan filter status, tambahkan di akhir
+            filterGrid.appendChild(categoryFilterGroup);
+        }
+        
+        // Tambahkan event listener untuk filter kategori
+        const categoryFilter = document.getElementById('categoryFilter');
+        if (categoryFilter) {
+            categoryFilter.addEventListener('change', updateSolvedReportsUI);
+        }
+        
+        // Perbarui reset filter untuk menyertakan kategori
+        const resetButton = document.getElementById('resetFilters');
+        if (resetButton) {
+            const originalReset = resetButton.onclick;
+            resetButton.onclick = function() {
+                document.getElementById('brandFilter').value = '';
+                document.getElementById('statusFilter').value = '';
+                document.getElementById('categoryFilter').value = ''; // TAMBAHAN
+                document.getElementById('startDate').value = '';
+                document.getElementById('endDate').value = '';
+                updateSolvedReportsUI();
+            };
+        }
+    }, 100);
 });
 </script>
 </body>

@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
     <link rel="stylesheet" href="global.css">
+    <script src="global-time.js"></script>
 
     
     <!-- Firebase SDK -->
@@ -1068,70 +1069,7 @@
 .modal-body > *:nth-child(3) { animation-delay: 0.3s; }
 .modal-body > *:nth-child(4) { animation-delay: 0.4s; }
 
-/* ========== TOAST NOTIFICATION ========== */
-.toast-notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 15px 20px;
-    border-radius: var(--radius-md);
-    color: white;
-    z-index: var(--z-modal);
-    max-width: 300px;
-    box-shadow: var(--shadow-lg);
-    opacity: 0;
-    transform: translateY(-30px);
-    pointer-events: none;
-    animation: toast-in 0.5s ease forwards;
-}
 
-/* Animation for showing toast */
-@keyframes toast-in {
-    0% {
-        opacity: 0;
-        transform: translateY(-30px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Animation for hiding toast */
-@keyframes toast-out {
-    0% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    100% {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-}
-
-.toast-notification.hide {
-    animation: toast-out 0.4s ease forwards;
-}
-
-/* Status colors */
-.toast-notification.success {
-    background-color: var(--success);
-}
-
-.toast-notification.error {
-    background-color: var(--danger);
-}
-
-.toast-notification.info {
-    background-color: var(--info);
-}
-
-/* Toast content layout */
-.toast-content {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
 
 /* ========== RESPONSIVE ADJUSTMENTS ========== */
 @media (max-width: 1024px) {

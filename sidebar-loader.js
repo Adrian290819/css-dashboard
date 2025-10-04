@@ -180,37 +180,42 @@ class SidebarLoader {
                     </div>  
 
 <div class="menu-item" data-page="eventprovider.html">
-                        <div class="menu-icon">
-                            <i class="fas fa-trophy"></i>
-                        </div>
-                        <span class="menu-text">Event Provider</span>
-                    </div>
-                    <div class="menu-item" data-page="weekly-meeting.html">
-                        <div class="menu-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <span class="menu-text">Weekly Meetings</span>
-                    </div>
-                    
-                    <div class="menu-item" data-page="pengaturan.html">
-                        <div class="menu-icon">
-                            <i class="fas fa-cog"></i>
-                        </div>
-                        <span class="menu-text">Setting</span>
-                    </div>  
-                    <div class="menu-item" data-page="phishing.html">
-                        <div class="menu-icon">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <span class="menu-text">Phishing Alerts</span>
-                    </div>
+    <div class="menu-icon">
+        <i class="fas fa-trophy"></i>
+    </div>
+    <span class="menu-text">Event Provider</span>
+</div>
 
-                    <div class="menu-item logout-btn" data-page="login.html">
-                        <div class="menu-icon">
-                            <i class="fas fa-sign-out-alt"></i>
-                        </div>
-                        <span class="menu-text">Logout</span>
-                    </div>
+<div class="menu-item" data-page="weekly-meeting.html">
+    <div class="menu-icon">
+        <i class="fas fa-users"></i>
+    </div>
+    <span class="menu-text">Weekly Meetings</span>
+</div>
+
+<!-- Phishing Alerts pindah ke atas -->
+<div class="menu-item" data-page="phishing.html">
+    <div class="menu-icon">
+        <i class="fas fa-shield-alt"></i>
+    </div>
+    <span class="menu-text">Phishing Alerts</span>
+</div>
+
+<!-- Setting pindah ke bawah -->
+<div class="menu-item" data-page="pengaturan.html">
+    <div class="menu-icon">
+        <i class="fas fa-cog"></i>
+    </div>
+    <span class="menu-text">Setting</span>
+</div>
+
+<div class="menu-item logout-btn" data-page="index.html">
+    <div class="menu-icon">
+        <i class="fas fa-sign-out-alt"></i>
+    </div>
+    <span class="menu-text">Logout</span>
+</div>
+
                 </div>
             </div>
         `;

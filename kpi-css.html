@@ -1185,6 +1185,106 @@
         flex-direction: column;
     }
 }
+/* ========== STYLING TOMBOL LIHAT DETAIL ========== */
+.btn-view-user {
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 8px 12px;
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+    min-width: 100px;
+    justify-content: center;
+}
+
+.btn-view-user:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-view-user:active {
+    transform: translateY(0);
+}
+
+.btn-view-user i {
+    font-size: 12px;
+}
+
+/* Styling untuk tabel semua users */
+.all-users-table .btn-view-user {
+    margin: 0 auto;
+    display: inline-flex;
+}
+
+/* Responsive design untuk tombol lihat detail */
+@media (max-width: 768px) {
+    .btn-view-user {
+        padding: 6px 10px;
+        font-size: 11px;
+        min-width: 90px;
+    }
+    
+    .btn-view-user i {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn-view-user {
+        padding: 5px 8px;
+        font-size: 10px;
+        min-width: 80px;
+        gap: 4px;
+    }
+    
+    .btn-view-user i {
+        font-size: 10px;
+    }
+}
+
+/* Styling khusus untuk tombol dalam tabel */
+.kpi-table .btn-view-user {
+    white-space: nowrap;
+    margin: 0;
+}
+
+/* Efek loading saat tombol diklik */
+.btn-view-user.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.btn-view-user.loading i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Variasi warna untuk status berbeda */
+.btn-view-user.success {
+    background: var(--success-gradient);
+}
+
+.btn-view-user.warning {
+    background: var(--warning-gradient);
+}
+
+.btn-view-user.info {
+    background: var(--info-gradient);
+}
+
     </style>
 </head>
 <body>
@@ -1285,7 +1385,7 @@
                             <i class="fas fa-edit"></i>
                             Edit All
                         </button>
-                                        <button class="btn-reset" id="reset-data-btn" title="Reset Data KPI">
+                        <button class="btn-reset" id="reset-data-btn" title="Reset Data KPI">
                     <i class="fas fa-sync-alt"></i>
                     <span>Reset</span>
                 </button>
@@ -2021,38 +2121,39 @@
     }
 
     // Fungsi untuk memperbarui semua data KPI dari Firestore
-    async function updateAllKpiData(userId = null) {
-        try {
-            // Ambil data dari semua modul
-            const ideasData = await getIdeasData(userId);
-            const researchData = await getResearchData(userId);
-            const chatData = await getChatData(userId);
-            const problemData = await getProblemSolvingData(userId);
-            const b2bData = await getB2BData(userId);
-            const attitudeData = await getAttitudeData(userId);
-            const disciplineData = await getDisciplineData(userId);
+    // MODIFIKASI fungsi updateAllKpiData untuk tidak menimpa data dari kpiData:
+async function updateAllKpiData(userId = null) {
+    try {
+        // Hanya ambil data realisasi dari collections terpisah
+        const ideasData = await getIdeasData(userId);
+        const researchData = await getResearchData(userId);
+        const chatData = await getChatData(userId);
+        const problemData = await getProblemSolvingData(userId);
+        const b2bData = await getB2BData(userId);
+        const attitudeData = await getAttitudeData(userId);
+        const disciplineData = await getDisciplineData(userId);
 
-            // Update data KPI berdasarkan modul yang sesuai
-            kpiData[0].realization = b2bData.count;
-            kpiData[1].realization = problemData.count;
-            kpiData[2].realization = ideasData.count;
-            kpiData[3].realization = chatData.count;
-            kpiData[4].realization = researchData.count;
-            kpiData[5].realization = attitudeData.averageScore;
-            kpiData[6].realization = disciplineData.count;
+        // PERBAIKAN: Update HANYA realisasi, bukan semua data
+        kpiData[0].realization = b2bData.count;
+        kpiData[1].realization = problemData.count;
+        kpiData[2].realization = ideasData.count;
+        kpiData[3].realization = chatData.count;
+        kpiData[4].realization = researchData.count;
+        kpiData[5].realization = attitudeData.averageScore;
+        kpiData[6].realization = disciplineData.count;
 
-            // Simpan data chat untuk perhitungan synchronous
-            window.chatDataForCalculation = chatData;
+        // Simpan data chat untuk perhitungan synchronous
+        window.chatDataForCalculation = chatData;
 
-            // Hitung ulang semua skor
-            updateKPI();
-            
-            console.log('KPI data updated successfully from Firestore for user:', userId || 'current');
-        } catch (error) {
-            console.error('Error updating KPI data from Firestore:', error);
-            showNotification('Gagal memperbarui data KPI dari Firestore', 'error');
-        }
+        // Hitung ulang semua skor berdasarkan realisasi baru
+        updateKPI();
+        
+        console.log('KPI realization data updated from modules for user:', userId || 'current');
+    } catch (error) {
+        console.error('Error updating KPI realization data:', error);
+        showNotification('Gagal memperbarui data realisasi dari modules', 'error');
     }
+}
 
     // Fungsi untuk memperbarui tampilan KPI
     function updateKPI() {
@@ -2869,8 +2970,27 @@ function getCurrentViewingUserId() {
     const currentUser = firebase.auth().currentUser;
     return currentUser ? currentUser.uid : null;
 }
-// Fungsi untuk memuat data KPI dari Firestore - VERSI DIPERBAIKI
-// PERBAIKAN: Fungsi load data yang lebih robust
+// BUAT fungsi baru untuk mengatur urutan loading yang benar:
+async function initializeKpiData() {
+    try {
+        // 1. Coba load dari kpiData collection di Firestore
+        const firestoreLoaded = await loadKpiDataFromFirestore();
+        
+        if (!firestoreLoaded) {
+            // 2. Jika tidak ada data di Firestore, ambil dari collections terpisah
+            await updateAllKpiData();
+            // 3. Simpan ke kpiData collection
+            await saveKpiDataToFirestore();
+        }
+        
+        // 4. Update tampilan
+        updateDisplay();
+        
+    } catch (error) {
+        console.error('Error initializing KPI data:', error);
+    }
+}
+// PERBAIKI fungsi loadKpiDataFromFirestore untuk benar-benar menggunakan data Firestore:
 async function loadKpiDataFromFirestore(userId = null) {
     try {
         const currentUser = firebase.auth().currentUser;
@@ -2882,17 +3002,17 @@ async function loadKpiDataFromFirestore(userId = null) {
         const targetUserId = userId || currentUser.uid;
         const db = firebase.firestore();
         
-        console.log('📥 Loading KPI data from Firestore for user:', targetUserId);
+        console.log('📥 Loading KPI data from Firestore kpiData collection for user:', targetUserId);
         
         const doc = await db.collection('kpiData').doc(targetUserId).get();
         
         if (doc.exists) {
             const savedData = doc.data();
-            console.log('✅ Data loaded from Firestore:', savedData);
+            console.log('✅ Data loaded from Firestore kpiData:', savedData);
             
             if (savedData.kpiData && Array.isArray(savedData.kpiData)) {
-                // Clear dan replace kpiData
-                kpiData.length = 0;
+                // PERBAIKAN PENTING: Gunakan SEMUA data dari Firestore, bukan hanya realisasi
+                kpiData.length = 0; // Clear existing data
                 
                 savedData.kpiData.forEach(savedItem => {
                     kpiData.push({
@@ -2907,24 +3027,23 @@ async function loadKpiDataFromFirestore(userId = null) {
                     });
                 });
                 
-                console.log('✅ kpiData updated from Firestore');
+                console.log('✅ kpiData completely replaced with Firestore data');
                 return true;
             }
         } else {
-            console.log('📭 No data in Firestore, will create default data');
-            // Buat data default
-            await saveKpiDataToFirestore();
+            console.log('📭 No data found in kpiData collection');
         }
         
         return false;
         
     } catch (error) {
-        console.error('❌ Error loading from Firestore:', error);
+        console.error('❌ Error loading from Firestore kpiData:', error);
         return false;
     }
-}   
+}
 
     // Setup real-time listeners untuk semua koleksi - VERSI DIPERBAIKI
+// MODIFIKASI real-time listener untuk benar-benar menggunakan data dari Firestore:
 function setupRealTimeListeners() {
     const currentUser = firebase.auth().currentUser;
     if (!currentUser) return;
@@ -2935,20 +3054,28 @@ function setupRealTimeListeners() {
     unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
     unsubscribeFunctions = [];
     
-    // Tentukan user ID target untuk listener
     const targetUserId = getCurrentViewingUserId() || currentUser.uid;
     
-    // Listener untuk kpiData
     const kpiUnsubscribe = db.collection('kpiData')
         .doc(targetUserId)
         .onSnapshot((doc) => {
+            if (isLocalChange && (Date.now() - lastLocalChangeTime < 3000)) {
+                console.log('🔄 Skipping real-time update (local change)');
+                isLocalChange = false;
+                return;
+            }
+            
             if (doc.exists) {
                 console.log('🔄 Real-time update received from Firestore for user:', targetUserId);
                 const savedData = doc.data();
                 if (savedData.kpiData) {
-                    // Update kpiData
-                    kpiData.length = 0;
-                    savedData.kpiData.forEach(item => kpiData.push(item));
+                    // PERBAIKAN: Gunakan data lengkap dari Firestore
+                    savedData.kpiData.forEach((savedItem, index) => {
+                        if (kpiData[index]) {
+                            // Update semua field dari Firestore
+                            Object.assign(kpiData[index], savedItem);
+                        }
+                    });
                     updateDisplay();
                     showNotification('Data diperbarui secara real-time', 'info', 2000);
                 }
@@ -2957,8 +3084,6 @@ function setupRealTimeListeners() {
             console.error('Error in kpiData real-time listener:', error);
         });
     unsubscribeFunctions.push(kpiUnsubscribe);
-    
-    console.log('Real-time listeners setup successfully for user:', targetUserId);
 }
 
     // ========== EVENT LISTENERS ==========
@@ -3008,8 +3133,6 @@ function setupRealTimeListeners() {
     });
 
     // ========== INISIALISASI SAAT HALAMAN DIMUAT ==========
-
-    // Modifikasi bagian inisialisasi di DOMContentLoaded
 document.addEventListener('DOMContentLoaded', async function() {
     console.log('🚀 KPI Integration initialized');
     
@@ -3021,25 +3144,20 @@ document.addEventListener('DOMContentLoaded', async function() {
                 // Setup admin UI
                 await checkAndSetupSuperAdmin();
                 
-                // PERBAIKAN: Tunggu sampai data di-load sebelum setup lainnya
-                const loadSuccess = await loadKpiDataFromFirestore();
+                // PERBAIKAN: Hanya load dari kpiData collection, jangan panggil updateAllKpiData
+                const firestoreDataLoaded = await loadKpiDataFromFirestore();
                 
-                if (loadSuccess) {
-                    console.log('✅ Data loaded successfully from Firestore');
+                if (firestoreDataLoaded) {
+                    console.log('✅ Data loaded successfully from Firestore kpiData collection');
+                    updateDisplay();
                 } else {
-                    console.log('ℹ️ Using default data');
-                    // Jika tidak ada data, simpan data default
-                    await saveKpiDataToFirestore();
+                    console.log('ℹ️ No data in kpiData collection, will initialize with module data');
+                    // Hanya inisialisasi jika benar-benar kosong
+                    await initializeWithModuleData();
                 }
                 
                 // Setup real-time listeners
                 setupRealTimeListeners();
-                
-                // Load data berdasarkan filter yang aktif
-                await loadKpiData(currentFilter);
-                
-                // Update tampilan
-                updateDisplay();
                 
                 console.log('✅ KPI Dashboard initialized successfully');
                 
@@ -3050,6 +3168,41 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     }
 });
+// FUNGSI BARU: Hanya untuk inisialisasi pertama kali
+async function initializeWithModuleData() {
+    try {
+        console.log('🔄 Initializing with module data for the first time...');
+        
+        // Ambil data dari modules
+        const ideasData = await getIdeasData();
+        const researchData = await getResearchData();
+        const chatData = await getChatData();
+        const problemData = await getProblemSolvingData();
+        const b2bData = await getB2BData();
+        const attitudeData = await getAttitudeData();
+        const disciplineData = await getDisciplineData();
+
+        // Update realisasi saja
+        kpiData[0].realization = b2bData.count;
+        kpiData[1].realization = problemData.count;
+        kpiData[2].realization = ideasData.count;
+        kpiData[3].realization = chatData.count;
+        kpiData[4].realization = researchData.count;
+        kpiData[5].realization = attitudeData.averageScore;
+        kpiData[6].realization = disciplineData.count;
+
+        // Hitung skor
+        updateKPI();
+        
+        // Simpan ke kpiData collection
+        await saveKpiDataToFirestore();
+        
+        console.log('✅ Initialized with module data and saved to kpiData collection');
+        
+    } catch (error) {
+        console.error('Error initializing with module data:', error);
+    }
+}
     // ========== FUNGSI TAMBAHAN UNTUK INTEGRASI ==========
 
     // Fungsi untuk mendapatkan ringkasan performa KPI
@@ -3587,6 +3740,9 @@ document.addEventListener('DOMContentLoaded', function() {
 // ========== FUNGSI EDIT REALISASI UNTUK SUPER ADMIN ==========
 
 // Fungsi untuk mengaktifkan mode edit realisasi
+// ========== FUNGSI EDIT ACTION UNTUK SUPER ADMIN ==========
+
+// Fungsi untuk mengaktifkan mode edit realisasi saja
 function enableRealisasiEditMode() {
     if (!isSuperAdminUser) {
         showNotification('Hanya Super Admin yang dapat mengedit realisasi', 'error');
@@ -3605,7 +3761,7 @@ function enableRealisasiEditMode() {
         if (index < kpiData.length) {
             const data = kpiData[index];
             
-            // Hanya edit realisasi (kolom ke-8) - bukan area, target, bobot, dll
+            // Hanya edit realisasi (kolom ke-8)
             const realizationCell = row.querySelector('.realization-cell');
             if (realizationCell) {
                 realizationCell.innerHTML = `
@@ -3619,7 +3775,7 @@ function enableRealisasiEditMode() {
                 `;
             }
             
-            // Tambahkan tombol edit untuk kolom lain (opsional, tetap hanya super admin)
+            // Tambahkan tombol edit untuk kolom lain
             const actionCell = row.querySelector('td:last-child');
             if (actionCell && actionCell.innerHTML.trim() === '') {
                 actionCell.innerHTML = `
@@ -3685,29 +3841,41 @@ function editSingleRow(index) {
 }
 
 // Fungsi untuk menyimpan satu baris
-function saveSingleRow(index) {
-    const row = document.querySelector(`.kpi-table tbody tr:nth-child(${index + 1})`);
-    const inputs = row.querySelectorAll('.edit-input');
-    
-    inputs.forEach(input => {
-        const field = input.dataset.field;
-        let value = input.value;
+async function saveSingleRow(index) {
+    try {
+        const row = document.querySelector(`.kpi-table tbody tr:nth-child(${index + 1})`);
+        const inputs = row.querySelectorAll('.edit-input');
         
-        if (field === 'target' || field === 'weight' || field === 'realization') {
-            value = parseFloat(value) || 0;
+        inputs.forEach(input => {
+            const field = input.dataset.field;
+            let value = input.value;
+            
+            if (field === 'target' || field === 'weight' || field === 'realization') {
+                value = parseFloat(value) || 0;
+            }
+            
+            kpiData[index][field] = value;
+        });
+        
+        // Hitung ulang skor untuk baris ini
+        const data = kpiData[index];
+        const isSmallerBetter = data.note.includes("Semakin Kecil");
+        data.score = calculateScore(data.target, data.realization, isSmallerBetter, index);
+        
+        // Simpan ke Firestore
+        const saveResult = await saveKpiDataToFirestore();
+        
+        if (saveResult) {
+            updateDisplay();
+            showNotification(`Data ${data.area} berhasil diperbarui dan disimpan ke database!`, 'success');
+        } else {
+            showNotification('Gagal menyimpan perubahan ke database', 'error');
         }
         
-        kpiData[index][field] = value;
-    });
-    
-    // Hitung ulang skor untuk baris ini
-    const data = kpiData[index];
-    const isSmallerBetter = data.note.includes("Semakin Kecil");
-    data.score = calculateScore(data.target, data.realization, isSmallerBetter, index);
-    
-    updateDisplay();
-    saveKpiDataToFirestore();
-    showNotification(`Data ${data.area} berhasil diperbarui`, 'success');
+    } catch (error) {
+        console.error('Error saving single row:', error);
+        showNotification('Error: ' + error.message, 'error');
+    }
 }
 
 // Fungsi untuk membatalkan edit satu baris
@@ -3749,18 +3917,56 @@ function addRealisasiEditListeners() {
     });
 }
 
-// ========== MODIFIKASI FUNGSI YANG SUDAH ADA ==========
-
-// Ganti fungsi enableEditMode yang lama
-function enableEditMode() {
-    if (!isSuperAdminUser) {
-        showNotification('Hanya Super Admin yang dapat mengedit data', 'error');
-        return;
-    }
+// Fungsi untuk edit semua data (full edit mode)
+function enableFullEditMode() {
+    isEditMode = true;
+    document.querySelector('.kpi-container').classList.add('edit-mode');
     
-    // Tampilkan modal pilihan edit
-    showEditOptionsModal();
+    editAllBtn.innerHTML = '<i class="fas fa-save"></i> Simpan Semua';
+    editAllBtn.classList.add('btn-success');
+    editAllBtn.classList.remove('btn-primary');
+    
+    const rows = document.querySelectorAll('.kpi-table tbody tr:not(.result-row)');
+    rows.forEach((row, index) => {
+        if (index < kpiData.length) {
+            const data = kpiData[index];
+            
+            const areaCell = row.querySelector('td:nth-child(2)');
+            areaCell.innerHTML = `<input type="text" class="edit-input" value="${data.area}" data-field="area" data-index="${index}">`;
+            
+            const targetCell = row.querySelector('td:nth-child(3)');
+            targetCell.innerHTML = `<input type="number" class="edit-input" value="${data.target}" min="0" data-field="target" data-index="${index}">`;
+            
+            const weightCell = row.querySelector('td:nth-child(4)');
+            weightCell.innerHTML = `<input type="number" class="edit-input" value="${data.weight}" min="0" max="100" data-field="weight" data-index="${index}">`;
+            
+            const descCell = row.querySelector('td:nth-child(5)');
+            descCell.innerHTML = `<input type="text" class="edit-input" value="${data.description}" data-field="description" data-index="${index}">`;
+            
+            const noteCell = row.querySelector('td:nth-child(6)');
+            noteCell.innerHTML = `<input type="text" class="edit-input" value="${data.note}" data-field="note" data-index="${index}">`;
+            
+            const realizationCell = row.querySelector('.realization-cell');
+            if (realizationCell) {
+                realizationCell.innerHTML = `<input type="number" class="edit-input realization-input" value="${data.realization}" min="0" data-field="realization" data-index="${index}">`;
+            }
+            
+            const actionCell = row.querySelector('td:last-child');
+            if (actionCell && actionCell.innerHTML.trim() === '') {
+                actionCell.innerHTML = `
+                    <button class="btn-edit-cell" onclick="editSingleRow(${index})">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                `;
+            }
+        }
+    });
+    
+    addEditInputListeners();
+    showNotification('Mode edit penuh diaktifkan. Semua data dapat diubah.', 'info');
 }
+
+// ========== MODAL PILIHAN EDIT ==========
 
 // Fungsi untuk menampilkan modal pilihan edit
 function showEditOptionsModal() {
@@ -3818,53 +4024,259 @@ function showEditOptionsModal() {
     });
 }
 
-// Fungsi untuk edit semua data (seperti fungsi enableEditMode yang lama)
-function enableFullEditMode() {
-    isEditMode = true;
-    document.querySelector('.kpi-container').classList.add('edit-mode');
-    
-    editAllBtn.innerHTML = '<i class="fas fa-save"></i> Simpan Semua';
-    editAllBtn.classList.add('btn-success');
-    editAllBtn.classList.remove('btn-primary');
-    
-    const rows = document.querySelectorAll('.kpi-table tbody tr:not(.result-row)');
-    rows.forEach((row, index) => {
-        if (index < kpiData.length) {
-            const data = kpiData[index];
-            
-            const areaCell = row.querySelector('td:nth-child(2)');
-            areaCell.innerHTML = `<input type="text" class="edit-input" value="${data.area}" data-field="area" data-index="${index}">`;
-            
-            const targetCell = row.querySelector('td:nth-child(3)');
-            targetCell.innerHTML = `<input type="number" class="edit-input" value="${data.target}" min="0" data-field="target" data-index="${index}">`;
-            
-            const weightCell = row.querySelector('td:nth-child(4)');
-            weightCell.innerHTML = `<input type="number" class="edit-input" value="${data.weight}" min="0" max="100" data-field="weight" data-index="${index}">`;
-            
-            const descCell = row.querySelector('td:nth-child(5)');
-            descCell.innerHTML = `<input type="text" class="edit-input" value="${data.description}" data-field="description" data-index="${index}">`;
-            
-            const noteCell = row.querySelector('td:nth-child(6)');
-            noteCell.innerHTML = `<input type="text" class="edit-input" value="${data.note}" data-field="note" data-index="${index}">`;
-            
-            const realizationCell = row.querySelector('.realization-cell');
-            if (realizationCell) {
-                realizationCell.innerHTML = `<input type="number" class="edit-input realization-input" value="${data.realization}" min="0" data-field="realization" data-index="${index}">`;
-            }
-            
-            const actionCell = row.querySelector('td:last-child');
-            if (actionCell && actionCell.innerHTML.trim() === '') {
-                actionCell.innerHTML = `
-                    <button class="btn-edit-cell" onclick="editSingleRow(${index})">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-                `;
+// ========== FUNGSI SAVE KE FIRESTORE ==========
+
+// Fungsi untuk menyimpan data ke Firestore - VERSI DIPERBAIKI
+async function saveKpiDataToFirestore() {
+    try {
+        const currentUser = firebase.auth().currentUser;
+        if (!currentUser) {
+            console.error('❌ No user logged in');
+            return false;
+        }
+
+        const db = firebase.firestore();
+        
+        // Tentukan user ID target
+        let targetUserId = currentUser.uid;
+        
+        // Jika Super Admin sedang melihat user lain, simpan ke user tersebut
+        if (isSuperAdminUser && currentFilter !== 'current') {
+            const viewingUserId = getCurrentViewingUserId();
+            if (viewingUserId && viewingUserId !== currentUser.uid) {
+                targetUserId = viewingUserId;
             }
         }
-    });
+        
+        console.log('💾 SAVING to Firestore for user:', targetUserId);
+        console.log('📊 Data to save:', kpiData);
+
+        // Format data untuk Firestore
+        const kpiDoc = {
+            kpiData: kpiData.map(item => ({
+                id: item.id,
+                area: item.area,
+                target: item.target,
+                weight: item.weight,
+                description: item.description,
+                note: item.note,
+                realization: item.realization,
+                score: item.score
+            })),
+            userId: targetUserId,
+            userName: currentUser.displayName || currentUser.email,
+            userEmail: currentUser.email,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            totalScore: calculateTotalScore(kpiData),
+            lastUpdatedBy: currentUser.uid
+        };
+
+        // Simpan ke Firestore
+        await db.collection('kpiData').doc(targetUserId).set(kpiDoc, { merge: true });
+        
+        console.log('✅ SUCCESS: Data saved to Firestore for user:', targetUserId);
+        
+        // Juga update data di collections terpisah
+        await updateModuleCollections(targetUserId);
+        
+        return true;
+        
+    } catch (error) {
+        console.error('❌ ERROR saving to Firestore:', error);
+        showNotification('Gagal menyimpan data: ' + error.message, 'error');
+        return false;
+    }
+}
+
+// Fungsi untuk update collections terpisah
+async function updateModuleCollections(userId) {
+    try {
+        const db = firebase.firestore();
+        
+        // Update ideas collection
+        const ideasData = kpiData.find(item => item.id === 3);
+        if (ideasData) {
+            await updateIdeasCollection(userId, ideasData.realization);
+        }
+        
+        // Update research collection  
+        const researchData = kpiData.find(item => item.id === 5);
+        if (researchData) {
+            await updateResearchCollection(userId, researchData.realization);
+        }
+        
+        // Update chat collection
+        const chatData = kpiData.find(item => item.id === 4);
+        if (chatData) {
+            await updateChatCollection(userId, chatData.realization);
+        }
+        
+        console.log('✅ Module collections updated');
+        
+    } catch (error) {
+        console.error('Error updating module collections:', error);
+    }
+}
+
+// Update Ideas Collection
+async function updateIdeasCollection(userId, realization) {
+    const db = firebase.firestore();
     
-    addEditInputListeners();
-    showNotification('Mode edit penuh diaktifkan. Semua data dapat diubah.', 'info');
+    // Hapus data lama
+    const oldIdeas = await db.collection('ideas')
+        .where('userId', '==', userId)
+        .get();
+    
+    const deletePromises = oldIdeas.docs.map(doc => doc.ref.delete());
+    await Promise.all(deletePromises);
+    
+    // Buat data baru sesuai realization
+    for (let i = 0; i < realization; i++) {
+        await db.collection('ideas').add({
+            userId: userId,
+            title: `Idea ${i + 1}`,
+            points: 1,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+    }
+}
+
+// Update Research Collection  
+async function updateResearchCollection(userId, realization) {
+    const db = firebase.firestore();
+    
+    const oldResearch = await db.collection('research')
+        .where('userId', '==', userId)
+        .get();
+    
+    const deletePromises = oldResearch.docs.map(doc => doc.ref.delete());
+    await Promise.all(deletePromises);
+    
+    for (let i = 0; i < realization; i++) {
+        await db.collection('research').add({
+            userId: userId,
+            title: `Research ${i + 1}`,
+            points: 1,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+    }
+}
+
+// Update Chat Collection
+async function updateChatCollection(userId, realization) {
+    const db = firebase.firestore();
+    
+    const oldChats = await db.collection('chats')
+        .where('userId', '==', userId)
+        .get();
+    
+    const deletePromises = oldChats.docs.map(doc => doc.ref.delete());
+    await Promise.all(deletePromises);
+    
+    for (let i = 0; i < realization; i++) {
+        await db.collection('chats').add({
+            userId: userId,
+            responseTime: 2.5, // Default value
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+    }
+}
+
+// ========== FUNGSI DISABLE EDIT MODE ==========
+
+// Fungsi untuk menonaktifkan mode edit
+async function disableEditMode() {
+    try {
+        console.log('🔄 Disabling edit mode...');
+        
+        isEditMode = false;
+        document.querySelector('.kpi-container').classList.remove('edit-mode');
+        
+        // Update tombol
+        editAllBtn.innerHTML = '<i class="fas fa-edit"></i> Edit All';
+        editAllBtn.classList.remove('btn-success');
+        editAllBtn.classList.add('btn-primary');
+        
+        // Kumpulkan dan simpan semua perubahan
+        const inputs = document.querySelectorAll('.edit-input');
+        let hasChanges = false;
+        
+        console.log('📝 Processing', inputs.length, 'input fields...');
+        
+        inputs.forEach(input => {
+            const index = parseInt(input.dataset.index);
+            const field = input.dataset.field;
+            let value = input.value;
+            
+            if (field === 'target' || field === 'weight' || field === 'realization') {
+                value = parseFloat(value) || 0;
+            }
+            
+            // Simpan perubahan ke kpiData
+            const oldValue = kpiData[index][field];
+            if (oldValue != value) {
+                hasChanges = true;
+                console.log(`🔄 Changing ${field} from ${oldValue} to ${value}`);
+                kpiData[index][field] = value;
+                
+                // Hitung ulang score jika realisasi berubah
+                if (field === 'realization') {
+                    const data = kpiData[index];
+                    const isSmallerBetter = data.note.includes("Semakin Kecil");
+                    data.score = calculateScore(data.target, data.realization, isSmallerBetter, index);
+                    console.log(`📊 Recalculated score: ${data.score}`);
+                }
+            }
+        });
+        
+        if (hasChanges) {
+            console.log('💾 Changes detected, saving to Firestore...');
+            
+            // Update tampilan sementara
+            updateKPI();
+            
+            // SIMPAN KE FIRESTORE
+            const saveResult = await saveKpiDataToFirestore();
+            
+            if (saveResult) {
+                showNotification('✅ Perubahan berhasil disimpan ke database!', 'success');
+                console.log('✅ Save successful');
+                
+                // Verifikasi dengan load ulang data
+                setTimeout(async () => {
+                    await loadKpiDataFromFirestore();
+                    updateDisplay();
+                }, 500);
+                
+            } else {
+                showNotification('❌ Gagal menyimpan perubahan ke database', 'error');
+                console.error('❌ Save failed');
+            }
+        } else {
+            console.log('ℹ️ No changes to save');
+            showNotification('Tidak ada perubahan yang disimpan', 'info');
+        }
+        
+    } catch (error) {
+        console.error('❌ Error in disableEditMode:', error);
+        showNotification('Error: ' + error.message, 'error');
+    }
+}
+
+// ========== FUNGSI UTAMA EDIT ==========
+
+// Fungsi utama untuk mengaktifkan mode edit
+function enableEditMode() {
+    if (!isSuperAdminUser) {
+        showNotification('Hanya Super Admin yang dapat mengedit data', 'error');
+        return;
+    }
+    
+    // Tampilkan modal pilihan edit
+    showEditOptionsModal();
 }
 
 // ========== CSS TAMBAHAN ==========
@@ -3951,7 +4363,7 @@ document.head.appendChild(styleElement);
 
 // ========== UPDATE EVENT LISTENERS ==========
 
-// Ganti event listener untuk tombol Edit All
+// Event listener untuk tombol Edit All
 if (editAllBtn) {
     editAllBtn.addEventListener('click', (e) => {
         if (!isSuperAdminUser) {
@@ -3969,10 +4381,180 @@ if (editAllBtn) {
     });
 }
 
-// Fungsi disableEditMode tetap sama
-// Fungsi untuk menonaktifkan mode edit - VERSI DIPERBAIKI
-// Fungsi untuk menonaktifkan mode edit - VERSI DIPERBAIKI
-// PERBAIKAN FUNGSI disableEditMode
+// ========== FUNGSI HELPER ==========
+
+// Fungsi untuk mendapatkan user ID yang sedang dilihat
+function getCurrentViewingUserId() {
+    // Cek dari URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('userId')) {
+        return urlParams.get('userId');
+    }
+    
+    // Cek dari state aplikasi
+    if (window.currentViewingUserId) {
+        return window.currentViewingUserId;
+    }
+    
+    // Fallback ke current user
+    const currentUser = firebase.auth().currentUser;
+    return currentUser ? currentUser.uid : null;
+}
+
+// Fungsi untuk menambahkan event listener pada input edit
+function addEditInputListeners() {
+    const inputs = document.querySelectorAll('.edit-input');
+    inputs.forEach(input => {
+        input.addEventListener('change', function() {
+            const index = parseInt(this.dataset.index);
+            const field = this.dataset.field;
+            let value = this.value;
+            
+            if (field === 'target' || field === 'weight' || field === 'realization') {
+                value = parseFloat(value) || 0;
+            }
+            
+            kpiData[index][field] = value;
+        });
+    });
+}
+
+// ========== INISIALISASI TOMBOL ACTION ==========
+
+// Fungsi untuk menginisialisasi tombol action di setiap baris
+function initializeActionButtons() {
+    const rows = document.querySelectorAll('.kpi-table tbody tr:not(.result-row)');
+    rows.forEach((row, index) => {
+        if (index < kpiData.length) {
+            const actionCell = row.querySelector('td:last-child');
+            if (actionCell && isSuperAdminUser) {
+                actionCell.innerHTML = `
+                    <button class="btn-edit-cell" onclick="editSingleRow(${index})">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                `;
+            } else if (actionCell) {
+                actionCell.innerHTML = ''; // Kosongkan untuk user biasa
+            }
+        }
+    });
+}
+
+// Panggil inisialisasi saat halaman dimuat
+document.addEventListener('DOMContentLoaded', function() {
+    initializeActionButtons();
+});
+
+// ========== FUNGSI DEBUG ==========
+
+// Fungsi untuk debug edit functionality
+window.debugEditFunction = function() {
+    console.log('=== DEBUG EDIT FUNCTION ===');
+    console.log('isSuperAdminUser:', isSuperAdminUser);
+    console.log('isEditMode:', isEditMode);
+    console.log('currentFilter:', currentFilter);
+    console.log('kpiData:', kpiData);
+    
+    // Test Firestore connection
+    const db = firebase.firestore();
+    const currentUser = firebase.auth().currentUser;
+    
+    if (currentUser) {
+        db.collection('kpiData').doc(currentUser.uid).get().then(doc => {
+            if (doc.exists) {
+                console.log('Current Firestore data:', doc.data());
+            } else {
+                console.log('No data in Firestore');
+            }
+        });
+    }
+};
+
+console.log('✅ Edit Action Script loaded successfully');
+// ========== REAL-TIME LISTENER YANG DIPERBAIKI ==========
+
+// Variabel untuk tracking perubahan
+let isLocalChange = false;
+let lastLocalChangeTime = 0;
+
+
+
+// ========== MODIFIKASI FUNGSI SAVE ==========
+
+// Fungsi untuk menyimpan data ke Firestore - DENGAN TRACKING
+async function saveKpiDataToFirestore() {
+    try {
+        const currentUser = firebase.auth().currentUser;
+        if (!currentUser) {
+            console.error('❌ No user logged in');
+            return false;
+        }
+
+        const db = firebase.firestore();
+        
+        // Tentukan user ID target
+        let targetUserId = currentUser.uid;
+        
+        // Jika Super Admin sedang melihat user lain, simpan ke user tersebut
+        if (isSuperAdminUser && currentFilter !== 'current') {
+            const viewingUserId = getCurrentViewingUserId();
+            if (viewingUserId && viewingUserId !== currentUser.uid) {
+                targetUserId = viewingUserId;
+            }
+        }
+        
+        console.log('💾 SAVING to Firestore for user:', targetUserId);
+        
+        // SET FLAG UNTUK MENCEGAH REAL-TIME UPDATE
+        isLocalChange = true;
+        lastLocalChangeTime = Date.now();
+
+        // Format data untuk Firestore
+        const kpiDoc = {
+            kpiData: kpiData.map(item => ({
+                id: item.id,
+                area: item.area,
+                target: item.target,
+                weight: item.weight,
+                description: item.description,
+                note: item.note,
+                realization: item.realization,
+                score: item.score
+            })),
+            userId: targetUserId,
+            userName: currentUser.displayName || currentUser.email,
+            userEmail: currentUser.email,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            totalScore: calculateTotalScore(kpiData),
+            lastUpdatedBy: currentUser.uid,
+            // Tambahkan timestamp untuk tracking
+            localUpdateTimestamp: Date.now()
+        };
+
+        // Simpan ke Firestore
+        await db.collection('kpiData').doc(targetUserId).set(kpiDoc, { merge: true });
+        
+        console.log('✅ SUCCESS: Data saved to Firestore for user:', targetUserId);
+        
+        // Reset flag setelah 5 detik (memberi waktu untuk proses selesai)
+        setTimeout(() => {
+            isLocalChange = false;
+            console.log('🔄 Real-time listener re-enabled');
+        }, 5000);
+        
+        return true;
+        
+    } catch (error) {
+        console.error('❌ ERROR saving to Firestore:', error);
+        isLocalChange = false; // Reset flag jika error
+        showNotification('Gagal menyimpan data: ' + error.message, 'error');
+        return false;
+    }
+}
+
+// ========== MODIFIKASI FUNGSI DISABLE EDIT MODE ==========
+
+// Fungsi untuk menonaktifkan mode edit - DENGAN OPTIMASI
 async function disableEditMode() {
     try {
         console.log('🔄 Disabling edit mode...');
@@ -4020,21 +4602,18 @@ async function disableEditMode() {
         if (hasChanges) {
             console.log('💾 Changes detected, saving to Firestore...');
             
-            // Update tampilan sementara
-            updateKPI();
+            // Update tampilan sementara TANPA memanggil updateKPI() yang memicu reload
+            updateDisplayWithoutReload();
             
-            // SIMPAN KE FIRESTORE - INI YANG PENTING!
+            // SIMPAN KE FIRESTORE dengan flag
             const saveResult = await saveKpiDataToFirestore();
             
             if (saveResult) {
                 showNotification('✅ Perubahan berhasil disimpan ke database!', 'success');
                 console.log('✅ Save successful');
                 
-                // Verifikasi dengan load ulang data
-                setTimeout(async () => {
-                    await loadKpiDataFromFirestore();
-                    updateDisplay();
-                }, 500);
+                // TIDAK PERLU load ulang data karena sudah tersimpan dengan benar
+                // Biarkan real-time listener yang menangani jika ada perubahan lain
                 
             } else {
                 showNotification('❌ Gagal menyimpan perubahan ke database', 'error');
@@ -4050,57 +4629,200 @@ async function disableEditMode() {
         showNotification('Error: ' + error.message, 'error');
     }
 }
-// ========== FUNGSI DEBUG TAMBAHAN ==========
 
-// Fungsi untuk test save/load
-window.testSaveLoad = async function() {
-    console.log('🧪 Testing save/load functionality...');
-    
-    // Simpan data dulu
-    console.log('💾 Saving current data...');
-    await saveKpiDataToFirestore();
-    
-    // Tunggu sebentar
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Load data kembali
-    console.log('📥 Loading data back...');
-    await loadKpiDataFromFirestore();
-    
-    // Update tampilan
-    updateDisplay();
-    
-    console.log('✅ Save/load test completed');
-    showNotification('Test save/load completed!', 'success');
-};
+// ========== FUNGSI UPDATE TANPA RELOAD ==========
 
-// Fungsi untuk melihat data di Firestore
-window.checkFirestoreData = async function() {
-    const db = firebase.firestore();
-    const currentUser = firebase.auth().currentUser;
+// Fungsi untuk update display tanpa memicu reload dari Firestore
+function updateDisplayWithoutReload() {
+    console.log('🔄 Updating display without reload...');
     
-    if (!currentUser) {
-        console.log('❌ No user logged in');
+    const rows = document.querySelectorAll('.kpi-table tbody tr:not(.result-row)');
+    rows.forEach((row, index) => {
+        if (index < kpiData.length) {
+            const data = kpiData[index];
+            
+            // Pastikan semua nilai ada
+            const safeTarget = data.target || 0;
+            const safeWeight = data.weight || 0;
+            const safeRealization = data.realization || 0;
+            const safeScore = data.score || 0;
+            
+            // Update hanya sel yang diperlukan, tanpa mengubah input yang sedang diedit
+            if (!isEditMode) {
+                row.querySelector('td:nth-child(2)').textContent = data.area || '';
+                row.querySelector('td:nth-child(3)').textContent = safeTarget;
+                row.querySelector('td:nth-child(4)').textContent = safeWeight.toFixed(2) + '%';
+                row.querySelector('td:nth-child(5)').textContent = data.description || '';
+                row.querySelector('td:nth-child(6)').textContent = data.note || '';
+            }
+            
+            const realizationCell = row.querySelector('.realization-cell');
+            if (realizationCell && !realizationCell.querySelector('input')) {
+                realizationCell.textContent = safeRealization;
+            }
+            
+            const scoreCell = row.querySelector('td:nth-child(9)');
+            if (scoreCell) {
+                scoreCell.textContent = safeScore.toFixed(2) + '%';
+                scoreCell.className = '';
+                
+                if (safeScore >= 100) {
+                    scoreCell.classList.add('target-achieved');
+                } else if (safeScore >= 70) {
+                    scoreCell.classList.add('target-partial');
+                } else {
+                    scoreCell.classList.add('target-missed');
+                }
+            }
+        }
+    });
+    
+    // Update total tanpa memicu reload
+    updateKPITotalsOnly();
+    
+    console.log('✅ Display updated without reload');
+}
+
+// Fungsi untuk update hanya total saja
+function updateKPITotalsOnly() {
+    let totalScore = 0;
+    let totalRealization = 0;
+    
+    kpiData.forEach((item, index) => {
+        totalScore += (item.score * item.weight) / 100;
+        totalRealization += item.realization;
+    });
+    
+    // Update total
+    updateElementText('total-score', totalScore.toFixed(2) + '%');
+    updateElementText('total-realization', totalRealization);
+    updateElementText('total-kpi', totalScore.toFixed(2) + '%');
+    updateProgressBar('.summary-card:first-child .progress-fill', Math.min(totalScore, 100));
+    
+    // Update class untuk total score
+    const totalScoreCell = document.getElementById('total-score');
+    if (totalScoreCell) {
+        totalScoreCell.className = '';
+        if (totalScore >= 70) {
+            totalScoreCell.classList.add('target-achieved');
+        } else if (totalScore >= 50) {
+            totalScoreCell.classList.add('target-partial');
+        } else {
+            totalScoreCell.classList.add('target-missed');
+        }
+    }
+}
+
+// ========== FUNGSI UNTUK SINGLE ROW EDIT ==========
+
+// Modifikasi fungsi saveSingleRow untuk menggunakan sistem yang sama
+async function saveSingleRow(index) {
+    try {
+        const row = document.querySelector(`.kpi-table tbody tr:nth-child(${index + 1})`);
+        const inputs = row.querySelectorAll('.edit-input');
+        
+        inputs.forEach(input => {
+            const field = input.dataset.field;
+            let value = input.value;
+            
+            if (field === 'target' || field === 'weight' || field === 'realization') {
+                value = parseFloat(value) || 0;
+            }
+            
+            kpiData[index][field] = value;
+        });
+        
+        // Hitung ulang skor untuk baris ini
+        const data = kpiData[index];
+        const isSmallerBetter = data.note.includes("Semakin Kecil");
+        data.score = calculateScore(data.target, data.realization, isSmallerBetter, index);
+        
+        // Update tampilan sementara
+        updateDisplayWithoutReload();
+        
+        // Simpan ke Firestore DENGAN FLAG
+        const saveResult = await saveKpiDataToFirestore();
+        
+        if (saveResult) {
+            showNotification(`Data ${data.area} berhasil diperbarui dan disimpan ke database!`, 'success');
+            
+            // Kembalikan ke mode normal
+            const actionCell = row.querySelector('td:last-child');
+            if (actionCell) {
+                actionCell.innerHTML = `
+                    <button class="btn-edit-cell" onclick="editSingleRow(${index})">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                `;
+            }
+        } else {
+            showNotification('Gagal menyimpan perubahan ke database', 'error');
+        }
+        
+    } catch (error) {
+        console.error('Error saving single row:', error);
+        showNotification('Error: ' + error.message, 'error');
+    }
+}
+
+// ========== ALTERNATIF: DISABLE REAL-TIME LISTENER SAAT EDIT ==========
+
+// Opsi: Nonaktifkan real-time listener sementara saat edit
+function disableRealTimeListenersTemporarily() {
+    unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
+    console.log('🔕 Real-time listeners disabled temporarily');
+}
+
+function enableRealTimeListeners() {
+    setupRealTimeListeners();
+    console.log('🔔 Real-time listeners re-enabled');
+}
+
+// Modifikasi enableEditMode untuk opsi ini
+function enableEditModeWithListenerControl() {
+    if (!isSuperAdminUser) {
+        showNotification('Hanya Super Admin yang dapat mengedit data', 'error');
         return;
     }
     
-    const doc = await db.collection('kpiData').doc(currentUser.uid).get();
+    // Nonaktifkan real-time listener sementara
+    disableRealTimeListenersTemporarily();
     
-    if (doc.exists) {
-        console.log('📋 Firestore data:', doc.data());
-        showNotification('Data Firestore ditemukan! Lihat console.', 'success');
-    } else {
-        console.log('📭 No data in Firestore');
-        showNotification('Tidak ada data di Firestore', 'warning');
+    // Tampilkan modal pilihan edit
+    showEditOptionsModal();
+    
+    // Aktifkan kembali listener setelah 30 detik (fallback)
+    setTimeout(() => {
+        if (isEditMode) {
+            enableRealTimeListeners();
+            console.log('🔄 Real-time listeners re-enabled (fallback)');
+        }
+    }, 30000);
+}
+
+// Modifikasi disableEditMode untuk opsi ini
+async function disableEditModeWithListenerControl() {
+    try {
+        // ... kode disableEditMode yang sama ...
+        
+        // Aktifkan kembali real-time listener setelah save
+        enableRealTimeListeners();
+        
+    } catch (error) {
+        console.error('❌ Error in disableEditMode:', error);
+        showNotification('Error: ' + error.message, 'error');
     }
-};
-// Fungsi untuk debug data
-window.debugData = function() {
-    console.log('=== DEBUG DATA ===');
-    console.log('kpiData:', kpiData);
-    console.log('isSuperAdminUser:', isSuperAdminUser);
-    console.log('currentFilter:', currentFilter);
+}
+
+// ========== FUNGSI DEBUG UNTUK MEMANTAU KONFLIK ==========
+
+window.monitorEditConflict = function() {
+    console.log('=== EDIT CONFLICT MONITOR ===');
+    console.log('isLocalChange:', isLocalChange);
+    console.log('lastLocalChangeTime:', new Date(lastLocalChangeTime).toLocaleTimeString());
+    console.log('Time since last change:', Date.now() - lastLocalChangeTime, 'ms');
     console.log('isEditMode:', isEditMode);
+    console.log('isSuperAdminUser:', isSuperAdminUser);
     
     // Check Firestore data
     const db = firebase.firestore();
@@ -4109,78 +4831,52 @@ window.debugData = function() {
     if (currentUser) {
         db.collection('kpiData').doc(currentUser.uid).get().then(doc => {
             if (doc.exists) {
-                console.log('Firestore data:', doc.data());
-            } else {
-                console.log('No data in Firestore');
+                const data = doc.data();
+                console.log('Firestore data timestamp:', data.updatedAt?.toDate());
+                console.log('Local update timestamp:', data.localUpdateTimestamp);
+                console.log('Current kpiData:', kpiData);
             }
         });
     }
 };
-// Fungsi debug untuk memeriksa data
-window.debugSaveIssue = async function() {
-    console.log('=== DEBUG SAVE ISSUE ===');
-    
-    const currentUser = firebase.auth().currentUser;
-    const db = firebase.firestore();
-    
-    // Check current kpiData
-    console.log('Current kpiData:', kpiData);
-    
-    // Check Firestore data before save
-    const beforeDoc = await db.collection('kpiData').doc(currentUser.uid).get();
-    console.log('Firestore data BEFORE save:', beforeDoc.exists ? beforeDoc.data() : 'No data');
-    
-    // Simpan data
-    console.log('Saving data...');
-    await saveKpiDataToFirestore();
-    
-    // Check Firestore data after save
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Tunggu 1 detik
-    const afterDoc = await db.collection('kpiData').doc(currentUser.uid).get();
-    console.log('Firestore data AFTER save:', afterDoc.exists ? afterDoc.data() : 'No data');
-    
-    // Load data kembali
-    console.log('Loading data back...');
-    await loadKpiDataFromFirestore();
-    console.log('kpiData after reload:', kpiData);
-};
-// FUNGSI TEST SAVE - tambahkan ini
-window.testSaveNow = async function() {
-    console.log('🧪 TEST: Saving current data...');
-    
-    const success = await saveKpiDataToFirestore();
-    if (success) {
-        alert('✅ Data berhasil disimpan ke Firestore!');
-        // Refresh data untuk memverifikasi
-        await loadKpiDataFromFirestore();
-        updateDisplay();
-    } else {
-        alert('❌ Gagal menyimpan data');
-    }
-};
 
-// Fungsi untuk memeriksa data di Firestore
-window.checkFirestoreData = async function() {
-    const db = firebase.firestore();
-    const currentUser = firebase.auth().currentUser;
-    
-    if (!currentUser) {
-        console.log('❌ No user logged in');
+// ========== INISIALISASI ==========
+
+// Ganti fungsi setupRealTimeListeners yang lama dengan yang baru
+// Pastikan ini dipanggil setelah DOMContentLoaded
+
+console.log('✅ Enhanced Edit System loaded - Conflict prevention enabled');
+// SOLUSI RADIKAL: Nonaktifkan real-time listener selama edit
+function enableEditModeRadical() {
+    if (!isSuperAdminUser) {
+        showNotification('Hanya Super Admin yang dapat mengedit data', 'error');
         return;
     }
     
-    console.log('🔍 Checking Firestore data for user:', currentUser.uid);
+    // HENTIKAN semua real-time listener
+    unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
+    unsubscribeFunctions = [];
     
-    const doc = await db.collection('kpiData').doc(currentUser.uid).get();
+    console.log('🔕 All real-time listeners stopped for editing');
     
-    if (doc.exists) {
-        console.log('✅ Data ditemukan di Firestore:', doc.data());
-        alert('Data ditemukan di Firestore! Lihat console untuk detail.');
-    } else {
-        console.log('❌ TIDAK ADA DATA di Firestore');
-        alert('TIDAK ADA DATA di Firestore!');
+    // Tampilkan modal pilihan edit
+    showEditOptionsModal();
+}
+
+async function disableEditModeRadical() {
+    try {
+        // ... kode disableEditMode biasa ...
+        
+        // SETELAH SIMPAN BERHASIL, aktifkan kembali listeners
+        setTimeout(() => {
+            setupRealTimeListeners();
+            console.log('🔔 Real-time listeners restarted');
+        }, 2000);
+        
+    } catch (error) {
+        console.error('Error:', error);
     }
-};
+}
 </script>
 </body>
 

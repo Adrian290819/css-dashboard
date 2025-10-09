@@ -13,6 +13,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="sidebar-loader.js"></script>
     <link rel="stylesheet" href="stylemobile.css">
+    <script src="translations.js"></script>
+
     
     <!-- Firebase Configuration -->
 <!-- Firebase Configuration -->
@@ -182,6 +184,7 @@
                 <option value="Asia/Jakarta">WIB (Jakarta)</option>
                 <option value="Asia/Makassar">WITA (Makassar)</option>
                 <option value="Asia/Jayapura">WIT (Jayapura)</option>
+                 <option value="Asia/Shanghai">CST (Shanghai)</option>
                 <option value="UTC">UTC</option>
             </select>
         </div>
@@ -219,7 +222,8 @@
                                 <select id="languageSelect" class="form-select">
                                     <option value="id">Bahasa Indonesia</option>
                                     <option value="en">English</option>
-                                    <option value="ja">日本語</option>
+                                    <option value="ja">Japanese</option>
+                                     <option value="zh">中文 (Chinese)</option>
                                 </select>
                             </div>
                             
@@ -271,9 +275,7 @@
     </button>
     <img id="profileImageModalImg" src="" alt="Foto Profil" class="profile-image-modal-content">
 </div>
-    <script>
-
-// Default profil
+ <script>
 // Default profil
 const DEFAULT_PROFILE = {
     name: 'Admin',
@@ -401,7 +403,6 @@ async function changePassword(currentPassword, newPassword) {
 
 // Fungsi untuk menampilkan modal login
 function showLoginModal() {
-    // Implementasi modal login sederhana
     const loginHTML = `
         <div id="loginModal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;justify-content:center;align-items:center;z-index:1000;">
             <div style="background:white;padding:2rem;border-radius:10px;width:90%;max-width:400px;">
@@ -437,7 +438,10 @@ function showToast(message, type = 'success') {
     const toast = document.getElementById('toast');
     const toastMessage = document.getElementById('toastMessage');
     
-    toastMessage.textContent = message;
+    // Jika message adalah key translation, gunakan getTranslation
+    const displayMessage = translations && translations.id && translations.id[message] ? getTranslation(message) : message;
+    
+    toastMessage.textContent = displayMessage;
     
     if (type === 'error') {
         toast.style.borderLeft = '4px solid var(--danger)';
@@ -587,10 +591,11 @@ async function loadSavedSettings() {
     loadAppSettings();
     
     // Load bahasa
-    const language = localStorage.getItem('language');
-    if (language) {
-        document.getElementById('languageSelect').value = language;
-    }
+    const language = localStorage.getItem('language') || 'id';
+    document.getElementById('languageSelect').value = language;
+    
+    // Terapkan bahasa yang dipilih
+    applyTranslations(language);
     
     // Load tema yang aktif
     const currentTheme = localStorage.getItem('theme') || 'light';
@@ -602,8 +607,226 @@ async function loadSavedSettings() {
     }
 }
 
+// Fungsi untuk mengubah bahasa
+function changeLanguage(language) {
+    console.log('Changing language to:', language);
+    
+    // Simpan preferensi bahasa
+    localStorage.setItem('language', language);
+    
+    // Update dropdown
+    document.getElementById('languageSelect').value = language;
+    
+    // Terapkan terjemahan
+    applyTranslations(language);
+    
+    // Simpan ke Firestore jika user login
+    const user = auth.currentUser;
+    if (user) {
+        db.collection('users').doc(user.uid).set({
+            language: language,
+            lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+    }
+    
+    showToast(getTranslation('appearanceSaved', language));
+}
+
+// Fungsi untuk menerapkan terjemahan
+function applyTranslations(language) {
+    const lang = translations[language] || translations['id'];
+    console.log('Applying translations for:', language);
+    
+    if (!lang) {
+        console.error('Translations not found for language:', language);
+        return;
+    }
+    
+    try {
+        // Header
+        const headerTitle = document.querySelector('.header h1');
+        if (headerTitle) {
+            headerTitle.innerHTML = `<i class="fas fa-cog"></i> ${lang.settingsTitle || 'Pengaturan Admin'}`;
+        }
+        
+        const searchInput = document.querySelector('.search-bar input');
+        if (searchInput) {
+            searchInput.placeholder = lang.searchPlaceholder || 'Cari pengaturan...';
+        }
+        
+        // Breadcrumb
+        const breadcrumbLinks = document.querySelectorAll('.breadcrumb a, .breadcrumb span');
+        if (breadcrumbLinks[0]) {
+            breadcrumbLinks[0].innerHTML = `<i class="fas fa-home"></i> ${lang.dashboard || 'Dashboard'}`;
+        }
+        if (breadcrumbLinks[2]) {
+            breadcrumbLinks[2].textContent = lang.settings || 'Pengaturan';
+        }
+        
+        // Profile Section
+        const profileTitle = document.querySelector('.left-column .card:first-child .card-title');
+        if (profileTitle) {
+            profileTitle.innerHTML = `<i class="fas fa-user-circle"></i> ${lang.profileTitle || 'Profil Admin'}`;
+        }
+        
+        const adminNameLabel = document.querySelector('label[for="adminName"]');
+        if (adminNameLabel) {
+            adminNameLabel.textContent = lang.adminNameLabel || 'Nama Admin';
+        }
+        
+        const adminNameInput = document.getElementById('adminName');
+        if (adminNameInput) {
+            adminNameInput.placeholder = lang.adminNamePlaceholder || 'Masukkan nama admin';
+        }
+        
+        const emailLabel = document.querySelector('label[for="adminEmail"]');
+        if (emailLabel) {
+            emailLabel.textContent = lang.emailLabel || 'Email';
+        }
+        
+        const emailInput = document.getElementById('adminEmail');
+        if (emailInput) {
+            emailInput.placeholder = lang.emailPlaceholder || 'admin@example.com';
+        }
+        
+        const saveProfileBtn = document.getElementById('saveProfileBtn');
+        if (saveProfileBtn) {
+            saveProfileBtn.innerHTML = `<i class="fas fa-save"></i> ${lang.saveProfile || 'Simpan Perubahan'}`;
+        }
+        
+        // App Settings
+        const appSettingsTitle = document.querySelector('.left-column .card:nth-child(2) .card-title');
+        if (appSettingsTitle) {
+            appSettingsTitle.innerHTML = `<i class="fas fa-cogs"></i> ${lang.appSettingsTitle || 'Pengaturan Aplikasi'}`;
+        }
+        
+        const notificationItems = document.querySelectorAll('.notification-item');
+        if (notificationItems[0]) {
+            notificationItems[0].querySelector('.notification-title').textContent = lang.autoDarkMode || 'Mode Gelap Otomatis';
+            notificationItems[0].querySelector('.notification-desc').textContent = lang.autoDarkModeDesc || 'Aktifkan mode gelap berdasarkan waktu';
+        }
+        if (notificationItems[1]) {
+            notificationItems[1].querySelector('.notification-title').textContent = lang.autoSave || 'Auto-Save';
+            notificationItems[1].querySelector('.notification-desc').textContent = lang.autoSaveDesc || 'Simpan perubahan secara otomatis';
+        }
+        if (notificationItems[2]) {
+            notificationItems[2].querySelector('.notification-title').textContent = lang.dateFormat || 'Format Tanggal';
+            notificationItems[2].querySelector('.notification-desc').textContent = lang.dateFormatDesc || 'Pilih format tanggal yang diinginkan';
+        }
+        if (notificationItems[3]) {
+            notificationItems[3].querySelector('.notification-title').textContent = lang.timezone || 'Zona Waktu';
+            notificationItems[3].querySelector('.notification-desc').textContent = lang.timezoneDesc || 'Atur zona waktu untuk tampilan waktu';
+        }
+        
+        const saveAppSettingsBtn = document.getElementById('saveAppSettingsBtn');
+        if (saveAppSettingsBtn) {
+            saveAppSettingsBtn.innerHTML = `<i class="fas fa-save"></i> ${lang.saveAppSettings || 'Simpan Pengaturan'}`;
+        }
+        
+        // Appearance
+        const appearanceTitle = document.querySelector('.right-column .card:first-child .card-title');
+        if (appearanceTitle) {
+            appearanceTitle.innerHTML = `<i class="fas fa-palette"></i> ${lang.appearanceTitle || 'Tampilan'}`;
+        }
+        
+        const themeLabel = document.querySelector('.right-column .card:first-child .form-group:first-child label');
+        if (themeLabel) {
+            themeLabel.textContent = lang.selectTheme || 'Pilih Tema';
+        }
+        
+        const lightModeOption = document.querySelector('.theme-option[data-theme="light"] .theme-name');
+        if (lightModeOption) {
+            lightModeOption.textContent = lang.lightMode || 'Light Mode';
+        }
+        
+        const darkModeOption = document.querySelector('.theme-option[data-theme="dark"] .theme-name');
+        if (darkModeOption) {
+            darkModeOption.textContent = lang.darkMode || 'Dark Mode';
+        }
+        
+        const languageLabel = document.querySelector('label[for="languageSelect"]');
+        if (languageLabel) {
+            languageLabel.textContent = lang.language || 'Bahasa';
+        }
+        
+        const saveAppearanceBtn = document.getElementById('saveAppearanceBtn');
+        if (saveAppearanceBtn) {
+            saveAppearanceBtn.innerHTML = `<i class="fas fa-save"></i> ${lang.saveAppearance || 'Simpan Pengaturan'}`;
+        }
+        
+        // Security
+        const securityTitle = document.querySelector('.right-column .card:nth-child(2) .card-title');
+        if (securityTitle) {
+            securityTitle.innerHTML = `<i class="fas fa-lock"></i> ${lang.securityTitle || 'Keamanan'}`;
+        }
+        
+        const currentPasswordLabel = document.querySelector('label[for="currentPassword"]');
+        if (currentPasswordLabel) {
+            currentPasswordLabel.textContent = lang.currentPassword || 'Password Saat Ini';
+        }
+        
+        const currentPasswordInput = document.getElementById('currentPassword');
+        if (currentPasswordInput) {
+            currentPasswordInput.placeholder = lang.currentPasswordPlaceholder || 'Masukkan password saat ini';
+        }
+        
+        const newPasswordLabel = document.querySelector('label[for="newPassword"]');
+        if (newPasswordLabel) {
+            newPasswordLabel.textContent = lang.newPassword || 'Password Baru';
+        }
+        
+        const newPasswordInput = document.getElementById('newPassword');
+        if (newPasswordInput) {
+            newPasswordInput.placeholder = lang.newPasswordPlaceholder || 'Masukkan password baru';
+        }
+        
+        const confirmPasswordLabel = document.querySelector('label[for="confirmPassword"]');
+        if (confirmPasswordLabel) {
+            confirmPasswordLabel.textContent = lang.confirmPassword || 'Konfirmasi Password Baru';
+        }
+        
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        if (confirmPasswordInput) {
+            confirmPasswordInput.placeholder = lang.confirmPasswordPlaceholder || 'Konfirmasi password baru';
+        }
+        
+        const changePasswordBtn = document.getElementById('changePasswordBtn');
+        if (changePasswordBtn) {
+            changePasswordBtn.innerHTML = `<i class="fas fa-key"></i> ${lang.changePassword || 'Ubah Password'}`;
+        }
+        
+        console.log('Translations applied successfully for:', language);
+        
+    } catch (error) {
+        console.error('Error applying translations:', error);
+    }
+}
+
+// Fungsi untuk mendapatkan terjemahan
+function getTranslation(key, language = null) {
+    const lang = language || localStorage.getItem('language') || 'id';
+    
+    // Pastikan objek translations tersedia
+    if (typeof translations === 'undefined') {
+        console.warn('Translations object not available');
+        return key;
+    }
+    
+    const translation = translations[lang]?.[key];
+    
+    if (!translation) {
+        console.warn(`Translation not found for key: ${key} in language: ${lang}`);
+        // Fallback ke bahasa Indonesia jika terjemahan tidak ditemukan
+        return translations['id']?.[key] || key;
+    }
+    
+    return translation;
+}
+
 // Event Listeners ketika DOM siap
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, setting up language functionality...');
+    
     // Setup auth state listener
     auth.onAuthStateChanged((user) => {
         if (user) {
@@ -714,14 +937,7 @@ document.addEventListener('DOMContentLoaded', function() {
         showToast('Pengaturan aplikasi berhasil disimpan');
     });
     
-    // Pengaturan tema - PERBAIKAN: Pastikan event listener ini berfungsi
-    const themeOptions = document.querySelectorAll('.theme-option');
-    themeOptions.forEach(option => {
-        // Hapus event listener lama untuk menghindari duplikasi
-        option.replaceWith(option.cloneNode(true));
-    });
-    
-    // Tambahkan event listener baru
+    // Pengaturan tema
     document.querySelectorAll('.theme-option').forEach(option => {
         option.addEventListener('click', function() {
             document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
@@ -736,26 +952,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 sidebarLoader.loadTheme();
             }
             
-            showToast(`Tema ${theme === 'dark' ? 'Gelap' : 'Terang'} diaktifkan`);
+            const currentLanguage = localStorage.getItem('language') || 'id';
+            const themeText = theme === 'dark' ? getTranslation('darkMode', currentLanguage) : getTranslation('lightMode', currentLanguage);
+            showToast(`${themeText} diaktifkan`);
         });
+    });
+    
+    // Event listener untuk perubahan bahasa
+    document.getElementById('languageSelect').addEventListener('change', function() {
+        const selectedLanguage = this.value;
+        changeLanguage(selectedLanguage);
     });
     
     // Simpan pengaturan tampilan
     document.getElementById('saveAppearanceBtn').addEventListener('click', function() {
         const language = document.getElementById('languageSelect').value;
-        const timezone = document.getElementById('timezone').value;
-        const dateFormat = document.getElementById('dateFormat').value;
+        const currentTheme = document.querySelector('.theme-option.active').getAttribute('data-theme');
         
         localStorage.setItem('language', language);
-        localStorage.setItem('timezone', timezone);
-        localStorage.setItem('dateFormat', dateFormat);
+        localStorage.setItem('theme', currentTheme);
         
-        // Trigger custom event untuk update real-time
-        document.dispatchEvent(new CustomEvent('settingsUpdated', {
-            detail: { timezone, dateFormat }
-        }));
+        // Terapkan bahasa dan tema
+        changeLanguage(language);
+        document.documentElement.setAttribute('data-theme', currentTheme);
         
-        showToast('Pengaturan tampilan berhasil disimpan');
+        if (typeof SidebarLoader !== 'undefined') {
+            const sidebarLoader = new SidebarLoader();
+            sidebarLoader.loadTheme();
+        }
+        
+        showToast(getTranslation('appearanceSaved', language));
     });
     
     // Ubah password dengan Firebase Authentication
@@ -815,7 +1041,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Event listener untuk menampilkan foto profil dalam ukuran penuh - PERBAIKAN
+    // Event listener untuk menampilkan foto profil dalam ukuran penuh
     document.getElementById('profileImage').addEventListener('click', function() {
         showFullSizeProfileImage(this.src);
     });
@@ -824,7 +1050,7 @@ document.addEventListener('DOMContentLoaded', function() {
         showFullSizeProfileImage(this.src);
     });
 });
-    </script>
+</script>
 
     <style>
         :root {
@@ -1047,6 +1273,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .profile-img:hover, #profileImage:hover {
     transform: scale(1.05);
+}
+.language-zh {
+    font-family: 'Poppins', 'Microsoft YaHei', 'SimHei', sans-serif;
 }
     </style>
 </body>

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="global.css">
         <link rel="stylesheet" href="stylemobile.css">
         <script src="global-time.js"></script>
+        <script src="translations.js"></script>
     
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -1413,6 +1414,190 @@
 
     // Initialize the page when DOM is loaded
     document.addEventListener('DOMContentLoaded', initMaintenancePage);
+    // ========== SISTEM TERJEMAHAN MAINTENANCE ==========
+
+// Fungsi untuk menerapkan terjemahan maintenance
+function applyMaintenanceTranslations(language) {
+    const lang = translations[language] || translations['id'];
+    
+    if (!lang) return;
+
+    console.log("Applying maintenance translations for:", language);
+
+    // Terjemahkan elemen utama
+    const elements = {
+        'maintenanceTitle': '.header h1',
+        'statusFilter': '.filter-group:nth-child(1) label',
+        'categoryFilter': '.filter-group:nth-child(2) label',
+        'dateFilter': '.filter-group:nth-child(3) label',
+        'searchPlaceholder': '#maintenanceSearch',
+        'maintenanceTasks': '.section-title',
+        'noMaintenanceTasks': '#noTasks h3',
+        'noMaintenanceTasksMessage': '#noTasks p'
+    };
+
+    Object.keys(elements).forEach(key => {
+        const element = document.querySelector(elements[key]);
+        if (element && lang[key]) {
+            if (key === 'searchPlaceholder') {
+                element.placeholder = lang[key];
+            } else {
+                // Simpan ikon jika ada
+                const iconMatch = element.innerHTML.match(/(<i[^>]*><\/i>)/);
+                if (iconMatch) {
+                    element.innerHTML = iconMatch[0] + ' ' + lang[key];
+                } else {
+                    element.textContent = lang[key];
+                }
+            }
+        }
+    });
+
+    // Update tombol
+    const addTaskButton = document.getElementById('addMaintenanceBtn');
+    const refreshButton = document.getElementById('refreshBtn');
+    const addFirstTaskButton = document.getElementById('addFirstTaskBtn');
+    const saveTaskButton = document.getElementById('saveTaskBtn');
+    const cancelButton = document.getElementById('cancelBtn');
+
+    if (addTaskButton && lang.addNewTask) {
+        addTaskButton.innerHTML = `<i class="fas fa-plus"></i> ${lang.addNewTask}`;
+    }
+    if (refreshButton && lang.refresh) {
+        refreshButton.innerHTML = `<i class="fas fa-sync-alt"></i> ${lang.refresh}`;
+    }
+    if (addFirstTaskButton && lang.addFirstTask) {
+        addFirstTaskButton.innerHTML = `<i class="fas fa-plus"></i> ${lang.addFirstTask}`;
+    }
+    if (saveTaskButton && lang.saveTask) {
+        saveTaskButton.innerHTML = `<i class="fas fa-save"></i> ${lang.saveTask}`;
+    }
+    if (cancelButton && lang.cancel) {
+        cancelButton.textContent = lang.cancel;
+    }
+
+    // Update judul modal
+    const modalTitle = document.getElementById('modalTitle');
+    if (modalTitle && lang.addMaintenanceTask) {
+        // Cek apakah sedang edit atau add
+        const taskId = document.getElementById('taskId').value;
+        if (taskId) {
+            modalTitle.innerHTML = `<i class="fas fa-edit"></i> ${lang.editTask}`;
+        } else {
+            modalTitle.innerHTML = `<i class="fas fa-plus-circle"></i> ${lang.addMaintenanceTask}`;
+        }
+    }
+
+    // Update label form
+    updateMaintenanceFormLabels(language);
+    
+    // Update header tabel
+    updateMaintenanceTableHeaders(language);
+    
+    // Update opsi filter
+    updateMaintenanceFilterOptions(language);
+}
+
+// Update label form maintenance
+function updateMaintenanceFormLabels(language) {
+    const lang = translations[language] || translations['id'];
+    
+    const formLabels = {
+        'taskTitle': 'Title',
+        'taskCategory': 'Category',
+        'taskStatus': 'Status',
+        'taskDueDate': 'Due Date',
+        'taskAssignedTo': 'Assigned To',
+        'taskDescription': 'Description',
+        'taskNotes': 'Notes'
+    };
+
+    Object.keys(formLabels).forEach(fieldId => {
+        const label = document.querySelector(`label[for="${fieldId}"]`);
+        const translationKey = formLabels[fieldId].toLowerCase().replace(' ', '');
+        if (label && lang[translationKey]) {
+            label.textContent = lang[translationKey];
+        }
+    });
+}
+
+// Update header tabel maintenance
+function updateMaintenanceTableHeaders(language) {
+    const lang = translations[language] || translations['id'];
+    
+    const headers = document.querySelectorAll('.maintenance-table th');
+    const headerTranslations = [
+        'taskId',
+        'title',
+        'category',
+        'status',
+        'dueDate',
+        'assignedTo',
+        'actions'
+    ];
+
+    headers.forEach((header, index) => {
+        const translationKey = headerTranslations[index];
+        if (lang[translationKey]) {
+            header.textContent = lang[translationKey];
+        }
+    });
+}
+
+// Update opsi filter maintenance
+function updateMaintenanceFilterOptions(language) {
+    const lang = translations[language] || translations['id'];
+    
+    // Status filter
+    const statusFilter = document.getElementById('statusFilter');
+    if (statusFilter) {
+        if (lang.allStatus) statusFilter.options[0].text = lang.allStatus;
+        if (lang.pending) statusFilter.options[1].text = lang.pending;
+        if (lang.inProgress) statusFilter.options[2].text = lang.inProgress;
+    }
+    
+    // Category filter
+    const categoryFilter = document.getElementById('categoryFilter');
+    if (categoryFilter) {
+        if (lang.allCategories) categoryFilter.options[0].text = lang.allCategories;
+        if (lang.serverMaintenance) categoryFilter.options[1].text = lang.serverMaintenance;
+        if (lang.database) categoryFilter.options[2].text = lang.database;
+    }
+    
+    // Date filter
+    const dateFilter = document.getElementById('dateFilter');
+    if (dateFilter) {
+        if (lang.allDates) dateFilter.options[0].text = lang.allDates;
+        if (lang.today) dateFilter.options[1].text = lang.today;
+        if (lang.tomorrow) dateFilter.options[2].text = lang.tomorrow;
+        if (lang.thisWeek) dateFilter.options[3].text = lang.thisWeek;
+        if (lang.thisMonth) dateFilter.options[4].text = lang.thisMonth;
+        if (lang.overdue) dateFilter.options[5].text = lang.overdue;
+    }
+}
+
+// ========== INISIALISASI BAHASA MAINTENANCE ==========
+
+function initializeMaintenanceLanguage() {
+    const savedLanguage = localStorage.getItem('language') || 'id';
+    console.log("Initializing maintenance with language:", savedLanguage);
+    
+    // Terapkan terjemahan
+    applyMaintenanceTranslations(savedLanguage);
+    
+    // Setup listener untuk perubahan bahasa
+    window.addEventListener('languageChanged', function(event) {
+        console.log("Maintenance language changed to:", event.detail.language);
+        applyMaintenanceTranslations(event.detail.language);
+    });
+}
+
+// Panggil inisialisasi
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        initializeMaintenanceLanguage();
+    }, 100);
+});
 </script>
 </body>
 </html>

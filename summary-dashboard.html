@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="global.css">
     <link rel="stylesheet" href="stylemobile.css">
     <script src="global-time.js"></script>
+    <script src="translations.js"></script>
     <style>
         /* ========== VARIABEL CSS YANG DIPERLUKAN ========== */
         :root {
@@ -3122,6 +3123,330 @@ function setupDateFilters() {
         console.log("Date filters initialized");
     }
 }
+// Fungsi untuk menerapkan bahasa saat halaman dimuat
+function initializeLanguage() {
+    const savedLanguage = localStorage.getItem('language') || 'id';
+    applyTranslations(savedLanguage);
+    
+    // Update dropdown bahasa jika ada
+    const languageSelect = document.getElementById('languageSelect');
+    if (languageSelect) {
+        languageSelect.value = savedLanguage;
+    }
+}
+
+// Panggil saat DOM siap
+document.addEventListener('DOMContentLoaded', function() {
+    initializeLanguage();
+});
+function applyTranslations(language) {
+    const lang = translations[language] || translations['id'];
+    
+    if (!lang) return;
+
+    // Terapkan ke elemen umum yang ada di semua halaman
+    const elementsToTranslate = {
+        // Header & Navigation
+        'settingsTitle': '.header h1',
+        'searchPlaceholder': '.search-bar input',
+        'dashboard': '.breadcrumb a',
+        
+        // User profile
+        'profileName': '#profileName',
+        'userRole': '.user-info p',
+    };
+
+    // Terjemahkan elemen yang ada
+    Object.keys(elementsToTranslate).forEach(key => {
+        const selector = elementsToTranslate[key];
+        const element = document.querySelector(selector);
+        if (element && lang[key]) {
+            if (selector === '.search-bar input') {
+                element.placeholder = lang[key];
+            } else if (element.querySelector('i')) {
+                // Simpan ikon dan tambahkan teks
+                const icon = element.innerHTML.match(/<i[^>]*><\/i>/)[0];
+                element.innerHTML = icon + ' ' + lang[key];
+            } else {
+                element.textContent = lang[key];
+            }
+        }
+    });
+
+    // Panggil fungsi terjemahan khusus dashboard
+    applyDashboardTranslations(language);
+}
+// Buat custom event untuk perubahan bahasa
+function triggerLanguageChange(language) {
+    const event = new CustomEvent('languageChanged', { 
+        detail: { language: language }
+    });
+    window.dispatchEvent(event);
+}
+
+// Dengarkan perubahan bahasa di semua halaman
+window.addEventListener('languageChanged', function(event) {
+    applyTranslations(event.detail.language);
+});
+
+// Di halaman pengaturan, trigger event saat bahasa berubah
+document.getElementById('languageSelect').addEventListener('change', function() {
+    const selectedLanguage = this.value;
+    changeLanguage(selectedLanguage);
+    triggerLanguageChange(selectedLanguage);
+});
+// Di summary-dashboard.html, tambahkan:
+function setupLanguageForDashboard() {
+    const lang = translations[localStorage.getItem('language') || 'id'] || translations.id;
+    
+    // Terjemahkan elemen spesifik dashboard
+    const dashboardElements = {
+        'dashboardTitle': '.header h1',
+        'weeklyPerformance': '.stat-title:contains("Weekly Performance")',
+        'resolutionTrend': '.stat-title:contains("Resolution Trend")',
+        'topBrand': '.stat-title:contains("Top Brand")'
+    };
+    
+    Object.keys(dashboardElements).forEach(key => {
+        const element = document.querySelector(dashboardElements[key]);
+        if (element && lang[key]) {
+            element.textContent = lang[key];
+        }
+    });
+}
+
+// Panggil saat bahasa berubah
+window.addEventListener('languageChanged', function() {
+    setupLanguageForDashboard();
+});
+function changeLanguage(language) {
+    console.log('Changing language to:', language);
+    
+    // Simpan preferensi bahasa
+    localStorage.setItem('language', language);
+    
+    // Update dropdown
+    const languageSelect = document.getElementById('languageSelect');
+    if (languageSelect) {
+        languageSelect.value = language;
+    }
+    
+    // Terapkan terjemahan
+    applyTranslations(language);
+    
+    // Trigger event untuk halaman lain
+    triggerLanguageChange(language);
+    
+    // Simpan ke Firestore jika user login
+    const user = auth.currentUser;
+    if (user) {
+        db.collection('users').doc(user.uid).set({
+            language: language,
+            lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+    }
+    
+    showToast(getTranslation('appearanceSaved', language));
+}
+// Tambahkan di bagian script summary-dashboard.html
+function applyDashboardTranslations(language) {
+    const lang = translations[language] || translations['id'];
+    
+    if (!lang) return;
+
+    // Terapkan terjemahan ke elemen dashboard
+    const elements = {
+        'dashboardTitle': '.header h1',
+        'weeklyPerformance': '.summary-stat-card:nth-child(1) .stat-title',
+        'resolutionTrend': '.summary-stat-card:nth-child(2) .stat-title', 
+        'topBrand': '.summary-stat-card:nth-child(3) .stat-title',
+        'categoryFilter': 'label[for="categoryFilter"]',
+        'brandFilter': 'label[for="brandFilter"]',
+        'dateRange': 'label[for="startDate"]',
+        'searchReports': '#summarySearch',
+        'reportsByStatus': '.chart-card:nth-child(1) .chart-title',
+        'weeklyResolutionTrend': '.chart-card:nth-child(2) .chart-title',
+        'reportsByCategory': '.chart-card:nth-child(3) .chart-title',
+        'reportsByBrand': '.chart-card:nth-child(4) .chart-title'
+    };
+
+    Object.keys(elements).forEach(key => {
+        const element = document.querySelector(elements[key]);
+        if (element && lang[key]) {
+            if (key === 'searchReports') {
+                element.placeholder = lang[key];
+            } else {
+                element.textContent = lang[key];
+            }
+        }
+    });
+
+    // Update tooltips
+    const tooltips = {
+        'performanceTooltip': '.summary-stat-card:nth-child(1) .tooltip-text',
+        'trendTooltip': '.summary-stat-card:nth-child(2) .tooltip-text',
+        'topBrandTooltip': '.summary-stat-card:nth-child(3) .tooltip-text'
+    };
+
+    Object.keys(tooltips).forEach(key => {
+        const element = document.querySelector(tooltips[key]);
+        if (element && lang[key]) {
+            element.textContent = lang[key];
+        }
+    });
+}
+
+// Panggil fungsi ini saat bahasa berubah
+window.addEventListener('languageChanged', function(event) {
+    applyDashboardTranslations(event.detail.language);
+});
+
+// Panggil saat halaman dimuat
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("Dashboard initialized");
+    
+    // Inisialisasi cache
+    window.pendingReportsCache = [];
+    window.solvedReportsCache = [];
+    window.maintenanceReportsCache = [];
+    window.solvedMaintenanceCache = [];
+    window.newGamesData = [];
+    window.featuresData = [];
+
+    // Setup listeners
+    setupReportsListener();
+    setupNewReleasesListener();
+    setupReleasesListeners();
+
+    // Setup bahasa
+    const savedLanguage = localStorage.getItem('language') || 'id';
+    applyTranslations(savedLanguage);
+    applyDashboardTranslations(savedLanguage);
+});
+// ========== FUNGSI TERJEMAHAN DASHBOARD ==========
+
+function applyDashboardTranslations(language) {
+    const lang = translations[language] || translations['id'];
+    
+    if (!lang) return;
+
+    console.log("Applying dashboard translations for:", language);
+
+    // Terjemahkan elemen utama dashboard
+    const elements = {
+        'dashboardTitle': '.header h1',
+        'weeklyPerformance': '.summary-stat-card:nth-child(1) .stat-title',
+        'resolutionTrend': '.summary-stat-card:nth-child(2) .stat-title', 
+        'topBrand': '.summary-stat-card:nth-child(3) .stat-title',
+        'categoryFilter': '.filter-group:nth-child(1) label',
+        'brandFilter': '.filter-group:nth-child(2) label',
+        'dateRange': '.filter-group:nth-child(3) label',
+        'searchReports': '#summarySearch',
+        'reportsByStatus': '.chart-card:nth-child(1) .chart-title',
+        'weeklyResolutionTrend': '.chart-card:nth-child(2) .chart-title',
+        'reportsByCategory': '.chart-card:nth-child(3) .chart-title',
+        'reportsByBrand': '.chart-card:nth-child(4) .chart-title',
+        'newGameReleases': '.chart-card:nth-child(5) .chart-title',
+        'newfeatureReleases': '.chart-card:nth-child(6) .chart-title'
+    };
+
+    Object.keys(elements).forEach(key => {
+        const element = document.querySelector(elements[key]);
+        if (element && lang[key]) {
+            if (key === 'searchReports') {
+                element.placeholder = lang[key];
+            } else {
+                // Simpan ikon jika ada sebelum mengganti teks
+                const iconMatch = element.innerHTML.match(/(<i[^>]*><\/i>)/);
+                if (iconMatch) {
+                    element.innerHTML = iconMatch[0] + ' ' + lang[key];
+                } else {
+                    element.textContent = lang[key];
+                }
+            }
+        }
+    });
+
+    // Update tooltips
+    const tooltips = {
+        'performanceTooltip': '.summary-stat-card:nth-child(1) .tooltip-text',
+        'trendTooltip': '.summary-stat-card:nth-child(2) .tooltip-text',
+        'topBrandTooltip': '.summary-stat-card:nth-child(3) .tooltip-text'
+    };
+
+    Object.keys(tooltips).forEach(key => {
+        const element = document.querySelector(tooltips[key]);
+        if (element && lang[key]) {
+            element.textContent = lang[key];
+        }
+    });
+
+    // Update option values di filter
+    updateFilterOptions(language);
+    
+    // Update stat descriptions
+    updateStatDescriptions(language);
+}
+
+// Update opsi filter
+function updateFilterOptions(language) {
+    const lang = translations[language] || translations['id'];
+    
+    // Update category filter options
+    const categoryFilter = document.getElementById('categoryFilter');
+    if (categoryFilter && lang.allCategories) {
+        categoryFilter.options[0].text = lang.allCategories;
+    }
+    
+    // Update brand filter options  
+    const brandFilter = document.getElementById('brandFilter');
+    if (brandFilter && lang.allBrands) {
+        brandFilter.options[0].text = lang.allBrands;
+    }
+}
+
+// Update deskripsi statistik
+function updateStatDescriptions(language) {
+    const lang = translations[language] || translations['id'];
+    
+    // Update deskripsi di stat cards
+    const performanceDesc = document.querySelector('.summary-stat-card:nth-child(1) .stat-description');
+    if (performanceDesc && lang.fromLastWeek) {
+        const arrowElement = performanceDesc.querySelector('i');
+        if (arrowElement) {
+            performanceDesc.innerHTML = `<span id="performanceChange" class="positive">${arrowElement.outerHTML} 0% ${lang.fromLastWeek}</span>`;
+        }
+    }
+    
+    const trendDesc = document.querySelector('.summary-stat-card:nth-child(2) .stat-description');
+    if (trendDesc && lang.improvement) {
+        const arrowElement = trendDesc.querySelector('i');
+        if (arrowElement) {
+            trendDesc.innerHTML = `<span id="trendChange" class="positive">${arrowElement.outerHTML} 0% ${lang.improvement}</span>`;
+        }
+    }
+    
+    const topBrandDesc = document.querySelector('.summary-stat-card:nth-child(3) .stat-description');
+    if (topBrandDesc && lang.mostReports) {
+        topBrandDesc.textContent = lang.mostReports;
+    }
+}
+
+// ========== INTEGRASI DENGAN SISTEM BAHASA ==========
+
+// Panggil fungsi ini saat bahasa berubah
+window.addEventListener('languageChanged', function(event) {
+    applyDashboardTranslations(event.detail.language);
+});
+
+// Panggil saat halaman dimuat
+document.addEventListener('DOMContentLoaded', function() {
+    const savedLanguage = localStorage.getItem('language') || 'id';
+    // Tunggu sebentar untuk memastikan DOM sudah sepenuhnya terload
+    setTimeout(() => {
+        applyDashboardTranslations(savedLanguage);
+    }, 100);
+});
 </script>
 </body>
 </html>

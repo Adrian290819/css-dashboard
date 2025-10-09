@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
     <link rel="stylesheet" href="global.css">
     <script src="global-time.js"></script>
+    <script src="translations.js"></script>
 
     
     <!-- Firebase SDK -->
@@ -2910,6 +2911,134 @@
     document.addEventListener('DOMContentLoaded', function() {
         checkAuthState();
     });
+    // ========== PERBAIKAN SISTEM BAHASA PENDING REPORTS ==========
+
+// Fungsi untuk menerapkan terjemahan dengan benar
+function applyPendingReportsTranslations(language) {
+    const lang = translations[language] || translations['id'];
+    
+    if (!lang) return;
+
+    console.log("Applying pending reports translations for:", language);
+
+    // Terjemahkan elemen utama
+    const elements = {
+        'pendingReportsTitle': '.header h1',
+        'filterReports': '.filter-title',
+        'statusFilter': '.filter-group:nth-child(1) label',
+        'brandFilter': '.filter-group:nth-child(2) label',
+        'categoryFilter': '.filter-group:nth-child(3) label',
+        'dateRange': '.filter-group:nth-child(4) label',
+        'searchPlaceholder': '#dashboardSearch',
+        'myPendingReports': '.section-title',
+        'noPendingReports': '#noReports h3',
+        'noPendingReportsMessage': '#noReports p'
+    };
+
+    Object.keys(elements).forEach(key => {
+        const element = document.querySelector(elements[key]);
+        if (element && lang[key]) {
+            if (key === 'searchPlaceholder') {
+                element.placeholder = lang[key];
+            } else {
+                // Simpan ikon jika ada
+                const iconMatch = element.innerHTML.match(/(<i[^>]*><\/i>)/);
+                if (iconMatch) {
+                    element.innerHTML = iconMatch[0] + ' ' + lang[key];
+                } else {
+                    element.textContent = lang[key];
+                }
+            }
+        }
+    });
+
+    // Update tombol
+    const refreshButton = document.getElementById('refreshReports');
+    const addReportButton = document.getElementById('addReportBtn');
+    const addFirstReportButton = document.getElementById('addFirstReport');
+    const resetFiltersButton = document.getElementById('resetFilters');
+
+    if (refreshButton && lang.refresh) {
+        refreshButton.innerHTML = `<i class="fas fa-sync-alt"></i> ${lang.refresh}`;
+    }
+    if (addReportButton && lang.newReport) {
+        addReportButton.innerHTML = `<i class="fas fa-plus"></i> ${lang.newReport}`;
+    }
+    if (addFirstReportButton && lang.createFirstReport) {
+        addFirstReportButton.innerHTML = `<i class="fas fa-plus"></i> ${lang.createFirstReport}`;
+    }
+    if (resetFiltersButton && lang.resetFilters) {
+        resetFiltersButton.innerHTML = `<i class="fas fa-sync-alt"></i> ${lang.resetFilters}`;
+    }
+
+    // Update opsi filter
+    updatePendingFilterOptions(language);
+}
+
+// Update opsi filter
+function updatePendingFilterOptions(language) {
+    const lang = translations[language] || translations['id'];
+    
+    // Status filter
+    const statusFilter = document.getElementById('statusFilter');
+    if (statusFilter && lang.allStatus) {
+        statusFilter.options[0].text = lang.allStatus;
+        // Update opsi status lainnya jika ada di translations
+        if (lang.pending) statusFilter.options[1].text = lang.pending;
+        if (lang.inProgress) statusFilter.options[2].text = lang.inProgress;
+        if (lang.overdue) statusFilter.options[3].text = lang.overdue;
+    }
+    
+    // Brand filter
+    const brandFilter = document.getElementById('brandFilter');
+    if (brandFilter && lang.allBrands) {
+        brandFilter.options[0].text = lang.allBrands;
+    }
+    
+    // Category filter
+    const categoryFilter = document.getElementById('categoryFilter');
+    if (categoryFilter && lang.selectCategory) {
+        categoryFilter.options[0].text = lang.selectCategory;
+        // Update opsi kategori jika ada di translations
+        if (lang.pendingWins) categoryFilter.options[1].text = lang.pendingWins;
+        if (lang.replayWins) categoryFilter.options[2].text = lang.replayWins;
+        if (lang.panelIssues) categoryFilter.options[3].text = lang.panelIssues;
+        if (lang.providerIssues) categoryFilter.options[4].text = lang.providerIssues;
+        if (lang.gameIssues) categoryFilter.options[5].text = lang.gameIssues;
+        if (lang.maintenance) categoryFilter.options[6].text = lang.maintenance;
+        if (lang.other) categoryFilter.options[7].text = lang.other;
+    }
+}
+
+// ========== INISIALISASI BAHASA YANG BENAR ==========
+
+// Fungsi inisialisasi bahasa untuk pending reports
+function initializePendingReportsLanguage() {
+    const savedLanguage = localStorage.getItem('language') || 'id';
+    console.log("Initializing pending reports with language:", savedLanguage);
+    
+    // Terapkan terjemahan
+    applyPendingReportsTranslations(savedLanguage);
+    
+    // Setup listener untuk perubahan bahasa
+    window.addEventListener('languageChanged', function(event) {
+        console.log("Language changed to:", event.detail.language);
+        applyPendingReportsTranslations(event.detail.language);
+    });
+}
+
+// Panggil inisialisasi saat DOM ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Tunggu sebentar untuk memastikan semua element sudah terload
+    setTimeout(() => {
+        initializePendingReportsLanguage();
+    }, 100);
+});
+
+// Juga panggil saat halaman sepenuhnya loaded
+window.addEventListener('load', function() {
+    initializePendingReportsLanguage();
+});
 </script>
 </body>
 </html>

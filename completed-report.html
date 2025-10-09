@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
     <link rel="stylesheet" href="global.css">
     <script src="global-time.js"></script>
+    <script src="solved.translation.js"></script>
 
     <style>
             /* ========== VARIABEL CSS YANG DIPERLUKAN ========== */
@@ -1596,39 +1597,46 @@
     }
     
     function showToast(message, type = 'info') {
-        // Create toast element
-        const toast = document.createElement('div');
-        toast.className = `toast toast-${type}`;
-        toast.innerHTML = `
-            <div class="toast-content">
-                <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
-                <span>${message}</span>
-            </div>
-        `;
-        
-        // Add toast to the page
-        document.body.appendChild(toast);
-        
-        // Animate in
+    // Jika message adalah key translation, gunakan getTranslation
+    const displayMessage = getTranslation(message) || message;
+    
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `
+        <div class="toast-content">
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+            <span>${displayMessage}</span>
+        </div>
+    `;
+    
+    // Add toast to the page
+    document.body.appendChild(toast);
+    
+    // Animate in
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 10);
+    
+    // Remove after delay
+    setTimeout(() => {
+        toast.classList.remove('show');
         setTimeout(() => {
-            toast.classList.add('show');
-        }, 10);
-        
-        // Remove after delay
-        setTimeout(() => {
-            toast.classList.remove('show');
-            setTimeout(() => {
-                document.body.removeChild(toast);
-            }, 300);
-        }, 3000);
-    }
+            document.body.removeChild(toast);
+        }, 300);
+    }, 3000);
+}
 
     // Initialize the page
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log("DOM loaded, setting up listener...");
-        loadSidebar();
-        initCharts();
-        setupSolvedMaintenanceListener();
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM loaded, setting up listener...");
+    loadSidebar();
+    initCharts();
+    setupSolvedMaintenanceListener();
+    
+    // Setup language functionality
+    loadLanguageSettings();
+    setupLanguageListener();
         
         // Set up event listeners for filters 
         document.getElementById('categoryFilter').addEventListener('change', function() {
@@ -1706,6 +1714,252 @@
             updateSolvedMaintenanceUI();
         });
     });
+    // ========== MULTI-LANGUAGE SUPPORT ==========
+let currentLanguage = localStorage.getItem('language') || 'id';
+
+// Fungsi untuk menerapkan terjemahan
+function applyTranslations(language) {
+    const lang = translations[language] || translations['id'];
+    console.log('Applying translations for completed maintenance:', language);
+    
+    if (!lang) {
+        console.error('Translations not found for language:', language);
+        return;
+    }
+    
+    try {
+        // Header
+        const headerTitle = document.querySelector('.header h1');
+        if (headerTitle) {
+            headerTitle.innerHTML = `<i class="fas fa-check-double"></i> ${lang.completedMaintenance || 'Completed Maintenance'}`;
+        }
+        
+        // Search placeholder
+        const searchInput = document.getElementById('completedSearch');
+        if (searchInput) {
+            searchInput.placeholder = lang.searchPlaceholder || 'Search completed tasks...';
+        }
+        
+        // Statistic Cards
+        const statTitles = document.querySelectorAll('.stat-title');
+        if (statTitles[0]) statTitles[0].textContent = lang.totalCompleted || 'Total Completed';
+        if (statTitles[1]) statTitles[1].textContent = lang.completedThisWeek || 'Completed This Week';
+        if (statTitles[2]) statTitles[2].textContent = lang.completedThisMonth || 'Completed This Month';
+        if (statTitles[3]) statTitles[3].textContent = lang.averageCompletionTime || 'Average Completion Time';
+        
+        const statDescriptions = document.querySelectorAll('.stat-description');
+        if (statDescriptions[0]) statDescriptions[0].textContent = lang.tasksCompletedToDate || 'Tasks completed to date';
+        if (statDescriptions[1]) statDescriptions[1].textContent = lang.tasksCompletedThisWeek || 'Tasks completed this week';
+        if (statDescriptions[2]) statDescriptions[2].textContent = lang.tasksCompletedThisMonth || 'Tasks completed this month';
+        if (statDescriptions[3]) statDescriptions[3].textContent = lang.averageDaysToComplete || 'Average days to complete';
+        
+        // Chart Titles
+        const chartTitles = document.querySelectorAll('.chart-title');
+        if (chartTitles[0]) chartTitles[0].textContent = lang.completionTrends || 'Completion Trends';
+        if (chartTitles[1]) chartTitles[1].textContent = lang.tasksByCategory || 'Tasks by Category';
+        if (chartTitles[2]) chartTitles[2].textContent = lang.monthlyCompletionRate || 'Monthly Completion Rate';
+        
+        // Chart Options
+        const trendsOptions = document.getElementById('trendsTimeRange');
+        if (trendsOptions) {
+            trendsOptions.innerHTML = `
+                <option>${lang.last7Days || 'Last 7 Days'}</option>
+                <option>${lang.last30Days || 'Last 30 Days'}</option>
+                <option>${lang.last90Days || 'Last 90 Days'}</option>
+            `;
+        }
+        
+        const categoryOptions = document.getElementById('categoryTimeRange');
+        if (categoryOptions) {
+            categoryOptions.innerHTML = `
+                <option>${lang.allTime || 'All Time'}</option>
+                <option>${lang.thisMonth || 'This Month'}</option>
+                <option>${lang.thisWeek || 'This Week'}</option>
+            `;
+        }
+        
+        const monthlyOptions = document.getElementById('monthlyTimeRange');
+        if (monthlyOptions) {
+            monthlyOptions.innerHTML = `
+                <option>${lang.last6Months || 'Last 6 Months'}</option>
+                <option>${lang.last12Months || 'Last 12 Months'}</option>
+                <option>${lang.allTime || 'All Time'}</option>
+            `;
+        }
+        
+        // Filter Labels
+        const filterLabels = document.querySelectorAll('.filter-group label');
+        if (filterLabels[0]) filterLabels[0].textContent = lang.categoryLabel || 'Category';
+        if (filterLabels[1]) filterLabels[1].textContent = lang.completionTime || 'Completion Time';
+        if (filterLabels[2]) filterLabels[2].textContent = lang.sortBy || 'Sort By';
+        
+        // Category Filter Options
+        const categoryFilter = document.getElementById('categoryFilter');
+        if (categoryFilter) {
+            categoryFilter.innerHTML = `
+                <option value="all">${lang.allCategories || 'All Categories'}</option>
+                <option value="server">${lang.server || 'Server Maintenance'}</option>
+                <option value="database">${lang.database || 'Database'}</option>
+            `;
+        }
+        
+        // Time Filter Options
+        const timeFilter = document.getElementById('timeFilter');
+        if (timeFilter) {
+            timeFilter.innerHTML = `
+                <option value="all">${lang.allTime || 'All Time'}</option>
+                <option value="today">${lang.today || 'Today'}</option>
+                <option value="week">${lang.week || 'This Week'}</option>
+                <option value="month">${lang.month || 'This Month'}</option>
+                <option value="quarter">${lang.quarter || 'This Quarter'}</option>
+            `;
+        }
+        
+        // Sort Filter Options
+        const sortFilter = document.getElementById('sortFilter');
+        if (sortFilter) {
+            sortFilter.innerHTML = `
+                <option value="newest">${lang.newestFirst || 'Newest First'}</option>
+                <option value="oldest">${lang.oldestFirst || 'Oldest First'}</option>
+                <option value="category">${lang.category || 'Category'}</option>
+            `;
+        }
+        
+        // Action Buttons
+        const refreshBtn = document.getElementById('refreshBtn');
+        if (refreshBtn) {
+            refreshBtn.innerHTML = `<i class="fas fa-sync-alt"></i> ${lang.refresh || 'Refresh'}`;
+        }
+        
+        const viewPendingBtn = document.querySelector('.empty-state .btn');
+        if (viewPendingBtn) {
+            viewPendingBtn.innerHTML = `<i class="fas fa-tools"></i> ${lang.viewPendingTasks || 'View Pending Tasks'}`;
+        }
+        
+        // Section Title
+        const sectionTitle = document.querySelector('.section-title');
+        if (sectionTitle) {
+            sectionTitle.innerHTML = `<i class="fas fa-list"></i> ${lang.completedTasks || 'Completed Tasks'}`;
+        }
+        
+        // Table Headers
+        const tableHeaders = document.querySelectorAll('.maintenance-table th');
+        if (tableHeaders[0]) tableHeaders[0].textContent = lang.taskId || 'Task ID';
+        if (tableHeaders[1]) tableHeaders[1].textContent = lang.title || 'Title';
+        if (tableHeaders[2]) tableHeaders[2].textContent = lang.category || 'Category';
+        if (tableHeaders[3]) tableHeaders[3].textContent = lang.completedDate || 'Completed Date';
+        if (tableHeaders[4]) tableHeaders[4].textContent = lang.completionTime || 'Completion Time';
+        if (tableHeaders[5]) tableHeaders[5].textContent = lang.assignedTo || 'Assigned To';
+        if (tableHeaders[6]) tableHeaders[6].textContent = lang.actions || 'Actions';
+        
+        // Modal Content
+        const modalTitle = document.querySelector('#viewModal .modal-title');
+        if (modalTitle) modalTitle.textContent = lang.taskDetails || 'Task Details';
+        
+        const modalLabels = document.querySelectorAll('#viewModal .form-label');
+        if (modalLabels[0]) modalLabels[0].textContent = lang.title || 'Title';
+        if (modalLabels[1]) modalLabels[1].textContent = lang.category || 'Category';
+        if (modalLabels[2]) modalLabels[2].textContent = lang.priority || 'Priority';
+        if (modalLabels[3]) modalLabels[3].textContent = lang.dueDate || 'Due Date';
+        if (modalLabels[4]) modalLabels[4].textContent = lang.completedDate || 'Completed Date';
+        if (modalLabels[5]) modalLabels[5].textContent = lang.createdDate || 'Created Date';
+        if (modalLabels[6]) modalLabels[6].textContent = lang.assignedTo || 'Assigned To';
+        if (modalLabels[7]) modalLabels[7].textContent = lang.description || 'Description';
+        if (modalLabels[8]) modalLabels[8].textContent = lang.notes || 'Notes';
+        if (modalLabels[9]) modalLabels[9].textContent = lang.timeTracking || 'Time Tracking';
+        
+        const timeTrackLabels = document.querySelectorAll('.time-track-label');
+        if (timeTrackLabels[0]) timeTrackLabels[0].textContent = lang.estimatedTime || 'Estimated Time:';
+        if (timeTrackLabels[1]) timeTrackLabels[1].textContent = lang.actualTime || 'Actual Time:';
+        if (timeTrackLabels[2]) timeTrackLabels[2].textContent = lang.efficiency || 'Efficiency:';
+        
+        const modalButtons = document.querySelectorAll('#viewModal .btn');
+        if (modalButtons[0]) modalButtons[0].textContent = lang.close || 'Close';
+        if (modalButtons[1]) {
+            modalButtons[1].innerHTML = `<i class="fas fa-file-export"></i> ${lang.exportTaskDetails || 'Export Task Details'}`;
+        }
+        
+        // Empty State
+        const emptyState = document.getElementById('noTasks');
+        if (emptyState) {
+            const emptyTitle = emptyState.querySelector('h3');
+            const emptyDesc = emptyState.querySelector('p');
+            if (emptyTitle) emptyTitle.textContent = lang.noCompletedTasks || 'No Completed Tasks';
+            if (emptyDesc) emptyDesc.textContent = lang.noCompletedTasksDescription || 'You haven\'t completed any maintenance tasks yet.';
+        }
+        
+        // Pagination
+        const paginationButtons = document.querySelectorAll('.pagination .btn');
+        if (paginationButtons[0]) {
+            paginationButtons[0].innerHTML = `<i class="fas fa-chevron-left"></i> ${lang.previous || 'Previous'}`;
+        }
+        if (paginationButtons[1]) {
+            paginationButtons[1].innerHTML = `${lang.next || 'Next'} <i class="fas fa-chevron-right"></i>`;
+        }
+        
+        console.log('Translations applied successfully for completed maintenance:', language);
+        
+    } catch (error) {
+        console.error('Error applying translations for completed maintenance:', error);
+    }
+}
+
+// Fungsi untuk mendapatkan terjemahan
+function getTranslation(key, language = null) {
+    const lang = language || currentLanguage;
+    
+    if (typeof translations === 'undefined') {
+        console.warn('Translations object not available');
+        return key;
+    }
+    
+    const translation = translations[lang]?.[key];
+    
+    if (!translation) {
+        console.warn(`Translation not found for key: ${key} in language: ${lang}`);
+        return key;
+    }
+    
+    return translation;
+}
+
+// Fungsi untuk mengubah bahasa
+function changeLanguage(language) {
+    console.log('Changing language to:', language);
+    currentLanguage = language;
+    localStorage.setItem('language', language);
+    applyTranslations(language);
+    
+    // Update charts labels if needed
+    updateCharts();
+}
+
+// Fungsi untuk memuat pengaturan bahasa
+function loadLanguageSettings() {
+    const savedLanguage = localStorage.getItem('language') || 'id';
+    console.log('Loading language settings:', savedLanguage);
+    changeLanguage(savedLanguage);
+}
+
+// Setup language change listener
+function setupLanguageListener() {
+    // Listen for storage events (when language changes in other tabs)
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'language') {
+            console.log('Language changed from storage event:', e.newValue);
+            changeLanguage(e.newValue);
+        }
+    });
+    
+    // Check for language changes periodically (fallback)
+    setInterval(() => {
+        const currentLang = localStorage.getItem('language') || 'id';
+        if (currentLang !== currentLanguage) {
+            console.log('Language changed detected:', currentLang);
+            changeLanguage(currentLang);
+        }
+    }, 1000);
+}
 </script>
 </body>
 </html>

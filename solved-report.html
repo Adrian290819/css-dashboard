@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="global.css">
         <link rel="stylesheet" href="stylemobile.css">
         <script src="global-time.js"></script>
+            <script src="translations.js"></script>
     <style>
 :root {
     --primary-gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
@@ -2980,6 +2981,807 @@ async function getUserName(userId) {
         console.error('Error getting user name:', error);
         return 'Unknown User';
     }
+}
+// Fungsi untuk mendapatkan terjemahan
+function getTranslation(key, language = null) {
+    const lang = language || localStorage.getItem('preferredLanguage') || 'en';
+    const translation = translations[lang]?.[key];
+    return translation || key;
+}
+
+// Function to set language
+function setLanguage(language) {
+    localStorage.setItem('preferredLanguage', language);
+    applyTranslations(language);
+}
+
+// Function to apply translations to the page
+function applyTranslations(language = 'en') {
+    try {
+        const lang = translations[language] || translations['en'];
+        
+        if (!lang) {
+            console.error('Translations not found for language:', language);
+            return;
+        }
+
+        console.log('Applying translations for solved reports:', language);
+
+        // Header
+        const headerTitle = document.querySelector('.header h1');
+        if (headerTitle) {
+            headerTitle.innerHTML = `<i class="fas fa-check-circle"></i> ${lang.solvedReports || 'Solved Reports'}`;
+        }
+
+        // Search placeholder
+        const searchInput = document.getElementById('dashboardSearch');
+        if (searchInput) {
+            searchInput.placeholder = lang.searchPlaceholder || 'Search solved reports...';
+        }
+
+        // Filter Panel
+        const filterTitle = document.querySelector('.filter-title');
+        if (filterTitle) {
+            filterTitle.textContent = lang.filterTitle || 'Filter Solved Reports';
+        }
+
+        const resetFilters = document.getElementById('resetFilters');
+        if (resetFilters) {
+            resetFilters.innerHTML = `<i class="fas fa-sync-alt"></i> ${lang.resetFilters || 'Reset Filters'}`;
+        }
+
+        // Filter Labels
+        const filterLabels = document.querySelectorAll('.filter-label');
+        filterLabels.forEach((label, index) => {
+            switch(index) {
+                case 0:
+                    label.textContent = lang.brandLabel || 'Brand';
+                    break;
+                case 1:
+                    label.textContent = lang.statusLabel || 'Status';
+                    break;
+                case 2:
+                    label.textContent = lang.dateRangeLabel || 'Date Range';
+                    break;
+            }
+        });
+
+        // Filter Options
+        const brandFilter = document.getElementById('brandFilter');
+        if (brandFilter && brandFilter.firstElementChild) {
+            brandFilter.firstElementChild.textContent = lang.allBrands || 'All Brands';
+        }
+
+        const statusFilter = document.getElementById('statusFilter');
+        if (statusFilter) {
+            const options = statusFilter.getElementsByTagName('option');
+            if (options[0]) options[0].textContent = lang.allStatuses || 'All Statuses';
+            if (options[1]) options[1].textContent = lang.completed || 'Completed';
+            if (options[2]) options[2].textContent = lang.reopened || 'Reopened';
+        }
+
+        // Section Title
+        const sectionTitle = document.querySelector('.section-title');
+        if (sectionTitle) {
+            const badge = sectionTitle.querySelector('.badge');
+            sectionTitle.innerHTML = `<i class="fas fa-list-check"></i> ${lang.solvedReports || 'Solved Reports'}`;
+            if (badge) {
+                sectionTitle.appendChild(badge);
+            }
+        }
+
+        // Table Headers
+        const tableHeaders = document.querySelectorAll('.maintenance-table th');
+        if (tableHeaders.length >= 9) {
+            tableHeaders[0].textContent = lang.reportId || 'Report ID';
+            tableHeaders[1].textContent = lang.brand || 'Brand';
+            tableHeaders[2].textContent = lang.reportedBy || 'Reported By';
+            tableHeaders[3].textContent = lang.title || 'Title';
+            tableHeaders[4].textContent = lang.category || 'Category';
+            tableHeaders[5].textContent = lang.reportedAt || 'Reported At';
+            tableHeaders[6].textContent = lang.resolvedAt || 'Resolved At';
+            tableHeaders[7].textContent = lang.status || 'Status';
+            tableHeaders[8].textContent = lang.actions || 'Actions';
+        }
+
+        // Pagination
+        const prevBtn = document.getElementById('prevPage');
+        const nextBtn = document.getElementById('nextPage');
+        const pageInfo = document.getElementById('pageInfo');
+        
+        if (prevBtn) {
+            prevBtn.innerHTML = `<i class="fas fa-chevron-left"></i> ${lang.previous || 'Previous'}`;
+        }
+        if (nextBtn) {
+            nextBtn.innerHTML = `${lang.next || 'Next'} <i class="fas fa-chevron-right'></i>`;
+        }
+        if (pageInfo) {
+            const currentPage = window.currentPage || 1;
+            const totalPages = window.totalPages || 1;
+            pageInfo.textContent = `${lang.page || 'Page'} ${currentPage} ${lang.of || 'of'} ${totalPages}`;
+        }
+
+        // Empty States
+        updateEmptyStates(language);
+
+        // Update modal translations
+        updateModalTranslations(language);
+
+        // Update action button titles
+        updateActionButtons(language);
+
+    } catch (error) {
+        console.error('Error applying translations:', error);
+    }
+}
+
+// Function to update empty states
+function updateEmptyStates(language) {
+    const lang = translations[language] || translations['en'];
+    const emptyStates = document.querySelectorAll('.empty-state');
+    
+    emptyStates.forEach(emptyState => {
+        const title = emptyState.querySelector('h3');
+        const message = emptyState.querySelector('p');
+        
+        if (title && title.textContent.includes('No Solved Reports Found')) {
+            title.textContent = lang.noReportsFound || 'No Solved Reports Found';
+        }
+        if (message && message.textContent.includes('There are no completed reports')) {
+            message.textContent = lang.noReportsDescription || 'There are no completed reports in the database yet.';
+        }
+    });
+}
+
+// Function to update modal translations
+function updateModalTranslations(language) {
+    const lang = translations[language] || translations['en'];
+    
+    // Report Details Modal
+    const reportDetailsModal = document.getElementById('reportDetailsModal');
+    if (reportDetailsModal) {
+        const modalTitle = reportDetailsModal.querySelector('.modal-title');
+        if (modalTitle) {
+            modalTitle.innerHTML = `<i class="fas fa-file-alt"></i> ${lang.reportDetails || 'Report Details'}`;
+        }
+        
+        const closeBtn = document.getElementById('closeDetailsBtn');
+        if (closeBtn) {
+            closeBtn.textContent = lang.close || 'Close';
+        }
+        
+        const reopenBtn = document.getElementById('reopenReportBtn');
+        if (reopenBtn) {
+            reopenBtn.innerHTML = `<i class="fas fa-undo"></i> ${lang.reopenReport || 'Reopen Report'}`;
+        }
+    }
+    
+    // Reopen Confirmation Modal
+    const reopenModal = document.getElementById('reopenConfirmModal');
+    if (reopenModal) {
+        const modalTitle = reopenModal.querySelector('.modal-title');
+        if (modalTitle) {
+            modalTitle.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${lang.confirmReopen || 'Confirm Reopen'}`;
+        }
+        
+        const confirmMessage = document.getElementById('reopenConfirmMessage');
+        if (confirmMessage) {
+            confirmMessage.textContent = lang.reopenConfirmMessage || 'Are you sure you want to reopen this report? This will move it back to pending reports.';
+        }
+        
+        const cancelBtn = document.getElementById('cancelReopenBtn');
+        if (cancelBtn) {
+            cancelBtn.textContent = lang.cancel || 'Cancel';
+        }
+        
+        const confirmBtn = document.getElementById('confirmReopenBtn');
+        if (confirmBtn) {
+            confirmBtn.textContent = lang.yesReopen || 'Yes, Reopen Report';
+        }
+    }
+}
+
+// Function to update action buttons
+function updateActionButtons(language) {
+    const lang = translations[language] || translations['en'];
+    const viewButtons = document.querySelectorAll('.btn-icon.view');
+    const deleteButtons = document.querySelectorAll('.btn-icon.delete');
+    
+    viewButtons.forEach(button => {
+        button.title = lang.viewDetails || 'View Details';
+    });
+    
+    deleteButtons.forEach(button => {
+        button.title = lang.deleteReport || 'Delete Report';
+    });
+}
+
+// Function to setup language switcher
+function setupLanguageSwitcher() {
+    // Check if language switcher already exists
+    let languageSwitcher = document.getElementById('languageSwitcher');
+    
+    if (!languageSwitcher) {
+        // Create language switcher
+        languageSwitcher = document.createElement('div');
+        languageSwitcher.id = 'languageSwitcher';
+        languageSwitcher.className = 'language-switcher';
+        languageSwitcher.innerHTML = `
+            <select id="languageSelect">
+                <option value="en">English</option>
+                <option value="id">Bahasa Indonesia</option>
+                <option value="ja">日本語</option>
+            </select>
+        `;
+        
+        // Add to header actions
+        const headerActions = document.querySelector('.header-actions');
+        if (headerActions) {
+            headerActions.insertBefore(languageSwitcher, headerActions.firstChild);
+        }
+    }
+    
+    // Set current language
+    const languageSelect = document.getElementById('languageSelect');
+    if (languageSelect) {
+        const currentLanguage = localStorage.getItem('preferredLanguage') || 'en';
+        languageSelect.value = currentLanguage;
+        
+        // Add event listener
+        languageSelect.addEventListener('change', function() {
+            setLanguage(this.value);
+            showToast(`Language changed to ${this.options[this.selectedIndex].text}`, 'success');
+        });
+    }
+}
+
+// Function to listen for language changes
+function setupLanguageListener() {
+    // Check for language changes every second
+    setInterval(() => {
+        const currentLanguage = localStorage.getItem('preferredLanguage') || 'en';
+        if (window.currentLanguage !== currentLanguage) {
+            window.currentLanguage = currentLanguage;
+            applyTranslations(currentLanguage);
+            console.log('Language changed to:', currentLanguage);
+        }
+    }, 1000);
+    
+    // Also check when page gains focus
+    window.addEventListener('focus', () => {
+        const language = localStorage.getItem('preferredLanguage') || 'en';
+        applyTranslations(language);
+    });
+}
+
+// Initialize translations when DOM is loaded
+// Event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM loaded, initializing solved reports...");
+    
+    // Setup language first
+    const preferredLanguage = localStorage.getItem('language') || 'id';
+    applyTranslations(preferredLanguage);
+    setupLanguageListener();
+    
+    auth.onAuthStateChanged(async (user) => {
+        if (user) {
+            console.log("User logged in:", user.uid);
+            
+            // Cek role user
+            const role = await getCurrentUserRole();
+            console.log("User role:", role);
+            
+            setupSolvedReportsListener();
+            
+            // Test koneksi Firebase
+            db.collection('solvedReports').limit(1).get()
+                .then(snapshot => {
+                    console.log("Firebase connection test successful:", snapshot.size, "documents found");
+                })
+                .catch(error => {
+                    console.error("Firebase connection error:", error);
+                    showToast("Cannot connect to database", "error");
+                });
+            
+            // Filter event listeners
+            document.getElementById('brandFilter').addEventListener('change', updateSolvedReportsUI);
+            document.getElementById('statusFilter').addEventListener('change', updateSolvedReportsUI);
+            document.getElementById('startDate').addEventListener('change', updateSolvedReportsUI);
+            document.getElementById('endDate').addEventListener('change', updateSolvedReportsUI);
+            document.getElementById('resetFilters').addEventListener('click', function() {
+                document.getElementById('brandFilter').value = '';
+                document.getElementById('statusFilter').value = '';
+                document.getElementById('startDate').value = '';
+                document.getElementById('endDate').value = '';
+                updateSolvedReportsUI();
+            });
+            
+            // Pagination event listeners
+            document.getElementById('prevPage').addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updateSolvedReportsUI();
+                }
+            });
+            
+            document.getElementById('nextPage').addEventListener('click', function() {
+                const filteredReports = filterReports(solvedReports);
+                const totalPages = Math.ceil(filteredReports.length / reportsPerPage);
+                
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    updateSolvedReportsUI();
+                }
+            });
+            
+            // Modal event listeners
+            document.getElementById('closeDetailsModal').addEventListener('click', function() {
+                document.getElementById('reportDetailsModal').classList.remove('active');
+            });
+            
+            document.getElementById('closeReopenModal').addEventListener('click', function() {
+                document.getElementById('reopenConfirmModal').classList.remove('active');
+            });
+            
+            document.getElementById('cancelReopenBtn').addEventListener('click', function() {
+                document.getElementById('reopenConfirmModal').classList.remove('active');
+            });
+            
+            document.getElementById('confirmReopenBtn').addEventListener('click', async function() {
+                // Cek role sebelum membuka report
+                const isAdmin = await isSuperAdmin();
+                if (!isAdmin) {
+                    showToast("Access denied: Only super admin can reopen reports", "error");
+                    document.getElementById('reopenConfirmModal').classList.remove('active');
+                    return;
+                }
+                reopenReport(currentReportId);
+            });
+            
+            // Setup search functionality
+            setupSearchFunctionality();
+            
+        } else {
+            // Pengguna belum login, redirect ke halaman login
+            console.log("User not logged in, redirecting...");
+            window.location.href = "login.html";
+        }
+    });
+});
+
+// Update the showToast function to use translations
+function showToast(message, type = "info") {
+    // Use translation if available
+    const translatedMessage = getTranslation(message) || message;
+    
+    // Create toast element if it doesn't exist
+    let toast = document.getElementById('toastNotification');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toastNotification';
+        toast.className = 'toast-notification';
+        toast.innerHTML = `
+            <div class="toast-content">
+                <span id="toastMessage"></span>
+            </div>
+        `;
+        document.body.appendChild(toast);
+    }
+    
+    const toastMessage = document.getElementById('toastMessage');
+    
+    toastMessage.textContent = translatedMessage;
+    toast.className = `toast-notification ${type}`;
+    toast.style.display = 'block';
+    toast.style.animation = 'toast-in 0.5s ease forwards';
+    
+    // Show toast
+    setTimeout(() => {
+        toast.style.animation = 'toast-out 0.4s ease forwards';
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 400);
+    }, 3000);
+}
+
+// Update modal content with translations
+async function showReportDetails(reportId) {
+    const report = solvedReports.find(r => r.id === reportId);
+    
+    if (!report) {
+        showToast("reportNotFound", "error");
+        return;
+    }
+    
+    currentReportId = reportId;
+    
+    const modalContent = document.getElementById('reportDetailsContent');
+    const currentLanguage = localStorage.getItem('preferredLanguage') || 'en';
+    const lang = translations[currentLanguage] || translations['en'];
+    
+    // Format dates
+    const reportedDate = report.dateCreated ? formatDateTime(report.dateCreated.toDate()) : 'N/A';
+    const resolvedDate = report.dateSolved ? formatDateTime(report.dateSolved.toDate()) : 'N/A';
+    
+    // Get user names
+    const reportedBy = await getCachedUserName(report.userId);
+    const completedBy = await getCachedUserName(report.completedBy);
+    
+    // Calculate resolution time
+    let resolutionTime = 'N/A';
+    if (report.dateCreated && report.dateSolved) {
+        const reportedTime = report.dateCreated.toDate();
+        const solvedTime = report.dateSolved.toDate();
+        const diffHours = Math.abs(solvedTime - reportedTime) / 36e5;
+        resolutionTime = `${Math.round(diffHours)} ${lang.hours || 'hours'}`;
+    }
+    
+    modalContent.innerHTML = `
+        <div class="report-details">
+            <div class="report-detail-item">
+                <span class="report-detail-label">${lang.reportId || 'Report ID'}</span>
+                <span class="report-detail-value">${report.id}</span>
+            </div>
+            <div class="report-detail-item">
+                <span class="report-detail-label">${lang.brand || 'Brand'}</span>
+                <span class="report-detail-value">${report.brand || 'N/A'}</span>
+            </div>
+            <div class="report-detail-item">
+                <span class="report-detail-label">${lang.reportedBy || 'Reported By'}</span>
+                <span class="report-detail-value">${reportedBy}</span>
+            </div>
+            <div class="report-detail-item">
+                <span class="report-detail-label">${lang.title || 'Title'}</span>
+                <span class="report-detail-value">${report.title || lang.noTitle || 'No Title'}</span>
+            </div>
+            <div class="report-detail-item">
+                <span class="report-detail-label">${lang.category || 'Category'}</span>
+                <span class="report-detail-value">${report.category || 'N/A'}</span>
+            </div>
+            <div class="report-detail-item">
+                <span class="report-detail-label">${lang.status || 'Status'}</span>
+                <span class="report-detail-value status-badge status-${report.status}">${report.status}</span>
+            </div>
+            <div class="report-detail-item">
+                <span class="report-detail-label">${lang.reportedAt || 'Reported At'}</span>
+                <span class="report-detail-value">${reportedDate}</span>
+            </div>
+            <div class="report-detail-item">
+                <span class="report-detail-label">${lang.resolvedAt || 'Solved At'}</span>
+                <span class="report-detail-value">${resolvedDate}</span>
+            </div>
+        </div>
+        
+        <div class="status-info-grid">
+            <div class="status-info-item">
+                <div class="status-info-label">${lang.resolutionTime || 'Resolution Time'}</div>
+                <div class="status-info-value">${resolutionTime}</div>
+            </div>
+            <div class="status-info-item">
+                <div class="status-info-label">${lang.completedBy || 'Completed By'}</div>
+                <div class="status-info-value">${completedBy}</div>
+            </div>
+        </div>
+        
+        <div class="report-description">
+            <h4>${lang.issueDescription || 'Issue Description'}</h4>
+            <div>${report.description || lang.noDescription || 'No description provided'}</div>
+        </div>
+        
+        <div class="report-resolution">
+            <h4>${lang.resolutionNotes || 'Resolution Notes'}</h4>
+            <div>${report.resolution || lang.noResolution || 'No resolution notes provided'}</div>
+        </div>
+    `;
+    
+    // Update modal footer berdasarkan role user
+    await updateModalFooter();
+    
+    // Tampilkan modal
+    document.getElementById('reportDetailsModal').classList.add('active');
+}
+
+// Update delete confirmation with translations
+function showDeleteConfirmation(reportId) {
+    const report = solvedReports.find(r => r.id === reportId);
+    const currentLanguage = localStorage.getItem('preferredLanguage') || 'en';
+    const lang = translations[currentLanguage] || translations['en'];
+    
+    if (!report) {
+        showToast("reportNotFound", "error");
+        return;
+    }
+    
+    // Buat modal konfirmasi hapus
+    const confirmModal = document.createElement('div');
+    confirmModal.className = 'modal-overlay active';
+    confirmModal.innerHTML = `
+        <div class="modal confirm-modal">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-trash"></i> ${lang.deleteReportTitle || 'Delete Report'}</h2>
+                <button class="modal-close" id="closeDeleteModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="confirm-icon">
+                    <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
+                </div>
+                <p class="confirm-message">
+                    ${lang.deleteConfirmMessage || 'Are you sure you want to delete report'} <strong>${reportId}</strong>?<br>
+                    ${lang.deleteCannotUndone || 'This action cannot be undone.'}
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelDeleteBtn">${lang.cancel || 'Cancel'}</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash"></i> ${lang.confirmDelete || 'Delete Report'}
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(confirmModal);
+    
+    // Event listeners untuk modal hapus
+    document.getElementById('closeDeleteModal').addEventListener('click', () => {
+        document.body.removeChild(confirmModal);
+    });
+    
+    document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
+        document.body.removeChild(confirmModal);
+    });
+    
+    document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+        deleteReport(reportId);
+        document.body.removeChild(confirmModal);
+    });
+    
+    // Close modal ketika klik di luar
+    confirmModal.addEventListener('click', (e) => {
+        if (e.target === confirmModal) {
+            document.body.removeChild(confirmModal);
+        }
+    });
+}
+// Fungsi untuk mendapatkan terjemahan
+function getTranslation(key, language = null) {
+    const lang = language || localStorage.getItem('language') || 'id';
+    const translation = translations[lang]?.[key];
+    return translation || key;
+}
+
+// Function to set language
+function setLanguage(language) {
+    localStorage.setItem('language', language);
+    applyTranslations(language);
+}
+
+// Function to apply translations to the page
+function applyTranslations(language = 'id') {
+    try {
+        const lang = translations[language] || translations['id'];
+        
+        if (!lang) {
+            console.error('Translations not found for language:', language);
+            return;
+        }
+
+        console.log('Applying translations for solved reports:', language);
+
+        // Header
+        const headerTitle = document.querySelector('.header h1');
+        if (headerTitle) {
+            headerTitle.innerHTML = `<i class="fas fa-check-circle"></i> ${lang.solvedReports || 'Solved Reports'}`;
+        }
+
+        // Search placeholder
+        const searchInput = document.getElementById('dashboardSearch');
+        if (searchInput) {
+            searchInput.placeholder = lang.searchPlaceholder || 'Search solved reports...';
+        }
+
+        // Filter Panel
+        const filterTitle = document.querySelector('.filter-title');
+        if (filterTitle) {
+            filterTitle.textContent = lang.filterSolvedReports || 'Filter Solved Reports';
+        }
+
+        const resetFilters = document.getElementById('resetFilters');
+        if (resetFilters) {
+            resetFilters.innerHTML = `<i class="fas fa-sync-alt"></i> ${lang.resetFilters || 'Reset Filters'}`;
+        }
+
+        // Filter Labels
+        const filterLabels = document.querySelectorAll('.filter-label');
+        filterLabels.forEach((label, index) => {
+            switch(index) {
+                case 0:
+                    label.textContent = lang.brand || 'Brand';
+                    break;
+                case 1:
+                    label.textContent = lang.status || 'Status';
+                    break;
+                case 2:
+                    label.textContent = lang.dateRange || 'Date Range';
+                    break;
+                case 3:
+                    label.textContent = lang.category || 'Category';
+                    break;
+            }
+        });
+
+        // Filter Options
+        const brandFilter = document.getElementById('brandFilter');
+        if (brandFilter && brandFilter.firstElementChild) {
+            brandFilter.firstElementChild.textContent = lang.allBrands || 'All Brands';
+        }
+
+        const statusFilter = document.getElementById('statusFilter');
+        if (statusFilter) {
+            const options = statusFilter.getElementsByTagName('option');
+            if (options[0]) options[0].textContent = lang.allStatuses || 'All Statuses';
+            if (options[1]) options[1].textContent = lang.completed || 'Completed';
+            if (options[2]) options[2].textContent = lang.reopened || 'Reopened';
+        }
+
+        const categoryFilter = document.getElementById('categoryFilter');
+        if (categoryFilter && categoryFilter.firstElementChild) {
+            categoryFilter.firstElementChild.textContent = lang.allCategories || 'All Categories';
+        }
+
+        // Section Title
+        const sectionTitle = document.querySelector('.section-title');
+        if (sectionTitle) {
+            const badge = sectionTitle.querySelector('.badge');
+            sectionTitle.innerHTML = `<i class="fas fa-list-check"></i> ${lang.solvedReports || 'Solved Reports'}`;
+            if (badge) {
+                sectionTitle.appendChild(badge);
+            }
+        }
+
+        // Table Headers
+        const tableHeaders = document.querySelectorAll('.maintenance-table th');
+        if (tableHeaders.length >= 9) {
+            tableHeaders[0].textContent = lang.reportId || 'Report ID';
+            tableHeaders[1].textContent = lang.brand || 'Brand';
+            tableHeaders[2].textContent = lang.reportedBy || 'Reported By';
+            tableHeaders[3].textContent = lang.title || 'Title';
+            tableHeaders[4].textContent = lang.category || 'Category';
+            tableHeaders[5].textContent = lang.reportedAt || 'Reported At';
+            tableHeaders[6].textContent = lang.resolvedAt || 'Resolved At';
+            tableHeaders[7].textContent = lang.status || 'Status';
+            tableHeaders[8].textContent = lang.actions || 'Actions';
+        }
+
+        // Pagination
+        const prevBtn = document.getElementById('prevPage');
+        const nextBtn = document.getElementById('nextPage');
+        const pageInfo = document.getElementById('pageInfo');
+        
+        if (prevBtn) {
+            prevBtn.innerHTML = `<i class="fas fa-chevron-left"></i> ${lang.previous || 'Previous'}`;
+        }
+        if (nextBtn) {
+            nextBtn.innerHTML = `${lang.next || 'Next'} <i class="fas fa-chevron-right"></i>`;
+        }
+        if (pageInfo) {
+            const currentPage = window.currentPage || 1;
+            const totalPages = window.totalPages || 1;
+            pageInfo.textContent = `${lang.page || 'Page'} ${currentPage} ${lang.of || 'of'} ${totalPages}`;
+        }
+
+        // Update empty states
+        updateEmptyStates(language);
+
+        // Update modal translations
+        updateModalTranslations(language);
+
+        // Update action button titles
+        updateActionButtons(language);
+
+    } catch (error) {
+        console.error('Error applying translations:', error);
+    }
+}
+
+// Function to update empty states
+function updateEmptyStates(language) {
+    const lang = translations[language] || translations['id'];
+    const emptyStates = document.querySelectorAll('.empty-state');
+    
+    emptyStates.forEach(emptyState => {
+        const title = emptyState.querySelector('h3');
+        const message = emptyState.querySelector('p');
+        
+        if (title && title.textContent.includes('No Solved Reports Found')) {
+            title.textContent = lang.noReportsFound || 'No Solved Reports Found';
+        }
+        if (message && message.textContent.includes('There are no completed reports')) {
+            message.textContent = lang.noReportsDescription || 'There are no completed reports in the database yet.';
+        }
+    });
+}
+
+// Function to update modal translations
+function updateModalTranslations(language) {
+    const lang = translations[language] || translations['id'];
+    
+    // Report Details Modal
+    const reportDetailsModal = document.getElementById('reportDetailsModal');
+    if (reportDetailsModal) {
+        const modalTitle = reportDetailsModal.querySelector('.modal-title');
+        if (modalTitle) {
+            modalTitle.innerHTML = `<i class="fas fa-file-alt"></i> ${lang.reportDetails || 'Report Details'}`;
+        }
+        
+        const closeBtn = document.getElementById('closeDetailsBtn');
+        if (closeBtn) {
+            closeBtn.textContent = lang.close || 'Close';
+        }
+        
+        const reopenBtn = document.getElementById('reopenReportBtn');
+        if (reopenBtn) {
+            reopenBtn.innerHTML = `<i class="fas fa-undo"></i> ${lang.reopenReport || 'Reopen Report'}`;
+        }
+    }
+    
+    // Reopen Confirmation Modal
+    const reopenModal = document.getElementById('reopenConfirmModal');
+    if (reopenModal) {
+        const modalTitle = reopenModal.querySelector('.modal-title');
+        if (modalTitle) {
+            modalTitle.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${lang.confirmReopen || 'Confirm Reopen'}`;
+        }
+        
+        const confirmMessage = document.getElementById('reopenConfirmMessage');
+        if (confirmMessage) {
+            confirmMessage.textContent = lang.reopenConfirmMessage || 'Are you sure you want to reopen this report? This will move it back to pending reports.';
+        }
+        
+        const cancelBtn = document.getElementById('cancelReopenBtn');
+        if (cancelBtn) {
+            cancelBtn.textContent = lang.cancel || 'Cancel';
+        }
+        
+        const confirmBtn = document.getElementById('confirmReopenBtn');
+        if (confirmBtn) {
+            confirmBtn.textContent = lang.yesReopen || 'Yes, Reopen Report';
+        }
+    }
+}
+
+// Function to update action buttons
+function updateActionButtons(language) {
+    const lang = translations[language] || translations['id'];
+    const viewButtons = document.querySelectorAll('.btn-icon.view');
+    const deleteButtons = document.querySelectorAll('.btn-icon.delete');
+    
+    viewButtons.forEach(button => {
+        button.title = lang.viewDetails || 'View Details';
+    });
+    
+    deleteButtons.forEach(button => {
+        button.title = lang.deleteReport || 'Delete Report';
+    });
+}
+
+// Function to listen for language changes
+function setupLanguageListener() {
+    // Check for language changes every second
+    setInterval(() => {
+        const currentLanguage = localStorage.getItem('language') || 'id';
+        if (window.currentLanguage !== currentLanguage) {
+            window.currentLanguage = currentLanguage;
+            applyTranslations(currentLanguage);
+            console.log('Language changed to:', currentLanguage);
+        }
+    }, 1000);
+    
+    // Also check when page gains focus
+    window.addEventListener('focus', () => {
+        const language = localStorage.getItem('language') || 'id';
+        applyTranslations(language);
+    });
 }
 </script>
 </body>

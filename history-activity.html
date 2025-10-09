@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="global.css">
         <link rel="stylesheet" href="stylemobile.css">
         <script src="global-time.js"></script>
+        <script src="translations.js"></script>
     <style>
            /* ========== VARIABEL CSS YANG DIPERLUKAN ========== */
         :root {
@@ -2366,51 +2367,50 @@ function showToast(message, type = 'info') {
 
     // Event listener untuk DOMContentLoaded
     document.addEventListener('DOMContentLoaded', function() {
-        console.log("DOM loaded, initializing dashboard...");
-        
-        // Setup event listeners untuk pagination
-        const nextBtn = document.getElementById('nextPage');
-        const prevBtn = document.getElementById('prevPage');
-        
-        if (nextBtn) nextBtn.addEventListener('click', nextPage);
-        if (prevBtn) prevBtn.addEventListener('click', prevPage);
-        
-        // Setup event listener untuk refresh
-        const refreshBtn = document.getElementById('refreshActivities');
-        if (refreshBtn) {
-            refreshBtn.addEventListener('click', loadDashboardData);
-            console.log("Refresh button event listener added");
-        }
-        
-        // Setup event listener untuk reset stats
-        const resetBtn = document.getElementById('resetStatsBtn');
-        if (resetBtn) {
-            resetBtn.addEventListener('click', resetLastWeekData);
-        }
-        
-        // Setup event listener untuk search
-        const searchInput = document.getElementById('dashboardSearch');
-        if (searchInput) {
-            searchInput.addEventListener('input', searchActivities);
-        }
-        
-        // Cek autentikasi dan muat data
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                console.log("User authenticated, loading data...");
-                // Load data minggu lalu dari localStorage jika ada
-                const savedLastWeekData = localStorage.getItem('lastWeekData');
-                if (savedLastWeekData) {
-                    dashboardData.lastWeekData = JSON.parse(savedLastWeekData);
-                }
-                
-                loadDashboardData();
-            } else {
-                console.log("User not authenticated, redirecting to login...");
-                window.location.href = "login.html";
+    console.log("DOM loaded, initializing dashboard...");
+    
+    // Setup language first
+    const preferredLanguage = localStorage.getItem('language') || 'id';
+    applyTranslations(preferredLanguage);
+    setupLanguageListener();
+    
+    // Setup event listeners untuk pagination
+    const nextBtn = document.getElementById('nextPage');
+    const prevBtn = document.getElementById('prevPage');
+    
+    if (nextBtn) nextBtn.addEventListener('click', nextPage);
+    if (prevBtn) prevBtn.addEventListener('click', prevPage);
+    
+    // Setup event listener untuk refresh
+    const refreshBtn = document.getElementById('refreshActivities');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', loadDashboardData);
+        console.log("Refresh button event listener added");
+    }
+    
+    // Setup event listener untuk search
+    const searchInput = document.getElementById('dashboardSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', searchActivities);
+    }
+    
+    // Cek autentikasi dan muat data
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            console.log("User authenticated, loading data...");
+            // Load data minggu lalu dari localStorage jika ada
+            const savedLastWeekData = localStorage.getItem('lastWeekData');
+            if (savedLastWeekData) {
+                dashboardData.lastWeekData = JSON.parse(savedLastWeekData);
             }
-        });
+            
+            loadDashboardData();
+        } else {
+            console.log("User not authenticated, redirecting to login...");
+            window.location.href = "login.html";
+        }
     });
+});
 
     console.log("Dashboard script loaded successfully");
     // Fungsi untuk melihat detail aktivitas - DIPERBAIKI
@@ -2762,6 +2762,264 @@ async function getProfileFromFirestore() {
         console.error('Error getting profile from Firestore:', error);
     }
     return null;
+}
+function getTranslation(key, language = 'id') {
+    return translations[language]?.[key] || key;
+}
+
+// Function to set language
+function setLanguage(language) {
+    localStorage.setItem('preferredLanguage', language);
+    applyTranslations(language);
+}
+
+// Function to apply translations to the page
+function applyTranslations(language = 'id') {
+    // Get all elements with data-translate attribute
+    const elements = document.querySelectorAll('[data-translate]');
+    
+    elements.forEach(element => {
+        const key = element.getAttribute('data-translate');
+        const translation = getTranslation(key, language);
+        
+        if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+            element.placeholder = translation;
+        } else {
+            element.textContent = translation;
+        }
+    });
+    
+    // Apply translations to elements without data-translate but with specific IDs or classes
+    applyDynamicTranslations(language);
+}
+
+// Function to apply translations to dynamic elements
+function applyDynamicTranslations(language) {
+    // Apply to page title
+    const pageTitle = document.querySelector('title');
+    if (pageTitle) {
+        pageTitle.textContent = getTranslation('historyActivityTitle', language);
+    }
+    
+    // Apply to header title
+    const headerTitle = document.querySelector('.header h1');
+    if (headerTitle) {
+        headerTitle.innerHTML = `<i class="fas fa-tachometer-alt"></i> ${getTranslation('historyActivityTitle', language)}`;
+    }
+    
+    // Apply to tab menu
+    const dashboardTab = document.querySelector('.menu-item[href="summary-dashboard.html"] span');
+    const historyTab = document.querySelector('.menu-item[href="history-activity.html"] span');
+    
+    if (dashboardTab) dashboardTab.textContent = getTranslation('dashboardTab', language);
+    if (historyTab) historyTab.textContent = getTranslation('historyTab', language);
+    
+    // Apply to stat cards
+    const statTitles = document.querySelectorAll('.stat-title');
+    if (statTitles.length >= 4) {
+        statTitles[0].textContent = getTranslation('totalReports', language);
+        statTitles[1].textContent = getTranslation('pendingReports', language);
+        statTitles[2].textContent = getTranslation('solvedReports', language);
+        statTitles[3].textContent = getTranslation('teamPerformance', language);
+    }
+    
+    // Apply to activities section
+    const sectionTitle = document.querySelector('.section-title');
+    if (sectionTitle) {
+        sectionTitle.innerHTML = `<i class="fas fa-list-alt"></i> ${getTranslation('recentActivities', language)}`;
+    }
+    
+    const refreshButton = document.getElementById('refreshActivities');
+    if (refreshButton) {
+        refreshButton.innerHTML = `<i class="fas fa-sync-alt"></i> ${getTranslation('refreshActivities', language)}`;
+    }
+    
+    // Apply to table headers
+    const tableHeaders = document.querySelectorAll('#activitiesTable th');
+    if (tableHeaders.length >= 7) {
+        tableHeaders[0].textContent = getTranslation('date', language);
+        tableHeaders[1].textContent = getTranslation('agentId', language);
+        tableHeaders[2].textContent = getTranslation('category', language);
+        tableHeaders[3].textContent = getTranslation('title', language);
+        tableHeaders[4].textContent = getTranslation('status', language);
+        tableHeaders[5].textContent = getTranslation('brand', language);
+        tableHeaders[6].textContent = getTranslation('actions', language);
+    }
+    
+    // Apply to pagination
+    const prevButton = document.getElementById('prevPage');
+    const nextButton = document.getElementById('nextPage');
+    
+    if (prevButton) {
+        prevButton.innerHTML = `<i class="fas fa-chevron-left"></i> ${getTranslation('previous', language)}`;
+    }
+    if (nextButton) {
+        nextButton.innerHTML = `${getTranslation('next', language)} <i class="fas fa-chevron-right"></i>`;
+    }
+    
+    // Apply to empty state
+    const emptyState = document.getElementById('noActivities');
+    if (emptyState) {
+        const emptyTitle = emptyState.querySelector('h3');
+        const emptyMessage = emptyState.querySelector('p');
+        
+        if (emptyTitle) emptyTitle.textContent = getTranslation('noActivities', language);
+        if (emptyMessage) emptyMessage.textContent = getTranslation('noActivitiesMessage', language);
+    }
+    
+    // Apply to search placeholder
+    const searchInput = document.getElementById('dashboardSearch');
+    if (searchInput) {
+        searchInput.placeholder = getTranslation('searchPlaceholderActivities', language);
+    }
+}
+
+// Initialize translations when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    const preferredLanguage = localStorage.getItem('preferredLanguage') || 'id';
+    applyTranslations(preferredLanguage);
+});
+
+// Export for use in other modules
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { translations, getTranslation, setLanguage, applyTranslations };
+}
+// Fungsi untuk mendengarkan perubahan bahasa dari localStorage
+function setupLanguageListener() {
+    // Periksa perubahan bahasa setiap detik
+    setInterval(() => {
+        const currentLanguage = localStorage.getItem('language') || 'id';
+        if (window.currentLanguage !== currentLanguage) {
+            window.currentLanguage = currentLanguage;
+            applyTranslations(currentLanguage);
+            console.log('Language changed to:', currentLanguage);
+        }
+    }, 1000);
+    
+    // Juga periksa saat halaman difokuskan kembali
+    window.addEventListener('focus', () => {
+        const language = localStorage.getItem('language') || 'id';
+        applyTranslations(language);
+    });
+}
+
+// Fungsi untuk menerapkan terjemahan - DIPERBAIKI
+function applyTranslations(language = 'id') {
+    try {
+        const lang = translations[language] || translations['id'];
+        
+        if (!lang) {
+            console.error('Translations not found for language:', language);
+            return;
+        }
+
+        console.log('Applying translations for:', language);
+
+        // Header
+        const headerTitle = document.querySelector('.header h1');
+        if (headerTitle) {
+            headerTitle.innerHTML = `<i class="fas fa-tachometer-alt"></i> ${lang.historyActivityTitle || 'History Report Activity'}`;
+        }
+
+        // Search placeholder
+        const searchInput = document.getElementById('dashboardSearch');
+        if (searchInput) {
+            searchInput.placeholder = lang.searchPlaceholderActivities || 'Cari aktivitas...';
+        }
+
+        // Tab Menu
+        const dashboardTab = document.querySelector('.menu-item[href="summary-dashboard.html"] span');
+        const historyTab = document.querySelector('.menu-item[href="history-activity.html"] span');
+        
+        if (dashboardTab) dashboardTab.textContent = lang.dashboardTab || 'Dashboard';
+        if (historyTab) historyTab.textContent = lang.historyTab || 'History';
+
+        // Stat Cards
+        const statTitles = document.querySelectorAll('.stat-title');
+        if (statTitles.length >= 4) {
+            statTitles[0].textContent = lang.totalReports || 'Total Laporan';
+            statTitles[1].textContent = lang.pendingReports || 'Laporan Tertunda';
+            statTitles[2].textContent = lang.solvedReports || 'Laporan Terselesaikan';
+            statTitles[3].textContent = lang.teamPerformance || 'Kinerja Tim';
+        }
+
+        // Activities Section
+        const sectionTitle = document.querySelector('.section-title');
+        if (sectionTitle) {
+            sectionTitle.innerHTML = `<i class="fas fa-list-alt"></i> ${lang.recentActivities || 'Aktivitas Terbaru'}`;
+        }
+
+        // Refresh Button
+        const refreshBtn = document.getElementById('refreshActivities');
+        if (refreshBtn) {
+            refreshBtn.innerHTML = `<i class="fas fa-sync-alt"></i> ${lang.refreshActivities || 'Muat Ulang'}`;
+        }
+
+        // Table Headers
+        const tableHeaders = document.querySelectorAll('#activitiesTable th');
+        if (tableHeaders.length >= 7) {
+            tableHeaders[0].textContent = lang.dateCreated || 'Tanggal';
+            tableHeaders[1].textContent = lang.agentId || 'ID AGEN';
+            tableHeaders[2].textContent = lang.category || 'Kategori';
+            tableHeaders[3].textContent = lang.title || 'Title';
+            tableHeaders[4].textContent = lang.status || 'Status';
+            tableHeaders[5].textContent = lang.brand || 'Merek';
+            tableHeaders[6].textContent = lang.actions || 'Aksi';
+        }
+
+        // Pagination
+        const prevBtn = document.getElementById('prevPage');
+        const nextBtn = document.getElementById('nextPage');
+        const pageInfo = document.getElementById('pageInfo');
+        
+        if (prevBtn) {
+            prevBtn.innerHTML = `<i class="fas fa-chevron-left"></i> ${lang.previous || 'Previous'}`;
+        }
+        if (nextBtn) {
+            nextBtn.innerHTML = `${lang.next || 'Next'} <i class="fas fa-chevron-right"></i>`;
+        }
+        if (pageInfo) {
+            const currentPage = window.currentPage || 1;
+            const totalPages = window.totalPages || 1;
+            pageInfo.textContent = `${lang.page || 'Page'} ${currentPage} ${lang.of || 'of'} ${totalPages}`;
+        }
+
+        // Empty State
+        const emptyState = document.getElementById('noActivities');
+        if (emptyState) {
+            const emptyTitle = emptyState.querySelector('h3');
+            const emptyMessage = emptyState.querySelector('p');
+            
+            if (emptyTitle) emptyTitle.textContent = lang.noActivities || 'Tidak Ada Aktivitas';
+            if (emptyMessage) emptyMessage.textContent = lang.noActivitiesMessage || 'Tidak ada aktivitas untuk ditampilkan saat ini.';
+        }
+
+        // Update change texts
+        updateChangeTexts(language);
+
+    } catch (error) {
+        console.error('Error applying translations:', error);
+    }
+}
+
+// Fungsi untuk update teks perubahan
+function updateChangeTexts(language) {
+    const lang = translations[language] || translations['id'];
+    const changeElements = document.querySelectorAll('.stat-change');
+    
+    changeElements.forEach(element => {
+        const currentText = element.textContent;
+        if (currentText.includes('dari minggu lalu')) {
+            element.innerHTML = element.innerHTML.replace('dari minggu lalu', lang.fromLastWeek || 'dari minggu lalu');
+        }
+    });
+}
+
+// Fungsi untuk mendapatkan terjemahan
+function getTranslation(key, language = null) {
+    const lang = language || localStorage.getItem('language') || 'id';
+    const translation = translations[lang]?.[key];
+    return translation || key;
 }
 </script>
 </body>

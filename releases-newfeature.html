@@ -2432,6 +2432,780 @@ function setupEventListeners() {
 document.addEventListener('DOMContentLoaded', function() {
     checkAuthState();
 });
+// releases-translations.js
+const releasesTranslations = {
+    id: {
+        // Header
+        "releasesTitle": "Rilis & Fitur Baru",
+        "searchPlaceholder": "Cari rilis...",
+        
+        // Stats Cards
+        "totalReleases": "Total Rilis",
+        "tasksReleased": "Tugas dirilis",
+        "inProgress": "Dalam Proses",
+        "currentlyWorkedOn": "Sedang dikerjakan",
+        "completed": "Selesai",
+        "tasksCompleted": "Tugas selesai",
+        "delayed": "Terlambat",
+        "tasksNotOnSchedule": "Tugas tidak sesuai jadwal",
+        
+        // Filter Section
+        "filterReleases": "Filter Rilis",
+        "resetFilters": "Reset Filter",
+        "advancedFilters": "Filter Lanjutan",
+        "statusFilter": "Status",
+        "brandFilter": "Brand",
+        "sortBy": "Urutkan Berdasarkan",
+        "allStatus": "Semua Status",
+        "allBrands": "Semua Brand",
+        "releaseDate": "Tanggal Rilis",
+        "title": "Judul",
+        "progress": "Progress",
+        
+        // Advanced Filters
+        "releaseDate": "Tanggal Rilis",
+        "progressRange": "Rentang Progress",
+        
+        // Releases Section
+        "allReleases": "Semua Rilis",
+        "addRelease": "Tambah Rilis",
+        "addNewRelease": "Tambah Rilis Baru",
+        
+        // Empty State
+        "noReleasesFound": "Tidak ada rilis ditemukan",
+        "noReleasesMessage": "Coba sesuaikan filter Anda atau tambah rilis baru untuk memulai.",
+        
+        // Modal
+        "addNewRelease": "Tambah Rilis Baru",
+        "editRelease": "Edit Rilis",
+        "releaseImage": "Gambar Rilis",
+        "releaseTitle": "Judul Rilis",
+        "releaseBrand": "Brand",
+        "releaseStatus": "Status",
+        "releaseDate": "Tanggal Rilis",
+        "description": "Deskripsi",
+        "cancel": "Batal",
+        "saveRelease": "Simpan Rilis",
+        "updateRelease": "Perbarui Rilis",
+        
+        // Status Options
+        "released": "Dirilis",
+        "planned": "Direncanakan",
+        "testing": "Testing",
+        "delayed": "Terlambat",
+        
+        // Release Details Modal
+        "releaseDetails": "Detail Rilis",
+        "viewFullSize": "Lihat Ukuran Penuh",
+        "download": "Unduh",
+        "editRelease": "Edit Rilis",
+        "additionalInformation": "Informasi Tambahan",
+        "created": "Dibuat",
+        "lastUpdated": "Terakhir Diperbarui",
+        
+        // Actions
+        "viewDetails": "Lihat Detail",
+        "edit": "Edit",
+        "delete": "Hapus",
+        "close": "Tutup",
+        
+        // Notifications
+        "releaseAdded": "Rilis berhasil ditambahkan!",
+        "releaseUpdated": "Rilis berhasil diperbarui!",
+        "releaseDeleted": "Rilis berhasil dihapus!",
+        "errorLoading": "Error memuat data rilis",
+        "confirmDelete": "Apakah Anda yakin ingin menghapus rilis ini?",
+        "allFieldsRequired": "Semua field wajib diisi!",
+        
+        // Image Upload
+        "clickToUpload": "Klik untuk mengunggah atau seret dan lepas",
+        "imageRequirements": "PNG, JPG hingga 5MB",
+        "removeImage": "Hapus Gambar",
+        
+        // Fullscreen Image
+        "clickOutsideToClose": "Klik di luar gambar atau tekan ESC untuk menutup",
+        "imageDownloadStarted": "Unduhan gambar dimulai!"
+    },
+    
+    en: {
+        // Header
+        "releasesTitle": "Releases & New Features",
+        "searchPlaceholder": "Search releases...",
+        
+        // Stats Cards
+        "totalReleases": "Total Releases",
+        "tasksReleased": "Tasks released",
+        "inProgress": "In Progress",
+        "currentlyWorkedOn": "Currently being worked on",
+        "completed": "Completed",
+        "tasksCompleted": "Tasks completed",
+        "delayed": "Delayed",
+        "tasksNotOnSchedule": "Tasks not on schedule",
+        
+        // Filter Section
+        "filterReleases": "Filter Releases",
+        "resetFilters": "Reset Filters",
+        "advancedFilters": "Advanced Filters",
+        "statusFilter": "Status",
+        "brandFilter": "Brand",
+        "sortBy": "Sort By",
+        "allStatus": "All Status",
+        "allBrands": "All Brands",
+        "releaseDate": "Release Date",
+        "title": "Title",
+        "progress": "Progress",
+        
+        // Advanced Filters
+        "releaseDate": "Release Date",
+        "progressRange": "Progress Range",
+        
+        // Releases Section
+        "allReleases": "All Releases",
+        "addRelease": "Add Release",
+        "addNewRelease": "Add New Release",
+        
+        // Empty State
+        "noReleasesFound": "No releases found",
+        "noReleasesMessage": "Try adjusting your filters or add a new release to get started.",
+        
+        // Modal
+        "addNewRelease": "Add New Release",
+        "editRelease": "Edit Release",
+        "releaseImage": "Release Image",
+        "releaseTitle": "Release Title",
+        "releaseBrand": "Brand",
+        "releaseStatus": "Status",
+        "releaseDate": "Release Date",
+        "description": "Description",
+        "cancel": "Cancel",
+        "saveRelease": "Save Release",
+        "updateRelease": "Update Release",
+        
+        // Status Options
+        "released": "Released",
+        "planned": "Planned",
+        "testing": "Testing",
+        "delayed": "Delayed",
+        
+        // Release Details Modal
+        "releaseDetails": "Release Details",
+        "viewFullSize": "View Full Size",
+        "download": "Download",
+        "editRelease": "Edit Release",
+        "additionalInformation": "Additional Information",
+        "created": "Created",
+        "lastUpdated": "Last Updated",
+        
+        // Actions
+        "viewDetails": "View Details",
+        "edit": "Edit",
+        "delete": "Delete",
+        "close": "Close",
+        
+        // Notifications
+        "releaseAdded": "Release added successfully!",
+        "releaseUpdated": "Release updated successfully!",
+        "releaseDeleted": "Release deleted successfully!",
+        "errorLoading": "Error loading releases data",
+        "confirmDelete": "Are you sure you want to delete this release?",
+        "allFieldsRequired": "All fields are required!",
+        
+        // Image Upload
+        "clickToUpload": "Click to upload or drag and drop",
+        "imageRequirements": "PNG, JPG up to 5MB",
+        "removeImage": "Remove Image",
+        
+        // Fullscreen Image
+        "clickOutsideToClose": "Click outside image or press ESC to close",
+        "imageDownloadStarted": "Image download started!"
+    },
+    
+    ja: {
+        // Header
+        "releasesTitle": "リリースと新機能",
+        "searchPlaceholder": "リリースを検索...",
+        
+        // Stats Cards
+        "totalReleases": "総リリース数",
+        "tasksReleased": "リリースされたタスク",
+        "inProgress": "進行中",
+        "currentlyWorkedOn": "現在作業中",
+        "completed": "完了",
+        "tasksCompleted": "完了したタスク",
+        "delayed": "遅延",
+        "tasksNotOnSchedule": "スケジュール通りでないタスク",
+        
+        // Filter Section
+        "filterReleases": "リリースをフィルター",
+        "resetFilters": "フィルターをリセット",
+        "advancedFilters": "詳細フィルター",
+        "statusFilter": "ステータス",
+        "brandFilter": "ブランド",
+        "sortBy": "並び替え",
+        "allStatus": "すべてのステータス",
+        "allBrands": "すべてのブランド",
+        "releaseDate": "リリース日",
+        "title": "タイトル",
+        "progress": "進捗",
+        
+        // Advanced Filters
+        "releaseDate": "リリース日",
+        "progressRange": "進捗範囲",
+        
+        // Releases Section
+        "allReleases": "すべてのリリース",
+        "addRelease": "リリースを追加",
+        "addNewRelease": "新規リリースを追加",
+        
+        // Empty State
+        "noReleasesFound": "リリースが見つかりません",
+        "noReleasesMessage": "フィルターを調整するか、新しいリリースを追加してください。",
+        
+        // Modal
+        "addNewRelease": "新規リリースを追加",
+        "editRelease": "リリースを編集",
+        "releaseImage": "リリース画像",
+        "releaseTitle": "リリースタイトル",
+        "releaseBrand": "ブランド",
+        "releaseStatus": "ステータス",
+        "releaseDate": "リリース日",
+        "description": "説明",
+        "cancel": "キャンセル",
+        "saveRelease": "リリースを保存",
+        "updateRelease": "リリースを更新",
+        
+        // Status Options
+        "released": "リリース済み",
+        "planned": "計画済み",
+        "testing": "テスト中",
+        "delayed": "遅延",
+        
+        // Release Details Modal
+        "releaseDetails": "リリース詳細",
+        "viewFullSize": "フルサイズで表示",
+        "download": "ダウンロード",
+        "editRelease": "リリースを編集",
+        "additionalInformation": "追加情報",
+        "created": "作成日",
+        "lastUpdated": "最終更新日",
+        
+        // Actions
+        "viewDetails": "詳細を表示",
+        "edit": "編集",
+        "delete": "削除",
+        "close": "閉じる",
+        
+        // Notifications
+        "releaseAdded": "リリースが正常に追加されました！",
+        "releaseUpdated": "リリースが正常に更新されました！",
+        "releaseDeleted": "リリースが正常に削除されました！",
+        "errorLoading": "リリースデータの読み込みエラー",
+        "confirmDelete": "このリリースを削除してもよろしいですか？",
+        "allFieldsRequired": "すべてのフィールドは必須です！",
+        
+        // Image Upload
+        "clickToUpload": "クリックしてアップロードまたはドラッグ＆ドロップ",
+        "imageRequirements": "PNG、JPG、最大5MB",
+        "removeImage": "画像を削除",
+        
+        // Fullscreen Image
+        "clickOutsideToClose": "画像の外側をクリックするかESCを押して閉じる",
+        "imageDownloadStarted": "画像のダウンロードを開始しました！"
+    },
+    
+    zh: {
+        // Header
+        "releasesTitle": "发布与新功能",
+        "searchPlaceholder": "搜索发布...",
+        
+        // Stats Cards
+        "totalReleases": "总发布数",
+        "tasksReleased": "已发布任务",
+        "inProgress": "进行中",
+        "currentlyWorkedOn": "当前正在处理",
+        "completed": "已完成",
+        "tasksCompleted": "已完成任务",
+        "delayed": "延迟",
+        "tasksNotOnSchedule": "未按计划的任务",
+        
+        // Filter Section
+        "filterReleases": "筛选发布",
+        "resetFilters": "重置筛选",
+        "advancedFilters": "高级筛选",
+        "statusFilter": "状态",
+        "brandFilter": "品牌",
+        "sortBy": "排序方式",
+        "allStatus": "所有状态",
+        "allBrands": "所有品牌",
+        "releaseDate": "发布日期",
+        "title": "标题",
+        "progress": "进度",
+        
+        // Advanced Filters
+        "releaseDate": "发布日期",
+        "progressRange": "进度范围",
+        
+        // Releases Section
+        "allReleases": "所有发布",
+        "addRelease": "添加发布",
+        "addNewRelease": "添加新发布",
+        
+        // Empty State
+        "noReleasesFound": "未找到发布",
+        "noReleasesMessage": "尝试调整筛选条件或添加新发布以开始。",
+        
+        // Modal
+        "addNewRelease": "添加新发布",
+        "editRelease": "编辑发布",
+        "releaseImage": "发布图片",
+        "releaseTitle": "发布标题",
+        "releaseBrand": "品牌",
+        "releaseStatus": "状态",
+        "releaseDate": "发布日期",
+        "description": "描述",
+        "cancel": "取消",
+        "saveRelease": "保存发布",
+        "updateRelease": "更新发布",
+        
+        // Status Options
+        "released": "已发布",
+        "planned": "已计划",
+        "testing": "测试中",
+        "delayed": "延迟",
+        
+        // Release Details Modal
+        "releaseDetails": "发布详情",
+        "viewFullSize": "查看完整尺寸",
+        "download": "下载",
+        "editRelease": "编辑发布",
+        "additionalInformation": "附加信息",
+        "created": "创建时间",
+        "lastUpdated": "最后更新",
+        
+        // Actions
+        "viewDetails": "查看详情",
+        "edit": "编辑",
+        "delete": "删除",
+        "close": "关闭",
+        
+        // Notifications
+        "releaseAdded": "发布添加成功！",
+        "releaseUpdated": "发布更新成功！",
+        "releaseDeleted": "发布删除成功！",
+        "errorLoading": "加载发布数据时出错",
+        "confirmDelete": "您确定要删除此发布吗？",
+        "allFieldsRequired": "所有字段都必须填写！",
+        
+        // Image Upload
+        "clickToUpload": "点击上传或拖放",
+        "imageRequirements": "PNG、JPG，最大5MB",
+        "removeImage": "移除图片",
+        
+        // Fullscreen Image
+        "clickOutsideToClose": "点击图片外部或按ESC关闭",
+        "imageDownloadStarted": "图片下载已开始！"
+    }
+};
+
+// Fungsi untuk menerapkan terjemahan ke halaman releases
+function applyReleasesTranslations(language) {
+    const lang = releasesTranslations[language] || releasesTranslations['id'];
+    
+    if (!lang) return;
+
+    console.log("Applying releases translations for:", language);
+
+    // Terjemahkan elemen utama
+    const elements = {
+        'releasesTitle': '.header h1',
+        'filterReleases': '.filter-title',
+        'statusFilter': '.filter-group:nth-child(1) .filter-label',
+        'brandFilter': '.filter-group:nth-child(2) .filter-label',
+        'sortBy': '.filter-group:nth-child(3) .filter-label',
+        'searchPlaceholder': '#releasesSearch',
+        'allReleases': '.section-title',
+        'noReleasesFound': '.empty-state h3',
+        'noReleasesMessage': '.empty-state p'
+    };
+
+    Object.keys(elements).forEach(key => {
+        const element = document.querySelector(elements[key]);
+        if (element && lang[key]) {
+            if (key === 'searchPlaceholder') {
+                element.placeholder = lang[key];
+            } else {
+                // Simpan ikon jika ada
+                const iconMatch = element.innerHTML.match(/(<i[^>]*><\/i>)/);
+                if (iconMatch) {
+                    element.innerHTML = iconMatch[0] + ' ' + lang[key];
+                } else {
+                    element.textContent = lang[key];
+                }
+            }
+        }
+    });
+
+    // Update tombol
+    const addReleaseButton = document.getElementById('addReleaseBtn');
+    const emptyStateButton = document.getElementById('emptyStateBtn');
+    const resetFiltersButton = document.getElementById('resetFilters');
+    const advancedFiltersButton = document.getElementById('toggleAdvancedFilters');
+
+    if (addReleaseButton && lang.addRelease) {
+        addReleaseButton.innerHTML = `<i class="fas fa-plus"></i> ${lang.addRelease}`;
+    }
+    if (emptyStateButton && lang.addNewRelease) {
+        emptyStateButton.innerHTML = `<i class="fas fa-plus"></i> ${lang.addNewRelease}`;
+    }
+    if (resetFiltersButton && lang.resetFilters) {
+        resetFiltersButton.innerHTML = `<i class="fas fa-sync-alt"></i> ${lang.resetFilters}`;
+    }
+    if (advancedFiltersButton && lang.advancedFilters) {
+        advancedFiltersButton.innerHTML = `<i class="fas fa-sliders-h"></i> ${lang.advancedFilters}`;
+    }
+
+    // Update statistik cards
+    updateReleasesStatsTranslations(language);
+    
+    // Update filter options
+    updateReleasesFilterOptions(language);
+    
+    // Update modal
+    updateReleasesModalTranslations(language);
+    
+    // Update release cards yang sudah ada
+    updateExistingReleaseCards(language);
+}
+
+// Update terjemahan untuk statistik cards
+function updateReleasesStatsTranslations(language) {
+    const lang = releasesTranslations[language] || releasesTranslations['id'];
+    
+    // Total Releases card
+    const totalReleasesTitle = document.querySelector('.stat-card:nth-child(1) .stat-title');
+    const totalReleasesDesc = document.querySelector('.stat-card:nth-child(1) .stat-content p');
+    
+    if (totalReleasesTitle && lang.totalReleases) {
+        totalReleasesTitle.textContent = lang.totalReleases;
+    }
+    if (totalReleasesDesc && lang.tasksReleased) {
+        totalReleasesDesc.textContent = lang.tasksReleased;
+    }
+    
+    // In Progress card
+    const inProgressTitle = document.querySelector('.stat-card:nth-child(2) .stat-title');
+    const inProgressDesc = document.querySelector('.stat-card:nth-child(2) .stat-content p');
+    
+    if (inProgressTitle && lang.inProgress) {
+        inProgressTitle.textContent = lang.inProgress;
+    }
+    if (inProgressDesc && lang.currentlyWorkedOn) {
+        inProgressDesc.textContent = lang.currentlyWorkedOn;
+    }
+    
+    // Completed card
+    const completedTitle = document.querySelector('.stat-card:nth-child(3) .stat-title');
+    const completedDesc = document.querySelector('.stat-card:nth-child(3) .stat-content p');
+    
+    if (completedTitle && lang.completed) {
+        completedTitle.textContent = lang.completed;
+    }
+    if (completedDesc && lang.tasksCompleted) {
+        completedDesc.textContent = lang.tasksCompleted;
+    }
+    
+    // Delayed card
+    const delayedTitle = document.querySelector('.stat-card:nth-child(4) .stat-title');
+    const delayedDesc = document.querySelector('.stat-card:nth-child(4) .stat-content p');
+    
+    if (delayedTitle && lang.delayed) {
+        delayedTitle.textContent = lang.delayed;
+    }
+    if (delayedDesc && lang.tasksNotOnSchedule) {
+        delayedDesc.textContent = lang.tasksNotOnSchedule;
+    }
+}
+
+// Update opsi filter
+function updateReleasesFilterOptions(language) {
+    const lang = releasesTranslations[language] || releasesTranslations['id'];
+    
+    // Status filter
+    const statusFilter = document.getElementById('statusFilter');
+    if (statusFilter && lang.allStatus) {
+        statusFilter.options[0].text = lang.allStatus;
+        // Update opsi status lainnya
+        if (lang.released) statusFilter.options[1].text = lang.released;
+        if (lang.planned) statusFilter.options[2].text = lang.planned;
+        if (lang.testing) statusFilter.options[3].text = lang.testing;
+        if (lang.delayed) statusFilter.options[4].text = lang.delayed;
+    }
+    
+    // Brand filter
+    const brandFilter = document.getElementById('brandFilter');
+    if (brandFilter && lang.allBrands) {
+        brandFilter.options[0].text = lang.allBrands;
+    }
+    
+    // Sort filter
+    const sortFilter = document.getElementById('sortBy');
+    if (sortFilter && lang.releaseDate) {
+        sortFilter.options[0].text = lang.releaseDate;
+        if (lang.title) sortFilter.options[1].text = lang.title;
+        if (lang.progress) sortFilter.options[2].text = lang.progress;
+    }
+    
+    // Advanced filters
+    const advancedFilterTitle = document.querySelector('#advancedFilters .filter-title');
+    const releaseDateLabel = document.querySelector('#advancedFilters .filter-group:nth-child(1) .filter-label');
+    const progressRangeLabel = document.querySelector('#advancedFilters .filter-group:nth-child(2) .filter-label');
+    
+    if (advancedFilterTitle && lang.advancedFilters) {
+        advancedFilterTitle.textContent = lang.advancedFilters;
+    }
+    if (releaseDateLabel && lang.releaseDate) {
+        releaseDateLabel.textContent = lang.releaseDate;
+    }
+    if (progressRangeLabel && lang.progressRange) {
+        progressRangeLabel.textContent = lang.progressRange;
+    }
+}
+
+// Update terjemahan modal
+function updateReleasesModalTranslations(language) {
+    const lang = releasesTranslations[language] || releasesTranslations['id'];
+    
+    const modalTitle = document.querySelector('#addReleaseModal .modal-title');
+    const cancelButton = document.getElementById('cancelBtn');
+    const saveButton = document.getElementById('saveReleaseBtn');
+    
+    if (modalTitle && lang.addNewRelease) {
+        modalTitle.innerHTML = `<i class="fas fa-plus"></i> ${lang.addNewRelease}`;
+    }
+    if (cancelButton && lang.cancel) {
+        cancelButton.innerHTML = `<i class="fas fa-times"></i> ${lang.cancel}`;
+    }
+    if (saveButton && lang.saveRelease) {
+        saveButton.innerHTML = `<i class="fas fa-save"></i> ${lang.saveRelease}`;
+    }
+    
+    // Update form labels
+    const formLabels = {
+        'releaseImage': '.form-group.full-width .form-label',
+        'releaseTitle': 'label[for="releaseTitle"]',
+        'releaseBrand': 'label[for="releaseBrand"]',
+        'releaseStatus': 'label[for="releaseStatus"]',
+        'releaseDate': 'label[for="releaseDate"]',
+        'description': 'label[for="releaseDescription"]'
+    };
+    
+    Object.keys(formLabels).forEach(key => {
+        const element = document.querySelector(formLabels[key]);
+        if (element && lang[key]) {
+            element.textContent = lang[key];
+            if (element.classList.contains('required')) {
+                element.innerHTML = lang[key] + '<span style="color: var(--danger); margin-left: 4px;">*</span>';
+            }
+        }
+    });
+    
+    // Update image upload text
+    const imageUpload = document.getElementById('imageUpload');
+    if (imageUpload) {
+        const paragraphs = imageUpload.querySelectorAll('p');
+        if (paragraphs[0] && lang.clickToUpload) {
+            paragraphs[0].textContent = lang.clickToUpload;
+        }
+        if (paragraphs[1] && lang.imageRequirements) {
+            paragraphs[1].textContent = lang.imageRequirements;
+        }
+    }
+    
+    // Update remove image button
+    const removeImageBtn = document.getElementById('removeImage');
+    if (removeImageBtn && lang.removeImage) {
+        removeImageBtn.textContent = lang.removeImage;
+    }
+    
+    // Update status options in modal
+    const statusSelect = document.getElementById('releaseStatus');
+    if (statusSelect) {
+        if (lang.released) statusSelect.options[0].text = lang.released;
+        if (lang.planned) statusSelect.options[1].text = lang.planned;
+        if (lang.testing) statusSelect.options[2].text = lang.testing;
+        if (lang.delayed) statusSelect.options[3].text = lang.delayed;
+    }
+}
+
+// Update terjemahan untuk release cards yang sudah ada
+function updateExistingReleaseCards(language) {
+    const lang = releasesTranslations[language] || releasesTranslations['id'];
+    
+    // Update tombol di release cards
+    document.querySelectorAll('.view-detail-btn').forEach(btn => {
+        if (lang.viewDetails) {
+            btn.innerHTML = `<i class="fas fa-eye"></i> ${lang.viewDetails}`;
+        }
+    });
+    
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        if (lang.edit) {
+            btn.innerHTML = `<i class="fas fa-edit"></i> ${lang.edit}`;
+        }
+    });
+    
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        if (lang.delete) {
+            btn.innerHTML = `<i class="fas fa-trash"></i> ${lang.delete}`;
+        }
+    });
+    
+    // Update label di game details
+    document.querySelectorAll('.detail-label').forEach((label, index) => {
+        if (index % 2 === 0 && lang.brand) {
+            // Label pertama (Brand)
+            label.textContent = lang.brand;
+        } else if (lang.releaseDate) {
+            // Label kedua (Release Date)
+            label.textContent = lang.releaseDate;
+        }
+    });
+}
+
+// Fungsi untuk update terjemahan di detail modal
+function updateReleasesDetailModalTranslations(language) {
+    const lang = releasesTranslations[language] || releasesTranslations['id'];
+    
+    const detailModal = document.getElementById('detailModal');
+    if (!detailModal) return;
+    
+    // Update modal title
+    const modalTitle = detailModal.querySelector('.modal-title');
+    if (modalTitle && lang.releaseDetails) {
+        modalTitle.innerHTML = `<i class="fas fa-info-circle"></i> ${lang.releaseDetails}`;
+    }
+    
+    // Update tombol
+    const closeBtn = detailModal.querySelector('#closeDetail');
+    const editBtn = detailModal.querySelector('.btn-primary');
+    
+    if (closeBtn && lang.close) {
+        closeBtn.innerHTML = `<i class="fas fa-times"></i> ${lang.close}`;
+    }
+    if (editBtn && lang.editRelease) {
+        editBtn.innerHTML = `<i class="fas fa-edit"></i> ${lang.editRelease}`;
+    }
+    
+    // Update tombol aksi gambar
+    const viewFullBtn = detailModal.querySelector('button[onclick*="openImageFullscreen"]');
+    const downloadBtn = detailModal.querySelector('button[onclick*="downloadImage"]');
+    
+    if (viewFullBtn && lang.viewFullSize) {
+        viewFullBtn.innerHTML = `<i class="fas fa-expand"></i> ${lang.viewFullSize}`;
+    }
+    if (downloadBtn && lang.download) {
+        downloadBtn.innerHTML = `<i class="fas fa-download"></i> ${lang.download}`;
+    }
+    
+    // Update label detail
+    const detailItems = detailModal.querySelectorAll('.detail-item strong');
+    detailItems.forEach((item, index) => {
+        if (index === 0 && lang.releaseDate) {
+            item.textContent = lang.releaseDate + ':';
+        } else if (index === 1 && lang.brand) {
+            item.textContent = lang.brand + ':';
+        } else if (index === 2 && lang.status) {
+            item.textContent = lang.status + ':';
+        } else if (index === 3 && lang.description) {
+            item.textContent = lang.description + ':';
+        }
+    });
+    
+    // Update additional information
+    const additionalInfo = detailModal.querySelector('strong:contains("Additional Information")');
+    if (additionalInfo && lang.additionalInformation) {
+        additionalInfo.textContent = lang.additionalInformation + ':';
+    }
+    
+    const createdLabel = detailModal.querySelector('small:contains("Created")');
+    const updatedLabel = detailModal.querySelector('small:contains("Last Updated")');
+    
+    if (createdLabel && lang.created) {
+        createdLabel.textContent = lang.created + ':';
+    }
+    if (updatedLabel && lang.lastUpdated) {
+        updatedLabel.textContent = lang.lastUpdated + ':';
+    }
+}
+
+// Fungsi untuk update notifikasi
+function updateReleasesNotificationMessages(language) {
+    const lang = releasesTranslations[language] || releasesTranslations['id'];
+    
+    // Simpan referensi ke fungsi showNotification asli
+    const originalShowNotification = window.showNotification;
+    
+    // Override fungsi showNotification untuk menerjemahkan pesan tertentu
+    window.showNotification = function(message, type = 'info') {
+        let translatedMessage = message;
+        
+        // Terjemahkan pesan-pesan umum
+        if (message.includes('Release added successfully')) {
+            translatedMessage = lang.releaseAdded;
+        } else if (message.includes('Release updated successfully')) {
+            translatedMessage = lang.releaseUpdated;
+        } else if (message.includes('Release deleted successfully')) {
+            translatedMessage = lang.releaseDeleted;
+        } else if (message.includes('Error loading releases data')) {
+            translatedMessage = lang.errorLoading;
+        } else if (message.includes('All fields are required')) {
+            translatedMessage = lang.allFieldsRequired;
+        } else if (message.includes('Image download started')) {
+            translatedMessage = lang.imageDownloadStarted;
+        }
+        
+        // Panggil fungsi asli dengan pesan yang sudah diterjemahkan
+        originalShowNotification(translatedMessage, type);
+    };
+}
+
+// Fungsi inisialisasi bahasa untuk releases
+function initializeReleasesLanguage() {
+    const savedLanguage = localStorage.getItem('language') || 'id';
+    console.log("Initializing releases with language:", savedLanguage);
+    
+    // Terapkan terjemahan
+    applyReleasesTranslations(savedLanguage);
+    updateReleasesNotificationMessages(savedLanguage);
+    
+    // Setup listener untuk perubahan bahasa
+    window.addEventListener('languageChanged', function(event) {
+        console.log("Language changed to:", event.detail.language);
+        applyReleasesTranslations(event.detail.language);
+        updateReleasesNotificationMessages(event.detail.language);
+        
+        // Update detail modal jika sedang terbuka
+        updateReleasesDetailModalTranslations(event.detail.language);
+    });
+}
+
+// Panggil inisialisasi saat DOM ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Tunggu sebentar untuk memastikan semua element sudah terload
+    setTimeout(() => {
+        initializeReleasesLanguage();
+    }, 100);
+});
+
+// Juga panggil saat halaman sepenuhnya loaded
+window.addEventListener('load', function() {
+    initializeReleasesLanguage();
+});
+
+// Export untuk penggunaan di file lain
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { releasesTranslations, applyReleasesTranslations };
+}
 </script>
 </body>
 </html>

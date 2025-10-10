@@ -4877,7 +4877,1035 @@ async function disableEditModeRadical() {
         console.error('Error:', error);
     }
 }
+const kpiTranslations = {
+    id: {
+        // Header
+        "dashboardTitle": "Dashboard KPI CSS",
+        "searchPlaceholder": "Cari data KPI...",
+        
+        // Summary Cards
+        "kpiThisMonth": "KPI Bulan Ini",
+        "fromMinTarget": "Dari target minimal 70%",
+        "ideasSuggestions": "Ideas & Suggestions",
+        "research": "Research",
+        "chatResponse": "Chat Response",
+        "reachingMinTarget": "Mencapai target minimal",
+        
+        // KPI Table
+        "kpiPerformanceData": "Data KPI Performance",
+        "editAll": "Edit All",
+        "reset": "Reset",
+        "saveAllChanges": "Simpan Semua Perubahan",
+        "cancelAll": "Batalkan Semua",
+        
+        // Table Headers
+        "no": "No.",
+        "mainPerformanceArea": "Area Kinerja Utama",
+        "target": "Target",
+        "weight": "Bobot",
+        "kpiDescription": "Deskripsi KPI",
+        "note": "Keterangan",
+        "finalScore": "Skor Akhir",
+        "month": "Bulan",
+        "realization": "Realisasi",
+        "action": "Action",
+        
+        // Performance Areas
+        "b2bB2c": "B2B & B2C (Count.)",
+        "problemSolving": "Problem Solving (Count.)",
+        "idea": "Idea (Count.)",
+        "responseChat": "Response Chat (Count.)",
+        "research": "Research (Count.)",
+        "attitude": "Attitude (Skor.)",
+        "discipline": "Disiplin (Day.)",
+        
+        // Descriptions
+        "b2bDescription": "Pembukaan WLB / Agent baru",
+        "problemSolvingDescription": "Kemampuan dalam menyelesaikan setiap masalah",
+        "ideaDescription": "Aktif memberikan ide, Saran & Masukan",
+        "chatDescription": "Kecepatan dan ketepatan dalam Merespon Chat (Max 3 Menit)",
+        "researchDescription": "Research keunggulan Platform / Agent Lain",
+        "attitudeDescription": "Attitude dalam mengikuti SOP / Arahan",
+        "disciplineDescription": "Jumlah kedisiplinan setiap bulan",
+        
+        // Notes
+        "biggerBetter": "Semakin Besar Semakin Bagus",
+        "smallerBetter": "Semakin Kecil Semakin Bagus",
+        
+        // Footer
+        "trainingNote": "Catatan: Untuk Lepas training / masa probation Minimal KPI yang harus di Raih = 70%.",
+        
+        // Submenu Titles
+        "ideasSubmenu": "Ideas & Suggestions",
+        "researchSubmenu": "Research",
+        "chatSubmenu": "Chat Response",
+        
+        // Criteria
+        "ideasCriteria": "Ideas & Suggestions",
+        "ideasCriteriaDesc": "Jumlah ide yang diberikan per bulan",
+        "researchCriteria": "Research",
+        "researchCriteriaDesc": "Jumlah research yang dilakukan per bulan",
+        "chatCriteria": "Chat Response",
+        "chatCriteriaDesc": "Rata-rata waktu respons chat dalam menit",
+        
+        // User Filter
+        "myData": "Data Saya",
+        "allUsers": "Semua User",
+        "allUsersData": "Data KPI Semua User",
+        
+        // Table Columns for All Users
+        "user": "User",
+        "email": "Email",
+        "totalKPI": "Total KPI",
+        "ideas": "Ideas",
+        "research": "Research",
+        "chatResponse": "Chat Response",
+        "problemSolving": "Problem Solving",
+        "lastUpdated": "Terakhir Update",
+        "viewDetails": "Lihat Detail",
+        
+        // Notifications
+        "editModeEnabled": "Mode edit diaktifkan. Anda dapat mengubah target dan bobot KPI.",
+        "changesSaved": "Perubahan KPI berhasil disimpan.",
+        "dataReset": "Data KPI berhasil direset ke nilai default.",
+        "loadingUserData": "Memuat data user...",
+        "showingUsersData": "Menampilkan data {count} user",
+        "adminOnly": "Hanya Super Admin yang dapat mengedit data",
+        "resetOwnDataOnly": "Hanya bisa mereset data sendiri",
+        "errorLoadingKPI": "Error memuat data KPI",
+        "saveSuccess": "Perubahan berhasil disimpan ke database!",
+        "saveFailed": "Gagal menyimpan perubahan ke database",
+        "noChanges": "Tidak ada perubahan yang disimpan",
+        "editCancelled": "Edit dibatalkan",
+        
+        // Edit Mode
+        "editOptions": "Pilihan Edit",
+        "editRealisasiOnly": "Edit Realisasi Saja",
+        "editRealisasiOnlyDesc": "Hanya mengubah nilai realisasi",
+        "editAllData": "Edit Semua Data",
+        "editAllDataDesc": "Edit target, bobot, deskripsi, dll",
+        "editRealisasiEnabled": "Mode edit realisasi diaktifkan. Hanya Super Admin yang dapat mengubah data.",
+        "fullEditEnabled": "Mode edit penuh diaktifkan. Semua data dapat diubah.",
+        
+        // Reset Confirmation
+        "resetConfirmation": "Konfirmasi Reset Data",
+        "resetConfirmText": "Apakah Anda yakin ingin mereset semua data KPI ke nilai default?",
+        "resetIrreversible": "Tindakan ini tidak dapat dibatalkan!",
+        "confirmReset": "Ya, Reset Data",
+        "resetCancelled": "Reset data dibatalkan",
+        
+        // Status
+        "targetAchieved": "Target Tercapai",
+        "targetPartial": "Target Sebagian",
+        "targetMissed": "Target Terlewat"
+    },
+    
+    en: {
+        // Header
+        "dashboardTitle": "CSS KPI Dashboard",
+        "searchPlaceholder": "Search KPI data...",
+        
+        // Summary Cards
+        "kpiThisMonth": "KPI This Month",
+        "fromMinTarget": "From minimum target 70%",
+        "ideasSuggestions": "Ideas & Suggestions",
+        "research": "Research",
+        "chatResponse": "Chat Response",
+        "reachingMinTarget": "Reaching minimum target",
+        
+        // KPI Table
+        "kpiPerformanceData": "KPI Performance Data",
+        "editAll": "Edit All",
+        "reset": "Reset",
+        "saveAllChanges": "Save All Changes",
+        "cancelAll": "Cancel All",
+        
+        // Table Headers
+        "no": "No.",
+        "mainPerformanceArea": "Main Performance Area",
+        "target": "Target",
+        "weight": "Weight",
+        "kpiDescription": "KPI Description",
+        "note": "Note",
+        "finalScore": "Final Score",
+        "month": "Month",
+        "realization": "Realization",
+        "action": "Action",
+        
+        // Performance Areas
+        "b2bB2c": "B2B & B2C (Count.)",
+        "problemSolving": "Problem Solving (Count.)",
+        "idea": "Idea (Count.)",
+        "responseChat": "Response Chat (Count.)",
+        "research": "Research (Count.)",
+        "attitude": "Attitude (Score.)",
+        "discipline": "Discipline (Day.)",
+        
+        // Descriptions
+        "b2bDescription": "Opening WLB / New Agent",
+        "problemSolvingDescription": "Ability to solve every problem",
+        "ideaDescription": "Actively providing ideas, suggestions & input",
+        "chatDescription": "Speed and accuracy in Responding to Chat (Max 3 Minutes)",
+        "researchDescription": "Research on Platform / Other Agent advantages",
+        "attitudeDescription": "Attitude in following SOP / Directions",
+        "disciplineDescription": "Number of discipline per month",
+        
+        // Notes
+        "biggerBetter": "Bigger is Better",
+        "smallerBetter": "Smaller is Better",
+        
+        // Footer
+        "trainingNote": "Note: To pass training / probation period Minimum KPI to Achieve = 70%.",
+        
+        // Submenu Titles
+        "ideasSubmenu": "Ideas & Suggestions",
+        "researchSubmenu": "Research",
+        "chatSubmenu": "Chat Response",
+        
+        // Criteria
+        "ideasCriteria": "Ideas & Suggestions",
+        "ideasCriteriaDesc": "Number of ideas given per month",
+        "researchCriteria": "Research",
+        "researchCriteriaDesc": "Number of research conducted per month",
+        "chatCriteria": "Chat Response",
+        "chatCriteriaDesc": "Average chat response time in minutes",
+        
+        // User Filter
+        "myData": "My Data",
+        "allUsers": "All Users",
+        "allUsersData": "All Users KPI Data",
+        
+        // Table Columns for All Users
+        "user": "User",
+        "email": "Email",
+        "totalKPI": "Total KPI",
+        "ideas": "Ideas",
+        "research": "Research",
+        "chatResponse": "Chat Response",
+        "problemSolving": "Problem Solving",
+        "lastUpdated": "Last Updated",
+        "viewDetails": "View Details",
+        
+        // Notifications
+        "editModeEnabled": "Edit mode enabled. You can change KPI targets and weights.",
+        "changesSaved": "KPI changes saved successfully.",
+        "dataReset": "KPI data reset to default values successfully.",
+        "loadingUserData": "Loading user data...",
+        "showingUsersData": "Showing data for {count} users",
+        "adminOnly": "Only Super Admin can edit data",
+        "resetOwnDataOnly": "Can only reset own data",
+        "errorLoadingKPI": "Error loading KPI data",
+        "saveSuccess": "Changes saved to database successfully!",
+        "saveFailed": "Failed to save changes to database",
+        "noChanges": "No changes saved",
+        "editCancelled": "Edit cancelled",
+        
+        // Edit Mode
+        "editOptions": "Edit Options",
+        "editRealisasiOnly": "Edit Realization Only",
+        "editRealisasiOnlyDesc": "Only change realization values",
+        "editAllData": "Edit All Data",
+        "editAllDataDesc": "Edit target, weight, description, etc",
+        "editRealisasiEnabled": "Realization edit mode enabled. Only Super Admin can change data.",
+        "fullEditEnabled": "Full edit mode enabled. All data can be changed.",
+        
+        // Reset Confirmation
+        "resetConfirmation": "Reset Data Confirmation",
+        "resetConfirmText": "Are you sure you want to reset all KPI data to default values?",
+        "resetIrreversible": "This action cannot be undone!",
+        "confirmReset": "Yes, Reset Data",
+        "resetCancelled": "Reset cancelled",
+        
+        // Status
+        "targetAchieved": "Target Achieved",
+        "targetPartial": "Target Partial",
+        "targetMissed": "Target Missed"
+    },
+    
+    ja: {
+        // Header
+        "dashboardTitle": "CSS KPI ダッシュボード",
+        "searchPlaceholder": "KPIデータを検索...",
+        
+        // Summary Cards
+        "kpiThisMonth": "今月のKPI",
+        "fromMinTarget": "最低目標70%から",
+        "ideasSuggestions": "アイデアと提案",
+        "research": "リサーチ",
+        "chatResponse": "チャット応答",
+        "reachingMinTarget": "最低目標達成",
+        
+        // KPI Table
+        "kpiPerformanceData": "KPIパフォーマンスデータ",
+        "editAll": "すべて編集",
+        "reset": "リセット",
+        "saveAllChanges": "すべての変更を保存",
+        "cancelAll": "すべてキャンセル",
+        
+        // Table Headers
+        "no": "番号",
+        "mainPerformanceArea": "主要パフォーマンスエリア",
+        "target": "目標",
+        "weight": "重み",
+        "kpiDescription": "KPI説明",
+        "note": "備考",
+        "finalScore": "最終スコア",
+        "month": "月",
+        "realization": "実績",
+        "action": "操作",
+        
+        // Performance Areas
+        "b2bB2c": "B2B & B2C (回数)",
+        "problemSolving": "問題解決 (回数)",
+        "idea": "アイデア (回数)",
+        "responseChat": "チャット応答 (回数)",
+        "research": "リサーチ (回数)",
+        "attitude": "態度 (スコア)",
+        "discipline": "規律 (日数)",
+        
+        // Descriptions
+        "b2bDescription": "WLB / 新規エージェント開設",
+        "problemSolvingDescription": "各問題を解決する能力",
+        "ideaDescription": "アイデア、提案、意見の積極的提供",
+        "chatDescription": "チャット応答の速度と正確さ（最大3分）",
+        "researchDescription": "プラットフォーム/他エージェントの優位性調査",
+        "attitudeDescription": "SOP/指示への従順さ",
+        "disciplineDescription": "月間の規律数",
+        
+        // Notes
+        "biggerBetter": "大きいほど良い",
+        "smallerBetter": "小さいほど良い",
+        
+        // Footer
+        "trainingNote": "注記：トレーニング/試用期間を終了するには、達成すべき最低KPI = 70%。",
+        
+        // Submenu Titles
+        "ideasSubmenu": "アイデアと提案",
+        "researchSubmenu": "リサーチ",
+        "chatSubmenu": "チャット応答",
+        
+        // Criteria
+        "ideasCriteria": "アイデアと提案",
+        "ideasCriteriaDesc": "月間のアイデア提供数",
+        "researchCriteria": "リサーチ",
+        "researchCriteriaDesc": "月間のリサーチ実施数",
+        "chatCriteria": "チャット応答",
+        "chatCriteriaDesc": "平均チャット応答時間（分）",
+        
+        // User Filter
+        "myData": "自分のデータ",
+        "allUsers": "全ユーザー",
+        "allUsersData": "全ユーザーKPIデータ",
+        
+        // Table Columns for All Users
+        "user": "ユーザー",
+        "email": "メール",
+        "totalKPI": "合計KPI",
+        "ideas": "アイデア",
+        "research": "リサーチ",
+        "chatResponse": "チャット応答",
+        "problemSolving": "問題解決",
+        "lastUpdated": "最終更新",
+        "viewDetails": "詳細表示",
+        
+        // Notifications
+        "editModeEnabled": "編集モードが有効になりました。KPIの目標と重みを変更できます。",
+        "changesSaved": "KPIの変更が正常に保存されました。",
+        "dataReset": "KPIデータがデフォルト値にリセットされました。",
+        "loadingUserData": "ユーザーデータを読み込み中...",
+        "showingUsersData": "{count}人のユーザーデータを表示中",
+        "adminOnly": "スーパー管理者のみがデータを編集できます",
+        "resetOwnDataOnly": "自分のデータのみリセット可能",
+        "errorLoadingKPI": "KPIデータの読み込みエラー",
+        "saveSuccess": "データベースへの保存が成功しました！",
+        "saveFailed": "データベースへの保存に失敗しました",
+        "noChanges": "変更は保存されませんでした",
+        "editCancelled": "編集がキャンセルされました",
+        
+        // Edit Mode
+        "editOptions": "編集オプション",
+        "editRealisasiOnly": "実績のみ編集",
+        "editRealisasiOnlyDesc": "実績値のみ変更",
+        "editAllData": "全データ編集",
+        "editAllDataDesc": "目標、重み、説明などを編集",
+        "editRealisasiEnabled": "実績編集モードが有効になりました。スーパー管理者のみがデータを変更できます。",
+        "fullEditEnabled": "完全編集モードが有効になりました。すべてのデータを変更できます。",
+        
+        // Reset Confirmation
+        "resetConfirmation": "データリセット確認",
+        "resetConfirmText": "すべてのKPIデータをデフォルト値にリセットしてもよろしいですか？",
+        "resetIrreversible": "この操作は元に戻せません！",
+        "confirmReset": "はい、リセットします",
+        "resetCancelled": "リセットがキャンセルされました",
+        
+        // Status
+        "targetAchieved": "目標達成",
+        "targetPartial": "一部達成",
+        "targetMissed": "目標未達"
+    },
+    
+    zh: {
+        // Header
+        "dashboardTitle": "CSS KPI 仪表板",
+        "searchPlaceholder": "搜索KPI数据...",
+        
+        // Summary Cards
+        "kpiThisMonth": "本月KPI",
+        "fromMinTarget": "从最低目标70%",
+        "ideasSuggestions": "想法与建议",
+        "research": "研究",
+        "chatResponse": "聊天回复",
+        "reachingMinTarget": "达到最低目标",
+        
+        // KPI Table
+        "kpiPerformanceData": "KPI绩效数据",
+        "editAll": "全部编辑",
+        "reset": "重置",
+        "saveAllChanges": "保存所有更改",
+        "cancelAll": "全部取消",
+        
+        // Table Headers
+        "no": "编号",
+        "mainPerformanceArea": "主要绩效领域",
+        "target": "目标",
+        "weight": "权重",
+        "kpiDescription": "KPI描述",
+        "note": "备注",
+        "finalScore": "最终得分",
+        "month": "月份",
+        "realization": "实际完成",
+        "action": "操作",
+        
+        // Performance Areas
+        "b2bB2c": "B2B & B2C (次数)",
+        "problemSolving": "问题解决 (次数)",
+        "idea": "想法 (次数)",
+        "responseChat": "聊天回复 (次数)",
+        "research": "研究 (次数)",
+        "attitude": "态度 (分数)",
+        "discipline": "纪律 (天数)",
+        
+        // Descriptions
+        "b2bDescription": "开设WLB / 新代理",
+        "problemSolvingDescription": "解决每个问题的能力",
+        "ideaDescription": "积极提供想法、建议和意见",
+        "chatDescription": "回复聊天的速度和准确性（最多3分钟）",
+        "researchDescription": "研究平台/其他代理的优势",
+        "attitudeDescription": "遵循SOP/指导的态度",
+        "disciplineDescription": "每月的纪律数量",
+        
+        // Notes
+        "biggerBetter": "越大越好",
+        "smallerBetter": "越小越好",
+        
+        // Footer
+        "trainingNote": "注意：要通过培训/试用期，必须达到的最低KPI = 70%。",
+        
+        // Submenu Titles
+        "ideasSubmenu": "想法与建议",
+        "researchSubmenu": "研究",
+        "chatSubmenu": "聊天回复",
+        
+        // Criteria
+        "ideasCriteria": "想法与建议",
+        "ideasCriteriaDesc": "每月提供的想法数量",
+        "researchCriteria": "研究",
+        "researchCriteriaDesc": "每月进行的研究数量",
+        "chatCriteria": "聊天回复",
+        "chatCriteriaDesc": "平均聊天回复时间（分钟）",
+        
+        // User Filter
+        "myData": "我的数据",
+        "allUsers": "所有用户",
+        "allUsersData": "所有用户KPI数据",
+        
+        // Table Columns for All Users
+        "user": "用户",
+        "email": "邮箱",
+        "totalKPI": "总KPI",
+        "ideas": "想法",
+        "research": "研究",
+        "chatResponse": "聊天回复",
+        "problemSolving": "问题解决",
+        "lastUpdated": "最后更新",
+        "viewDetails": "查看详情",
+        
+        // Notifications
+        "editModeEnabled": "编辑模式已启用。您可以更改KPI目标和权重。",
+        "changesSaved": "KPI更改已成功保存。",
+        "dataReset": "KPI数据已成功重置为默认值。",
+        "loadingUserData": "正在加载用户数据...",
+        "showingUsersData": "显示{count}个用户的数据",
+        "adminOnly": "只有超级管理员可以编辑数据",
+        "resetOwnDataOnly": "只能重置自己的数据",
+        "errorLoadingKPI": "加载KPI数据时出错",
+        "saveSuccess": "成功保存到数据库！",
+        "saveFailed": "保存到数据库失败",
+        "noChanges": "没有保存任何更改",
+        "editCancelled": "编辑已取消",
+        
+        // Edit Mode
+        "editOptions": "编辑选项",
+        "editRealisasiOnly": "仅编辑实际完成",
+        "editRealisasiOnlyDesc": "仅更改实际完成值",
+        "editAllData": "编辑所有数据",
+        "editAllDataDesc": "编辑目标、权重、描述等",
+        "editRealisasiEnabled": "实际完成编辑模式已启用。只有超级管理员可以更改数据。",
+        "fullEditEnabled": "完全编辑模式已启用。所有数据都可以更改。",
+        
+        // Reset Confirmation
+        "resetConfirmation": "重置数据确认",
+        "resetConfirmText": "您确定要将所有KPI数据重置为默认值吗？",
+        "resetIrreversible": "此操作无法撤销！",
+        "confirmReset": "是的，重置数据",
+        "resetCancelled": "重置已取消",
+        
+        // Status
+        "targetAchieved": "目标达成",
+        "targetPartial": "部分达成",
+        "targetMissed": "目标未达成"
+    }
+};
+function applyKpiTranslations(language) {
+    const lang = kpiTranslations[language] || kpiTranslations['id'];
+    
+    if (!lang) {
+        console.error("Language not found:", language);
+        return;
+    }
+
+    console.log("🔤 Applying COMPREHENSIVE KPI translations for:", language);
+
+    // 1. TERJEMAHKAN HEADER & NAVIGASI
+    translateHeader(lang);
+    
+    // 2. TERJEMAHKAN SUMMARY CARDS
+    translateSummaryCards(lang);
+    
+    // 3. TERJEMAHKAN KPI TABLE
+    translateKpiTable(lang);
+    
+    // 4. TERJEMAHKAN SUBMENUS
+    translateSubmenus(lang);
+    
+    // 5. TERJEMAHKAN FOOTER
+    translateFooter(lang);
+    
+    // 6. TERJEMAHKAN FILTER USER
+    translateUserFilter(lang);
+    
+    // 7. TERJEMAHKAN TOMBOL & ACTION
+    translateButtons(lang);
+    
+    // 8. TERJEMAHKAN MODAL
+    translateModals(lang);
+    
+    // 9. TERJEMAHKAN TABLE SEMUA USER (jika ada)
+    translateAllUsersTable(lang);
+    
+    // 10. TERJEMAHKAN NOTIFICATION
+    translateNotifications(lang);
+    
+    console.log("✅ KPI translations applied completely");
+}
+
+// ========== FUNGSI TERJEMAHAN SPESIFIK ==========
+
+function translateHeader(lang) {
+    // Header utama
+    const dashboardTitle = document.querySelector('.header h1');
+    if (dashboardTitle && lang.dashboardTitle) {
+        dashboardTitle.innerHTML = `<i class="fas fa-chart-line"></i> ${lang.dashboardTitle}`;
+    }
+
+    // Search placeholder
+    const searchInput = document.querySelector('.search-bar input');
+    if (searchInput && lang.searchPlaceholder) {
+        searchInput.placeholder = lang.searchPlaceholder;
+    }
+
+    // User role
+    const userRole = document.querySelector('.user-info p');
+    if (userRole && lang.customerServiceSupport) {
+        userRole.textContent = lang.customerServiceSupport;
+    }
+}
+
+function translateSummaryCards(lang) {
+    const cards = document.querySelectorAll('.summary-card');
+    
+    cards.forEach((card, index) => {
+        const title = card.querySelector('.summary-title');
+        const desc = card.querySelector('.summary-content p');
+        
+        switch(index) {
+            case 0: // KPI Bulan Ini
+                if (title && lang.kpiThisMonth) title.textContent = lang.kpiThisMonth;
+                if (desc && lang.fromMinTarget) desc.textContent = lang.fromMinTarget;
+                break;
+            case 1: // Ideas & Suggestions
+                if (title && lang.ideasSuggestions) title.textContent = lang.ideasSuggestions;
+                if (desc && lang.reachingMinTarget) desc.textContent = lang.reachingMinTarget;
+                break;
+            case 2: // Research
+                if (title && lang.research) title.textContent = lang.research;
+                if (desc && lang.reachingMinTarget) desc.textContent = lang.reachingMinTarget;
+                break;
+            case 3: // Chat Response
+                if (title && lang.chatResponse) title.textContent = lang.chatResponse;
+                if (desc && lang.reachingMinTarget) desc.textContent = lang.reachingMinTarget;
+                break;
+        }
+    });
+}
+
+function translateKpiTable(lang) {
+    // Judul tabel
+    const tableTitle = document.querySelector('.kpi-container h2');
+    if (tableTitle && lang.kpiPerformanceData) {
+        tableTitle.textContent = lang.kpiPerformanceData;
+    }
+    
+    // Header tabel - PERBAIKI SELECTOR INI
+    const tableHeaders = document.querySelectorAll('.kpi-table thead th');
+    if (tableHeaders.length > 0) {
+        // Header untuk tabel KPI utama
+        const headerMapping = {
+            0: lang.no,
+            1: lang.mainPerformanceArea,
+            2: lang.target,
+            3: lang.weight,
+            4: lang.kpiDescription,
+            5: lang.note,
+            6: lang.finalScore,
+            7: lang.month,
+            8: lang.realization,
+            9: lang.finalScore, // Skor Akhir bulan ini
+            10: lang.action
+        };
+        
+        tableHeaders.forEach((header, index) => {
+            if (headerMapping[index]) {
+                header.textContent = headerMapping[index];
+            }
+        });
+    }
+    
+    // Data dalam tabel - PERBAIKI DENGAN SELECTOR YANG LEBIH TEPAT
+    translateTableData(lang);
+    
+    // Total row
+    const totalRow = document.querySelector('.result-row');
+    if (totalRow) {
+        const totalCells = totalRow.querySelectorAll('td');
+        if (totalCells[0] && lang.total) {
+            totalCells[0].textContent = lang.total;
+        }
+        if (totalCells[4] && lang.totalFinalScore) {
+            totalCells[4].textContent = lang.totalFinalScore;
+        }
+    }
+}
+
+function translateTableData(lang) {
+    const performanceData = [
+        {
+            area: lang.b2bB2c,
+            description: lang.b2bDescription,
+            note: lang.biggerBetter
+        },
+        {
+            area: lang.problemSolving,
+            description: lang.problemSolvingDescription,
+            note: lang.biggerBetter
+        },
+        {
+            area: lang.idea,
+            description: lang.ideaDescription,
+            note: lang.biggerBetter
+        },
+        {
+            area: lang.responseChat,
+            description: lang.chatDescription,
+            note: lang.smallerBetter
+        },
+        {
+            area: lang.research,
+            description: lang.researchDescription,
+            note: lang.biggerBetter
+        },
+        {
+            area: lang.attitude,
+            description: lang.attitudeDescription,
+            note: lang.biggerBetter
+        },
+        {
+            area: lang.discipline,
+            description: lang.disciplineDescription,
+            note: lang.biggerBetter
+        }
+    ];
+    
+    const rows = document.querySelectorAll('.kpi-table tbody tr:not(.result-row)');
+    rows.forEach((row, index) => {
+        if (index < performanceData.length) {
+            const data = performanceData[index];
+            
+            // Area kinerja (kolom 2)
+            const areaCell = row.querySelector('td:nth-child(2)');
+            if (areaCell && data.area) {
+                areaCell.textContent = data.area;
+                // Simpan data asli untuk edit mode
+                areaCell.dataset.originalText = data.area;
+            }
+            
+            // Deskripsi KPI (kolom 5)
+            const descCell = row.querySelector('td:nth-child(5)');
+            if (descCell && data.description) {
+                descCell.textContent = data.description;
+                descCell.dataset.originalText = data.description;
+            }
+            
+            // Keterangan (kolom 6)
+            const noteCell = row.querySelector('td:nth-child(6)');
+            if (noteCell && data.note) {
+                noteCell.textContent = data.note;
+                noteCell.dataset.originalText = data.note;
+            }
+        }
+    });
+}
+
+function translateSubmenus(lang) {
+    // Ideas submenu
+    const ideasDashboard = document.getElementById('dashboard-ideas');
+    if (ideasDashboard) {
+        const ideasTitle = ideasDashboard.querySelector('.submenu-title');
+        if (ideasTitle && lang.ideasSubmenu) {
+            ideasTitle.innerHTML = `<i class="fas fa-lightbulb"></i> ${lang.ideasSubmenu}`;
+        }
+        
+        const ideasCriteria = ideasDashboard.querySelector('.criteria-name');
+        const ideasDesc = ideasDashboard.querySelector('.criteria-desc');
+        if (ideasCriteria && lang.ideasCriteria) ideasCriteria.textContent = lang.ideasCriteria;
+        if (ideasDesc && lang.ideasCriteriaDesc) ideasDesc.textContent = lang.ideasCriteriaDesc;
+    }
+    
+    // Research submenu
+    const researchDashboard = document.getElementById('dashboard-research');
+    if (researchDashboard) {
+        const researchTitle = researchDashboard.querySelector('.submenu-title');
+        if (researchTitle && lang.researchSubmenu) {
+            researchTitle.innerHTML = `<i class="fas fa-search"></i> ${lang.researchSubmenu}`;
+        }
+        
+        const researchCriteria = researchDashboard.querySelector('.criteria-name');
+        const researchDesc = researchDashboard.querySelector('.criteria-desc');
+        if (researchCriteria && lang.researchCriteria) researchCriteria.textContent = lang.researchCriteria;
+        if (researchDesc && lang.researchCriteriaDesc) researchDesc.textContent = lang.researchCriteriaDesc;
+    }
+    
+    // Chat submenu
+    const chatDashboard = document.getElementById('dashboard-chat');
+    if (chatDashboard) {
+        const chatTitle = chatDashboard.querySelector('.submenu-title');
+        if (chatTitle && lang.chatSubmenu) {
+            chatTitle.innerHTML = `<i class="fas fa-comments"></i> ${lang.chatSubmenu}`;
+        }
+        
+        const chatCriteria = chatDashboard.querySelector('.criteria-name');
+        const chatDesc = chatDashboard.querySelector('.criteria-desc');
+        if (chatCriteria && lang.chatCriteria) chatCriteria.textContent = lang.chatCriteria;
+        if (chatDesc && lang.chatCriteriaDesc) chatDesc.textContent = lang.chatCriteriaDesc;
+    }
+}
+
+function translateFooter(lang) {
+    const footerNote = document.querySelector('.footer-note p');
+    if (footerNote) {
+        if (lang.trainingNote) {
+            const noteText = lang.trainingNote.replace('Catatan:', '').replace('Note:', '').replace('注記：', '').replace('注意：', '').trim();
+            footerNote.innerHTML = `<strong>${lang.note || 'Note'}:</strong> ${noteText}`;
+        }
+    }
+}
+
+function translateUserFilter(lang) {
+    const userFilter = document.getElementById('userFilter');
+    if (userFilter) {
+        if (lang.myData && userFilter.options[0]) {
+            userFilter.options[0].text = lang.myData;
+        }
+        if (lang.allUsers && userFilter.options[1]) {
+            userFilter.options[1].text = lang.allUsers;
+        }
+    }
+}
+
+function translateButtons(lang) {
+    // Tombol Edit All
+    const editAllBtn = document.getElementById('edit-all-btn');
+    if (editAllBtn && lang.editAll) {
+        editAllBtn.innerHTML = `<i class="fas fa-edit"></i> ${lang.editAll}`;
+    }
+    
+    // Tombol Reset
+    const resetBtn = document.getElementById('reset-data-btn');
+    if (resetBtn && lang.reset) {
+        resetBtn.innerHTML = `<i class="fas fa-sync-alt"></i> <span>${lang.reset}</span>`;
+    }
+    
+    // Tombol Save All Changes
+    const saveAllBtn = document.getElementById('save-all-btn');
+    if (saveAllBtn && lang.saveAllChanges) {
+        saveAllBtn.innerHTML = `<i class="fas fa-save"></i> ${lang.saveAllChanges}`;
+    }
+    
+    // Tombol Cancel All
+    const cancelAllBtn = document.getElementById('cancel-all-btn');
+    if (cancelAllBtn && lang.cancelAll) {
+        cancelAllBtn.innerHTML = `<i class="fas fa-times"></i> ${lang.cancelAll}`;
+    }
+    
+    // Tombol di submenus
+    const submenuEditButtons = document.querySelectorAll('.submenu-container .btn-edit-all');
+    submenuEditButtons.forEach(btn => {
+        if (lang.editAll) {
+            btn.innerHTML = `<i class="fas fa-edit"></i> ${lang.editAll}`;
+        }
+    });
+    
+    // Tombol edit di criteria items
+    const criteriaEditButtons = document.querySelectorAll('.criteria-list .btn-primary');
+    criteriaEditButtons.forEach(btn => {
+        if (lang.edit) {
+            btn.textContent = lang.edit;
+        }
+    });
+    
+    // Tombol edit individual di tabel
+    const editCellButtons = document.querySelectorAll('.btn-edit-cell');
+    editCellButtons.forEach(btn => {
+        if (lang.edit) {
+            btn.innerHTML = `<i class="fas fa-edit"></i> ${lang.edit}`;
+        }
+    });
+}
+
+function translateModals(lang) {
+    // Modal Edit Options
+    const editModal = document.getElementById('edit-options-modal');
+    if (editModal) {
+        const modalTitle = editModal.querySelector('.reset-modal-title');
+        if (modalTitle && lang.editOptions) modalTitle.textContent = lang.editOptions;
+        
+        const modalText = editModal.querySelector('.reset-modal-text');
+        if (modalText && lang.editOptions) modalText.textContent = lang.editOptions;
+        
+        const optionButtons = editModal.querySelectorAll('.edit-option-btn');
+        optionButtons.forEach((btn, index) => {
+            if (index === 0 && lang.editRealisasiOnly) {
+                const strong = btn.querySelector('strong') || btn;
+                const small = btn.querySelector('small') || btn.querySelector('p');
+                strong.textContent = lang.editRealisasiOnly;
+                if (small && lang.editRealisasiOnlyDesc) small.textContent = lang.editRealisasiOnlyDesc;
+            } else if (index === 1 && lang.editAllData) {
+                const strong = btn.querySelector('strong') || btn;
+                const small = btn.querySelector('small') || btn.querySelector('p');
+                strong.textContent = lang.editAllData;
+                if (small && lang.editAllDataDesc) small.textContent = lang.editAllDataDesc;
+            }
+        });
+    }
+    
+    // Modal Reset Confirmation
+    const resetModal = document.getElementById('reset-confirmation-modal');
+    if (resetModal) {
+        const modalTitle = resetModal.querySelector('.reset-modal-title');
+        if (modalTitle && lang.resetConfirmation) modalTitle.textContent = lang.resetConfirmation;
+        
+        const modalText = resetModal.querySelector('.reset-modal-text');
+        if (modalText && lang.resetConfirmText) modalText.textContent = lang.resetConfirmText;
+        
+        const cancelBtn = resetModal.querySelector('.reset-modal-btn-cancel');
+        if (cancelBtn) {
+            cancelBtn.innerHTML = `<i class="fas fa-times"></i> ${lang.cancel || 'Cancel'}`;
+        }
+        
+        const confirmBtn = resetModal.querySelector('.reset-modal-btn-confirm');
+        if (confirmBtn && lang.confirmReset) {
+            confirmBtn.innerHTML = `<i class="fas fa-check"></i> ${lang.confirmReset}`;
+        }
+    }
+}
+
+function translateAllUsersTable(lang) {
+    const allUsersTable = document.querySelector('.all-users-table');
+    if (!allUsersTable) return;
+    
+    // Judul
+    const title = allUsersTable.querySelector('h3');
+    if (title && lang.allUsersData) {
+        const userCount = allUsersTable.querySelector('tbody')?.children.length || 0;
+        title.innerHTML = `<i class="fas fa-users"></i> ${lang.allUsersData} (${userCount} users)`;
+    }
+    
+    // Header
+    const headers = allUsersTable.querySelectorAll('thead th');
+    const headerTexts = [
+        lang.no, lang.user, lang.email, lang.totalKPI, 
+        lang.ideas, lang.research, lang.chatResponse, 
+        lang.problemSolving, lang.lastUpdated, lang.action
+    ];
+    
+    headers.forEach((header, index) => {
+        if (headerTexts[index]) {
+            header.textContent = headerTexts[index];
+        }
+    });
+    
+    // Tombol view details
+    const viewButtons = allUsersTable.querySelectorAll('.btn-view-user');
+    viewButtons.forEach(btn => {
+        if (lang.viewDetails) {
+            btn.innerHTML = `<i class="fas fa-eye"></i> ${lang.viewDetails}`;
+        }
+    });
+}
+
+function translateNotifications(lang) {
+    // Override fungsi showNotification untuk menerjemahkan pesan
+    if (typeof window.showNotification === 'function') {
+        const originalShowNotification = window.showNotification;
+        
+        window.showNotification = function(message, type = 'info') {
+            let translatedMessage = message;
+            
+            // Mapping pesan notifikasi
+            const notificationMap = {
+                'Mode edit diaktifkan': lang.editModeEnabled,
+                'Perubahan KPI berhasil disimpan': lang.changesSaved,
+                'Data KPI berhasil direset': lang.dataReset,
+                'Memuat data user': lang.loadingUserData,
+                'Menampilkan data': lang.showingUsersData,
+                'Hanya Super Admin yang dapat mengedit data': lang.adminOnly,
+                'Hanya bisa mereset data sendiri': lang.resetOwnDataOnly,
+                'Error memuat data KPI': lang.errorLoadingKPI,
+                'Perubahan berhasil disimpan ke database': lang.saveSuccess,
+                'Gagal menyimpan perubahan ke database': lang.saveFailed,
+                'Tidak ada perubahan yang disimpan': lang.noChanges,
+                'Edit dibatalkan': lang.editCancelled,
+                'Mode edit realisasi diaktifkan': lang.editRealisasiEnabled,
+                'Mode edit penuh diaktifkan': lang.fullEditEnabled,
+                'Reset data dibatalkan': lang.resetCancelled
+            };
+            
+            // Cari terjemahan yang cocok
+            for (const [id, translation] of Object.entries(notificationMap)) {
+                if (message.includes(id)) {
+                    translatedMessage = translation;
+                    break;
+                }
+            }
+            
+            // Handle pesan dengan placeholder
+            if (message.includes('{count}')) {
+                const count = message.match(/\d+/);
+                if (count) {
+                    translatedMessage = translatedMessage.replace('{count}', count[0]);
+                }
+            }
+            
+            originalShowNotification(translatedMessage, type);
+        };
+    }
+}
+
+// ========== FUNGSI UTAMA & EVENT HANDLING ==========
+
+function initializeKpiLanguage() {
+    const savedLanguage = localStorage.getItem('language') || 'id';
+    console.log("🌍 Initializing KPI language:", savedLanguage);
+    
+    // Terapkan terjemahan pertama kali
+    applyKpiTranslations(savedLanguage);
+    
+    // Setup observer untuk elemen yang dibuat dinamis
+    setupDynamicElementObserver();
+    
+    // Setup event listener untuk perubahan bahasa
+    setupLanguageChangeListener();
+}
+
+function setupDynamicElementObserver() {
+    // Observer untuk menangani elemen yang dibuat dinamis
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'childList') {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeType === 1) { // Element node
+                        // Jika modal edit options ditambahkan
+                        if (node.id === 'edit-options-modal' || node.querySelector?.('#edit-options-modal')) {
+                            const lang = kpiTranslations[localStorage.getItem('language') || 'id'];
+                            translateModals(lang);
+                        }
+                        
+                        // Jika tabel semua user ditambahkan
+                        if (node.classList?.contains('all-users-table') || node.querySelector?.('.all-users-table')) {
+                            const lang = kpiTranslations[localStorage.getItem('language') || 'id'];
+                            translateAllUsersTable(lang);
+                        }
+                    }
+                });
+            }
+        });
+    });
+    
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+}
+
+function setupLanguageChangeListener() {
+    // Event listener untuk perubahan bahasa
+    window.addEventListener('languageChanged', function(event) {
+        console.log("🔄 Language changed to:", event.detail.language);
+        applyKpiTranslations(event.detail.language);
+    });
+    
+    // Juga dengar event storage untuk perubahan localStorage
+    window.addEventListener('storage', function(event) {
+        if (event.key === 'language') {
+            applyKpiTranslations(event.newValue);
+        }
+    });
+}
+
+// ========== INISIALISASI ==========
+
+// Panggil saat DOM ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeKpiLanguage);
+} else {
+    initializeKpiLanguage();
+}
+
+// Juga panggil saat halaman fully loaded
+window.addEventListener('load', initializeKpiLanguage);
+
+// Force re-apply translations setelah timeout (fallback)
+setTimeout(initializeKpiLanguage, 2000);
+
+// Export untuk penggunaan global
+window.KpiTranslations = {
+    apply: applyKpiTranslations,
+    initialize: initializeKpiLanguage
+};
+
+console.log("✅ Enhanced KPI Translation System loaded");
 </script>
 </body>
 
 </html>
+

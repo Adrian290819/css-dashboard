@@ -2044,6 +2044,617 @@ auth.onAuthStateChanged(async user => {
         }, 2000);
     }
 });
+// ========== TRANSLATIONS FOR IDEAS & SUGGESTIONS ==========
+const ideasTranslations = {
+    id: {
+        // Header
+        "ideasTitle": "Ide & Saran",
+        "searchPlaceholder": "Cari ide atau saran...",
+        
+        // Form Section
+        "formTitle": "Formulir Ide & Saran",
+        "ideaTitle": "Judul Ide/Saran",
+        "ideaTitlePlaceholder": "Masukkan judul ide atau saran",
+        "category": "Kategori",
+        "selectCategory": "Pilih kategori",
+        "description": "Deskripsi Ide/Saran",
+        "descriptionPlaceholder": "Jelaskan ide atau saran Anda secara detail...",
+        "uploadPhotos": "Unggah Foto (Opsional)",
+        "uploadClick": "Klik untuk mengunggah foto",
+        "uploadRequirements": "Format yang didukung: JPG, PNG, GIF. Maksimal 4 gambar.",
+        "previewImages": "Pratinjau gambar:",
+        "submitIdea": "Kirim Ide",
+        
+        // Categories
+        "uiUx": "UI/UX",
+        "panelFeature": "Fitur Panel",
+        "membersiteFeature": "Fitur Membersite",
+        "panelUpdate": "Update Fitur Panel",
+        "others": "Lainnya",
+        
+        // List Section
+        "listTitle": "Daftar Ide & Saran",
+        "refresh": "Refresh",
+        "noIdeas": "Tidak ada ide atau saran",
+        "noIdeasMessage": "Jadilah yang pertama untuk berbagi ide atau saran!",
+        
+        // Status
+        "pending": "Menunggu Review",
+        "approved": "Disetujui",
+        "rejected": "Ditolak",
+        
+        // Card Labels
+        "brand": "Brand",
+        "releaseDate": "Tanggal Rilis",
+        "author": "Penulis",
+        "customerService": "Customer Service Support",
+        "superAdminView": "Super Admin View",
+        
+        // Actions
+        "edit": "Edit",
+        "delete": "Hapus",
+        "viewDetails": "Lihat Detail",
+        "readOnly": "Read Only",
+        "close": "Tutup",
+        "cancel": "Batal",
+        "saveChanges": "Simpan Perubahan",
+        
+        // Modal Titles
+        "detailTitle": "Detail Ide & Saran",
+        "editTitle": "Edit Ide & Saran",
+        
+        // Notifications
+        "ideaSubmitted": "Ide Anda berhasil dikirim!",
+        "ideaUpdated": "Ide berhasil diperbarui!",
+        "ideaDeleted": "Ide berhasil dihapus!",
+        "errorLoading": "Gagal memuat data ide & saran",
+        "allFieldsRequired": "Harap isi semua field yang wajib diisi",
+        "confirmDelete": "Apakah Anda yakin ingin menghapus ide ini?",
+        "noPermissionEdit": "Anda tidak memiliki izin untuk mengedit ide ini",
+        "noPermissionDelete": "Anda tidak memiliki izin untuk menghapus ide ini",
+        "editMode": "Anda sedang dalam mode edit. Perbarui data dan klik \"Kirim Ide\" untuk menyimpan perubahan.",
+        
+        // User Roles
+        "superAdmin": "Super Administrator",
+        "customerSupport": "Customer Service Support"
+    },
+    
+    en: {
+        // Header
+        "ideasTitle": "Ideas & Suggestions",
+        "searchPlaceholder": "Search ideas or suggestions...",
+        
+        // Form Section
+        "formTitle": "Ideas & Suggestions Form",
+        "ideaTitle": "Idea/Suggestion Title",
+        "ideaTitlePlaceholder": "Enter idea or suggestion title",
+        "category": "Category",
+        "selectCategory": "Select category",
+        "description": "Idea/Suggestion Description",
+        "descriptionPlaceholder": "Describe your idea or suggestion in detail...",
+        "uploadPhotos": "Upload Photos (Optional)",
+        "uploadClick": "Click to upload photos",
+        "uploadRequirements": "Supported formats: JPG, PNG, GIF. Maximum 4 images.",
+        "previewImages": "Preview images:",
+        "submitIdea": "Submit Idea",
+        
+        // Categories
+        "uiUx": "UI/UX",
+        "panelFeature": "Panel Feature",
+        "membersiteFeature": "Membersite Feature",
+        "panelUpdate": "Update Panel Feature",
+        "others": "Others",
+        
+        // List Section
+        "listTitle": "Ideas & Suggestions List",
+        "refresh": "Refresh",
+        "noIdeas": "No ideas or suggestions",
+        "noIdeasMessage": "Be the first to share an idea or suggestion!",
+        
+        // Status
+        "pending": "Pending Review",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        
+        // Card Labels
+        "brand": "Brand",
+        "releaseDate": "Release Date",
+        "author": "Author",
+        "customerService": "Customer Service Support",
+        "superAdminView": "Super Admin View",
+        
+        // Actions
+        "edit": "Edit",
+        "delete": "Delete",
+        "viewDetails": "View Details",
+        "readOnly": "Read Only",
+        "close": "Close",
+        "cancel": "Cancel",
+        "saveChanges": "Save Changes",
+        
+        // Modal Titles
+        "detailTitle": "Idea & Suggestion Details",
+        "editTitle": "Edit Idea & Suggestion",
+        
+        // Notifications
+        "ideaSubmitted": "Your idea has been submitted successfully!",
+        "ideaUpdated": "Idea updated successfully!",
+        "ideaDeleted": "Idea deleted successfully!",
+        "errorLoading": "Failed to load ideas & suggestions data",
+        "allFieldsRequired": "Please fill in all required fields",
+        "confirmDelete": "Are you sure you want to delete this idea?",
+        "noPermissionEdit": "You don't have permission to edit this idea",
+        "noPermissionDelete": "You don't have permission to delete this idea",
+        "editMode": "You are in edit mode. Update the data and click \"Submit Idea\" to save changes.",
+        
+        // User Roles
+        "superAdmin": "Super Administrator",
+        "customerSupport": "Customer Service Support"
+    },
+    
+    ja: {
+        // Header
+        "ideasTitle": "アイデアと提案",
+        "searchPlaceholder": "アイデアや提案を検索...",
+        
+        // Form Section
+        "formTitle": "アイデアと提案フォーム",
+        "ideaTitle": "アイデア/提案タイトル",
+        "ideaTitlePlaceholder": "アイデアや提案のタイトルを入力",
+        "category": "カテゴリー",
+        "selectCategory": "カテゴリーを選択",
+        "description": "アイデア/提案の説明",
+        "descriptionPlaceholder": "アイデアや提案を詳細に説明してください...",
+        "uploadPhotos": "写真をアップロード（オプション）",
+        "uploadClick": "クリックして写真をアップロード",
+        "uploadRequirements": "対応形式: JPG, PNG, GIF. 最大4画像.",
+        "previewImages": "画像プレビュー:",
+        "submitIdea": "アイデアを送信",
+        
+        // Categories
+        "uiUx": "UI/UX",
+        "panelFeature": "パネル機能",
+        "membersiteFeature": "メンバーサイト機能",
+        "panelUpdate": "パネル機能更新",
+        "others": "その他",
+        
+        // List Section
+        "listTitle": "アイデアと提案リスト",
+        "refresh": "更新",
+        "noIdeas": "アイデアや提案がありません",
+        "noIdeasMessage": "最初のアイデアや提案を共有しましょう！",
+        
+        // Status
+        "pending": "レビュー待ち",
+        "approved": "承認済み",
+        "rejected": "拒否",
+        
+        // Card Labels
+        "brand": "ブランド",
+        "releaseDate": "リリース日",
+        "author": "著者",
+        "customerService": "カスタマーサービスサポート",
+        "superAdminView": "スーパー管理者ビュー",
+        
+        // Actions
+        "edit": "編集",
+        "delete": "削除",
+        "viewDetails": "詳細を表示",
+        "readOnly": "読み取り専用",
+        "close": "閉じる",
+        "cancel": "キャンセル",
+        "saveChanges": "変更を保存",
+        
+        // Modal Titles
+        "detailTitle": "アイデアと提案の詳細",
+        "editTitle": "アイデアと提案を編集",
+        
+        // Notifications
+        "ideaSubmitted": "アイデアが正常に送信されました！",
+        "ideaUpdated": "アイデアが正常に更新されました！",
+        "ideaDeleted": "アイデアが正常に削除されました！",
+        "errorLoading": "アイデアと提案データの読み込みに失敗しました",
+        "allFieldsRequired": "すべての必須フィールドに入力してください",
+        "confirmDelete": "このアイデアを削除してもよろしいですか？",
+        "noPermissionEdit": "このアイデアを編集する権限がありません",
+        "noPermissionDelete": "このアイデアを削除する権限がありません",
+        "editMode": "編集モードです。データを更新して「アイデアを送信」をクリックして変更を保存してください。",
+        
+        // User Roles
+        "superAdmin": "スーパー管理者",
+        "customerSupport": "カスタマーサービスサポート"
+    },
+    
+    zh: {
+        // Header
+        "ideasTitle": "想法与建议",
+        "searchPlaceholder": "搜索想法或建议...",
+        
+        // Form Section
+        "formTitle": "想法与建议表单",
+        "ideaTitle": "想法/建议标题",
+        "ideaTitlePlaceholder": "输入想法或建议标题",
+        "category": "类别",
+        "selectCategory": "选择类别",
+        "description": "想法/建议描述",
+        "descriptionPlaceholder": "详细描述您的想法或建议...",
+        "uploadPhotos": "上传照片（可选）",
+        "uploadClick": "点击上传照片",
+        "uploadRequirements": "支持格式: JPG, PNG, GIF. 最多4张图片.",
+        "previewImages": "图片预览:",
+        "submitIdea": "提交想法",
+        
+        // Categories
+        "uiUx": "UI/UX",
+        "panelFeature": "面板功能",
+        "membersiteFeature": "会员网站功能",
+        "panelUpdate": "更新面板功能",
+        "others": "其他",
+        
+        // List Section
+        "listTitle": "想法与建议列表",
+        "refresh": "刷新",
+        "noIdeas": "没有想法或建议",
+        "noIdeasMessage": "成为第一个分享想法或建议的人！",
+        
+        // Status
+        "pending": "等待审核",
+        "approved": "已批准",
+        "rejected": "已拒绝",
+        
+        // Card Labels
+        "brand": "品牌",
+        "releaseDate": "发布日期",
+        "author": "作者",
+        "customerService": "客户服务支持",
+        "superAdminView": "超级管理员视图",
+        
+        // Actions
+        "edit": "编辑",
+        "delete": "删除",
+        "viewDetails": "查看详情",
+        "readOnly": "只读",
+        "close": "关闭",
+        "cancel": "取消",
+        "saveChanges": "保存更改",
+        
+        // Modal Titles
+        "detailTitle": "想法与建议详情",
+        "editTitle": "编辑想法与建议",
+        
+        // Notifications
+        "ideaSubmitted": "您的想法已成功提交！",
+        "ideaUpdated": "想法更新成功！",
+        "ideaDeleted": "想法删除成功！",
+        "errorLoading": "加载想法与建议数据失败",
+        "allFieldsRequired": "请填写所有必填字段",
+        "confirmDelete": "您确定要删除此想法吗？",
+        "noPermissionEdit": "您没有权限编辑此想法",
+        "noPermissionDelete": "您没有权限删除此想法",
+        "editMode": "您处于编辑模式。更新数据并点击\"提交想法\"以保存更改。",
+        
+        // User Roles
+        "superAdmin": "超级管理员",
+        "customerSupport": "客户服务支持"
+    }
+};
+
+// ========== TRANSLATION FUNCTIONS ==========
+
+// Fungsi untuk menerapkan terjemahan ke halaman ideas
+function applyIdeasTranslations(language) {
+    const lang = ideasTranslations[language] || ideasTranslations['id'];
+    
+    if (!lang) return;
+
+    console.log("Applying ideas translations for:", language);
+
+    // Terjemahkan elemen utama
+    const elements = {
+        'ideasTitle': '.header h1',
+        'searchPlaceholder': '#searchIdeas',
+        'formTitle': '.section-header:first-child .section-title',
+        'listTitle': '.section-header:last-child .section-title',
+        'noIdeas': '#emptyState h3',
+        'noIdeasMessage': '#emptyState p'
+    };
+
+    Object.keys(elements).forEach(key => {
+        const element = document.querySelector(elements[key]);
+        if (element && lang[key]) {
+            if (key === 'searchPlaceholder') {
+                element.placeholder = lang[key];
+            } else {
+                // Simpan ikon jika ada
+                const iconMatch = element.innerHTML.match(/(<i[^>]*><\/i>)/);
+                if (iconMatch) {
+                    element.innerHTML = iconMatch[0] + ' ' + lang[key];
+                } else {
+                    element.textContent = lang[key];
+                }
+            }
+        }
+    });
+
+    // Update form labels dan placeholders
+    updateIdeasFormTranslations(language);
+    
+    // Update tombol
+    updateIdeasButtonsTranslations(language);
+    
+    // Update modal
+    updateIdeasModalTranslations(language);
+    
+    // Update status badges
+    updateIdeasStatusTranslations(language);
+    
+    // Update user role display
+    updateIdeasUserRoleTranslations(language);
+}
+
+// Update terjemahan form
+function updateIdeasFormTranslations(language) {
+    const lang = ideasTranslations[language] || ideasTranslations['id'];
+    
+    // Form labels
+    const formLabels = {
+        'ideaTitle': 'label[for="ideaTitle"]',
+        'category': 'label[for="ideaCategory"]',
+        'description': 'label[for="ideaDescription"]',
+        'uploadPhotos': '.file-upload-container .form-label'
+    };
+    
+    Object.keys(formLabels).forEach(key => {
+        const element = document.querySelector(formLabels[key]);
+        if (element && lang[key]) {
+            element.textContent = lang[key];
+        }
+    });
+    
+    // Placeholders
+    const ideaTitleInput = document.getElementById('ideaTitle');
+    const ideaDescription = document.getElementById('ideaDescription');
+    
+    if (ideaTitleInput && lang.ideaTitlePlaceholder) {
+        ideaTitleInput.placeholder = lang.ideaTitlePlaceholder;
+    }
+    
+    if (ideaDescription && lang.descriptionPlaceholder) {
+        ideaDescription.placeholder = lang.descriptionPlaceholder;
+    }
+    
+    // Category options
+    const categorySelect = document.getElementById('ideaCategory');
+    if (categorySelect) {
+        if (lang.selectCategory) categorySelect.options[0].text = lang.selectCategory;
+        if (lang.uiUx) categorySelect.options[1].text = lang.uiUx;
+        if (lang.panelFeature) categorySelect.options[2].text = lang.panelFeature;
+        if (lang.membersiteFeature) categorySelect.options[3].text = lang.membersiteFeature;
+        if (lang.panelUpdate) categorySelect.options[4].text = lang.panelUpdate;
+        if (lang.others) categorySelect.options[5].text = lang.others;
+    }
+    
+    // File upload section
+    const fileUploadLabel = document.querySelector('.file-upload-label');
+    if (fileUploadLabel) {
+        const header = fileUploadLabel.querySelector('h4');
+        const paragraph = fileUploadLabel.querySelector('p');
+        
+        if (header && lang.uploadClick) {
+            header.textContent = lang.uploadClick;
+        }
+        if (paragraph && lang.uploadRequirements) {
+            paragraph.textContent = lang.uploadRequirements;
+        }
+    }
+    
+    // Preview text
+    const previewText = document.querySelector('.file-preview-container p');
+    if (previewText && lang.previewImages) {
+        previewText.textContent = lang.previewImages;
+    }
+}
+
+// Update terjemahan tombol
+function updateIdeasButtonsTranslations(language) {
+    const lang = ideasTranslations[language] || ideasTranslations['id'];
+    
+    // Submit button
+    const submitButton = document.getElementById('submitButton');
+    if (submitButton && lang.submitIdea) {
+        submitButton.innerHTML = `<i class="fas fa-paper-plane"></i> ${lang.submitIdea}`;
+    }
+    
+    // Refresh button
+    const refreshButton = document.getElementById('refreshIdeas');
+    if (refreshButton && lang.refresh) {
+        refreshButton.innerHTML = `<i class="fas fa-sync-alt"></i> ${lang.refresh}`;
+    }
+    
+    // Modal buttons
+    const closeDetailButton = document.getElementById('closeDetail');
+    const cancelEditButton = document.getElementById('cancelEdit');
+    const saveEditButton = document.getElementById('saveEdit');
+    
+    if (closeDetailButton && lang.close) {
+        closeDetailButton.innerHTML = `<i class="fas fa-times"></i> ${lang.close}`;
+    }
+    if (cancelEditButton && lang.cancel) {
+        cancelEditButton.innerHTML = `<i class="fas fa-times"></i> ${lang.cancel}`;
+    }
+    if (saveEditButton && lang.saveChanges) {
+        saveEditButton.innerHTML = `<i class="fas fa-save"></i> ${lang.saveChanges}`;
+    }
+}
+
+// Update terjemahan modal
+function updateIdeasModalTranslations(language) {
+    const lang = ideasTranslations[language] || ideasTranslations['id'];
+    
+    // Detail modal title
+    const detailModalTitle = document.querySelector('#detailModal .modal-title');
+    if (detailModalTitle && lang.detailTitle) {
+        detailModalTitle.innerHTML = `<i class="fas fa-eye"></i> ${lang.detailTitle}`;
+    }
+    
+    // Edit modal title
+    const editModalTitle = document.querySelector('#editModal .modal-title');
+    if (editModalTitle && lang.editTitle) {
+        editModalTitle.innerHTML = `<i class="fas fa-edit"></i> ${lang.editTitle}`;
+    }
+    
+    // Edit form labels
+    const editFormLabels = {
+        'ideaTitle': 'label[for="editIdeaTitle"]',
+        'category': 'label[for="editIdeaCategory"]',
+        'description': 'label[for="editIdeaDescription"]'
+    };
+    
+    Object.keys(editFormLabels).forEach(key => {
+        const element = document.querySelector(editFormLabels[key]);
+        if (element && lang[key]) {
+            element.textContent = lang[key];
+        }
+    });
+}
+
+// Update terjemahan status
+function updateIdeasStatusTranslations(language) {
+    const lang = ideasTranslations[language] || ideasTranslations['id'];
+    
+    // Update status badges di cards yang sudah ada
+    document.querySelectorAll('.idea-status').forEach(statusElement => {
+        const statusClass = statusElement.className;
+        let statusText = statusElement.textContent.trim();
+        
+        if (statusClass.includes('status-pending') && lang.pending) {
+            statusElement.innerHTML = `<i class="fas fa-circle"></i> ${lang.pending}`;
+        } else if (statusClass.includes('status-approved') && lang.approved) {
+            statusElement.innerHTML = `<i class="fas fa-circle"></i> ${lang.approved}`;
+        } else if (statusClass.includes('status-rejected') && lang.rejected) {
+            statusElement.innerHTML = `<i class="fas fa-circle"></i> ${lang.rejected}`;
+        }
+    });
+}
+
+// Update terjemahan peran pengguna
+function updateIdeasUserRoleTranslations(language) {
+    const lang = ideasTranslations[language] || ideasTranslations['id'];
+    
+    // Update role display di user profile
+    const userRoleElement = document.querySelector('.user-info p');
+    if (userRoleElement) {
+        const currentText = userRoleElement.textContent;
+        if (currentText.includes('Customer Service Support') && lang.customerSupport) {
+            userRoleElement.textContent = lang.customerSupport;
+        } else if (currentText.includes('Super Administrator') && lang.superAdmin) {
+            userRoleElement.textContent = lang.superAdmin;
+        }
+    }
+    
+    // Update role di cards
+    document.querySelectorAll('.author-role').forEach(roleElement => {
+        const currentText = roleElement.textContent;
+        if (currentText.includes('Customer Service Support') && lang.customerSupport) {
+            roleElement.textContent = lang.customerSupport;
+        } else if (currentText.includes('Super Admin View') && lang.superAdminView) {
+            roleElement.textContent = lang.superAdminView;
+        }
+    });
+    
+    // Update action buttons text
+    document.querySelectorAll('.btn-icon.edit').forEach(btn => {
+        const icon = btn.querySelector('i');
+        if (icon && lang.edit) {
+            btn.title = lang.edit;
+        }
+    });
+    
+    document.querySelectorAll('.btn-icon.delete').forEach(btn => {
+        const icon = btn.querySelector('i');
+        if (icon && lang.delete) {
+            btn.title = lang.delete;
+        }
+    });
+    
+    // Update read-only text
+    document.querySelectorAll('.idea-actions span').forEach(span => {
+        if (span.textContent.includes('Read Only') && lang.readOnly) {
+            span.textContent = lang.readOnly;
+        }
+    });
+}
+
+// ========== NOTIFICATION TRANSLATIONS ==========
+
+// Fungsi untuk update notifikasi
+function updateIdeasNotificationMessages(language) {
+    const lang = ideasTranslations[language] || ideasTranslations['id'];
+    
+    // Simpan referensi ke fungsi showNotification asli
+    const originalShowNotification = window.showNotification;
+    
+    // Override fungsi showNotification untuk menerjemahkan pesan tertentu
+    window.showNotification = function(message, type = 'info') {
+        let translatedMessage = message;
+        
+        // Terjemahkan pesan-pesan umum
+        if (message.includes('Ide Anda berhasil dikirim') || message.includes('Your idea has been submitted')) {
+            translatedMessage = lang.ideaSubmitted;
+        } else if (message.includes('Ide berhasil diperbarui') || message.includes('Idea updated successfully')) {
+            translatedMessage = lang.ideaUpdated;
+        } else if (message.includes('Ide berhasil dihapus') || message.includes('Idea deleted successfully')) {
+            translatedMessage = lang.ideaDeleted;
+        } else if (message.includes('Gagal memuat data ide') || message.includes('Failed to load ideas')) {
+            translatedMessage = lang.errorLoading;
+        } else if (message.includes('Harap isi semua field') || message.includes('Please fill in all required fields')) {
+            translatedMessage = lang.allFieldsRequired;
+        } else if (message.includes('Apakah Anda yakin ingin menghapus') || message.includes('Are you sure you want to delete')) {
+            translatedMessage = lang.confirmDelete;
+        } else if (message.includes('tidak memiliki izin untuk mengedit') || message.includes("don't have permission to edit")) {
+            translatedMessage = lang.noPermissionEdit;
+        } else if (message.includes('tidak memiliki izin untuk menghapus') || message.includes("don't have permission to delete")) {
+            translatedMessage = lang.noPermissionDelete;
+        } else if (message.includes('sedang dalam mode edit') || message.includes('in edit mode')) {
+            translatedMessage = lang.editMode;
+        }
+        
+        // Panggil fungsi asli dengan pesan yang sudah diterjemahkan
+        originalShowNotification(translatedMessage, type);
+    };
+}
+
+// ========== LANGUAGE INITIALIZATION ==========
+
+// Fungsi inisialisasi bahasa untuk ideas
+function initializeIdeasLanguage() {
+    const savedLanguage = localStorage.getItem('language') || 'id';
+    console.log("Initializing ideas with language:", savedLanguage);
+    
+    // Terapkan terjemahan
+    applyIdeasTranslations(savedLanguage);
+    updateIdeasNotificationMessages(savedLanguage);
+    
+    // Setup listener untuk perubahan bahasa
+    window.addEventListener('languageChanged', function(event) {
+        console.log("Language changed in ideas to:", event.detail.language);
+        applyIdeasTranslations(event.detail.language);
+        updateIdeasNotificationMessages(event.detail.language);
+    });
+}
+
+// Panggil inisialisasi saat DOM ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Tunggu sebentar untuk memastikan semua element sudah terload
+    setTimeout(() => {
+        initializeIdeasLanguage();
+    }, 100);
+});
+
+// Juga panggil saat halaman sepenuhnya loaded
+window.addEventListener('load', function() {
+    initializeIdeasLanguage();
+});
 </script>
 </body>
 </html>

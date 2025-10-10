@@ -2840,6 +2840,1000 @@ if (!document.getElementById('game-detail-styles')) {
     styleElement.textContent = gameDetailStyles;
     document.head.appendChild(styleElement);
 }
+// ========== GAMES TRANSLATIONS ==========
+const gamesTranslations = {
+    id: {
+        // Header
+        "gamesTitle": "Game Baru",
+        "searchPlaceholder": "Cari game...",
+        
+        // Stats Cards
+        "totalGames": "Total Game",
+        "totalGamesDesc": "Total Games",
+        "upcomingGames": "Game Mendatang",
+        "upcomingGamesDesc": "Game yang dijadwalkan",
+        "popularGames": "Game Populer",
+        "popularGamesDesc": "Paling banyak dimainkan",
+        "gameCategories": "Kategori Game",
+        "gameCategoriesDesc": "Genre tersedia",
+        
+        // Filter Section
+        "filterGames": "Filter Game",
+        "resetFilters": "Reset Filter",
+        "advancedFilters": "Filter Lanjutan",
+        "statusFilter": "Status",
+        "categoryFilter": "Kategori",
+        "providerFilter": "Provider",
+        "sortBy": "Urutkan Berdasarkan",
+        "order": "Urutan",
+        "allStatus": "Semua Status",
+        "allCategories": "Semua Kategori",
+        "allProviders": "Semua Provider",
+        "name": "Nama",
+        "releaseDate": "Tanggal Rilis",
+        "rating": "Rating",
+        "ascending": "Naik",
+        "descending": "Turun",
+        
+        // Advanced Filters
+        "releaseDateRange": "Rentang Tanggal Rilis",
+        "from": "Dari",
+        "to": "Hingga",
+        
+        // Games Section
+        "gameLibrary": "Pustaka Game",
+        "addGame": "Tambah Game",
+        "refresh": "Refresh",
+        "addNewGame": "Tambah Game Baru",
+        
+        // Empty State
+        "noGamesFound": "Tidak ada game ditemukan",
+        "noGamesMessage": "Tidak ada game yang sesuai dengan kriteria Anda. Coba sesuaikan filter atau tambah game baru.",
+        "addFirstGame": "Tambah Game Pertama Anda",
+        
+        // Modal
+        "addNewGame": "Tambah Game Baru",
+        "editGame": "Edit Game",
+        "gameTitle": "Judul Game",
+        "gameCategory": "Kategori",
+        "gameProvider": "Provider",
+        "gameReleaseDate": "Tanggal Rilis",
+        "gameStatus": "Status",
+        "gameDescription": "Deskripsi Game",
+        "gameImage": "Gambar Game",
+        "cancel": "Batal",
+        "saveGame": "Simpan Game",
+        "updateGame": "Perbarui Game",
+        
+        // Status Options
+        "active": "Aktif",
+        "released": "Dirilis",
+        "upcoming": "Mendatang",
+        "disabled": "Nonaktif",
+        
+        // Category Options
+        "slot": "Slot",
+        "casino": "Kasino",
+        "sport": "Olahraga",
+        "crashGame": "Game Crash",
+        "fishing": "Fishing",
+        "other": "Lainnya",
+        
+        // Game Details Modal
+        "gameDetails": "Detail Game",
+        "viewFullSize": "Lihat Ukuran Penuh",
+        "download": "Unduh",
+        "editGame": "Edit Game",
+        "additionalInformation": "Informasi Tambahan",
+        "created": "Dibuat",
+        "lastUpdated": "Terakhir Diperbarui",
+        "platforms": "Platform",
+        
+        // Actions
+        "viewDetails": "Lihat Detail",
+        "edit": "Edit",
+        "delete": "Hapus",
+        "close": "Tutup",
+        
+        // Notifications
+        "gameAdded": "Game berhasil ditambahkan!",
+        "gameUpdated": "Game berhasil diperbarui!",
+        "gameDeleted": "Game berhasil dihapus!",
+        "errorLoading": "Error memuat data game",
+        "confirmDelete": "Apakah Anda yakin ingin menghapus game ini?",
+        "allFieldsRequired": "Semua field wajib diisi!",
+        "gamesRefreshed": "Daftar game diperbarui",
+        
+        // Image Upload
+        "clickToUpload": "Klik untuk mengunggah atau seret dan lepas",
+        "imageRequirements": "JPG, PNG, GIF, WebP, SVG (semua format gambar didukung)",
+        "removeImage": "Hapus Gambar",
+        
+        // Fullscreen Image
+        "clickOutsideToClose": "Klik di luar gambar atau tekan ESC untuk menutup",
+        "imageDownloadStarted": "Unduhan gambar game dimulai!"
+    },
+    
+    en: {
+        // Header
+        "gamesTitle": "New Games",
+        "searchPlaceholder": "Search games...",
+        
+        // Stats Cards
+        "totalGames": "Total Games",
+        "totalGamesDesc": "Total Games",
+        "upcomingGames": "Upcoming Games",
+        "upcomingGamesDesc": "Games scheduled",
+        "popularGames": "Popular Games",
+        "popularGamesDesc": "Most played",
+        "gameCategories": "Game Categories",
+        "gameCategoriesDesc": "Genres available",
+        
+        // Filter Section
+        "filterGames": "Filter Games",
+        "resetFilters": "Reset Filters",
+        "advancedFilters": "Advanced Filters",
+        "statusFilter": "Status",
+        "categoryFilter": "Category",
+        "providerFilter": "Provider",
+        "sortBy": "Sort By",
+        "order": "Order",
+        "allStatus": "All Status",
+        "allCategories": "All Categories",
+        "allProviders": "All Providers",
+        "name": "Name",
+        "releaseDate": "Release Date",
+        "rating": "Rating",
+        "ascending": "Ascending",
+        "descending": "Descending",
+        
+        // Advanced Filters
+        "releaseDateRange": "Release Date Range",
+        "from": "From",
+        "to": "To",
+        
+        // Games Section
+        "gameLibrary": "Game Library",
+        "addGame": "Add Game",
+        "refresh": "Refresh",
+        "addNewGame": "Add New Game",
+        
+        // Empty State
+        "noGamesFound": "No Games Found",
+        "noGamesMessage": "There are no games matching your criteria. Try adjusting your filters or add a new game.",
+        "addFirstGame": "Add Your First Game",
+        
+        // Modal
+        "addNewGame": "Add New Game",
+        "editGame": "Edit Game",
+        "gameTitle": "Game Title",
+        "gameCategory": "Category",
+        "gameProvider": "Provider",
+        "gameReleaseDate": "Release Date",
+        "gameStatus": "Status",
+        "gameDescription": "Game Description",
+        "gameImage": "Game Image",
+        "cancel": "Cancel",
+        "saveGame": "Save Game",
+        "updateGame": "Update Game",
+        
+        // Status Options
+        "active": "Active",
+        "released": "Released",
+        "upcoming": "Upcoming",
+        "disabled": "Disabled",
+        
+        // Category Options
+        "slot": "Slot",
+        "casino": "Casino",
+        "sport": "Sport",
+        "crashGame": "Crash Game",
+        "fishing": "Fishing",
+        "other": "Other",
+        
+        // Game Details Modal
+        "gameDetails": "Game Details",
+        "viewFullSize": "View Full Size",
+        "download": "Download",
+        "editGame": "Edit Game",
+        "additionalInformation": "Additional Information",
+        "created": "Created",
+        "lastUpdated": "Last Updated",
+        "platforms": "Platforms",
+        
+        // Actions
+        "viewDetails": "View Details",
+        "edit": "Edit",
+        "delete": "Delete",
+        "close": "Close",
+        
+        // Notifications
+        "gameAdded": "Game added successfully!",
+        "gameUpdated": "Game updated successfully!",
+        "gameDeleted": "Game deleted successfully!",
+        "errorLoading": "Error loading games data",
+        "confirmDelete": "Are you sure you want to delete this game?",
+        "allFieldsRequired": "All fields are required!",
+        "gamesRefreshed": "Games list refreshed",
+        
+        // Image Upload
+        "clickToUpload": "Click to upload or drag and drop",
+        "imageRequirements": "JPG, PNG, GIF, WebP, SVG (all image formats supported)",
+        "removeImage": "Remove Image",
+        
+        // Fullscreen Image
+        "clickOutsideToClose": "Click outside image or press ESC to close",
+        "imageDownloadStarted": "Game image download started!"
+    },
+    
+    ja: {
+        // Header
+        "gamesTitle": "新規ゲーム",
+        "searchPlaceholder": "ゲームを検索...",
+        
+        // Stats Cards
+        "totalGames": "総ゲーム数",
+        "totalGamesDesc": "総ゲーム数",
+        "upcomingGames": "近日公開ゲーム",
+        "upcomingGamesDesc": "スケジュールされたゲーム",
+        "popularGames": "人気ゲーム",
+        "popularGamesDesc": "最もプレイされた",
+        "gameCategories": "ゲームカテゴリー",
+        "gameCategoriesDesc": "利用可能なジャンル",
+        
+        // Filter Section
+        "filterGames": "ゲームをフィルター",
+        "resetFilters": "フィルターをリセット",
+        "advancedFilters": "詳細フィルター",
+        "statusFilter": "ステータス",
+        "categoryFilter": "カテゴリー",
+        "providerFilter": "プロバイダー",
+        "sortBy": "並び替え",
+        "order": "順序",
+        "allStatus": "すべてのステータス",
+        "allCategories": "すべてのカテゴリー",
+        "allProviders": "すべてのプロバイダー",
+        "name": "名前",
+        "releaseDate": "リリース日",
+        "rating": "評価",
+        "ascending": "昇順",
+        "descending": "降順",
+        
+        // Advanced Filters
+        "releaseDateRange": "リリース日範囲",
+        "from": "から",
+        "to": "まで",
+        
+        // Games Section
+        "gameLibrary": "ゲームライブラリ",
+        "addGame": "ゲームを追加",
+        "refresh": "更新",
+        "addNewGame": "新規ゲームを追加",
+        
+        // Empty State
+        "noGamesFound": "ゲームが見つかりません",
+        "noGamesMessage": "条件に一致するゲームはありません。フィルターを調整するか、新しいゲームを追加してください。",
+        "addFirstGame": "最初のゲームを追加",
+        
+        // Modal
+        "addNewGame": "新規ゲームを追加",
+        "editGame": "ゲームを編集",
+        "gameTitle": "ゲームタイトル",
+        "gameCategory": "カテゴリー",
+        "gameProvider": "プロバイダー",
+        "gameReleaseDate": "リリース日",
+        "gameStatus": "ステータス",
+        "gameDescription": "ゲーム説明",
+        "gameImage": "ゲーム画像",
+        "cancel": "キャンセル",
+        "saveGame": "ゲームを保存",
+        "updateGame": "ゲームを更新",
+        
+        // Status Options
+        "active": "アクティブ",
+        "released": "リリース済み",
+        "upcoming": "近日公開",
+        "disabled": "無効",
+        
+        // Category Options
+        "slot": "スロット",
+        "casino": "カジノ",
+        "sport": "スポーツ",
+        "crashGame": "クラッシュゲーム",
+        "fishing": "フィッシング",
+        "other": "その他",
+        
+        // Game Details Modal
+        "gameDetails": "ゲーム詳細",
+        "viewFullSize": "フルサイズで表示",
+        "download": "ダウンロード",
+        "editGame": "ゲームを編集",
+        "additionalInformation": "追加情報",
+        "created": "作成日",
+        "lastUpdated": "最終更新日",
+        "platforms": "プラットフォーム",
+        
+        // Actions
+        "viewDetails": "詳細を表示",
+        "edit": "編集",
+        "delete": "削除",
+        "close": "閉じる",
+        
+        // Notifications
+        "gameAdded": "ゲームが正常に追加されました！",
+        "gameUpdated": "ゲームが正常に更新されました！",
+        "gameDeleted": "ゲームが正常に削除されました！",
+        "errorLoading": "ゲームデータの読み込みエラー",
+        "confirmDelete": "このゲームを削除してもよろしいですか？",
+        "allFieldsRequired": "すべてのフィールドは必須です！",
+        "gamesRefreshed": "ゲームリストが更新されました",
+        
+        // Image Upload
+        "clickToUpload": "クリックしてアップロードまたはドラッグ＆ドロップ",
+        "imageRequirements": "JPG、PNG、GIF、WebP、SVG（すべての画像形式をサポート）",
+        "removeImage": "画像を削除",
+        
+        // Fullscreen Image
+        "clickOutsideToClose": "画像の外側をクリックするかESCを押して閉じる",
+        "imageDownloadStarted": "ゲーム画像のダウンロードを開始しました！"
+    },
+    
+    zh: {
+        // Header
+        "gamesTitle": "新游戏",
+        "searchPlaceholder": "搜索游戏...",
+        
+        // Stats Cards
+        "totalGames": "总游戏数",
+        "totalGamesDesc": "总游戏数",
+        "upcomingGames": "即将推出",
+        "upcomingGamesDesc": "已安排的游戏",
+        "popularGames": "热门游戏",
+        "popularGamesDesc": "最多游玩",
+        "gameCategories": "游戏类别",
+        "gameCategoriesDesc": "可用类型",
+        
+        // Filter Section
+        "filterGames": "筛选游戏",
+        "resetFilters": "重置筛选",
+        "advancedFilters": "高级筛选",
+        "statusFilter": "状态",
+        "categoryFilter": "类别",
+        "providerFilter": "提供商",
+        "sortBy": "排序方式",
+        "order": "顺序",
+        "allStatus": "所有状态",
+        "allCategories": "所有类别",
+        "allProviders": "所有提供商",
+        "name": "名称",
+        "releaseDate": "发布日期",
+        "rating": "评分",
+        "ascending": "升序",
+        "descending": "降序",
+        
+        // Advanced Filters
+        "releaseDateRange": "发布日期范围",
+        "from": "从",
+        "to": "至",
+        
+        // Games Section
+        "gameLibrary": "游戏库",
+        "addGame": "添加游戏",
+        "refresh": "刷新",
+        "addNewGame": "添加新游戏",
+        
+        // Empty State
+        "noGamesFound": "未找到游戏",
+        "noGamesMessage": "没有符合您条件的游戏。尝试调整筛选条件或添加新游戏。",
+        "addFirstGame": "添加您的第一个游戏",
+        
+        // Modal
+        "addNewGame": "添加新游戏",
+        "editGame": "编辑游戏",
+        "gameTitle": "游戏标题",
+        "gameCategory": "类别",
+        "gameProvider": "提供商",
+        "gameReleaseDate": "发布日期",
+        "gameStatus": "状态",
+        "gameDescription": "游戏描述",
+        "gameImage": "游戏图片",
+        "cancel": "取消",
+        "saveGame": "保存游戏",
+        "updateGame": "更新游戏",
+        
+        // Status Options
+        "active": "活跃",
+        "released": "已发布",
+        "upcoming": "即将推出",
+        "disabled": "禁用",
+        
+        // Category Options
+        "slot": "老虎机",
+        "casino": "赌场",
+        "sport": "体育",
+        "crashGame": "崩溃游戏",
+        "fishing": "捕鱼",
+        "other": "其他",
+        
+        // Game Details Modal
+        "gameDetails": "游戏详情",
+        "viewFullSize": "查看完整尺寸",
+        "download": "下载",
+        "editGame": "编辑游戏",
+        "additionalInformation": "附加信息",
+        "created": "创建时间",
+        "lastUpdated": "最后更新",
+        "platforms": "平台",
+        
+        // Actions
+        "viewDetails": "查看详情",
+        "edit": "编辑",
+        "delete": "删除",
+        "close": "关闭",
+        
+        // Notifications
+        "gameAdded": "游戏添加成功！",
+        "gameUpdated": "游戏更新成功！",
+        "gameDeleted": "游戏删除成功！",
+        "errorLoading": "加载游戏数据时出错",
+        "confirmDelete": "您确定要删除此游戏吗？",
+        "allFieldsRequired": "所有字段都必须填写！",
+        "gamesRefreshed": "游戏列表已刷新",
+        
+        // Image Upload
+        "clickToUpload": "点击上传或拖放",
+        "imageRequirements": "JPG、PNG、GIF、WebP、SVG（支持所有图片格式）",
+        "removeImage": "移除图片",
+        
+        // Fullscreen Image
+        "clickOutsideToClose": "点击图片外部或按ESC关闭",
+        "imageDownloadStarted": "游戏图片下载已开始！"
+    }
+};
+
+// ========== FUNGSI UTAMA TRANSLASI GAMES ==========
+
+// Fungsi untuk menerapkan terjemahan ke halaman games
+function applyGamesTranslations(language) {
+    const lang = gamesTranslations[language] || gamesTranslations['id'];
+    
+    if (!lang) return;
+
+    console.log("Applying games translations for:", language);
+
+    // Terjemahkan elemen utama
+    const elements = {
+        'gamesTitle': '.header h1',
+        'filterGames': '.filter-title',
+        'statusFilter': '.filter-group:nth-child(1) .filter-label',
+        'categoryFilter': '.filter-group:nth-child(2) .filter-label',
+        'providerFilter': '.filter-group:nth-child(3) .filter-label',
+        'searchPlaceholder': '#gamesSearch',
+        'gameLibrary': '.section-title',
+        'noGamesFound': '#noGames h3',
+        'noGamesMessage': '#noGames p'
+    };
+
+    Object.keys(elements).forEach(key => {
+        const element = document.querySelector(elements[key]);
+        if (element && lang[key]) {
+            if (key === 'searchPlaceholder') {
+                element.placeholder = lang[key];
+            } else {
+                // Simpan ikon jika ada
+                const iconMatch = element.innerHTML.match(/(<i[^>]*><\/i>)/);
+                if (iconMatch) {
+                    element.innerHTML = iconMatch[0] + ' ' + lang[key];
+                } else {
+                    element.textContent = lang[key];
+                }
+            }
+        }
+    });
+
+    // Update tombol
+    const addGameButton = document.getElementById('addGameBtn');
+    const addFirstGameButton = document.getElementById('addFirstGame');
+    const refreshButton = document.getElementById('refreshGames');
+    const resetFiltersButton = document.getElementById('resetFilters');
+    const advancedFiltersButton = document.getElementById('toggleAdvancedFilters');
+
+    if (addGameButton && lang.addGame) {
+        addGameButton.innerHTML = `<i class="fas fa-plus"></i> ${lang.addGame}`;
+    }
+    if (addFirstGameButton && lang.addFirstGame) {
+        addFirstGameButton.innerHTML = `<i class="fas fa-plus"></i> ${lang.addFirstGame}`;
+    }
+    if (refreshButton && lang.refresh) {
+        refreshButton.innerHTML = `<i class="fas fa-sync-alt"></i> ${lang.refresh}`;
+    }
+    if (resetFiltersButton && lang.resetFilters) {
+        resetFiltersButton.innerHTML = `<i class="fas fa-sync-alt"></i> ${lang.resetFilters}`;
+    }
+    if (advancedFiltersButton && lang.advancedFilters) {
+        advancedFiltersButton.innerHTML = `<i class="fas fa-sliders-h"></i> ${lang.advancedFilters}`;
+    }
+
+    // Update statistik cards
+    updateGamesStatsTranslations(language);
+    
+    // Update filter options
+    updateGamesFilterOptions(language);
+    
+    // Update modal
+    updateGamesModalTranslations(language);
+    
+    // Update game cards yang sudah ada
+    updateExistingGameCards(language);
+}
+
+// Update terjemahan untuk statistik cards
+function updateGamesStatsTranslations(language) {
+    const lang = gamesTranslations[language] || gamesTranslations['id'];
+    
+    // Total Games card
+    const totalGamesTitle = document.querySelector('.stat-card:nth-child(1) .stat-title');
+    const totalGamesDesc = document.querySelector('.stat-card:nth-child(1) .stat-content p');
+    
+    if (totalGamesTitle && lang.totalGames) {
+        totalGamesTitle.textContent = lang.totalGames;
+    }
+    if (totalGamesDesc && lang.totalGamesDesc) {
+        totalGamesDesc.textContent = lang.totalGamesDesc;
+    }
+    
+    // Upcoming Games card
+    const upcomingGamesTitle = document.querySelector('.stat-card:nth-child(2) .stat-title');
+    const upcomingGamesDesc = document.querySelector('.stat-card:nth-child(2) .stat-content p');
+    
+    if (upcomingGamesTitle && lang.upcomingGames) {
+        upcomingGamesTitle.textContent = lang.upcomingGames;
+    }
+    if (upcomingGamesDesc && lang.upcomingGamesDesc) {
+        upcomingGamesDesc.textContent = lang.upcomingGamesDesc;
+    }
+    
+    // Popular Games card
+    const popularGamesTitle = document.querySelector('.stat-card:nth-child(3) .stat-title');
+    const popularGamesDesc = document.querySelector('.stat-card:nth-child(3) .stat-content p');
+    
+    if (popularGamesTitle && lang.popularGames) {
+        popularGamesTitle.textContent = lang.popularGames;
+    }
+    if (popularGamesDesc && lang.popularGamesDesc) {
+        popularGamesDesc.textContent = lang.popularGamesDesc;
+    }
+    
+    // Game Categories card
+    const gameCategoriesTitle = document.querySelector('.stat-card:nth-child(4) .stat-title');
+    const gameCategoriesDesc = document.querySelector('.stat-card:nth-child(4) .stat-content p');
+    
+    if (gameCategoriesTitle && lang.gameCategories) {
+        gameCategoriesTitle.textContent = lang.gameCategories;
+    }
+    if (gameCategoriesDesc && lang.gameCategoriesDesc) {
+        gameCategoriesDesc.textContent = lang.gameCategoriesDesc;
+    }
+}
+
+// Update opsi filter
+function updateGamesFilterOptions(language) {
+    const lang = gamesTranslations[language] || gamesTranslations['id'];
+    
+    // Status filter
+    const statusFilter = document.getElementById('statusFilter');
+    if (statusFilter && lang.allStatus) {
+        statusFilter.options[0].text = lang.allStatus;
+        // Update opsi status lainnya
+        if (lang.released) statusFilter.options[1].text = lang.released;
+        if (lang.upcoming) statusFilter.options[2].text = lang.upcoming;
+        if (lang.disabled) statusFilter.options[3].text = lang.disabled;
+    }
+    
+    // Category filter
+    const categoryFilter = document.getElementById('categoryFilter');
+    if (categoryFilter && lang.allCategories) {
+        categoryFilter.options[0].text = lang.allCategories;
+        // Update opsi kategori lainnya
+        if (lang.slot) categoryFilter.options[1].text = lang.slot;
+        if (lang.casino) categoryFilter.options[2].text = lang.casino;
+        if (lang.sport) categoryFilter.options[3].text = lang.sport;
+        if (lang.crashGame) categoryFilter.options[4].text = lang.crashGame;
+        if (lang.fishing) categoryFilter.options[5].text = lang.fishing;
+        if (lang.other) categoryFilter.options[6].text = lang.other;
+    }
+    
+    // Provider filter
+    const providerFilter = document.getElementById('providerFilter');
+    if (providerFilter && lang.allProviders) {
+        providerFilter.options[0].text = lang.allProviders;
+    }
+    
+    // Sort filter
+    const sortFilter = document.getElementById('sortBy');
+    if (sortFilter && lang.name) {
+        sortFilter.options[0].text = lang.name;
+        if (lang.releaseDate) sortFilter.options[1].text = lang.releaseDate;
+        if (lang.rating) sortFilter.options[2].text = lang.rating;
+    }
+    
+    // Sort order filter
+    const sortOrderFilter = document.getElementById('sortOrder');
+    if (sortOrderFilter && lang.ascending) {
+        sortOrderFilter.options[0].text = lang.ascending;
+        if (lang.descending) sortOrderFilter.options[1].text = lang.descending;
+    }
+    
+    // Advanced filters
+    const advancedFilterTitle = document.querySelector('#advancedFilters .filter-title');
+    const releaseDateLabel = document.querySelector('#advancedFilters .filter-group:nth-child(1) .filter-label');
+    const sortByLabel = document.querySelector('#advancedFilters .filter-group:nth-child(2) .filter-label');
+    const orderLabel = document.querySelector('#advancedFilters .filter-group:nth-child(3) .filter-label');
+    
+    if (advancedFilterTitle && lang.advancedFilters) {
+        advancedFilterTitle.textContent = lang.advancedFilters;
+    }
+    if (releaseDateLabel && lang.releaseDateRange) {
+        releaseDateLabel.textContent = lang.releaseDateRange;
+    }
+    if (sortByLabel && lang.sortBy) {
+        sortByLabel.textContent = lang.sortBy;
+    }
+    if (orderLabel && lang.order) {
+        orderLabel.textContent = lang.order;
+    }
+    
+    // Update placeholder untuk date inputs
+    const dateFrom = document.getElementById('dateFrom');
+    const dateTo = document.getElementById('dateTo');
+    
+    if (dateFrom && lang.from) {
+        dateFrom.placeholder = lang.from;
+    }
+    if (dateTo && lang.to) {
+        dateTo.placeholder = lang.to;
+    }
+}
+
+// Update terjemahan modal
+function updateGamesModalTranslations(language) {
+    const lang = gamesTranslations[language] || gamesTranslations['id'];
+    
+    const modalTitle = document.querySelector('#addGameModal .modal-title');
+    const cancelButton = document.getElementById('cancelAddGame');
+    const saveButton = document.getElementById('saveGame');
+    
+    if (modalTitle && lang.addNewGame) {
+        modalTitle.innerHTML = `<i class="fas fa-plus"></i> ${lang.addNewGame}`;
+    }
+    if (cancelButton && lang.cancel) {
+        cancelButton.innerHTML = `<i class="fas fa-times"></i> ${lang.cancel}`;
+    }
+    if (saveButton && lang.saveGame) {
+        saveButton.innerHTML = `<i class="fas fa-save"></i> ${lang.saveGame}`;
+    }
+    
+    // Update form labels
+    const formLabels = {
+        'gameTitle': 'label[for="gameTitle"]',
+        'gameCategory': 'label[for="gameCategory"]',
+        'gameProvider': 'label[for="gameProvider"]',
+        'gameReleaseDate': 'label[for="gameReleaseDate"]',
+        'gameStatus': 'label[for="gameStatus"]',
+        'gameDescription': 'label[for="gameDescription"]',
+        'gameImage': 'label[for="gameImage"]'
+    };
+    
+    Object.keys(formLabels).forEach(key => {
+        const element = document.querySelector(formLabels[key]);
+        if (element && lang[key]) {
+            element.textContent = lang[key];
+            if (element.classList.contains('required')) {
+                element.innerHTML = lang[key] + '<span style="color: var(--danger); margin-left: 4px;">*</span>';
+            }
+        }
+    });
+    
+    // Update image upload text
+    const imageUpload = document.getElementById('imageUpload');
+    if (imageUpload) {
+        const paragraphs = imageUpload.querySelectorAll('p');
+        if (paragraphs[0] && lang.clickToUpload) {
+            paragraphs[0].textContent = lang.clickToUpload;
+        }
+        if (paragraphs[1] && lang.imageRequirements) {
+            paragraphs[1].textContent = lang.imageRequirements;
+        }
+    }
+    
+    // Update status options in modal
+    const statusSelect = document.getElementById('gameStatus');
+    if (statusSelect) {
+        if (lang.active) statusSelect.options[0].text = lang.active;
+        if (lang.released) statusSelect.options[1].text = lang.released;
+        if (lang.upcoming) statusSelect.options[2].text = lang.upcoming;
+        if (lang.disabled) statusSelect.options[3].text = lang.disabled;
+    }
+    
+    // Update category options in modal
+    const categorySelect = document.getElementById('gameCategory');
+    if (categorySelect) {
+        categorySelect.options[0].text = lang.selectCategory || 'Select Category';
+        if (lang.slot) categorySelect.options[1].text = lang.slot;
+        if (lang.casino) categorySelect.options[2].text = lang.casino;
+        if (lang.sport) categorySelect.options[3].text = lang.sport;
+        if (lang.crashGame) categorySelect.options[4].text = lang.crashGame;
+        if (lang.fishing) categorySelect.options[5].text = lang.fishing;
+        if (lang.other) categorySelect.options[6].text = lang.other;
+    }
+    
+    // Update provider options in modal
+    const providerSelect = document.getElementById('gameProvider');
+    if (providerSelect) {
+        providerSelect.options[0].text = lang.selectProvider || 'Select Provider';
+    }
+}
+
+// Update terjemahan untuk edit modal
+function updateGamesEditModalTranslations(language) {
+    const lang = gamesTranslations[language] || gamesTranslations['id'];
+    
+    const editModal = document.getElementById('editGameModal');
+    if (!editModal) return;
+    
+    // Update modal title
+    const modalTitle = editModal.querySelector('.modal-title');
+    if (modalTitle && lang.editGame) {
+        // Simpan nama game yang sedang diedit
+        const currentTitle = modalTitle.textContent.replace('Edit ', '');
+        modalTitle.innerHTML = `<i class="fas fa-edit"></i> ${lang.editGame} ${currentTitle}`;
+    }
+    
+    // Update tombol
+    const cancelButton = document.getElementById('cancelEditGame');
+    const updateButton = document.getElementById('updateGame');
+    
+    if (cancelButton && lang.cancel) {
+        cancelButton.innerHTML = `<i class="fas fa-times"></i> ${lang.cancel}`;
+    }
+    if (updateButton && lang.updateGame) {
+        updateButton.innerHTML = `<i class="fas fa-save"></i> ${lang.updateGame}`;
+    }
+}
+
+// Update terjemahan untuk game cards yang sudah ada
+function updateExistingGameCards(language) {
+    const lang = gamesTranslations[language] || gamesTranslations['id'];
+    
+    // Update tombol di game cards
+    document.querySelectorAll('.edit-game').forEach(btn => {
+        if (lang.edit) {
+            btn.innerHTML = `<i class="fas fa-edit"></i> ${lang.edit}`;
+        }
+    });
+    
+    document.querySelectorAll('.view-game').forEach(btn => {
+        if (lang.viewDetails) {
+            btn.innerHTML = `<i class="fas fa-eye"></i> ${lang.viewDetails}`;
+        }
+    });
+    
+    document.querySelectorAll('.delete-game').forEach(btn => {
+        if (lang.delete) {
+            btn.innerHTML = `<i class="fas fa-trash"></i> ${lang.delete}`;
+        }
+    });
+    
+    // Update label di game details
+    document.querySelectorAll('.detail-label').forEach((label, index) => {
+        if (index % 4 === 0 && lang.category) {
+            // Label pertama (Category)
+            label.textContent = lang.category;
+        } else if (index % 4 === 1 && lang.provider) {
+            // Label kedua (Provider)
+            label.textContent = lang.provider;
+        } else if (index % 4 === 2 && lang.releaseDate) {
+            // Label ketiga (Release Date)
+            label.textContent = lang.releaseDate;
+        } else if (index % 4 === 3 && lang.status) {
+            // Label keempat (Status)
+            label.textContent = lang.status;
+        }
+    });
+}
+
+// Update terjemahan di game detail modal
+function updateGamesDetailModalTranslations(language) {
+    const lang = gamesTranslations[language] || gamesTranslations['id'];
+    
+    const detailModal = document.getElementById('gameDetailModal');
+    if (!detailModal) return;
+    
+    // Update modal title
+    const modalTitle = detailModal.querySelector('.modal-title');
+    if (modalTitle && lang.gameDetails) {
+        modalTitle.innerHTML = `<i class="fas fa-info-circle"></i> ${lang.gameDetails}`;
+    }
+    
+    // Update tombol
+    const closeBtn = detailModal.querySelector('#closeGameDetail');
+    const editBtn = detailModal.querySelector('.btn-primary');
+    
+    if (closeBtn && lang.close) {
+        closeBtn.innerHTML = `<i class="fas fa-times"></i> ${lang.close}`;
+    }
+    if (editBtn && lang.editGame) {
+        editBtn.innerHTML = `<i class="fas fa-edit"></i> ${lang.editGame}`;
+    }
+    
+    // Update tombol aksi gambar
+    const viewFullBtn = detailModal.querySelector('button[onclick*="openGameImageFullscreen"]');
+    const downloadBtn = detailModal.querySelector('button[onclick*="downloadGameImage"]');
+    
+    if (viewFullBtn && lang.viewFullSize) {
+        viewFullBtn.innerHTML = `<i class="fas fa-expand"></i> ${lang.viewFullSize}`;
+    }
+    if (downloadBtn && lang.download) {
+        downloadBtn.innerHTML = `<i class="fas fa-download"></i> ${lang.download}`;
+    }
+    
+    // Update label detail
+    const detailItems = detailModal.querySelectorAll('.detail-item strong');
+    detailItems.forEach((item, index) => {
+        if (index === 0 && lang.category) {
+            item.textContent = lang.category + ':';
+        } else if (index === 1 && lang.provider) {
+            item.textContent = lang.provider + ':';
+        } else if (index === 2 && lang.releaseDate) {
+            item.textContent = lang.releaseDate + ':';
+        } else if (index === 3 && lang.status) {
+            item.textContent = lang.status + ':';
+        } else if (index === 4 && lang.rating) {
+            item.textContent = lang.rating + ':';
+        } else if (index === 5 && lang.platforms) {
+            item.textContent = lang.platforms + ':';
+        } else if (index === 6 && lang.description) {
+            item.textContent = lang.description + ':';
+        }
+    });
+    
+    // Update additional information
+    const additionalInfo = detailModal.querySelector('strong:contains("Additional Information")');
+    if (additionalInfo && lang.additionalInformation) {
+        additionalInfo.textContent = lang.additionalInformation + ':';
+    }
+    
+    const createdLabel = detailModal.querySelector('small:contains("Created")');
+    const updatedLabel = detailModal.querySelector('small:contains("Last Updated")');
+    
+    if (createdLabel && lang.created) {
+        createdLabel.textContent = lang.created + ':';
+    }
+    if (updatedLabel && lang.lastUpdated) {
+        updatedLabel.textContent = lang.lastUpdated + ':';
+    }
+}
+
+// Fungsi untuk update notifikasi
+function updateGamesNotificationMessages(language) {
+    const lang = gamesTranslations[language] || gamesTranslations['id'];
+    
+    // Simpan referensi ke fungsi showNotification asli
+    const originalShowNotification = window.showNotification;
+    
+    // Override fungsi showNotification untuk menerjemahkan pesan tertentu
+    window.showNotification = function(message, type = 'info') {
+        let translatedMessage = message;
+        
+        // Terjemahkan pesan-pesan umum
+        if (message.includes('has been added successfully')) {
+            translatedMessage = lang.gameAdded;
+        } else if (message.includes('has been updated successfully')) {
+            translatedMessage = lang.gameUpdated;
+        } else if (message.includes('Game deleted successfully')) {
+            translatedMessage = lang.gameDeleted;
+        } else if (message.includes('Error loading games')) {
+            translatedMessage = lang.errorLoading;
+        } else if (message.includes('All fields are required')) {
+            translatedMessage = lang.allFieldsRequired;
+        } else if (message.includes('Games list refreshed')) {
+            translatedMessage = lang.gamesRefreshed;
+        } else if (message.includes('Game image download started')) {
+            translatedMessage = lang.imageDownloadStarted;
+        } else if (message.includes('Are you sure you want to delete')) {
+            translatedMessage = lang.confirmDelete;
+        }
+        
+        // Panggil fungsi asli dengan pesan yang sudah diterjemahkan
+        originalShowNotification(translatedMessage, type);
+    };
+}
+
+// ========== INISIALISASI BAHASA UNTUK GAMES ==========
+
+// Fungsi inisialisasi bahasa untuk games
+function initializeGamesLanguage() {
+    const savedLanguage = localStorage.getItem('language') || 'id';
+    console.log("Initializing games with language:", savedLanguage);
+    
+    // Terapkan terjemahan
+    applyGamesTranslations(savedLanguage);
+    updateGamesNotificationMessages(savedLanguage);
+    
+    // Setup listener untuk perubahan bahasa
+    window.addEventListener('languageChanged', function(event) {
+        console.log("Language changed to:", event.detail.language);
+        applyGamesTranslations(event.detail.language);
+        updateGamesNotificationMessages(event.detail.language);
+        
+        // Update detail modal jika sedang terbuka
+        updateGamesDetailModalTranslations(event.detail.language);
+    });
+}
+
+// ========== EVENT LISTENERS UNTUK MODAL ==========
+
+// Event listener untuk modal edit game
+document.addEventListener('DOMContentLoaded', function() {
+    // Override fungsi openEditGameModal untuk menambahkan event
+    const originalOpenEditGameModal = window.openEditGameModal;
+    if (originalOpenEditGameModal) {
+        window.openEditGameModal = function(gameId) {
+            originalOpenEditGameModal(gameId);
+            // Trigger event bahwa modal edit dibuka
+            setTimeout(() => {
+                const savedLanguage = localStorage.getItem('language') || 'id';
+                updateGamesEditModalTranslations(savedLanguage);
+            }, 100);
+        };
+    }
+    
+    // Override fungsi viewGame untuk menambahkan event
+    const originalViewGame = window.viewGame;
+    if (originalViewGame) {
+        window.viewGame = function(gameId) {
+            originalViewGame(gameId);
+            // Trigger event bahwa modal detail dibuka
+            setTimeout(() => {
+                const savedLanguage = localStorage.getItem('language') || 'id';
+                updateGamesDetailModalTranslations(savedLanguage);
+            }, 100);
+        };
+    }
+});
+
+// ========== INTEGRASI DENGAN SISTEM BAHASA GLOBAL ==========
+
+// Panggil inisialisasi saat DOM ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Tunggu sebentar untuk memastikan semua element sudah terload
+    setTimeout(() => {
+        initializeGamesLanguage();
+    }, 100);
+});
+
+// Juga panggil saat halaman sepenuhnya loaded
+window.addEventListener('load', function() {
+    initializeGamesLanguage();
+});
+
+// ========== EXPORT FUNGSI ==========
+
+// Export fungsi untuk digunakan di file lain
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        gamesTranslations,
+        applyGamesTranslations,
+        updateGamesStatsTranslations,
+        updateGamesFilterOptions,
+        updateGamesModalTranslations,
+        updateGamesEditModalTranslations,
+        updateExistingGameCards,
+        updateGamesDetailModalTranslations,
+        updateGamesNotificationMessages,
+        initializeGamesLanguage
+    };
+}
 </script>
 </body>
 </html>

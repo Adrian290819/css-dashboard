@@ -1713,59 +1713,51 @@
     let isSuperAdminUser = false;
 
     async function checkAndSetupSuperAdmin() {
-        try {
-            const currentUser = firebase.auth().currentUser;
-            if (!currentUser) {
-                console.log('No user logged in');
-                setupAdminUI(false); // Pastikan tombol disembunyikan jika tidak ada user
-                return false;
+    try {
+        const currentUser = firebase.auth().currentUser;
+        if (!currentUser) {
+            console.log('No user logged in');
+            setupAdminUI(false);
+            return false;
+        }
+        
+        console.log('🔄 Checking admin role for user:', currentUser.uid, currentUser.email);
+        
+        const db = firebase.firestore();
+        const userDoc = await db.collection('users').doc(currentUser.uid).get();
+        
+        if (userDoc.exists) {
+            const userData = userDoc.data();
+            console.log('📊 User data from Firestore:', userData);
+            
+            // Check jika nama masih default, update jika perlu
+            if (!userData.name || userData.name === 'User') {
+                await db.collection('users').doc(currentUser.uid).update({
+                    name: currentUser.displayName || currentUser.email.split('@')[0],
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
             }
             
-            console.log('🔄 Checking admin role for user:', currentUser.uid, currentUser.email);
-            
-            const db = firebase.firestore();
-            const userDoc = await db.collection('users').doc(currentUser.uid).get();
-            
-            if (userDoc.exists) {
-                const userData = userDoc.data();
-                console.log('📊 User data from Firestore:', userData);
-                
-                // Check role dengan berbagai kemungkinan field
-                const isAdmin = userData.role === 'super_admin' || 
-                            userData.isSuperAdmin === true ||
-                            userData.isAdmin === true ||
-                            (userData.email && userData.email.includes('admin')) ||
-                            userData.email === 'superadmin@gachaengine.com';
-                
-                console.log('✅ Final admin determination:', isAdmin);
-                
-                if (isAdmin) {
-                    setupAdminUI(true);
-                    isSuperAdminUser = true;
-                    return true;
-                }
-            }
-            
-            // Jika tidak ada dokumen user, buat dokumen default
-            console.log('📝 Creating default user document');
+            // ... rest of the function
+        } else {
+            // Buat dokumen user dengan nama yang proper
+            console.log('📝 Creating user document with proper name');
             await db.collection('users').doc(currentUser.uid).set({
                 email: currentUser.email,
-                name: currentUser.displayName || 'User',
+                name: currentUser.displayName || currentUser.email.split('@')[0], // Jangan pakai 'User'
                 role: 'user',
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             }, { merge: true });
-            
-            setupAdminUI(false);
-            isSuperAdminUser = false;
-            return false;
-            
-        } catch (error) {
-            console.error('❌ Error checking super admin:', error);
-            setupAdminUI(false); // Pastikan tombol disembunyikan jika error
-            isSuperAdminUser = false;
-            return false;
         }
+        
+        // ... rest of the function
+        
+    } catch (error) {
+        console.error('❌ Error checking super admin:', error);
+        setupAdminUI(false);
+        return false;
     }
+}
 
     // Fungsi untuk setup UI admin
     // Fungsi untuk setup UI admin
@@ -3048,41 +3040,30 @@ function setupRealTimeListeners() {
     const currentUser = firebase.auth().currentUser;
     if (!currentUser) return;
     
+    // PERBAIKAN: Gunakan currentUser.uid, bukan currentUser.ui4
+    const targetUserId = currentUser.uid;
+    
+    console.log('🔔 Setting up listener for user:', targetUserId);
+    
     const db = firebase.firestore();
-    
-    // Hentikan listeners sebelumnya
-    unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
-    unsubscribeFunctions = [];
-    
-    const targetUserId = getCurrentViewingUserId() || currentUser.uid;
-    
     const kpiUnsubscribe = db.collection('kpiData')
         .doc(targetUserId)
         .onSnapshot((doc) => {
             if (isLocalChange && (Date.now() - lastLocalChangeTime < 3000)) {
-                console.log('🔄 Skipping real-time update (local change)');
-                isLocalChange = false;
-                return;
+                return; // Skip jika perubahan lokal
             }
             
             if (doc.exists) {
-                console.log('🔄 Real-time update received from Firestore for user:', targetUserId);
                 const savedData = doc.data();
-                if (savedData.kpiData) {
-                    // PERBAIKAN: Gunakan data lengkap dari Firestore
-                    savedData.kpiData.forEach((savedItem, index) => {
-                        if (kpiData[index]) {
-                            // Update semua field dari Firestore
-                            Object.assign(kpiData[index], savedItem);
-                        }
-                    });
-                    updateDisplay();
-                    showNotification('Data diperbarui secara real-time', 'info', 2000);
+                // VERIFIKASI user ID sebelum update
+                if (savedData.userId === targetUserId) {
+                    console.log('✅ Safe update for user:', targetUserId);
+                    updateKpiFromFirestore(savedData);
                 }
             }
-        }, error => {
-            console.error('Error in kpiData real-time listener:', error);
         });
+    
+    // Simpan fungsi unsubscribe
     unsubscribeFunctions.push(kpiUnsubscribe);
 }
 
@@ -3531,12 +3512,17 @@ async function getUserNameById(userId) {
         
         if (userDoc.exists) {
             const userData = userDoc.data();
-            return userData.name || userData.email || 'Unknown User';
+            // Prioritaskan name, lalu email, baru fallback
+            if (userData.name && userData.name !== 'User') {
+                return userData.name;
+            } else if (userData.email) {
+                return userData.email.split('@')[0]; // Ambil username dari email
+            }
         }
-        return 'Unknown User';
+        return 'Loading...'; // Jangan langsung kasih 'Unknown User'
     } catch (error) {
         console.error('Error getting user name:', error);
-        return 'Unknown User';
+        return 'Loading...';
     }
 }
 
@@ -3633,41 +3619,33 @@ function displayAllUsersData(usersData) {
 async function loadKpiData(filter = 'current', specificUserId = null) {
     try {
         const currentUser = firebase.auth().currentUser;
-        if (!currentUser) {
-            console.log('No user logged in');
+        if (!currentUser) return;
+        
+        console.log('👤 Current user:', currentUser.uid, currentUser.email);
+        
+        let targetUserId = currentUser.uid;
+        let targetUserName = 'Loading...'; // Default temporary
+        
+        if (filter === 'all' && isSuperAdminUser) {
+            await loadAllUsersData();
             return;
         }
         
-        console.log('🔄 Loading KPI data with filter:', filter, 'specificUserId:', specificUserId);
-        
-        if (filter === 'current' || specificUserId) {
-            const userId = specificUserId || currentUser.uid;
-            console.log('👤 Loading data for user:', userId);
-            
-            // Jika melihat user lain, tampilkan nama user
-            if (specificUserId && specificUserId !== currentUser.uid) {
-                const userName = await getUserNameById(specificUserId);
-                displayUserNameInHeader(userName);
-            } else {
-                // Jika melihat data sendiri, reset ke default
-                displayUserNameInHeader();
-            }
-            
-            await updateAllKpiData(userId);
-            
-        } else if (filter === 'all' && isSuperAdminUser) {
-            console.log('👥 Loading ALL users data as super admin');
-            // Saat melihat semua user, reset header ke default
-            displayUserNameInHeader();
-            await loadAllUsersData();
+        if (specificUserId && specificUserId !== currentUser.uid) {
+            targetUserId = specificUserId;
+            targetUserName = await getUserNameById(specificUserId);
         } else {
-            console.log('❌ Cannot load all data - not super admin');
-            showNotification('Hanya Super Admin yang dapat melihat semua data', 'error');
+            // Untuk user sendiri, coba dapatkan nama dari berbagai sumber
+            targetUserName = await getUserNameById(currentUser.uid);
         }
+        
+        console.log('🎯 Loading data for:', targetUserId, targetUserName);
+        
+        displayUserNameInHeader(targetUserName);
+        await updateAllKpiData(targetUserId);
         
     } catch (error) {
         console.error('❌ Error loading KPI data:', error);
-        showNotification('Error memuat data KPI: ' + error.message, 'error');
     }
 }
 
@@ -5904,6 +5882,41 @@ window.KpiTranslations = {
 };
 
 console.log("✅ Enhanced KPI Translation System loaded");
+function getCurrentViewingUserId() {
+    const currentUser = firebase.auth().currentUser;
+    if (!currentUser) return null;
+    
+    // Default ke user sendiri
+    let viewingUserId = currentUser.uid;
+    
+    // Cek URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('userId')) {
+        const urlUserId = urlParams.get('userId');
+        // VALIDASI: hanya terima jika super admin
+        if (isSuperAdminUser && urlUserId !== currentUser.uid) {
+            viewingUserId = urlUserId;
+        }
+    }
+    
+    console.log('🔍 Viewing user ID:', viewingUserId);
+    return viewingUserId;
+}
+function updateKpiFromFirestore(firestoreData) {
+    if (firestoreData.kpiData && Array.isArray(firestoreData.kpiData)) {
+        firestoreData.kpiData.forEach((savedItem, index) => {
+            if (index < kpiData.length) {
+                // Update hanya jika data berbeda
+                if (JSON.stringify(kpiData[index]) !== JSON.stringify(savedItem)) {
+                    Object.assign(kpiData[index], savedItem);
+                }
+            }
+        });
+        
+        updateDisplay();
+        console.log('✅ Data updated from Firestore real-time listener');
+    }
+}
 </script>
 </body>
 

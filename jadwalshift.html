@@ -9,424 +9,467 @@
     <link rel="stylesheet" href="global.css">
     <style>
     :root {
-            --primary-gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
-            --success-gradient: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);
-            --warning-gradient: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
-            --info-gradient: linear-gradient(135deg, #4895ef 0%, #3f37c9 100%);
-            --game-card-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
+    --primary-gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+    --success-gradient: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);
+    --warning-gradient: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
+    --info-gradient: linear-gradient(135deg, #4895ef 0%, #3f37c9 100%);
+    --game-card-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
 
-        /* ========== LAYOUT UTAMA ========== */
-        .main-content {
-            padding: var(--space-lg);
-            background-color: var(--bg-secondary);
-            min-height: 100vh;
-        }
+/* ========== LAYOUT UTAMA ========== */
+.main-content {
+    padding: var(--space-lg);
+    background-color: var(--bg-secondary);
+    min-height: 100vh;
+}
 
-        .header {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: var(--space-lg);
-            margin-bottom: var(--space-lg);
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+.header {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-        .header h1 {
-            font-size: var(--text-2xl);
-            font-weight: var(--font-semibold);
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-        }
+.header h1 {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
 
-        .header h1 i {
-            color: var(--primary);
-        }
+.header h1 i {
+    color: var(--primary);
+}
 
-        /* ========== HEADER ACTIONS ========== */
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: var(--space-lg);
-        }
+/* ========== HEADER ACTIONS ========== */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+}
 
-        .search-bar {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
+.search-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
 
-        .search-bar i {
-            position: absolute;
-            left: 12px;
-            color: var(--text-secondary);
-        }
+.search-bar i {
+    position: absolute;
+    left: 12px;
+    color: var(--text-secondary);
+}
 
-        .search-bar input {
-            padding: var(--space-sm) var(--space-md) var(--space-sm) 40px;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            background-color: var(--input-bg);
-            color: var(--text-primary);
-            font-size: var(--text-sm);
-            width: 250px;
-            transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
-        }
+.search-bar input {
+    padding: var(--space-sm) var(--space-md) var(--space-sm) 40px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+    width: 250px;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
 
-        .search-bar input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        }
+.search-bar input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
 
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-        }
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
 
-        .profile-img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
+.profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
 
-        .user-info h4 {
-            font-size: var(--text-sm);
-            font-weight: var(--font-semibold);
-            color: var(--text-primary);
-            margin: 0;
-        }
+.user-info h4 {
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin: 0;
+}
 
-        .user-info p {
-            font-size: var(--text-xs);
-            color: var(--text-secondary);
-            margin: 0;
-        }
+.user-info p {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    margin: 0;
+}
 
-        /* ========== SHIFT HEADER ========== */
-        .shift-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--space-lg);
-            padding: var(--space-md) var(--space-lg);
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-color);
-        }
+/* ========== SHIFT HEADER ========== */
+.shift-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-lg);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+}
 
-        .shift-title {
-            font-size: var(--text-xl);
-            font-weight: var(--font-semibold);
-            color: var(--text-primary);
-            margin: 0;
-        }
+.shift-title {
+    font-size: var(--text-xl);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin: 0;
+}
 
-        .month-navigation {
-            display: flex;
-            align-items: center;
-            gap: var(--space-md);
-        }
+.month-navigation {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
 
-        .month-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--bg-secondary);
-            color: var(--text-secondary);
-            border: 1px solid var(--border-color);
-            cursor: pointer;
-            transition: all var(--transition-fast);
-        }
+.month-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
 
-        .month-btn:hover {
-            background: var(--hover-color);
-            color: var(--text-primary);
-        }
+.month-btn:hover {
+    background: var(--hover-color);
+    color: var(--text-primary);
+}
 
-        .current-month {
-            font-size: var(--text-lg);
-            font-weight: var(--font-semibold);
-            color: var(--text-primary);
-            min-width: 150px;
-            text-align: center;
-        }
+.current-month {
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    min-width: 150px;
+    text-align: center;
+}
 
-        /* ========== SHIFT TABLE ========== */
-        .shift-table-container {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-color);
-            margin-bottom: var(--space-lg);
-            overflow-x: auto;
-        }
+/* ========== SHIFT TABLE ========== */
+.shift-table-container {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    margin-bottom: var(--space-lg);
+    overflow-x: auto;
+}
 
-        .shift-table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 900px;
-        }
+.shift-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+}
 
-        .shift-table th {
-            background: var(--bg-secondary);
-            padding: var(--space-md);
-            text-align: left;
-            font-size: var(--text-sm);
-            font-weight: var(--font-semibold);
-            color: var(--text-primary);
-            border-bottom: 1px solid var(--border-color);
-        }
+.shift-table th {
+    background: var(--bg-secondary);
+    padding: var(--space-md);
+    text-align: left;
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+}
 
-        .shift-table td {
-            padding: var(--space-md);
-            border-bottom: 1px solid var(--border-color);
-            font-size: var(--text-sm);
-            color: var(--text-primary);
-        }
+.shift-table td {
+    padding: var(--space-md);
+    border-bottom: 1px solid var(--border-color);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+}
 
-        .shift-table tr:last-child td {
-            border-bottom: none;
-        }
+.shift-table tr:last-child td {
+    border-bottom: none;
+}
 
-        .shift-table tr:hover {
-            background-color: var(--hover-color);
-        }
+.shift-table tr:hover {
+    background-color: var(--hover-color);
+}
 
-        .time-input {
-            width: 100%;
-            padding: var(--space-xs) var(--space-sm);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            background-color: var(--input-bg);
-            color: var(--text-primary);
-            font-size: var(--text-sm);
-            transition: border-color var(--transition-fast);
-        }
+.time-input {
+    width: 100%;
+    padding: var(--space-xs) var(--space-sm);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+    transition: border-color var(--transition-fast);
+}
 
-        .time-input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
+.time-input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
 
-        .shift-dropdown {
-            width: 100%;
-            padding: var(--space-xs) var(--space-sm);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            background-color: var(--input-bg);
-            color: var(--text-primary);
-            font-size: var(--text-sm);
-            transition: border-color var(--transition-fast);
-            cursor: pointer;
-        }
+.shift-dropdown {
+    width: 100%;
+    padding: var(--space-xs) var(--space-sm);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+    transition: border-color var(--transition-fast);
+    cursor: pointer;
+}
 
-        .shift-dropdown:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
+.shift-dropdown:focus {
+    outline: none;
+    border-color: var(--primary);
+}
 
-        /* ========== SHIFT ACTIONS ========== */
-        .shift-actions {
-            display: flex;
-            justify-content: flex-end;
-        }
+/* ========== SHIFT ACTIONS ========== */
+/* DEFAULT: Tombol simpan disembunyikan saat load awal */
+.shift-actions {
+    display: none !important;
+}
 
-        .save-btn {
-            padding: var(--space-md) var(--space-lg);
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: var(--radius-md);
-            font-size: var(--text-sm);
-            font-weight: var(--font-semibold);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-            transition: background-color var(--transition-fast);
-        }
+.save-btn {
+    padding: var(--space-md) var(--space-lg);
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    transition: background-color var(--transition-fast);
+}
 
-        .save-btn:hover {
-            background: var(--primary-dark);
-        }
+.save-btn:hover {
+    background: var(--primary-dark);
+}
 
-        /* ========== NOTIFICATION ========== */
-        .notification-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+/* ========== SUPER ADMIN STYLES ========== */
 
-        .notification {
-            padding: var(--space-md) var(--space-lg);
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-            box-shadow: var(--shadow-md);
-            animation: slideIn 0.3s ease forwards;
-            max-width: 350px;
-        }
+/* Mode untuk user biasa - sembunyikan tombol simpan dan nonaktifkan input */
+body.user-mode .shift-actions {
+    display: none !important;
+}
 
-        .notification.success {
-            background: var(--success-light);
-            color: var(--success-dark);
-            border-left: 4px solid var(--success);
-        }
+body.user-mode .time-input,
+body.user-mode .shift-dropdown {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+    cursor: not-allowed;
+    pointer-events: none;
+}
 
-        .notification.error {
-            background: var(--danger-light);
-            color: var(--danger-dark);
-            border-left: 4px solid var(--danger);
-        }
+/* Mode untuk admin - tampilkan tombol simpan dan aktifkan input */
+body.admin-mode .shift-actions {
+    display: flex !important;
+    animation: fadeIn 0.3s ease-in-out;
+}
 
-        .notification.info {
-            background: var(--info-light);
-            color: var(--info-dark);
-            border-left: 4px solid var(--info);
-        }
+body.admin-mode .time-input,
+body.admin-mode .shift-dropdown {
+    background-color: var(--input-bg);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+    cursor: text;
+    pointer-events: auto;
+}
 
-        .notification.hiding {
-            animation: slideOut 0.3s ease forwards;
-        }
+/* Animasi untuk tombol yang muncul */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
-        .notification-close {
-            margin-left: auto;
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: inherit;
-            opacity: 0.7;
-            transition: opacity var(--transition-fast);
-        }
+/* ========== NOTIFICATION ========== */
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
-        .notification-close:hover {
-            opacity: 1;
-        }
+.notification {
+    padding: var(--space-md) var(--space-lg);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    box-shadow: var(--shadow-md);
+    animation: slideIn 0.3s ease forwards;
+    max-width: 350px;
+}
 
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
+.notification.success {
+    background: var(--success-light);
+    color: var(--success-dark);
+    border-left: 4px solid var(--success);
+}
 
-        @keyframes slideOut {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-        }
+.notification.error {
+    background: var(--danger-light);
+    color: var(--danger-dark);
+    border-left: 4px solid var(--danger);
+}
 
-        /* ========== CONNECTION STATUS ========== */
-        .connection-status {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: var(--space-sm) var(--space-md);
-            border-radius: var(--radius-md);
-            font-size: var(--text-sm);
-            font-weight: var(--font-medium);
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-            box-shadow: var(--shadow-md);
-            z-index: 999;
-        }
+.notification.info {
+    background: var(--info-light);
+    color: var(--info-dark);
+    border-left: 4px solid var(--info);
+}
 
-        .status-connected {
-            background: var(--success-light);
-            color: var(--success-dark);
-            border-left: 4px solid var(--success);
-        }
+.notification.hiding {
+    animation: slideOut 0.3s ease forwards;
+}
 
-        /* ========== RESPONSIVE ADJUSTMENTS ========== */
-        @media (max-width: 1024px) {
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: var(--space-md);
-            }
-            
-            .header-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-        }
+.notification-close {
+    margin-left: auto;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.7;
+    transition: opacity var(--transition-fast);
+}
 
-        @media (max-width: 768px) {
-            .main-content {
-                padding: var(--space-md);
-            }
-            
-            .shift-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: var(--space-md);
-            }
-            
-            .month-navigation {
-                width: 100%;
-                justify-content: space-between;
-            }
-            
-            .search-bar input {
-                width: 200px;
-            }
-            
-            .user-info {
-                display: none;
-            }
-        }
+.notification-close:hover {
+    opacity: 1;
+}
 
-        @media (max-width: 640px) {
-            .header-actions {
-                flex-direction: column;
-                gap: var(--space-md);
-            }
-            
-            .search-bar {
-                width: 100%;
-            }
-            
-            .search-bar input {
-                width: 100%;
-            }
-            
-            .user-profile {
-                align-self: flex-start;
-            }
-            
-            .shift-table th, 
-            .shift-table td {
-                padding: var(--space-sm);
-            }
-        }
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* ========== CONNECTION STATUS ========== */
+.connection-status {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    box-shadow: var(--shadow-md);
+    z-index: 999;
+}
+
+.status-connected {
+    background: var(--success-light);
+    color: var(--success-dark);
+    border-left: 4px solid var(--success);
+}
+
+/* ========== RESPONSIVE ADJUSTMENTS ========== */
+@media (max-width: 1024px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-md);
+    }
+    
+    .header-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        padding: var(--space-md);
+    }
+    
+    .shift-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-md);
+    }
+    
+    .month-navigation {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .search-bar input {
+        width: 200px;
+    }
+    
+    .user-info {
+        display: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .header-actions {
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+    
+    .search-bar {
+        width: 100%;
+    }
+    
+    .search-bar input {
+        width: 100%;
+    }
+    
+    .user-profile {
+        align-self: flex-start;
+    }
+    
+    .shift-table th, 
+    .shift-table td {
+        padding: var(--space-sm);
+    }
+}
     </style>
 </head>
 <body>
@@ -445,8 +488,8 @@
                 <div class="user-profile">
                     <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
                     <div class="user-info">
-                        <h4>Adrian Abdul Arif</h4>
-                        <p>Customer Service Support</p>
+                        <h4 id="userName">Adrian Abdul Arif</h4>
+                        <p id="userRole">Customer Service Support</p>
                     </div>
                 </div>
             </div>
@@ -495,20 +538,44 @@
     </div>
 
     <div class="notification-container" id="notificationContainer"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    
     <script src="sidebar-loader.js"></script>
     <script src="user-profile.js"></script>
-    <script src="notifications.js"></script>
     
     <script>
-        // Data jadwal shift
-        let shiftData = JSON.parse(localStorage.getItem('shiftData')) || [];
-        
-        // Simpan bulan yang sedang aktif di localStorage
+        // ========== KONFIGURASI FIREBASE ==========
+        const firebaseConfig = {
+            apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
+            authDomain: "dashboard-css.firebaseapp.com",
+            databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "dashboard-css",
+            storageBucket: "dashboard-css.appspot.com",
+            messagingSenderId: "771131792881",
+            appId: "1:771131792881:web:ad634424225bd7de847850",
+            measurementId: "G-3CYBC5B101"
+        };
+
+        // Inisialisasi Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // ========== VARIABEL GLOBAL ==========
+        let shiftData = [];
+        let isSuperAdminUser = false;
+        let unsubscribeShiftData = null;
+
+        // Data bulan
         let currentMonth = parseInt(localStorage.getItem('currentMonth')) || new Date().getMonth();
         const months = ['JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'];
         const currentYear = new Date().getFullYear();
-        
-        // Data karyawan contoh (dapat diganti dengan data sesungguhnya)
+
+        // Data karyawan contoh
         const employees = [
             { id: 1, name: "ADRIAN ABDUL ARIF" },
             { id: 2, name: "ARIS SETIAWAN" },
@@ -523,30 +590,203 @@
         const saveChangesBtn = document.getElementById('saveChangesBtn');
         const employeeSearch = document.getElementById('employeeSearch');
         const notificationContainer = document.getElementById('notificationContainer');
+        const userNameElement = document.getElementById('userName');
+        const userRoleElement = document.getElementById('userRole');
 
-        // Inisialisasi data jika belum ada
-        function initializeData() {
-            if (shiftData.length === 0) {
-                employees.forEach(employee => {
-                    for (let i = 0; i < 12; i++) {
-                        shiftData.push({
-                            employeeId: employee.id,
-                            month: i,
-                            dayOff: "06 & 22",
-                            time1: "20:00 - 07:00",
-                            shift1: "NIGHT",
-                            time2: "20:00 - 07:00",
-                            shift2: "NIGHT",
-                            changeShift: "-"
+        // ========== FUNGSI SUPER ADMIN ==========
+
+        // Fungsi untuk memeriksa dan setup super admin
+        async function checkAndSetupSuperAdmin() {
+            try {
+                const currentUser = firebase.auth().currentUser;
+                if (!currentUser) {
+                    console.log('No user logged in');
+                    setupAdminUI(false);
+                    return false;
+                }
+                
+                console.log('🔄 Checking admin role for user:', currentUser.uid, currentUser.email);
+                
+                const userDoc = await db.collection('users').doc(currentUser.uid).get();
+                
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    console.log('📊 User data from Firestore:', userData);
+                    
+                    // Check role dengan berbagai kemungkinan field
+                    const isAdmin = userData.role === 'super_admin' || 
+                                  userData.isSuperAdmin === true ||
+                                  userData.isAdmin === true ||
+                                  (userData.email && userData.email.includes('admin')) ||
+                                  userData.email === 'superadmin@gachaengine.com';
+                    
+                    console.log('✅ Final admin determination:', isAdmin);
+                    
+                    if (isAdmin) {
+                        setupAdminUI(true);
+                        isSuperAdminUser = true;
+                        return true;
+                    }
+                }
+                
+                // Jika bukan admin, setup UI user biasa
+                setupAdminUI(false);
+                isSuperAdminUser = false;
+                return false;
+                
+            } catch (error) {
+                console.error('❌ Error checking super admin:', error);
+                setupAdminUI(false);
+                isSuperAdminUser = false;
+                return false;
+            }
+        }
+
+        // Fungsi untuk setup UI admin
+        function setupAdminUI(isAdmin) {
+            console.log('Setting up admin UI for shift, isAdmin:', isAdmin);
+            
+            // Tambahkan class pada body untuk kontrol CSS
+            if (isAdmin) {
+                document.body.classList.add('admin-mode');
+                document.body.classList.remove('user-mode');
+                
+                // Aktifkan tombol save
+                saveChangesBtn.disabled = false;
+                saveChangesBtn.style.cursor = 'pointer';
+                saveChangesBtn.style.backgroundColor = 'var(--primary)';
+                
+                isSuperAdminUser = true;
+                console.log('Admin UI setup completed - Edit enabled');
+            } else {
+                document.body.classList.add('user-mode');
+                document.body.classList.remove('admin-mode');
+                
+                // Nonaktifkan tombol save untuk user biasa
+                saveChangesBtn.disabled = true;
+                saveChangesBtn.style.cursor = 'not-allowed';
+                saveChangesBtn.style.backgroundColor = 'var(--text-tertiary)';
+                
+                isSuperAdminUser = false;
+                console.log('Regular user UI setup completed - Edit disabled');
+            }
+        }
+
+        // ========== FUNGSI FIRESTORE ==========
+
+        // Setup Firestore listener untuk data shift
+        function setupFirestoreListeners() {
+            console.log("Setting up Firestore listeners for shift data...");
+            
+            // Setup listener untuk shiftData
+            if (unsubscribeShiftData) {
+                unsubscribeShiftData();
+            }
+            
+            unsubscribeShiftData = db.collection('shiftData')
+                .onSnapshot((snapshot) => {
+                    shiftData = [];
+                    snapshot.forEach((doc) => {
+                        const shiftItem = doc.data();
+                        shiftItem.id = doc.id;
+                        shiftData.push(shiftItem);
+                    });
+                    console.log("Shift data loaded from Firestore:", shiftData.length, "items");
+                    renderShiftTable();
+                }, (error) => {
+                    console.error("Error loading shift data:", error);
+                    showNotification("Error loading shift data", "error");
+                    
+                    // Fallback ke localStorage
+                    const localData = localStorage.getItem('shiftData');
+                    if (localData) {
+                        shiftData = JSON.parse(localData);
+                        renderShiftTable();
+                    }
+                });
+        }
+
+        // Simpan data shift ke Firestore
+        async function saveShiftData() {
+            if (!isSuperAdminUser) {
+                showNotification('Hanya Super Admin yang dapat menyimpan perubahan', 'error');
+                return;
+            }
+
+            try {
+                // Kumpulkan semua perubahan
+                const changes = [];
+                const inputs = document.querySelectorAll('.time-input, .shift-dropdown');
+                
+                inputs.forEach(input => {
+                    const field = input.dataset.field;
+                    const employeeId = parseInt(input.dataset.employee);
+                    const value = input.value;
+                    
+                    // Cari data yang sesuai
+                    const dataIndex = shiftData.findIndex(item => 
+                        item.employeeId === employeeId && item.month === currentMonth
+                    );
+                    
+                    if (dataIndex !== -1) {
+                        // Update data yang sudah ada
+                        shiftData[dataIndex][field] = value;
+                        changes.push({
+                            id: shiftData[dataIndex].id,
+                            data: shiftData[dataIndex]
+                        });
+                    } else {
+                        // Buat data baru
+                        const newData = {
+                            employeeId: employeeId,
+                            month: currentMonth,
+                            [field]: value,
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                        };
+                        changes.push({
+                            data: newData
                         });
                     }
                 });
-                localStorage.setItem('shiftData', JSON.stringify(shiftData));
+
+                // Simpan ke Firestore
+                const batch = db.batch();
+                const shiftCollection = db.collection('shiftData');
+                
+                for (const change of changes) {
+                    if (change.id) {
+                        // Update existing document
+                        const docRef = shiftCollection.doc(change.id);
+                        batch.update(docRef, change.data);
+                    } else {
+                        // Add new document
+                        const docRef = shiftCollection.doc();
+                        batch.set(docRef, change.data);
+                    }
+                }
+                
+                await batch.commit();
+                
+                showNotification('Perubahan jadwal shift berhasil disimpan', 'success');
+                
+                // Tampilkan status koneksi
+                showConnectionStatus();
+                
+            } catch (error) {
+                console.error("Error saving shift data:", error);
+                showNotification("Gagal menyimpan perubahan ke server", "error");
+                
+                // Fallback ke localStorage
+                try {
+                    localStorage.setItem('shiftData', JSON.stringify(shiftData));
+                    showNotification('Perubahan disimpan (offline mode)', 'info');
+                } catch (fallbackError) {
+                    console.error("Fallback also failed:", fallbackError);
+                }
             }
-            
-            // Simpan bulan default ke localStorage
-            localStorage.setItem('currentMonth', currentMonth.toString());
         }
+
+        // ========== FUNGSI UTILITAS ==========
 
         // Fungsi untuk menampilkan notifikasi
         function showNotification(message, type = 'info') {
@@ -578,21 +818,32 @@
         }
 
         function closeNotification(notification) {
-            // Batalkan timeout jika masih ada
             if (notification.dataset.timeoutId) {
                 clearTimeout(parseInt(notification.dataset.timeoutId));
             }
             
-            // Tambahkan animasi keluar
             notification.classList.add('hiding');
             
-            // Hapus elemen setelah animasi selesai
             setTimeout(() => {
                 if (notification.parentElement) {
                     notificationContainer.removeChild(notification);
                 }
             }, 500);
         }
+
+        // Tampilkan status koneksi
+        function showConnectionStatus() {
+            const connectionStatus = document.createElement('div');
+            connectionStatus.className = 'connection-status status-connected';
+            connectionStatus.innerHTML = '<i class="fas fa-check-circle"></i> Data shift terkirim ke sistem';
+            document.body.appendChild(connectionStatus);
+            
+            setTimeout(() => {
+                connectionStatus.style.display = 'none';
+            }, 3000);
+        }
+
+        // ========== FUNGSI RENDER TABEL ==========
 
         // Render tabel jadwal shift
         function renderShiftTable() {
@@ -602,7 +853,14 @@
             const currentMonthData = shiftData.filter(item => item.month === currentMonth);
             
             employees.forEach((employee, index) => {
-                const employeeData = currentMonthData.find(item => item.employeeId === employee.id) || {};
+                const employeeData = currentMonthData.find(item => item.employeeId === employee.id) || {
+                    dayOff: "06 & 22",
+                    time1: "20:00 - 07:00",
+                    shift1: "NIGHT",
+                    time2: "20:00 - 07:00",
+                    shift2: "NIGHT",
+                    changeShift: "-"
+                };
                 
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -610,45 +868,55 @@
                     <td>${employee.name}</td>
                     <td>
                         <input type="text" class="time-input" value="${employeeData.dayOff || ''}" 
-                               data-field="dayOff" data-employee="${employee.id}">
+                               data-field="dayOff" data-employee="${employee.id}" 
+                               ${!isSuperAdminUser ? 'readonly' : ''}>
                     </td>
                     <td>
                         <input type="text" class="time-input" value="${employeeData.time1 || ''}" 
-                               data-field="time1" data-employee="${employee.id}">
+                               data-field="time1" data-employee="${employee.id}"
+                               ${!isSuperAdminUser ? 'readonly' : ''}>
                     </td>
                     <td>
-                        <select class="shift-dropdown" data-field="shift1" data-employee="${employee.id}">
+                        <select class="shift-dropdown" data-field="shift1" data-employee="${employee.id}"
+                                ${!isSuperAdminUser ? 'disabled' : ''}>
                             <option value="DAY" ${employeeData.shift1 === 'DAY' ? 'selected' : ''}>DAY</option>
                             <option value="NIGHT" ${employeeData.shift1 === 'NIGHT' ? 'selected' : ''}>NIGHT</option>
                         </select>
                     </td>
                     <td>
                         <input type="text" class="time-input" value="${employeeData.time2 || ''}" 
-                               data-field="time2" data-employee="${employee.id}">
+                               data-field="time2" data-employee="${employee.id}"
+                               ${!isSuperAdminUser ? 'readonly' : ''}>
                     </td>
                     <td>
-                        <select class="shift-dropdown" data-field="shift2" data-employee="${employee.id}">
+                        <select class="shift-dropdown" data-field="shift2" data-employee="${employee.id}"
+                                ${!isSuperAdminUser ? 'disabled' : ''}>
                             <option value="DAY" ${employeeData.shift2 === 'DAY' ? 'selected' : ''}>DAY</option>
                             <option value="NIGHT" ${employeeData.shift2 === 'NIGHT' ? 'selected' : ''}>NIGHT</option>
                         </select>
                     </td>
                     <td>
                         <input type="text" class="time-input" value="${employeeData.changeShift || '-'}" 
-                               data-field="changeShift" data-employee="${employee.id}">
+                               data-field="changeShift" data-employee="${employee.id}"
+                               ${!isSuperAdminUser ? 'readonly' : ''}>
                     </td>
                 `;
                 
                 shiftTableBody.appendChild(row);
             });
             
-            // Tambahkan event listeners untuk input fields
-            document.querySelectorAll('.time-input, .shift-dropdown').forEach(input => {
-                input.addEventListener('change', handleInputChange);
-            });
+            // Tambahkan event listeners untuk input fields (hanya untuk admin)
+            if (isSuperAdminUser) {
+                document.querySelectorAll('.time-input, .shift-dropdown').forEach(input => {
+                    input.addEventListener('change', handleInputChange);
+                });
+            }
         }
 
         // Handle perubahan input
         function handleInputChange(e) {
+            if (!isSuperAdminUser) return;
+            
             const field = e.target.dataset.field;
             const employeeId = parseInt(e.target.dataset.employee);
             const value = e.target.value;
@@ -670,24 +938,6 @@
             }
         }
 
-        // Simpan perubahan ke localStorage
-        function saveChanges() {
-            localStorage.setItem('shiftData', JSON.stringify(shiftData));
-            localStorage.setItem('currentMonth', currentMonth.toString());
-            showNotification('Perubahan jadwal shift berhasil disimpan', 'success');
-            
-            // Tampilkan status koneksi
-            const connectionStatus = document.createElement('div');
-            connectionStatus.className = 'connection-status status-connected';
-            connectionStatus.innerHTML = '<i class="fas fa-check-circle"></i> Data shift terkirim ke sistem';
-            document.body.appendChild(connectionStatus);
-            
-            // Sembunyikan status setelah 3 detik
-            setTimeout(() => {
-                connectionStatus.style.display = 'none';
-            }, 3000);
-        }
-
         // Fungsi untuk mencari karyawan
         function searchEmployee() {
             const searchTerm = employeeSearch.value.toLowerCase();
@@ -706,31 +956,156 @@
             });
         }
 
-        // Event Listeners
-        prevMonthBtn.addEventListener('click', () => {
-            if (currentMonth > 0) {
-                currentMonth--;
-                localStorage.setItem('currentMonth', currentMonth.toString());
-                renderShiftTable();
+        // ========== FUNGSI INISIALISASI ==========
+
+        // Inisialisasi data default jika belum ada
+        async function initializeDefaultData() {
+            try {
+                // Cek apakah sudah ada data di Firestore
+                const snapshot = await db.collection('shiftData').limit(1).get();
+                
+                if (snapshot.empty) {
+                    console.log("No shift data found, creating default data...");
+                    
+                    // Buat data default untuk semua karyawan dan bulan
+                    const defaultData = [];
+                    employees.forEach(employee => {
+                        for (let i = 0; i < 12; i++) {
+                            defaultData.push({
+                                employeeId: employee.id,
+                                month: i,
+                                dayOff: "06 & 22",
+                                time1: "20:00 - 07:00",
+                                shift1: "NIGHT",
+                                time2: "20:00 - 07:00",
+                                shift2: "NIGHT",
+                                changeShift: "-",
+                                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                        }
+                    });
+                    
+                    // Simpan ke Firestore menggunakan batch
+                    const batch = db.batch();
+                    defaultData.forEach(data => {
+                        const docRef = db.collection('shiftData').doc();
+                        batch.set(docRef, data);
+                    });
+                    
+                    await batch.commit();
+                    console.log("Default shift data created successfully");
+                }
+            } catch (error) {
+                console.error("Error initializing default data:", error);
             }
-        });
+        }
 
-        nextMonthBtn.addEventListener('click', () => {
-            if (currentMonth < 11) {
-                currentMonth++;
-                localStorage.setItem('currentMonth', currentMonth.toString());
-                renderShiftTable();
+        // Update user profile info
+        async function updateUserProfile() {
+            try {
+                const user = firebase.auth().currentUser;
+                if (user) {
+                    const userDoc = await db.collection('users').doc(user.uid).get();
+                    if (userDoc.exists) {
+                        const userData = userDoc.data();
+                        userNameElement.textContent = userData.displayName || userData.name || user.email;
+                        userRoleElement.textContent = userData.role || 'Customer Service Support';
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating user profile:', error);
             }
+        }
+
+        // ========== EVENT LISTENERS ==========
+
+        // Setup event listeners
+        function setupEventListeners() {
+            prevMonthBtn.addEventListener('click', () => {
+                if (currentMonth > 0) {
+                    currentMonth--;
+                    localStorage.setItem('currentMonth', currentMonth.toString());
+                    renderShiftTable();
+                }
+            });
+
+            nextMonthBtn.addEventListener('click', () => {
+                if (currentMonth < 11) {
+                    currentMonth++;
+                    localStorage.setItem('currentMonth', currentMonth.toString());
+                    renderShiftTable();
+                }
+            });
+
+            saveChangesBtn.addEventListener('click', saveShiftData);
+            employeeSearch.addEventListener('input', searchEmployee);
+        }
+
+        // ========== INISIALISASI APLIKASI ==========
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Initializing Shift Schedule Dashboard...');
+            
+            // Setup authentication state observer
+            firebase.auth().onAuthStateChanged(async (user) => {
+                if (user) {
+                    console.log('✅ User is signed in:', user.email);
+                    
+                    // Check super admin status
+                    await checkAndSetupSuperAdmin();
+                    
+                    // Update user profile
+                    await updateUserProfile();
+                    
+                    // Setup Firestore listeners
+                    setupFirestoreListeners();
+                    
+                    // Initialize default data if needed
+                    await initializeDefaultData();
+                    
+                } else {
+                    console.log('❌ No user signed in');
+                    
+                    // Clear listeners
+                    if (unsubscribeShiftData) unsubscribeShiftData();
+                    
+                    // Load data from localStorage sebagai fallback
+                    const localData = localStorage.getItem('shiftData');
+                    if (localData) {
+                        shiftData = JSON.parse(localData);
+                        renderShiftTable();
+                    }
+                    
+                    // Setup UI untuk user tidak login
+                    setupAdminUI(false);
+                }
+            });
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            console.log('✅ Shift Schedule Dashboard initialized successfully');
         });
 
-        saveChangesBtn.addEventListener('click', saveChanges);
-        employeeSearch.addEventListener('input', searchEmployee);
+        // ========== FUNGSI DEBUG ==========
 
-        // Inisialisasi
-        document.addEventListener('DOMContentLoaded', () => {
-            initializeData();
-            renderShiftTable();
-        });
+        // Fungsi debug untuk testing
+        window.debugShift = function() {
+            console.log('=== DEBUG SHIFT SCHEDULE ===');
+            console.log('Current User:', firebase.auth().currentUser);
+            console.log('Is Super Admin:', isSuperAdminUser);
+            console.log('Current Month:', currentMonth, months[currentMonth]);
+            console.log('Shift Data:', shiftData);
+            console.log('Employees:', employees);
+        };
+
+        // Force enable super admin untuk testing
+        window.forceSuperAdminShift = function() {
+            isSuperAdminUser = true;
+            setupAdminUI(true);
+            console.log('🔓 Super admin forced enabled for shift');
+            showNotification('Super Admin mode diaktifkan secara manual', 'info');
+        };
     </script>
 </body>
 </html>

@@ -825,6 +825,35 @@
                 width: 100%;
             }
         }
+        /* Tambahkan di bagian CSS yang sudah ada */
+.detail-link {
+    color: #4361ee;
+    text-decoration: none;
+    margin-right: 8px;
+    transition: color var(--transition-fast);
+}
+
+.detail-link:hover {
+    color: #3a0ca3;
+    text-decoration: underline;
+}
+
+/* Style untuk input URL di tabel */
+.detail-url {
+    width: 100%;
+    padding: var(--space-xs) var(--space-sm);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: var(--card-bg);
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+}
+
+.detail-url:focus {
+    outline: none;
+    border-color: #4361ee;
+    box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+}
     </style>
 </head>
 <body>
@@ -970,6 +999,7 @@
             <tr>
                 <th>Kategori</th>
                 <th>Deskripsi</th>
+                <th>URL (Opsional)</th>
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -1105,6 +1135,7 @@ function closeNotification(notification) {
 
 // Fungsi untuk memastikan user document ada
 // Fungsi untuk memastikan user document ada (FIXED VERSION)
+// Fungsi untuk memastikan user document ada (FIXED VERSION)
 async function ensureUserDocument(user) {
     try {
         const userRef = db.collection('users').doc(user.uid);
@@ -1127,7 +1158,7 @@ async function ensureUserDocument(user) {
                 displayName: user.displayName || currentData.displayName || user.email
             };
             
-            // Hanya update role/isSuperAdmin jika belum ada atau user baru
+            // Hanya update role/isSuperAdmin jika belum ada
             if (!currentData.hasOwnProperty('role')) {
                 updateData.role = isSuperAdmin ? 'super_admin' : 'user';
             }
@@ -1137,6 +1168,9 @@ async function ensureUserDocument(user) {
             
             await userRef.update(updateData);
             console.log('User document updated for:', user.uid, 'Role:', currentData.role || updateData.role);
+            
+            // RETURN THE UPDATED DATA
+            return { ...currentData, ...updateData };
         } else {
             // Document baru - buat dengan role dan isSuperAdmin yang benar
             const newUserDoc = {
@@ -1150,14 +1184,16 @@ async function ensureUserDocument(user) {
             
             await userRef.set(newUserDoc);
             console.log('New user document created for:', user.uid, 'Role:', newUserDoc.role);
+            
+            // RETURN THE NEW DATA
+            return newUserDoc;
         }
     } catch (error) {
         console.error('Error ensuring user document:', error);
+        throw error;
     }
 }
 
-// Fungsi untuk memeriksa autentikasi pengguna
-// Fungsi untuk memeriksa autentikasi pengguna (MODIFIED VERSION)
 async function checkAuth() {
     return new Promise((resolve, reject) => {
         const unsubscribe = auth.onAuthStateChanged(async user => {
@@ -1166,7 +1202,7 @@ async function checkAuth() {
                 currentUser = user;
                 try {
                     // Dapatkan data user yang lengkap termasuk role
-                    currentUserData = await ensureUserDocument(user);
+                    currentUserData = await ensureUserDocument(user); // SIMPAN KE VARIABLE GLOBAL
                     resolve(user);
                 } catch (error) {
                     reject(error);
@@ -1240,6 +1276,7 @@ async function saveResearch(researchData) {
 }
 
 // Fungsi untuk mendapatkan research details dari tabel
+// Fungsi untuk mendapatkan research details dari tabel
 function getResearchDetailsFromTable() {
     if (!researchDetailTbody) {
         console.error('researchDetailTbody not found');
@@ -1252,15 +1289,18 @@ function getResearchDetailsFromTable() {
     rows.forEach(row => {
         const categorySelect = row.querySelector('.detail-category');
         const descriptionTextarea = row.querySelector('.detail-description');
+        const urlInput = row.querySelector('.detail-url');
         
         const category = categorySelect ? categorySelect.value : '';
         const description = descriptionTextarea ? descriptionTextarea.value : '';
+        const url = urlInput ? urlInput.value.trim() : '';
         
-        // Validasi: hanya tambahkan jika kedua field terisi
+        // Validasi: hanya tambahkan jika kedua field utama terisi
         if (category && description) {
             details.push({
                 category,
-                description
+                description,
+                url: url || null // Simpan URL jika ada, null jika kosong
             });
         }
     });
@@ -1288,6 +1328,7 @@ function populateResearchDetailsTable(details) {
 }
 
 // Fungsi untuk menambah baris research detail
+// Fungsi untuk menambah baris research detail
 function addResearchDetailRow(data = {}) {
     if (!researchDetailTbody) {
         console.error('researchDetailTbody not found');
@@ -1308,6 +1349,9 @@ function addResearchDetailRow(data = {}) {
         </td>
         <td>
             <textarea class="table-textarea detail-description" placeholder="Deskripsi research..." required>${data.description || ''}</textarea>
+        </td>
+        <td>
+            <input type="url" class="table-input detail-url" placeholder="https://example.com" value="${data.url || ''}">
         </td>
         <td>
             <button type="button" class="delete-row-btn" onclick="this.closest('tr').remove()">
@@ -1409,6 +1453,7 @@ async function checkDeadlines() {
 
 // Fungsi untuk merender daftar research
 // Fungsi untuk merender daftar research (MODIFIED VERSION)
+// Fungsi untuk merender daftar research (MODIFIED VERSION)
 function renderResearchList() {
     if (!researchItemsContainer) {
         console.error('researchItemsContainer not found');
@@ -1462,12 +1507,25 @@ function renderResearchList() {
                 <i class="fas fa-user"></i> User ID: ${research.userId}
             </p>` : '';
         
+        // Buat daftar detail dengan link jika ada URL
+        let detailsHtml = 'Tidak ada detail';
+        if (research.details && research.details.length > 0) {
+            detailsHtml = research.details.map(detail => {
+                if (detail.url) {
+                    return `<a href="${detail.url}" target="_blank" class="detail-link" style="color: #4361ee; text-decoration: none; margin-right: 8px;">
+                        <i class="fas fa-external-link-alt" style="font-size: 0.8em;"></i> ${detail.category}
+                    </a>`;
+                } else {
+                    return `<span style="margin-right: 8px;">${detail.category}</span>`;
+                }
+            }).join('');
+        }
+        
         researchItem.innerHTML = `
             <div class="research-info">
                 ${ownerInfo}
                 <h3 class="research-name">${research.platform}</h3>
-                <p class="research-desc">${research.details && research.details.length > 0 ? 
-                    research.details.map(detail => detail.category).join(', ') : 'Tidak ada detail'}</p>
+                <div class="research-desc">${detailsHtml}</div>
                 <p class="research-date">Dibuat: ${formattedDate}</p>
             </div>
             <div class="research-actions">
@@ -1778,11 +1836,9 @@ function setupRealTimeListener() {
         
         // Tampilkan info mode akses
         if (currentUserData && currentUserData.isSuperAdmin) {
-            showNotification(`Super Admin Mode: Memuat ${researchData.length} research dari semua user`, 'info');
         }
     }, error => {
         console.error('Error in real-time listener:', error);
-        showNotification('Gagal memuat data real-time', 'error');
     });
 }
 
@@ -1848,20 +1904,23 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 // Handle auth state changes
+// Handle auth state changes
 auth.onAuthStateChanged(async user => {
     if (user) {
         currentUser = user;
-        await ensureUserDocument(user);
-        console.log('User is signed in:', user.uid);
+        currentUserData = await ensureUserDocument(user); // SIMPAN KE VARIABLE GLOBAL
+        console.log('User is signed in:', user.uid, 'Role:', currentUserData.role);
         
         if (unsubscribeResearch) {
             unsubscribeResearch();
         }
         setupRealTimeListener();
-        updateUserProfile(user);
+        updateUserProfile(user, currentUserData); // PASS USER DATA
         
     } else {
         console.log('User is signed out');
+        currentUser = null;
+        currentUserData = null;
         if (unsubscribeResearch) {
             unsubscribeResearch();
         }
@@ -1872,63 +1931,7 @@ auth.onAuthStateChanged(async user => {
         }, 2000);
     }
 });
-// Fungsi untuk memastikan user document ada (MODIFIED VERSION)
-async function ensureUserDocument(user) {
-    try {
-        const userRef = db.collection('users').doc(user.uid);
-        const userDoc = await userRef.get();
-        
-        // Daftar email super admin
-        const superAdminEmails = [
-            "superadmin@gachaengine.com",
-            "admin@gachaengine.com"
-        ];
-        
-        const isSuperAdmin = superAdminEmails.includes(user.email);
-        
-        if (userDoc.exists) {
-            // Document sudah ada - update tanpa overwrite role/isSuperAdmin
-            const currentData = userDoc.data();
-            const updateData = {
-                lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
-                email: user.email,
-                displayName: user.displayName || currentData.displayName || user.email
-            };
-            
-            // Hanya update role/isSuperAdmin jika belum ada atau user baru
-            if (!currentData.hasOwnProperty('role')) {
-                updateData.role = isSuperAdmin ? 'super_admin' : 'user';
-            }
-            if (!currentData.hasOwnProperty('isSuperAdmin')) {
-                updateData.isSuperAdmin = isSuperAdmin;
-            }
-            
-            await userRef.update(updateData);
-            console.log('User document updated for:', user.uid, 'Role:', currentData.role || updateData.role);
-            
-            // Return user data dengan role yang sudah diupdate
-            return { ...currentData, ...updateData };
-        } else {
-            // Document baru - buat dengan role dan isSuperAdmin yang benar
-            const newUserDoc = {
-                email: user.email,
-                displayName: user.displayName || user.email,
-                role: isSuperAdmin ? 'super_admin' : 'user',
-                isSuperAdmin: isSuperAdmin,
-                lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            };
-            
-            await userRef.set(newUserDoc);
-            console.log('New user document created for:', user.uid, 'Role:', newUserDoc.role);
-            
-            return newUserDoc;
-        }
-    } catch (error) {
-        console.error('Error ensuring user document:', error);
-        throw error;
-    }
-}
+
 // Update user profile info (MODIFIED VERSION)
 function updateUserProfile(user, userData) {
     const userProfile = document.querySelector('.user-info h4');

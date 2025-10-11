@@ -1027,15 +1027,6 @@
             <!-- Tab Menu -->
             <div class="kpi-tab-menu">
                 <!-- Dashboard Overview -->
-                <a class="menu-item active" href="summary-dashboard.html">
-                    <i class="fas fa-chart-pie"></i>
-                    <span>Dashboard</span>
-                </a>
-                <!-- Summary Dashboard -->
-                <a class="menu-item" href="history-activity.html">
-                    <i class="fas fa-tachometer-alt"></i>
-                    <span>History</span>
-                </a>
             </div>
         </div>
 
@@ -1527,131 +1518,168 @@ unsubscribeFunctions.push(solvedUnsubscribe);
         }
     }
 
-    // Gabungkan dan update semua laporan
-    function updateCombinedReports() {
-        const pending = window.pendingReportsCache || [];
-        const solved = window.solvedReportsCache || [];
-        const maintenance = window.maintenanceReportsCache || [];
-        const solvedMaintenance = window.solvedMaintenanceCache || [];
+function updateCombinedReports() {
+    const pending = window.pendingReportsCache || [];
+    const solved = window.solvedReportsCache || [];
+    const maintenance = window.maintenanceReportsCache || [];
+    const solvedMaintenance = window.solvedMaintenanceCache || [];
+    
+    console.log("Combining reports - Pending:", pending.length, "Solved:", solved.length, 
+                "Maintenance:", maintenance.length, "Solved Maintenance:", solvedMaintenance.length);
+    
+    // Gabungkan semua laporan untuk chart dan tabel
+    allReportsData = [...pending, ...solved, ...maintenance, ...solvedMaintenance];
         
-        console.log("Combining reports - Pending:", pending.length, "Solved:", solved.length, 
-                    "Maintenance:", maintenance.length, "Solved Maintenance:", solvedMaintenance.length);
-        
-        // Gabungkan semua laporan
-        allReportsData = [...pending, ...solved, ...maintenance, ...solvedMaintenance];
-            
-        console.log("Total reports after combining:", allReportsData.length);
-        
-        // Perbarui UI
-        updateDashboardStats(allReportsData);
-        updateCharts(allReportsData);
-        updateSummaryTable(allReportsData);
-    }
-
+    console.log("Total reports after combining:", allReportsData.length);
+    
+    // Perbarui UI
+    updateDashboardStats(allReportsData);
+    updateCharts(allReportsData);
+    updateSummaryTable(allReportsData);
+}
     // ========== FUNGSI STATISTIK & UI UPDATE ==========
 
     // Fungsi untuk menghitung statistik dashboard
-    function calculateRealStats(reports) {
-        // Hitung total reports
-        const totalReports = reports.length;
-        
-        // Hitung solved reports
-        const solvedReports = reports.filter(report => report.isSolved).length;
-        
-        // Hitung resolution rate
-        const resolutionRate = totalReports > 0 ? Math.round((solvedReports / totalReports) * 100) : 0;
-        
-        // Hitung rata-rata resolution time untuk reports yang sudah solved
-        let totalResolutionTime = 0;
-        let countWithResolutionTime = 0;
-        
-        reports.forEach(report => {
-            if (report.isSolved && report.resolutionTime) {
-                totalResolutionTime += report.resolutionTime;
-                countWithResolutionTime++;
-            }
-        });
-        
-        // Hitung reports per brand
-        const brandCounts = {};
-        reports.forEach(report => {
-            if (report.brand) {
-                brandCounts[report.brand] = (brandCounts[report.brand] || 0) + 1;
-            }
-        });
-        
-        // Temukan brand dengan laporan terbanyak
-        let topBrand = { name: "None", count: 0 };
-        for (const brand in brandCounts) {
-            if (brandCounts[brand] > topBrand.count) {
-                topBrand = { name: brand, count: brandCounts[brand] };
-            }
-        }
-        
-        // Hitung reports per kategori
-        const categoryCounts = {};
-        reports.forEach(report => {
-            if (report.category) {
-                categoryCounts[report.category] = (categoryCounts[report.category] || 0) + 1;
-            }
-        });
-        
-        // Hitung reports per status
-        const statusCounts = {
-            'Pending': reports.filter(report => report.status === 'Pending').length,
-            'Solved': reports.filter(report => report.status === 'Solved').length,
-            'Maintenance': reports.filter(report => report.status === 'Maintenance').length,
-            'Maintenance Solved': reports.filter(report => report.status === 'Maintenance Solved').length
-        };
-        
-        return {
-            totalReports,
-            solvedCount: solvedReports,
-            pendingCount: statusCounts.Pending,
-            maintenanceCount: statusCounts.Maintenance,
-            solvedMaintenanceCount: statusCounts['Maintenance Solved'],
-            resolutionRate,
-            topBrand,
-            categoryCounts,
-            statusCounts,
-            brandCounts
-        };
-    }
+    // ========== FUNGSI STATISTIK & UI UPDATE ==========
 
-    // Fungsi untuk memperbarui statistik dashboard
-    function updateDashboardStats(reports) {
-        const stats = calculateRealStats(reports);
-        
-        // Update semua statistik utama
-        document.getElementById('weeklyPerformance').textContent = `${stats.resolutionRate}%`;
-        document.getElementById('resolutionRate').textContent = `${stats.resolutionRate}%`;
-        document.getElementById('topBrand').textContent = stats.topBrand.name;
-        
-        // Update additional stats - SEMUA ELEMEN
-        document.getElementById('totalReports').textContent = stats.totalReports;
-        document.getElementById('solvedReports').textContent = stats.solvedCount;
-        document.getElementById('pendingReports').textContent = stats.pendingCount;
-        document.getElementById('maintenanceReports').textContent = stats.maintenanceCount;
-        document.getElementById('solvedMaintenance').textContent = stats.solvedMaintenanceCount;
-        
-        // Update new game releases (ambil dari data game jika tersedia)
-        const newGameReleases = window.newGamesData ? window.newGamesData.length : 0;
-        document.getElementById('newGameReleases').textContent = newGameReleases;
-        
-        // Update trend indicators dengan data yang lebih realistis
-        const performanceChange = calculatePerformanceChange(reports);
-        document.getElementById('performanceChange').innerHTML = 
+// Fungsi untuk menghitung statistik dashboard
+function calculateRealStats(reports) {
+    // Hitung total reports (semua jenis laporan)
+    const totalReports = reports.length;
+    
+    // Hitung solved reports HANYA dari solvedReports collection
+    const solvedReports = window.solvedReportsCache ? window.solvedReportsCache.length : 0;
+    
+    // Hitung pending reports HANYA dari pendingReports collection  
+    const pendingReports = window.pendingReportsCache ? window.pendingReportsCache.length : 0;
+    
+    // Hitung maintenance reports HANYA dari maintenanceReports collection
+    const maintenanceReports = window.maintenanceReportsCache ? window.maintenanceReportsCache.length : 0;
+    
+    // Hitung solved maintenance HANYA dari solvedMaintenance collection
+    const solvedMaintenance = window.solvedMaintenanceCache ? window.solvedMaintenanceCache.length : 0;
+    
+    // Hitung resolution rate (hanya dari reports biasa, tidak termasuk maintenance)
+    const regularReports = (window.pendingReportsCache ? window.pendingReportsCache.length : 0) + 
+                          (window.solvedReportsCache ? window.solvedReportsCache.length : 0);
+    const resolutionRate = regularReports > 0 ? 
+        Math.round((solvedReports / regularReports) * 100) : 0;
+    
+    // Hitung rata-rata resolution time untuk reports yang sudah solved
+    let totalResolutionTime = 0;
+    let countWithResolutionTime = 0;
+    
+    reports.forEach(report => {
+        if (report.isSolved && report.resolutionTime) {
+            totalResolutionTime += report.resolutionTime;
+            countWithResolutionTime++;
+        }
+    });
+    
+    // Hitung reports per brand
+    const brandCounts = {};
+    reports.forEach(report => {
+        if (report.brand) {
+            brandCounts[report.brand] = (brandCounts[report.brand] || 0) + 1;
+        }
+    });
+    
+    // Temukan brand dengan laporan terbanyak
+    let topBrand = { name: "None", count: 0 };
+    for (const brand in brandCounts) {
+        if (brandCounts[brand] > topBrand.count) {
+            topBrand = { name: brand, count: brandCounts[brand] };
+        }
+    }
+    
+    // Hitung reports per kategori
+    const categoryCounts = {};
+    reports.forEach(report => {
+        if (report.category) {
+            categoryCounts[report.category] = (categoryCounts[report.category] || 0) + 1;
+        }
+    });
+    
+    // Hitung reports per status
+    const statusCounts = {
+        'Pending': pendingReports,
+        'Solved': solvedReports,
+        'Maintenance': maintenanceReports,
+        'Maintenance Solved': solvedMaintenance
+    };
+    
+    return {
+        totalReports,
+        solvedCount: solvedReports,        // HANYA dari solvedReports
+        pendingCount: pendingReports,      // HANYA dari pendingReports  
+        maintenanceCount: maintenanceReports, // HANYA dari maintenanceReports
+        solvedMaintenanceCount: solvedMaintenance, // HANYA dari solvedMaintenance
+        resolutionRate,
+        topBrand,
+        categoryCounts,
+        statusCounts,
+        brandCounts
+    };
+}
+
+// Fungsi untuk memperbarui statistik dashboard
+function updateDashboardStats(reports) {
+    const stats = calculateRealStats(reports);
+    
+    // Update semua statistik utama
+    document.getElementById('weeklyPerformance').textContent = `${stats.resolutionRate}%`;
+    document.getElementById('resolutionRate').textContent = `${stats.resolutionRate}%`;
+    document.getElementById('topBrand').textContent = stats.topBrand.name;
+    
+    // Update additional stats - DENGAN DATA YANG TEPAT
+    document.getElementById('totalReports').textContent = stats.totalReports;
+    document.getElementById('solvedReports').textContent = stats.solvedCount;           // HANYA solvedReports
+    document.getElementById('pendingReports').textContent = stats.pendingCount;         // HANYA pendingReports
+    document.getElementById('maintenanceReports').textContent = stats.maintenanceCount; // HANYA maintenanceReports
+    document.getElementById('solvedMaintenance').textContent = stats.solvedMaintenanceCount; // HANYA solvedMaintenance
+    
+    // Update new game releases (ambil dari data game jika tersedia)
+    const newGameReleases = window.newGamesData ? window.newGamesData.length : 0;
+    document.getElementById('newGameReleases').textContent = newGameReleases;
+    
+    // Update new feature releases (ambil dari data features jika tersedia)
+    const newFeatureReleases = window.featuresData ? window.featuresData.length : 0;
+    document.getElementById('newfeatureReleases').textContent = newFeatureReleases;
+    
+    // Update trend indicators dengan data yang lebih realistis
+    const performanceChange = calculatePerformanceChange(reports);
+    const performanceChangeElement = document.getElementById('performanceChange');
+    if (performanceChangeElement) {
+        performanceChangeElement.innerHTML = 
             performanceChange >= 0 ? 
             `<i class="fas fa-arrow-up"></i> ${performanceChange}% from last week` :
             `<i class="fas fa-arrow-down"></i> ${Math.abs(performanceChange)}% from last week`;
         
-        const trendChange = calculateTrendChange(reports);
-        document.getElementById('trendChange').innerHTML = 
+        // Update class untuk warna
+        performanceChangeElement.className = performanceChange >= 0 ? 'positive' : 'negative';
+    }
+    
+    const trendChange = calculateTrendChange(reports);
+    const trendChangeElement = document.getElementById('trendChange');
+    if (trendChangeElement) {
+        trendChangeElement.innerHTML = 
             trendChange >= 0 ? 
             `<i class="fas fa-arrow-up"></i> ${trendChange}% improvement` :
             `<i class="fas fa-arrow-down"></i> ${Math.abs(trendChange)}% decline`;
+        
+        // Update class untuk warna
+        trendChangeElement.className = trendChange >= 0 ? 'positive' : 'negative';
     }
-
+    
+    console.log("Dashboard stats updated:", {
+        total: stats.totalReports,
+        solved: stats.solvedCount,
+        pending: stats.pendingCount,
+        maintenance: stats.maintenanceCount,
+        solvedMaintenance: stats.solvedMaintenanceCount,
+        resolutionRate: stats.resolutionRate
+    });
+}
     // Fungsi bantu untuk menghitung perubahan performa
     function calculatePerformanceChange(reports) {
         // Hitung performa minggu ini

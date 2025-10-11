@@ -201,6 +201,14 @@ class SidebarLoader {
     <span class="menu-text">Phishing Alerts</span>
 </div>
 
+<!-- Tambahan: Jadwal Shift (sesudah Phishing Alerts) -->
+<div class="menu-item" data-page="jadwalshift.html">
+    <div class="menu-icon">
+        <i class="fas fa-calendar-alt"></i>
+    </div>
+    <span class="menu-text">Jadwal Shift</span>
+</div>
+
 <!-- Setting pindah ke bawah -->
 <div class="menu-item" data-page="pengaturan.html">
     <div class="menu-icon">
@@ -215,6 +223,7 @@ class SidebarLoader {
     </div>
     <span class="menu-text">Logout</span>
 </div>
+
 
                 </div>
             </div>

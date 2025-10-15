@@ -720,7 +720,477 @@
         filterCategory.value = '';
         renderTasks();
     }
+    // ========== TRANSLATIONS FOR TASK HISTORY ==========
+const taskHistoryTranslations = {
+    id: {
+        // Header
+        "pageTitle": "Riwayat Tugas",
+        "searchPlaceholder": "Cari tugas...",
+        
+        // Section Header
+        "sectionTitle": "Riwayat Tugas",
+        "filterDate": "Filter Tanggal",
+        "filterCategory": "Filter Kategori",
+        "allCategories": "Semua Kategori",
+        "clearFilter": "Reset Filter",
+        
+        // Categories
+        "sharePromotion": "Share Promosi Panel",
+        "checkDomain": "Check Domain",
+        "checkGame": "Check Game",
+        "checkPending": "Check Pending",
+        "checkMaintenance": "Check Maintenance",
+        "other": "Lainnya",
+        
+        // Task Status
+        "completed": "Selesai",
+        "pending": "Pending",
+        
+        // Empty State
+        "noHistory": "Tidak ada riwayat tugas",
+        "noHistoryMessage": "Belum ada tugas yang diselesaikan atau sesuai dengan filter yang dipilih.",
+        
+        // Task Meta
+        "minutes": "menit",
+        
+        // User Roles
+        "superAdmin": "Super Administrator",
+        "customerSupport": "Customer Service Support",
+        "localStorageMode": "Mode Local Storage"
+    },
     
+    en: {
+        // Header
+        "pageTitle": "Task History",
+        "searchPlaceholder": "Search tasks...",
+        
+        // Section Header
+        "sectionTitle": "Task History",
+        "filterDate": "Filter Date",
+        "filterCategory": "Filter Category",
+        "allCategories": "All Categories",
+        "clearFilter": "Reset Filter",
+        
+        // Categories
+        "sharePromotion": "Share Promosi Panel",
+        "checkDomain": "Check Domain",
+        "checkGame": "Check Game",
+        "checkPending": "Check Pending",
+        "checkMaintenance": "Check Maintenance",
+        "other": "Other",
+        
+        // Task Status
+        "completed": "Completed",
+        "pending": "Pending",
+        
+        // Empty State
+        "noHistory": "No task history",
+        "noHistoryMessage": "No completed tasks or tasks matching the selected filters.",
+        
+        // Task Meta
+        "minutes": "minutes",
+        
+        // User Roles
+        "superAdmin": "Super Administrator",
+        "customerSupport": "Customer Service Support",
+        "localStorageMode": "Local Storage Mode"
+    },
+    
+    ja: {
+        // Header
+        "pageTitle": "タスク履歴",
+        "searchPlaceholder": "タスクを検索...",
+        
+        // Section Header
+        "sectionTitle": "タスク履歴",
+        "filterDate": "日付でフィルター",
+        "filterCategory": "カテゴリでフィルター",
+        "allCategories": "すべてのカテゴリ",
+        "clearFilter": "フィルターをリセット",
+        
+        // Categories
+        "sharePromotion": "プロモーション共有パネル",
+        "checkDomain": "ドメイン確認",
+        "checkGame": "ゲーム確認",
+        "checkPending": "保留中確認",
+        "checkMaintenance": "メンテナンス確認",
+        "other": "その他",
+        
+        // Task Status
+        "completed": "完了",
+        "pending": "保留中",
+        
+        // Empty State
+        "noHistory": "タスク履歴がありません",
+        "noHistoryMessage": "完了したタスクまたは選択したフィルターに一致するタスクがありません。",
+        
+        // Task Meta
+        "minutes": "分",
+        
+        // User Roles
+        "superAdmin": "スーパー管理者",
+        "customerSupport": "カスタマーサービスサポート",
+        "localStorageMode": "ローカルストレージモード"
+    },
+    
+    zh: {
+        // Header
+        "pageTitle": "任务历史",
+        "searchPlaceholder": "搜索任务...",
+        
+        // Section Header
+        "sectionTitle": "任务历史",
+        "filterDate": "筛选日期",
+        "filterCategory": "筛选类别",
+        "allCategories": "所有类别",
+        "clearFilter": "重置筛选",
+        
+        // Categories
+        "sharePromotion": "分享促销面板",
+        "checkDomain": "检查域名",
+        "checkGame": "检查游戏",
+        "checkPending": "检查待处理",
+        "checkMaintenance": "检查维护",
+        "other": "其他",
+        
+        // Task Status
+        "completed": "已完成",
+        "pending": "待处理",
+        
+        // Empty State
+        "noHistory": "无任务历史",
+        "noHistoryMessage": "没有已完成的任务或符合筛选条件的任务。",
+        
+        // Task Meta
+        "minutes": "分钟",
+        
+        // User Roles
+        "superAdmin": "超级管理员",
+        "customerSupport": "客户服务支持",
+        "localStorageMode": "本地存储模式"
+    }
+};
+
+// ========== TRANSLATION FUNCTIONS ==========
+
+// Fungsi untuk menerapkan terjemahan ke halaman task history
+function applyTaskHistoryTranslations(language) {
+    const lang = taskHistoryTranslations[language] || taskHistoryTranslations['id'];
+    
+    if (!lang) return;
+
+    console.log("Applying task history translations for:", language);
+
+    // Terjemahkan elemen utama
+    const elements = {
+        'pageTitle': '.header h1',
+        'searchPlaceholder': '#searchTasks',
+        'sectionTitle': '.section-title',
+        'filterDate': 'label[for="filterDate"]',
+        'filterCategory': 'label[for="filterCategory"]',
+        'clearFilter': '#clearFilter',
+        'noHistory': '.empty-state h3',
+        'noHistoryMessage': '.empty-state p'
+    };
+
+    Object.keys(elements).forEach(key => {
+        const element = document.querySelector(elements[key]);
+        if (element && lang[key]) {
+            if (key === 'searchPlaceholder') {
+                element.placeholder = lang[key];
+            } else if (key === 'clearFilter') {
+                // Handle button with icon
+                const icon = element.querySelector('i');
+                if (icon) {
+                    element.innerHTML = icon.outerHTML + ' ' + lang[key];
+                } else {
+                    element.textContent = lang[key];
+                }
+            } else {
+                // Handle elements with icons
+                const iconMatch = element.innerHTML.match(/(<i[^>]*><\/i>)/);
+                if (iconMatch) {
+                    element.innerHTML = iconMatch[0] + ' ' + lang[key];
+                } else {
+                    element.textContent = lang[key];
+                }
+            }
+        }
+    });
+
+    // Update kategori di filter
+    updateTaskHistoryFilterCategories(language);
+    
+    // Update status tugas
+    updateTaskHistoryTaskStatus(language);
+    
+    // Update peran pengguna
+    updateTaskHistoryUserRole(language);
+    
+    // Render ulang tugas untuk update terjemahan
+    if (typeof renderTasks === 'function') {
+        setTimeout(() => {
+            renderTasks();
+        }, 100);
+    }
+}
+
+// Update terjemahan kategori di filter
+function updateTaskHistoryFilterCategories(language) {
+    const lang = taskHistoryTranslations[language] || taskHistoryTranslations['id'];
+    
+    const categorySelect = document.getElementById('filterCategory');
+    if (categorySelect) {
+        const options = categorySelect.querySelectorAll('option');
+        if (options.length >= 7) {
+            if (lang.allCategories) options[0].text = lang.allCategories;
+            if (lang.sharePromotion) options[1].text = lang.sharePromotion;
+            if (lang.checkDomain) options[2].text = lang.checkDomain;
+            if (lang.checkGame) options[3].text = lang.checkGame;
+            if (lang.checkPending) options[4].text = lang.checkPending;
+            if (lang.checkMaintenance) options[5].text = lang.checkMaintenance;
+            if (lang.other) options[6].text = lang.other;
+        }
+    }
+}
+
+// Update terjemahan status tugas
+function updateTaskHistoryTaskStatus(language) {
+    const lang = taskHistoryTranslations[language] || taskHistoryTranslations['id'];
+    
+    // Update status di tugas yang sudah dirender
+    document.querySelectorAll('.task-status').forEach(statusElement => {
+        const isCompleted = statusElement.classList.contains('status-completed');
+        const icon = statusElement.querySelector('i');
+        
+        if (icon && lang.completed && lang.pending) {
+            statusElement.innerHTML = icon.outerHTML + ' ' + (isCompleted ? lang.completed : lang.pending);
+        }
+    });
+}
+
+// Update terjemahan peran pengguna
+function updateTaskHistoryUserRole(language) {
+    const lang = taskHistoryTranslations[language] || taskHistoryTranslations['id'];
+    
+    // Update user role display
+    const userRoleElement = document.querySelector('.user-info p');
+    if (userRoleElement) {
+        const currentText = userRoleElement.textContent;
+        if (currentText.includes('Customer Service Support') && lang.customerSupport) {
+            userRoleElement.textContent = lang.customerSupport;
+        } else if (currentText.includes('Super Administrator') && lang.superAdmin) {
+            userRoleElement.textContent = lang.superAdmin;
+        } else if (currentText.includes('Local Storage Mode') && lang.localStorageMode) {
+            userRoleElement.textContent = lang.localStorageMode;
+        }
+    }
+}
+
+// ========== DATE FORMATTING FOR DIFFERENT LANGUAGES ==========
+
+// Fungsi untuk memformat tanggal berdasarkan bahasa
+function formatTaskDate(dateString, language) {
+    if (!dateString) return '';
+    
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return dateString;
+    
+    const options = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    };
+    
+    // Sesuaikan locale berdasarkan bahasa
+    let locale = 'id-ID'; // default
+    
+    switch(language) {
+        case 'en':
+            locale = 'en-US';
+            break;
+        case 'ja':
+            locale = 'ja-JP';
+            break;
+        case 'zh':
+            locale = 'zh-CN';
+            break;
+        default:
+            locale = 'id-ID';
+    }
+    
+    return date.toLocaleDateString(locale, options);
+}
+
+// ========== TASK RENDERING WITH TRANSLATION SUPPORT ==========
+
+// Override fungsi renderTasks untuk mendukung multi-bahasa
+function createTranslatedRenderTasks(originalRenderFunction) {
+    return function(tasksToRender = null) {
+        const language = localStorage.getItem('language') || 'id';
+        const lang = taskHistoryTranslations[language] || taskHistoryTranslations['id'];
+        
+        let tasks = tasksToRender;
+        
+        if (!tasks) {
+            const filterDateValue = document.getElementById('filterDate').value;
+            const categoryFilter = document.getElementById('filterCategory').value;
+            const searchTerm = document.getElementById('searchTasks').value.toLowerCase();
+            
+            tasks = tasksData.filter(task => {
+                // Filter berdasarkan pencarian
+                if (searchTerm && !(
+                    task.title.toLowerCase().includes(searchTerm) ||
+                    (task.description && task.description.toLowerCase().includes(searchTerm))
+                )) {
+                    return false;
+                }
+                
+                // Filter berdasarkan tanggal jika dipilih
+                if (filterDateValue && task.date !== filterDateValue) {
+                    return false;
+                }
+                
+                // Filter berdasarkan kategori jika dipilih
+                if (categoryFilter && task.category !== categoryFilter) {
+                    return false;
+                }
+                
+                return true;
+            });
+        }
+        
+        // Urutkan berdasarkan tanggal (terbaru pertama)
+        const sortedTasks = [...tasks].sort((a, b) => {
+            return new Date(b.date) - new Date(a.date);
+        });
+        
+        const emptyState = document.getElementById('emptyState');
+        const taskList = document.getElementById('taskList');
+        
+        if (sortedTasks.length === 0) {
+            emptyState.style.display = 'block';
+            taskList.style.display = 'none';
+            
+            // Update teks empty state
+            const emptyTitle = emptyState.querySelector('h3');
+            const emptyMessage = emptyState.querySelector('p');
+            
+            if (emptyTitle && lang.noHistory) {
+                emptyTitle.textContent = lang.noHistory;
+            }
+            if (emptyMessage && lang.noHistoryMessage) {
+                emptyMessage.textContent = lang.noHistoryMessage;
+            }
+            
+            return;
+        }
+        
+        emptyState.style.display = 'none';
+        taskList.style.display = 'flex';
+        taskList.innerHTML = '';
+        
+        sortedTasks.forEach(task => {
+            const taskItem = document.createElement('div');
+            taskItem.className = `task-item ${task.completed ? 'completed' : ''} fade-in`;
+            
+            // Format tanggal berdasarkan bahasa
+            const formattedDate = formatTaskDate(task.date, language);
+            
+            taskItem.innerHTML = `
+                <div class="task-header">
+                    <div class="task-title">${task.title}</div>
+                    <span class="task-status ${task.completed ? 'status-completed' : 'status-pending'}">
+                        <i class="fas ${task.completed ? 'fa-check-circle' : 'fa-clock'}"></i>
+                        ${task.completed ? lang.completed : lang.pending}
+                    </span>
+                </div>
+                <div class="task-meta">
+                    <span class="task-category">
+                        <i class="fas fa-folder"></i> ${task.category}
+                    </span>
+                    ${task.time ? `
+                    <span class="task-time">
+                        <i class="fas fa-clock"></i> ${task.time} ${lang.minutes || 'menit'}
+                    </span>
+                    ` : ''}
+                    <span class="task-date">
+                        <i class="fas fa-calendar"></i> ${formattedDate}
+                    </span>
+                </div>
+                ${task.description ? `
+                <div class="task-description">
+                    ${task.description}
+                </div>
+                ` : ''}
+            `;
+            
+            taskList.appendChild(taskItem);
+        });
+    };
+}
+
+// ========== LANGUAGE INITIALIZATION ==========
+
+// Fungsi inisialisasi bahasa untuk task history
+function initializeTaskHistoryLanguage() {
+    const savedLanguage = localStorage.getItem('language') || 'id';
+    console.log("Initializing task history with language:", savedLanguage);
+    
+    // Terapkan terjemahan
+    applyTaskHistoryTranslations(savedLanguage);
+    
+    // Override fungsi renderTasks dengan versi yang mendukung terjemahan
+    if (typeof renderTasks === 'function') {
+        window.renderTasks = createTranslatedRenderTasks(renderTasks);
+    }
+    
+    // Setup listener untuk perubahan bahasa
+    window.addEventListener('languageChanged', function(event) {
+        console.log("Language changed in task history to:", event.detail.language);
+        applyTaskHistoryTranslations(event.detail.language);
+        
+        // Render ulang tugas untuk update terjemahan
+        if (typeof renderTasks === 'function') {
+            setTimeout(() => {
+                renderTasks();
+            }, 100);
+        }
+    });
+}
+
+// ========== INTEGRATION WITH EXISTING CODE ==========
+
+// Fungsi untuk mengintegrasikan dengan kode yang sudah ada
+function integrateTaskHistoryWithLanguageSupport() {
+    // Simpan referensi ke fungsi asli
+    const originalLoadTasksData = window.loadTasksData;
+    const originalRenderTasks = window.renderTasks;
+    const originalFilterTasks = window.filterTasks;
+    const originalResetFilters = window.resetFilters;
+    
+    // Inisialisasi bahasa
+    initializeTaskHistoryLanguage();
+    
+    // Override fungsi renderTasks dengan versi yang sudah di-translate
+    if (typeof originalRenderTasks === 'function') {
+        window.renderTasks = createTranslatedRenderTasks(originalRenderTasks);
+    }
+}
+
+// Panggil inisialisasi saat DOM ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Tunggu sebentar untuk memastikan semua element sudah terload
+    setTimeout(() => {
+        integrateTaskHistoryWithLanguageSupport();
+    }, 100);
+});
+
+// Juga panggil saat halaman sepenuhnya loaded
+window.addEventListener('load', function() {
+    integrateTaskHistoryWithLanguageSupport();
+});
 </script>
 </body>
 </html>

@@ -12,7 +12,71 @@
 <link rel="stylesheet" href="stylekpi.css">
 <script src="global-time.js"></script>
     <style>
-       
+       /* TAMBAHKAN CSS INI */
+.btn-edit-cell, .btn-save-cell, .btn-cancel-cell {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease;
+    margin: 2px;
+    font-weight: 500;
+}
+
+.btn-edit-cell {
+    background: #5D3FD3; /* Contoh warna ungu */
+    color: white;
+}
+
+.btn-save-cell {
+    background: #28a745;
+    color: white;
+}
+
+.btn-cancel-cell {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-edit-cell:hover, .btn-save-cell:hover, .btn-cancel-cell:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.no-action {
+    color: #6c757d;
+    font-style: italic;
+}
+
+.kpi-table td:last-child {
+    min-width: 120px;
+    text-align: center;
+}
+
+/* Style untuk input edit */
+.edit-input {
+    width: 100%;
+    padding: 4px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.edit-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.realization-input {
+    background: #fff3cd !important;
+    border: 2px solid #ffc107 !important;
+    font-weight: bold;
+}
     </style>
 </head>
 <body>
@@ -422,7 +486,42 @@
             score: 0 
         }
     ];
+let isEditMode = false;
+let unsubscribeFunctions = [];
+let currentFilter = 'current';
+let isSuperAdminUser = false;
+let isLocalChange = false; // TAMBAHKAN INI
+let lastLocalChangeTime = 0; // TAMBAHKAN INI
 
+// ========== REAL-TIME LISTENER YANG DIPERBAIKI ==========
+function setupRealTimeListeners() {
+    const currentUser = firebase.auth().currentUser;
+    if (!currentUser) return;
+    
+    const targetUserId = currentUser.uid;
+    
+    console.log('🔔 Setting up listener for user:', targetUserId);
+    
+    const db = firebase.firestore();
+    const kpiUnsubscribe = db.collection('kpiData')
+        .doc(targetUserId)
+        .onSnapshot((doc) => {
+            // SEKARANG isLocalChange SUDAH TERDEFINISI
+            if (isLocalChange && (Date.now() - lastLocalChangeTime < 3000)) {
+                return; // Skip jika perubahan lokal
+            }
+            
+            if (doc.exists) {
+                const savedData = doc.data();
+                if (savedData.userId === targetUserId) {
+                    console.log('✅ Safe update for user:', targetUserId);
+                    updateKpiFromFirestore(savedData);
+                }
+            }
+        });
+    
+    unsubscribeFunctions.push(kpiUnsubscribe);
+}
     // Elemen DOM
     const editAllBtn = document.getElementById('edit-all-btn');
     const resetBtn = document.getElementById('reset-data-btn');
@@ -434,11 +533,6 @@
     const menuItems = document.querySelectorAll('.menu-item');
     const dashboards = document.querySelectorAll('.dashboard');
 
-    // State aplikasi
-    let isEditMode = false;
-    let unsubscribeFunctions = [];
-    let currentFilter = 'current';
-    let isSuperAdminUser = false;
 
     async function checkAndSetupSuperAdmin() {
     try {
@@ -1368,6 +1462,7 @@ async function updateAllKpiData(userId = null) {
 
     // Fungsi untuk memperbarui tampilan dengan data terbaru
     // Fungsi untuk memperbarui tampilan dengan data terbaru - VERSI DIPERBAIKI
+// PERBAIKAN FUNGSI updateDisplay - VERSI DIPERBAIKI
 function updateDisplay() {
     console.log('🔄 Updating display with current data...');
     
@@ -1407,16 +1502,20 @@ function updateDisplay() {
                 }
             }
             
-            // Update tombol action
+            // PERBAIKAN: JANGAN hapus tombol action, tapi update sesuai role
             const actionCell = row.querySelector('td:last-child');
-            if (actionCell && isSuperAdminUser) {
-                actionCell.innerHTML = `
-                    <button class="btn-edit-cell" onclick="editSingleRow(${index})">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-                `;
-            } else if (actionCell) {
-                actionCell.innerHTML = ''; // Kosongkan untuk user biasa
+            if (actionCell) {
+                if (isSuperAdminUser) {
+                    // Untuk Super Admin, tampilkan tombol edit
+                    actionCell.innerHTML = `
+                        <button class="btn-edit-cell" onclick="editSingleRow(${index})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                    `;
+                } else {
+                    // Untuk user biasa, kosongkan atau tampilkan pesan
+                    actionCell.innerHTML = `<span class="no-action">-</span>`;
+                }
             }
         }
     });
@@ -1426,7 +1525,6 @@ function updateDisplay() {
     
     console.log('✅ Display updated successfully');
 }
-
     // ========== FUNGSI NOTIFICATION ==========
 
     // Fungsi untuk menampilkan notifikasi
@@ -1804,26 +1902,23 @@ function setupRealTimeListeners() {
     unsubscribeFunctions.push(kpiUnsubscribe);
 }
 
-    // ========== EVENT LISTENERS ==========
-
-    // Event Listeners untuk tombol edit
-    // Event Listeners untuk tombol edit dengan protection
-    if (editAllBtn) {
-        editAllBtn.addEventListener('click', (e) => {
-            if (!isSuperAdminUser) {
-                e.preventDefault();
-                e.stopPropagation();
-                showNotification('Hanya Super Admin yang dapat mengedit data', 'error');
-                return;
-            }
-            
-            if (!isEditMode) {
-                enableEditMode();
-            } else {
-                disableEditMode();
-            }
-        });
-    }
+    // PERBAIKAN EVENT LISTENER UNTUK EDIT ALL
+if (editAllBtn) {
+    editAllBtn.addEventListener('click', (e) => {
+        if (!isSuperAdminUser) {
+            e.preventDefault();
+            e.stopPropagation();
+            showNotification('Hanya Super Admin yang dapat mengedit data', 'error');
+            return;
+        }
+        
+        if (!isEditMode) {
+            enableEditMode(); // Tampilkan modal pilihan edit
+        } else {
+            disableEditMode(); // Simpan perubahan
+        }
+    });
+}
 
     // Event Listeners untuk reset modal dengan protection
     if (resetBtn) {
@@ -2594,42 +2689,41 @@ async function saveSingleRow(index) {
 }
 
 // Fungsi untuk membatalkan edit satu baris
+// PERBAIKAN FUNGSI cancelSingleRow
 function cancelSingleRow(index) {
-    updateDisplay();
-    showNotification('Edit dibatalkan', 'info');
-}
-
-// Fungsi untuk menambahkan event listener khusus realisasi
-function addRealisasiEditListeners() {
-    const inputs = document.querySelectorAll('.realization-input');
-    inputs.forEach(input => {
-        input.addEventListener('change', function() {
-            const index = parseInt(this.dataset.index);
-            const value = parseFloat(this.value) || 0;
-            
-            kpiData[index].realization = value;
-            
-            // Auto-update score ketika realisasi berubah
-            const data = kpiData[index];
-            const isSmallerBetter = data.note.includes("Semakin Kecil");
-            data.score = calculateScore(data.target, data.realization, isSmallerBetter, index);
-            
-            // Update tampilan sementara
-            const scoreCell = document.querySelector(`.kpi-table tbody tr:nth-child(${index + 1}) td:nth-child(9)`);
-            if (scoreCell) {
-                scoreCell.textContent = data.score.toFixed(2) + '%';
-                scoreCell.className = '';
-                
-                if (data.score >= 100) {
-                    scoreCell.classList.add('target-achieved');
-                } else if (data.score >= 70) {
-                    scoreCell.classList.add('target-partial');
-                } else {
-                    scoreCell.classList.add('target-missed');
-                }
-            }
-        });
-    });
+    try {
+        const row = document.querySelector(`.kpi-table tbody tr:nth-child(${index + 1})`);
+        
+        // Kembalikan ke tampilan normal
+        const data = kpiData[index];
+        
+        row.querySelector('td:nth-child(2)').textContent = data.area || '';
+        row.querySelector('td:nth-child(3)').textContent = data.target || 0;
+        row.querySelector('td:nth-child(4)').textContent = (data.weight || 0).toFixed(2) + '%';
+        row.querySelector('td:nth-child(5)').textContent = data.description || '';
+        row.querySelector('td:nth-child(6)').textContent = data.note || '';
+        
+        const realizationCell = row.querySelector('.realization-cell');
+        if (realizationCell) {
+            realizationCell.textContent = data.realization || 0;
+        }
+        
+        // Kembalikan tombol action
+        const actionCell = row.querySelector('td:last-child');
+        if (actionCell && isSuperAdminUser) {
+            actionCell.innerHTML = `
+                <button class="btn-edit-cell" onclick="editSingleRow(${index})">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+            `;
+        }
+        
+        showNotification('Edit dibatalkan', 'info');
+        
+    } catch (error) {
+        console.error('Error in cancelSingleRow:', error);
+        showNotification('Error membatalkan edit', 'error');
+    }
 }
 
 // Fungsi untuk edit semua data (full edit mode)
@@ -2680,10 +2774,7 @@ function enableFullEditMode() {
     addEditInputListeners();
     showNotification('Mode edit penuh diaktifkan. Semua data dapat diubah.', 'info');
 }
-
-// ========== MODAL PILIHAN EDIT ==========
-
-// Fungsi untuk menampilkan modal pilihan edit
+// FUNGSI PERBAIKAN UNTUK MODAL EDIT OPTIONS
 function showEditOptionsModal() {
     const modalHtml = `
         <div class="reset-modal" id="edit-options-modal" style="display: flex;">
@@ -2699,45 +2790,190 @@ function showEditOptionsModal() {
                     <div style="display: flex; flex-direction: column; gap: 10px; margin: 20px 0;">
                         <button class="edit-option-btn" data-type="realisasi">
                             <i class="fas fa-chart-bar"></i>
-                            Edit Realisasi Saja
-                            <small>Hanya mengubah nilai realisasi</small>
+                            <div>
+                                <strong>Edit Realisasi Saja</strong>
+                                <small>Hanya mengubah nilai realisasi</small>
+                            </div>
                         </button>
                         <button class="edit-option-btn" data-type="full">
                             <i class="fas fa-cogs"></i>
-                            Edit Semua Data
-                            <small>Edit target, bobot, deskripsi, dll</small>
+                            <div>
+                                <strong>Edit Semua Data</strong>
+                                <small>Edit target, bobot, deskripsi, dll</small>
+                            </div>
                         </button>
                     </div>
                 </div>
                 <div class="reset-modal-actions">
                     <button class="reset-modal-btn reset-modal-btn-cancel" id="edit-options-cancel">
-                        Batal
+                        <i class="fas fa-times"></i> Batal
                     </button>
                 </div>
             </div>
         </div>
     `;
     
+    // Hapus modal yang sudah ada jika ada
+    const existingModal = document.getElementById('edit-options-modal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     
-    // Event listeners untuk modal
-    document.getElementById('edit-options-cancel').addEventListener('click', function() {
-        document.getElementById('edit-options-modal').remove();
-    });
+    // TUNGGU SEBENTAR SEBELUM MENAMBAHKAN EVENT LISTENER
+    setTimeout(() => {
+        setupEditOptionsModalEvents();
+    }, 100);
+}
+
+// FUNGSI BARU UNTUK SETUP EVENT LISTENER MODAL
+function setupEditOptionsModalEvents() {
+    const cancelBtn = document.getElementById('edit-options-cancel');
+    const modal = document.getElementById('edit-options-modal');
     
-    document.querySelectorAll('.edit-option-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const editType = this.dataset.type;
-            document.getElementById('edit-options-modal').remove();
-            
-            if (editType === 'realisasi') {
-                enableRealisasiEditMode();
-            } else if (editType === 'full') {
-                enableFullEditMode();
+    if (cancelBtn && modal) {
+        // Event listener untuk tombol batal
+        cancelBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Tombol batal diklik');
+            modal.remove();
+            showNotification('Edit dibatalkan', 'info');
+        });
+        
+        // Event listener untuk tombol pilihan edit
+        const optionButtons = document.querySelectorAll('.edit-option-btn');
+        optionButtons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const editType = this.dataset.type;
+                console.log('Pilihan edit:', editType);
+                modal.remove();
+                
+                if (editType === 'realisasi') {
+                    enableRealisasiEditMode();
+                } else if (editType === 'full') {
+                    enableFullEditMode();
+                }
+            });
+        });
+        
+        // Event listener untuk klik di luar modal
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.remove();
+                showNotification('Edit dibatalkan', 'info');
             }
         });
-    });
+        
+        // Event listener untuk ESC key
+        document.addEventListener('keydown', function closeModalOnEsc(e) {
+            if (e.key === 'Escape') {
+                modal.remove();
+                showNotification('Edit dibatalkan', 'info');
+                document.removeEventListener('keydown', closeModalOnEsc);
+            }
+        });
+        
+        console.log('Event listeners untuk modal edit options berhasil dipasang');
+    } else {
+        console.error('Element modal tidak ditemukan untuk setup events');
+    }
 }
+
+// CSS TAMBAHAN UNTUK MODAL
+const modalFixCSS = `
+
+  :root {
+    /* Default Light Theme (light mode) */
+    --modal-bg: #ffffff;
+    --modal-border: #e2e8f0;
+    --text-primary: #1a1a1a;
+    --text-secondary: #4a5568;
+    --button-bg: #f7fafc;
+    --button-bg-hover: #e2e8f0;
+    --button-text: #1a1a1a;
+    --card-hover-bg: #f1f5f9;
+    --primary: #4f46e5;
+  }
+
+  [data-theme="dark"] {
+    /* Dark Theme overrides */
+    --modal-bg: #1e2a38;
+    --modal-border: #374151;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b8c1;
+    --button-bg: #2d3748;
+    --button-bg-hover: #4a5568;
+    --button-text: #ffffff;
+    --card-hover-bg: #273142;
+    --primary: #4f46e5;
+  }
+
+  .reset-modal-content {
+    background: var(--modal-bg);
+    color: var(--text-primary);
+    border-radius: 12px;
+    padding: 24px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  .edit-option-btn {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--modal-border);
+    border-radius: 8px;
+    padding: 16px;
+    width: 100%;
+    display: flex;
+    gap: 12px;
+    transition: all 0.2s ease;
+  }
+
+  .edit-option-btn:hover {
+    background: var(--card-hover-bg);
+    border-color: var(--primary);
+  }
+
+  .edit-option-btn i {
+    font-size: 20px;
+    color: var(--primary);
+    margin-top: 2px;
+  }
+
+  .edit-option-btn strong {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .edit-option-btn small {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .reset-modal-btn-cancel {
+    background: var(--button-bg);
+    color: var(--button-text);
+    border: 1px solid var(--modal-border);
+    border-radius: 6px;
+    padding: 10px 20px;
+    transition: background 0.2s ease;
+  }
+
+  .reset-modal-btn-cancel:hover {
+    background: var(--button-bg-hover);
+  }
+`;
+
+
+
+// Inject CSS tambahan
+const modalStyle = document.createElement('style');
+modalStyle.textContent = modalFixCSS;
+document.head.appendChild(modalStyle);
 
 // ========== FUNGSI SAVE KE FIRESTORE ==========
 
@@ -2995,93 +3231,9 @@ function enableEditMode() {
 }
 
 // ========== CSS TAMBAHAN ==========
-
-const realisasiEditCSS = `
-    .realization-input {
-        background: #fff3cd !important;
-        border: 2px solid #ffc107 !important;
-        font-weight: bold;
-    }
-    
-    .edit-option-btn {
-        padding: 15px;
-        border: 2px solid var(--border-color);
-        border-radius: var(--radius-md);
-        background: var(--card-bg);
-        color: var(--text-primary);
-        text-align: left;
-        cursor: pointer;
-        transition: all var(--transition-fast);
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-    }
-    
-    .edit-option-btn:hover {
-        border-color: var(--primary);
-        background: var(--hover-color);
-        transform: translateY(-2px);
-    }
-    
-    .edit-option-btn i {
-        font-size: 20px;
-        margin-bottom: 5px;
-        color: var(--primary);
-    }
-    
-    .edit-option-btn small {
-        color: var(--text-secondary);
-        font-size: 12px;
-    }
-    
-    .btn-edit-cell, .btn-save-cell, .btn-cancel-cell {
-        padding: 6px 12px;
-        border: none;
-        border-radius: var(--radius-md);
-        font-size: var(--text-xs);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        transition: all var(--transition-fast);
-    }
-    
-    .btn-edit-cell {
-        background: var(--primary);
-        color: white;
-    }
-    
-    .btn-save-cell {
-        background: var(--success);
-        color: white;
-    }
-    
-    .btn-cancel-cell {
-        background: var(--overdue-color);
-        color: white;
-    }
-    
-    .btn-edit-cell:hover, .btn-save-cell:hover, .btn-cancel-cell:hover {
-        opacity: 0.9;
-        transform: translateY(-1px);
-    }
-    
-    .kpi-table td:last-child {
-        min-width: 120px;
-    }
-`;
-
-// Inject CSS
-const styleElement = document.createElement('style');
-styleElement.textContent = realisasiEditCSS;
-document.head.appendChild(styleElement);
-
-// ========== UPDATE EVENT LISTENERS ==========
-
-// Event listener untuk tombol Edit All
 if (editAllBtn) {
-    editAllBtn.addEventListener('click', (e) => {
-        if (!isSuperAdminUser) {
+    editAllBtn.addEventListener('click', (e) => { // perbaiki parameter dari 'c' ke 'e'
+        if (!isSuperAdminUser) { // PERBAIKI: jsonmeAdminUser -> isSuperAdminUser
             e.preventDefault();
             e.stopPropagation();
             showNotification('Hanya Super Admin yang dapat mengedit data', 'error');
@@ -3089,7 +3241,7 @@ if (editAllBtn) {
         }
         
         if (!isEditMode) {
-            enableEditMode(); // Sekarang akan menampilkan modal pilihan
+            enableEditMode();
         } else {
             disableEditMode();
         }
@@ -3137,23 +3289,31 @@ function addEditInputListeners() {
 // ========== INISIALISASI TOMBOL ACTION ==========
 
 // Fungsi untuk menginisialisasi tombol action di setiap baris
+// FUNGSI UNTUK INISIALISASI TOMBOL ACTION
 function initializeActionButtons() {
     const rows = document.querySelectorAll('.kpi-table tbody tr:not(.result-row)');
     rows.forEach((row, index) => {
         if (index < kpiData.length) {
             const actionCell = row.querySelector('td:last-child');
-            if (actionCell && isSuperAdminUser) {
-                actionCell.innerHTML = `
-                    <button class="btn-edit-cell" onclick="editSingleRow(${index})">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-                `;
-            } else if (actionCell) {
-                actionCell.innerHTML = ''; // Kosongkan untuk user biasa
+            if (actionCell) {
+                if (isSuperAdminUser) {
+                    actionCell.innerHTML = `
+                        <button class="btn-edit-cell" onclick="editSingleRow(${index})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                    `;
+                } else {
+                    actionCell.innerHTML = `<span class="no-action">-</span>`;
+                }
             }
         }
     });
 }
+
+// Panggil inisialisasi saat halaman dimuat dan saat status admin berubah
+document.addEventListener('DOMContentLoaded', function() {
+    initializeActionButtons();
+});
 
 // Panggil inisialisasi saat halaman dimuat
 document.addEventListener('DOMContentLoaded', function() {
@@ -3186,11 +3346,6 @@ window.debugEditFunction = function() {
 };
 
 console.log('✅ Edit Action Script loaded successfully');
-// ========== REAL-TIME LISTENER YANG DIPERBAIKI ==========
-
-// Variabel untuk tracking perubahan
-let isLocalChange = false;
-let lastLocalChangeTime = 0;
 
 
 
@@ -4653,6 +4808,447 @@ function updateKpiFromFirestore(firestoreData) {
         updateDisplay();
         console.log('✅ Data updated from Firestore real-time listener');
     }
+}
+// ========== FUNGSI UNTUK UPDATE BULAN OTOMATIS ==========
+
+// Fungsi untuk mendapatkan nama bulan dalam bahasa Indonesia
+function getCurrentMonth() {
+    const months = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    
+    const monthsID = [
+        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+    
+    const now = new Date();
+    const currentMonthIndex = now.getMonth();
+    
+    // Return berdasarkan bahasa yang dipilih
+    const currentLanguage = localStorage.getItem('language') || 'id';
+    return currentLanguage === 'id' ? monthsID[currentMonthIndex] : months[currentMonthIndex];
+}
+
+// Fungsi untuk update header bulan
+function updateMonthHeader() {
+    const currentMonth = getCurrentMonth();
+    const monthHeader = document.getElementById('current-month-header');
+    
+    if (monthHeader) {
+        monthHeader.textContent = currentMonth;
+    }
+    
+    // Juga update teks "Bulan" di header jika perlu
+    const monthLabel = document.querySelector('.kpi-table thead th:nth-child(8)');
+    if (monthLabel && monthLabel.textContent === 'October') {
+        monthLabel.textContent = 'Bulan';
+    }
+}
+
+// ========== FUNGSI UNTUK DATA BULAN BERJALAN ==========
+
+// Fungsi untuk mendapatkan bulan dan tahun saat ini dalam format yang konsisten
+function getCurrentMonthYear() {
+    const months = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    
+    const monthsID = [
+        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+    
+    const now = new Date();
+    const currentMonthIndex = now.getMonth();
+    const currentYear = now.getFullYear();
+    
+    // Return berdasarkan bahasa yang dipilih
+    const currentLanguage = localStorage.getItem('language') || 'id';
+    const monthName = currentLanguage === 'id' ? monthsID[currentMonthIndex] : months[currentMonthIndex];
+    
+    return {
+        month: (currentMonthIndex + 1).toString().padStart(2, '0'),
+        year: currentYear,
+        display: `${(currentMonthIndex + 1).toString().padStart(2, '0')}/${currentYear}`,
+        fullDisplay: `${monthName} ${currentYear}`
+    };
+}
+
+
+// Fungsi untuk setup data bulanan
+function setupMonthlyData() {
+    const currentMonthYear = getCurrentMonthYear();
+    
+    // PERBAIKAN: Gunakan currentMonthYear.year, bukan currentYear yang tidak terdefinisi
+    window.currentDataKey = `kpiData_${currentMonthYear.month}_${currentMonthYear.year}`;
+    
+    console.log('📅 Current period:', currentMonthYear.fullDisplay);
+    console.log('🔑 Data key:', window.currentDataKey);
+    
+    // Update tampilan dengan info bulan-tahun di top bar
+    updatePeriodDisplay(currentMonthYear);
+    
+    // Hapus tampilan periode lama di bawah judul KPI jika ada
+    const oldKpiPeriod = document.getElementById('kpi-period-display');
+    if (oldKpiPeriod) {
+        oldKpiPeriod.remove();
+    }
+}
+
+// Fungsi untuk update tampilan periode di top bar
+// Fungsi untuk update tampilan periode berdasarkan role
+function updatePeriodDisplay(period) {
+    const currentPeriod = getCurrentMonthYear();
+    
+    // Hapus elemen periode lama jika ada
+    const oldPeriodElement = document.getElementById('current-period-display');
+    if (oldPeriodElement) {
+        oldPeriodElement.remove();
+    }
+    
+    // Buat elemen periode baru
+    const periodElement = document.createElement('div');
+    periodElement.id = 'current-period-display';
+    periodElement.className = 'period-display';
+    periodElement.innerHTML = `
+        <i class="fas fa-calendar-alt"></i>
+        <span>${currentPeriod.fullDisplay}</span>
+    `;
+    
+    if (isSuperAdminUser) {
+        // SUPER ADMIN: Period display di TOP BAR
+        setupSuperAdminPeriod(periodElement);
+    } else {
+        // USER BIASA: Period display di bawah judul KPI
+        setupRegularUserPeriod(periodElement);
+    }
+    
+    console.log('✅ Period display updated for:', isSuperAdminUser ? 'Super Admin' : 'Regular User');
+}
+
+// Fungsi untuk Super Admin (period di top bar)
+function setupSuperAdminPeriod(periodElement) {
+    periodElement.classList.add('super-admin-period');
+    
+    // Cari container waktu di header
+    const timeContainer = document.querySelector('.header-time');
+    
+    if (timeContainer && timeContainer.parentElement) {
+        // Buat wrapper container untuk waktu dan periode
+        const headerTimeContainer = document.createElement('div');
+        headerTimeContainer.className = 'header-time-container';
+        
+        // Masukkan periode dan waktu ke container baru
+        headerTimeContainer.appendChild(periodElement);
+        headerTimeContainer.appendChild(timeContainer.cloneNode(true));
+        
+        // Ganti elemen waktu lama dengan container baru
+        timeContainer.parentElement.replaceChild(headerTimeContainer, timeContainer);
+    } else {
+        // Fallback: tempatkan di header actions
+        const headerActions = document.querySelector('.header-actions');
+        if (headerActions) {
+            headerActions.insertBefore(periodElement, headerActions.firstChild);
+        }
+    }
+}
+
+// Fungsi untuk User Biasa (period di bawah judul KPI)
+function setupRegularUserPeriod(periodElement) {
+    periodElement.classList.add('regular-user-period');
+    
+    const kpiContainer = document.querySelector('.kpi-container');
+    if (kpiContainer) {
+        // Cari elemen judul KPI
+        const kpiTitle = kpiContainer.querySelector('h2');
+        if (kpiTitle) {
+            // Tempatkan period display setelah judul
+            kpiTitle.parentNode.insertBefore(periodElement, kpiTitle.nextSibling);
+        } else {
+            // Fallback: tempatkan di awal container
+            kpiContainer.insertBefore(periodElement, kpiContainer.firstChild);
+        }
+    }
+}
+
+// Modifikasi fungsi setupAdminUI untuk handle period display
+function setupAdminUI(isAdmin) {
+    console.log('Setting up admin UI, isAdmin:', isAdmin);
+    
+    const headerActions = document.querySelector('.header-actions');
+    if (!headerActions) {
+        console.error('Header actions element not found');
+        return;
+    }
+    
+    // Hapus filter yang sudah ada jika ada
+    const existingFilter = document.getElementById('userFilterContainer');
+    if (existingFilter) {
+        existingFilter.remove();
+    }
+    
+    // Update tombol visibility
+    const editAllBtn = document.getElementById('edit-all-btn');
+    const resetBtn = document.getElementById('reset-data-btn');
+    const submenuEditButtons = document.querySelectorAll('.submenu-container .btn-edit-all');
+    const criteriaEditButtons = document.querySelectorAll('.criteria-list .btn-primary');
+    
+    if (isAdmin) {
+        // Tampilkan semua tombol untuk super admin
+        if (editAllBtn) editAllBtn.classList.add('admin-visible');
+        if (resetBtn) resetBtn.classList.add('admin-visible');
+        submenuEditButtons.forEach(btn => btn.classList.add('admin-visible'));
+        criteriaEditButtons.forEach(btn => btn.classList.add('admin-visible'));
+        
+        // Tambahkan filter dropdown untuk super admin
+        const filterHTML = `
+            <div class="user-filter" id="userFilterContainer">
+                <select id="userFilter" class="filter-select">
+                    <option value="current">Data Saya</option>
+                    <option value="all">Semua User</option>
+                </select>
+            </div>
+        `;
+        
+        const userProfile = headerActions.querySelector('.user-profile');
+        if (userProfile) {
+            userProfile.insertAdjacentHTML('beforebegin', filterHTML);
+            
+            document.getElementById('userFilter').addEventListener('change', function() {
+                currentFilter = this.value;
+                console.log('Filter changed to:', currentFilter);
+                loadKpiData(currentFilter);
+            });
+        }
+        
+        isSuperAdminUser = true;
+        
+    } else {
+        // Sembunyikan semua tombol untuk user biasa
+        if (editAllBtn) editAllBtn.classList.remove('admin-visible');
+        if (resetBtn) resetBtn.classList.remove('admin-visible');
+        submenuEditButtons.forEach(btn => btn.classList.remove('admin-visible'));
+        criteriaEditButtons.forEach(btn => btn.classList.remove('admin-visible'));
+        
+        isSuperAdminUser = false;
+    }
+    
+    // UPDATE PERIOD DISPLAY SETELAH ROLE BERUBAH
+    const currentPeriod = getCurrentMonthYear();
+    updatePeriodDisplay(currentPeriod);
+}
+
+// Fungsi untuk refresh period display saat filter berubah
+function refreshPeriodDisplay() {
+    const currentPeriod = getCurrentMonthYear();
+    updatePeriodDisplay(currentPeriod);
+}
+
+// Event listener untuk perubahan filter (Super Admin)
+if (document.getElementById('userFilter')) {
+    document.getElementById('userFilter').addEventListener('change', function() {
+        // Beri sedikit delay untuk memastikan DOM sudah update
+        setTimeout(refreshPeriodDisplay, 100);
+    });
+}
+
+// Event listener untuk perubahan dashboard
+document.addEventListener('DOMContentLoaded', function() {
+    const menuItems = document.querySelectorAll('.menu-item');
+    menuItems.forEach(item => {
+        item.addEventListener('click', function() {
+            // Refresh period display saat berpindah dashboard
+            setTimeout(refreshPeriodDisplay, 200);
+        });
+    });
+});
+// FUNGSI BARU: Auto-save untuk user biasa
+async function autoSaveKpiForRegularUser() {
+    try {
+        const currentUser = firebase.auth().currentUser;
+        if (!currentUser || isSuperAdminUser) return;
+
+        console.log('🔄 Auto-saving KPI data for regular user...');
+        
+        // Update data dari modules terlebih dahulu
+        await updateAllKpiData();
+        
+        // Simpan ke kpiData collection
+        const saveResult = await saveKpiDataToFirestore();
+        
+        if (saveResult) {
+            console.log('✅ Auto-save successful for regular user');
+        } else {
+            console.log('❌ Auto-save failed for regular user');
+        }
+    } catch (error) {
+        console.error('Error in auto-save:', error);
+    }
+}
+
+// MODIFIKASI fungsi initializeKpiData:
+async function initializeKpiData() {
+    try {
+        const currentUser = firebase.auth().currentUser;
+        if (!currentUser) return;
+
+        // 1. Coba load dari kpiData collection
+        const firestoreLoaded = await loadKpiDataFromFirestore();
+        
+        if (!firestoreLoaded) {
+            console.log('📭 No data in kpiData collection, initializing...');
+            
+            // 2. Jika tidak ada data, ambil dari collections terpisah
+            await updateAllKpiData();
+            
+            // 3. AUTO-SAVE: Simpan ke kpiData collection (UNTUK USER BIASA)
+            await autoSaveKpiForRegularUser();
+        }
+        
+        // 4. Update tampilan
+        updateDisplay();
+        
+    } catch (error) {
+        console.error('Error initializing KPI data:', error);
+    }
+}
+
+// MODIFIKASI fungsi updateAllKpiData untuk user biasa:
+async function updateAllKpiData(userId = null) {
+    try {
+        const currentUser = firebase.auth().currentUser;
+        if (!currentUser) return;
+
+        const targetUserId = userId || currentUser.uid;
+        
+        console.log('🔄 Updating KPI realization for user:', targetUserId);
+        
+        // Ambil data realisasi dari collections terpisah
+        const ideasData = await getIdeasData(userId);
+        const researchData = await getResearchData(userId);
+        const chatData = await getChatData(userId);
+        const problemData = await getProblemSolvingData(userId);
+        const b2bData = await getB2BData(userId);
+        const attitudeData = await getAttitudeData(userId);
+        const disciplineData = await getDisciplineData(userId);
+
+        // Update HANYA realisasi
+        kpiData[0].realization = b2bData.count;
+        kpiData[1].realization = problemData.count;
+        kpiData[2].realization = ideasData.count;
+        kpiData[3].realization = chatData.count;
+        kpiData[4].realization = researchData.count;
+        kpiData[5].realization = attitudeData.averageScore;
+        kpiData[6].realization = disciplineData.count;
+
+        // Simpan data chat untuk perhitungan
+        window.chatDataForCalculation = chatData;
+
+        // Hitung ulang semua skor
+        updateKPI();
+        
+        console.log('✅ KPI realization updated from modules');
+        
+    } catch (error) {
+        console.error('Error updating KPI realization data:', error);
+    }
+}
+
+// TAMBAHKAN real-time listener untuk modules (ideas, research, dll)
+function setupModulesRealTimeListeners() {
+    const currentUser = firebase.auth().currentUser;
+    if (!currentUser) return;
+
+    const db = firebase.firestore();
+    const userId = currentUser.uid;
+
+    // Listen untuk perubahan di semua collections
+    const collections = ['ideas', 'research', 'chats', 'problems', 'b2b', 'attitude', 'discipline'];
+    
+    collections.forEach(collectionName => {
+        const unsubscribe = db.collection(collectionName)
+            .where('userId', '==', userId)
+            .onSnapshot(() => {
+                console.log(`🔄 ${collectionName} collection changed, updating KPI...`);
+                
+                // Update data dari modules
+                updateAllKpiData();
+                
+                // Auto-save ke kpiData collection (untuk user biasa)
+                if (!isSuperAdminUser) {
+                    setTimeout(() => autoSaveKpiForRegularUser(), 1000);
+                }
+            });
+        
+        unsubscribeFunctions.push(unsubscribe);
+    });
+}
+
+// MODIFIKASI inisialisasi di DOMContentLoaded:
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('🚀 KPI Integration initialized');
+    
+    if (typeof firebase !== 'undefined' && firebase.auth()) {
+        firebase.auth().onAuthStateChanged(async (user) => {
+            if (user) {
+                console.log('✅ User authenticated:', user.email);
+                
+                // Setup admin UI
+                await checkAndSetupSuperAdmin();
+                
+                // Setup monthly data
+                setupMonthlyData();
+                
+                // Initialize KPI data
+                await initializeKpiData();
+                
+                // Setup real-time listeners
+                setupRealTimeListeners();
+                setupModulesRealTimeListeners(); // <- TAMBAHKAN INI
+                
+                console.log('✅ KPI Dashboard initialized successfully');
+                
+            } else {
+                console.log('❌ User not authenticated');
+                setupAdminUI(false);
+            }
+        });
+    }
+});
+// FUNGSI TAMBAHAN: Validasi dan repair data
+async function validateAndRepairKpiData() {
+    try {
+        const currentUser = firebase.auth().currentUser;
+        if (!currentUser) return;
+
+        const db = firebase.firestore();
+        const kpiDoc = await db.collection('kpiData').doc(currentUser.uid).get();
+        
+        if (kpiDoc.exists) {
+            const savedData = kpiDoc.data();
+            
+            // Validasi: apakah data di kpiData sesuai dengan modules?
+            const needsRepair = await checkDataConsistency();
+            
+            if (needsRepair) {
+                console.log('🛠️ Data inconsistency detected, repairing...');
+                await updateAllKpiData();
+                await saveKpiDataToFirestore();
+                console.log('✅ Data repaired successfully');
+            }
+        }
+    } catch (error) {
+        console.error('Error validating KPI data:', error);
+    }
+}
+
+async function checkDataConsistency() {
+    // Implementasi logika untuk mengecek konsistensi data
+    // antara kpiData collection dan modules terpisah
+    return false; // Return true jika perlu repair
 }
 </script>
 </body>

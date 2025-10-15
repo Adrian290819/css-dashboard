@@ -1386,7 +1386,6 @@ function setupReleasesListener() {
     }
     
     try {
-        // HAPUS filter userId untuk mengizinkan akses publik
         unsubscribeReleases = db.collection('releases')
             .onSnapshot(snapshot => {
                 console.log("Public snapshot received:", snapshot.size, "documents");
@@ -1402,11 +1401,21 @@ function setupReleasesListener() {
                 
                 releases = [];
                 snapshot.forEach(doc => {
-                    console.log("Public document:", doc.id, doc.data());
+                    console.log("📊 Document Data:", {
+                        id: doc.id,
+                        title: doc.data().title,
+                        status: doc.data().status, // ← Periksa nilai status sebenarnya
+                        brand: doc.data().brand,
+                        releaseDate: doc.data().releaseDate
+                    });
                     const release = doc.data();
                     release.id = doc.id;
                     releases.push(release);
                 });
+                
+                // Tampilkan semua status unik untuk debugging
+                const uniqueStatuses = [...new Set(releases.map(r => r.status))];
+                console.log("🔍 Unique Statuses in Data:", uniqueStatuses);
                 
                 console.log(`Processed ${releases.length} public releases`);
                 filteredReleases = [...releases];
@@ -1415,12 +1424,10 @@ function setupReleasesListener() {
                 
             }, error => {
                 console.error("Error in public releases listener:", error);
-                showNotification('Error loading public releases: ' + error.message, 'error');
             });
         
     } catch (error) {
         console.error("Exception in setupReleasesListener:", error);
-        showNotification('Error setting up public data connection: ' + error.message, 'error');
     }
 }
 
@@ -2116,16 +2123,18 @@ async function updateReleaseData() {
 function applyFilters() {
     let result = [...releases];
     
-    // Status filter
+    // Status filter - FIX: hanya filter jika ada value
     const statusValue = document.getElementById('statusFilter').value;
     if (statusValue) {
         result = result.filter(release => release.status === statusValue);
+        console.log(`Filtered by status '${statusValue}': ${result.length} items`);
     }
     
     // Brand filter
     const brandValue = document.getElementById('brandFilter').value;
-    if (brandValue) {
+    if (brandValue && brandValue !== "All Brands") {
         result = result.filter(release => release.brand === brandValue);
+        console.log(`Filtered by brand '${brandValue}': ${result.length} items`);
     }
     
     // Search filter
@@ -2136,53 +2145,12 @@ function applyFilters() {
             (release.description && release.description.toLowerCase().includes(searchValue)) ||
             (release.brand && release.brand.toLowerCase().includes(searchValue))
         );
+        console.log(`Filtered by search '${searchValue}': ${result.length} items`);
     }
     
-    // Date range filter
-    const dateFrom = document.getElementById('dateFrom').value;
-    const dateTo = document.getElementById('dateTo').value;
-    
-    if (dateFrom) {
-        result = result.filter(release => {
-            if (!release.releaseDate) return false;
-            return new Date(release.releaseDate) >= new Date(dateFrom);
-        });
-    }
-    
-    if (dateTo) {
-        result = result.filter(release => {
-            if (!release.releaseDate) return false;
-            return new Date(release.releaseDate) <= new Date(dateTo);
-        });
-    }
-    
-    // Progress range filter
-    const progressMin = document.getElementById('progressMin').value;
-    const progressMax = document.getElementById('progressMax').value;
-    
-    if (progressMin) {
-        result = result.filter(release => {
-            if (!release.progress) return false;
-            return release.progress >= parseInt(progressMin);
-        });
-    }
-    
-    if (progressMax) {
-        result = result.filter(release => {
-            if (!release.progress) return false;
-            return release.progress <= parseInt(progressMax);
-        });
-    }
-    
-    // Sort results
-    const sortValue = document.getElementById('sortBy').value;
-    if (sortValue === 'title') {
-        result.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
-    } else if (sortValue === 'progress') {
-        result.sort((a, b) => (b.progress || 0) - (a.progress || 0));
-    } else { // Default: release date
-        result.sort((a, b) => new Date(b.releaseDate || 0) - new Date(a.releaseDate || 0));
-    }
+    // Debug: tampilkan hasil akhir
+    console.log("Final filtered results:", result.length);
+    console.log("All available statuses:", [...new Set(releases.map(r => r.status))]);
     
     filteredReleases = result;
     renderReleases();

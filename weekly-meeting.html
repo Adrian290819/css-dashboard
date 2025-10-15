@@ -1,18 +1,20 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weekly Meetings - My Dashboard</title>
+    <title>Phishing Alerts - My Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="global.css">
-        <link rel="stylesheet" href="stylemobile.css">
-            <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
+    <link rel="stylesheet" href="stylemobile.css">
+    <script src="global-time.js"></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-auth-compat.js"></script>
+    
     <style>
         /* ========== VARIABEL CSS ========== */
         :root {
@@ -20,7 +22,7 @@
             --success-gradient: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);
             --warning-gradient: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
             --info-gradient: linear-gradient(135deg, #4895ef 0%, #3f37c9 100%);
-            --meeting-card-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            --game-card-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
 
         /* ========== LAYOUT UTAMA ========== */
@@ -81,18 +83,21 @@
             box-shadow: var(--shadow-md);
         }
 
+        /* Header: title and icon aligned horizontally */
         .stat-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
+        /* Title text */
         .stat-title {
             font-size: var(--text-md);
             font-weight: var(--font-semibold);
             color: var(--text-primary);
         }
 
+        /* Icon style */
         .stat-icon {
             width: 40px;
             height: 40px;
@@ -101,10 +106,9 @@
             align-items: center;
             justify-content: center;
             font-size: 1.2rem;
-            background: var(--primary-gradient);
-            color: white;
         }
 
+        /* Statistic number */
         .stat-content h3 {
             font-size: 2rem;
             font-weight: var(--font-bold);
@@ -113,6 +117,7 @@
             line-height: 1.2;
         }
 
+        /* Description text */
         .stat-content p {
             font-size: var(--text-sm);
             color: var(--text-secondary);
@@ -242,8 +247,19 @@
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
 
-        /* ========== MEETINGS SECTION ========== */
-        .meetings-section {
+        .advanced-filter {
+            margin-top: var(--space-lg);
+            padding-top: var(--space-lg);
+            border-top: 1px solid var(--border-color);
+            display: none;
+        }
+
+        .advanced-filter.show {
+            display: block;
+        }
+
+        /* ========== ALERTS GRID ========== */
+        .alerts-section {
             margin-bottom: var(--space-xl);
         }
 
@@ -300,13 +316,13 @@
             box-shadow: var(--shadow-xs);
         }
 
-        .meetings-grid {
+        .alerts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: var(--space-lg);
         }
 
-        .meeting-card {
+        .alert-card {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
             overflow: hidden;
@@ -316,36 +332,28 @@
             position: relative;
         }
 
-        .meeting-card:hover {
+        .alert-card:hover {
             transform: translateY(-4px);
-            box-shadow: var(--meeting-card-shadow);
+            box-shadow: var(--game-card-shadow);
         }
 
-        .meeting-header {
-            padding: var(--space-lg);
-            border-bottom: 1px solid var(--border-color);
+        .alert-header {
+            padding: var(--space-md) var(--space-lg);
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .meeting-title {
+        .alert-title {
             font-size: var(--text-lg);
             font-weight: var(--font-semibold);
             color: var(--text-primary);
-            margin: 0 0 var(--space-xs);
+            margin: 0;
             line-height: 1.3;
         }
 
-        .meeting-date {
-            font-size: var(--text-sm);
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: var(--space-xs);
-        }
-
-        .meeting-status {
+        .alert-badge {
             padding: 4px 10px;
             border-radius: var(--radius-full);
             font-size: var(--text-xs);
@@ -353,38 +361,48 @@
             text-transform: uppercase;
         }
 
-        .status-upcoming {
-            background: var(--info-light);
-            color: var(--info);
-        }
-
-        .status-ongoing {
-            background: var(--success-light);
-            color: var(--success);
-        }
-
-        .status-completed {
-            background: var(--bg-secondary);
-            color: var(--text-secondary);
-        }
-
-        .status-cancelled {
+        .badge-critical {
             background: var(--danger-light);
             color: var(--danger);
         }
 
-        .meeting-content {
+        .badge-high {
+            background: var(--warning-light);
+            color: var(--warning);
+        }
+
+        .badge-medium {
+            background: var(--info-light);
+            color: var(--info);
+        }
+
+        .badge-low {
+            background: var(--success-light);
+            color: var(--success);
+        }
+
+        .alert-content {
             padding: var(--space-lg);
         }
 
-        .meeting-details {
+        .alert-description {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            margin: 0 0 var(--space-md);
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .alert-details {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: var(--space-md);
+            gap: var(--space-sm);
             margin-bottom: var(--space-md);
         }
 
-        .meeting-detail-item {
+        .alert-detail-item {
             display: flex;
             flex-direction: column;
             gap: 2px;
@@ -401,62 +419,7 @@
             color: var(--text-primary);
         }
 
-        .meeting-participants {
-            margin-bottom: var(--space-md);
-        }
-
-        .participants-title {
-            font-size: var(--text-sm);
-            font-weight: var(--font-semibold);
-            color: var(--text-primary);
-            margin-bottom: var(--space-xs);
-        }
-
-        .participants-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: var(--space-xs);
-        }
-
-        .participant {
-            display: flex;
-            align-items: center;
-            gap: var(--space-xs);
-            padding: 4px 8px;
-            background: var(--bg-secondary);
-            border-radius: var(--radius-md);
-            font-size: var(--text-xs);
-        }
-
-        .participant img {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .meeting-agenda {
-            margin-bottom: var(--space-md);
-        }
-
-        .agenda-title {
-            font-size: var(--text-sm);
-            font-weight: var(--font-semibold);
-            color: var(--text-primary);
-            margin-bottom: var(--space-xs);
-        }
-
-        .agenda-items {
-            padding-left: var(--space-md);
-        }
-
-        .agenda-item {
-            font-size: var(--text-sm);
-            color: var(--text-secondary);
-            margin-bottom: 2px;
-        }
-
-        .meeting-actions {
+        .alert-actions {
             display: flex;
             gap: var(--space-xs);
         }
@@ -523,17 +486,6 @@
             border-color: var(--danger-dark);
         }
 
-        .btn-warning {
-            background: var(--warning);
-            color: white;
-            border-color: var(--warning);
-        }
-
-        .btn-warning:hover {
-            background: var(--warning-dark);
-            border-color: var(--warning-dark);
-        }
-
         /* ========== EMPTY STATE ========== */
         .empty-state {
             text-align: center;
@@ -543,6 +495,11 @@
             border: 2px dashed var(--border-color);
             margin: var(--space-lg) 0;
             grid-column: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 300px;
         }
 
         .empty-state i {
@@ -732,6 +689,46 @@
             margin-top: 4px;
         }
 
+        .image-upload {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            text-align: center;
+            cursor: pointer;
+            transition: border-color var(--transition-fast);
+        }
+
+        .image-upload:hover {
+            border-color: var(--primary);
+        }
+
+        .image-upload i {
+            font-size: 2rem;
+            color: var(--text-tertiary);
+            margin-bottom: var(--space-sm);
+        }
+
+        .image-upload p {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .image-upload input[type="file"] {
+            display: none;
+        }
+
+        .image-preview {
+            margin-top: var(--space-md);
+            display: none;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: var(--radius-md);
+        }
+
         /* ========== ANIMATIONS ========== */
         .fade-in {
             animation: fadeIn 0.5s ease forwards;
@@ -754,8 +751,8 @@
                 grid-template-columns: 1fr;
             }
             
-            .meetings-grid {
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            .alerts-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             }
         }
 
@@ -794,7 +791,7 @@
                 justify-content: space-between;
             }
             
-            .meetings-grid {
+            .alerts-grid {
                 grid-template-columns: 1fr;
             }
             
@@ -819,11 +816,11 @@
                 gap: var(--space-sm);
             }
             
-            .meeting-details {
+            .alert-details {
                 grid-template-columns: 1fr;
             }
             
-            .meeting-actions {
+            .alert-actions {
                 flex-direction: column;
             }
             
@@ -835,7 +832,6 @@
                 width: 100%;
             }
         }
-
         /* ========== REFRESH ANIMATION ========== */
         .refreshing {
             position: relative;
@@ -875,2018 +871,1349 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-
-        /* ========== TIMELINE VIEW ========== */
-        .timeline-view {
-            display: none;
-        }
-
-        .timeline-view.active {
-            display: block;
-        }
-
-        .timeline-item {
-            position: relative;
-            padding: var(--space-lg) 0 var(--space-lg) var(--space-xl);
-            border-left: 2px solid var(--border-color);
-            margin-left: var(--space-md);
-        }
-
-        .timeline-item:last-child {
-            border-left: 2px solid transparent;
-        }
-
-        .timeline-dot {
-            position: absolute;
-            left: -9px;
-            top: var(--space-lg);
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: var(--primary);
-        }
-
-        .timeline-content {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: var(--space-lg);
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-color);
-        }
-
-        .timeline-date {
-            font-size: var(--text-sm);
-            font-weight: var(--font-medium);
-            color: var(--text-secondary);
-            margin-bottom: var(--space-xs);
-        }
-
-        .timeline-title {
-            font-size: var(--text-lg);
-            font-weight: var(--font-semibold);
-            color: var(--text-primary);
-            margin-bottom: var(--space-xs);
-        }
-
-        .timeline-description {
-            font-size: var(--text-sm);
-            color: var(--text-secondary);
-            margin-bottom: var(--space-md);
-        }
-
-        /* ========== CALENDAR VIEW ========== */
-        .calendar-view {
-            display: none;
-        }
-
-        .calendar-view.active {
-            display: block;
-        }
-
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--space-lg);
-        }
-
-        .calendar-nav {
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-        }
-
-        .calendar-title {
-            font-size: var(--text-xl);
-            font-weight: var(--font-semibold);
-            color: var(--text-primary);
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: var(--space-xs);
-        }
-
-        .calendar-day-header {
-            text-align: center;
-            font-size: var(--text-sm);
-            font-weight: var(--font-semibold);
-            color: var(--text-secondary);
-            padding: var(--space-sm);
-        }
-
-        .calendar-day {
-            background: var(--card-bg);
-            border-radius: var(--radius-md);
-            padding: var(--space-sm);
-            min-height: 100px;
-            border: 1px solid var(--border-color);
-        }
-
-        .calendar-day.empty {
-            background: transparent;
-            border: none;
-        }
-
-        .day-number {
-            font-size: var(--text-sm);
-            font-weight: var(--font-medium);
-            color: var(--text-primary);
-            margin-bottom: var(--space-xs);
-        }
-
-        .calendar-meeting {
-            background: var(--primary-light);
-            border-radius: var(--radius-sm);
-            padding: 4px 6px;
-            margin-bottom: 4px;
-            font-size: var(--text-xs);
-            color: var(--primary);
-            cursor: pointer;
-        }
-
-        .calendar-meeting:hover {
-            background: var(--primary);
-            color: white;
-        }
-        /* ========== SIDEBAR STYLES ========== */
-        .sidebar {
-            width: 260px;
-            background: var(--bg-primary);
-            box-shadow: var(--shadow-md);
-            transition: all var(--transition-normal);
-            z-index: var(--z-sticky);
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid var(--border-color);
-        }
-
-        .sidebar-header {
-            padding: var(--space-lg);
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .sidebar-logo {
-            width: 36px;
-            height: 36px;
-            border-radius: var(--radius-md);
-            background: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: var(--font-bold);
-        }
-
-        .sidebar-title {
-            font-size: var(--text-lg);
-            font-weight: var(--font-semibold);
-            color: var(--text-primary);
-        }
-
-        .sidebar-nav {
-            padding: var(--space-md);
-            flex: 1;
-            overflow-y: auto;
-        }
-        /* ========== NOTIFICATION STYLES ========== */
-.notification-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: var(--z-modal);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    max-width: 400px;
-}
-
-.notification {
-    background: white;
-    border-radius: 12px;
-    padding: 16px 20px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    max-width: 100%;
-    transform: translateX(120%);
-    opacity: 0;
-    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-    position: relative;
-    overflow: hidden;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.notification.show {
-    transform: translateX(0);
-    opacity: 1;
-}
-
-.notification::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 5px;
-    height: 100%;
-}
-
-.notification.success {
-    border-left: 5px solid var(--success);
-    background: linear-gradient(to right, rgba(72, 187, 120, 0.08) 0%, rgba(72, 187, 120, 0.03) 100%);
-}
-
-.notification.error {
-    border-left: 5px solid var(--danger);
-    background: linear-gradient(to right, rgba(239, 68, 68, 0.08) 0%, rgba(239, 68, 68, 0.03) 100%);
-}
-
-.notification.info {
-    border-left: 5px solid var(--info);
-    background: linear-gradient(to right, rgba(59, 130, 246, 0.08) 0%, rgba(59, 130, 246, 0.03) 100%);
-}
-
-.notification.warning {
-    border-left: 5px solid var(--warning);
-    background: linear-gradient(to right, rgba(245, 158, 11, 0.08) 0%, rgba(245, 158, 11, 0.03) 100%);
-}
-
-.notification-icon {
-    font-size: 1.4rem;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    flex-shrink: 0;
-}
-
-.notification.success .notification-icon {
-    color: var(--success);
-    background: rgba(72, 187, 120, 0.15);
-}
-
-.notification.error .notification-icon {
-    color: var(--danger);
-    background: rgba(239, 68, 68, 0.15);
-}
-
-.notification.info .notification-icon {
-    color: var(--info);
-    background: rgba(59, 130, 246, 0.15);
-}
-
-.notification.warning .notification-icon {
-    color: var(--warning);
-    background: rgba(245, 158, 11, 0.15);
-}
-
-.notification-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.notification-title {
-    font-weight: var(--font-semibold);
-    font-size: var(--text-sm);
-    color: var(--text-primary);
-    margin: 0;
-}
-
-.notification-message {
-    font-size: var(--text-sm);
-    color: var(--text-secondary);
-    line-height: 1.4;
-    margin: 0;
-}
-
-.notification-close {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--text-tertiary);
-    padding: 4px;
-    border-radius: var(--radius-sm);
-    transition: all var(--transition-fast);
-    flex-shrink: 0;
-    font-size: 0.9rem;
-}
-
-.notification-close:hover {
-    color: var(--text-secondary);
-    background-color: rgba(0, 0, 0, 0.05);
-}
-
-.notification-progress {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 3px;
-    width: 100%;
-    background: rgba(0, 0, 0, 0.05);
-}
-
-.notification-progress-bar {
-    height: 100%;
-    transition: width 0.1s linear;
-}
-
-.notification.success .notification-progress-bar {
-    background-color: var(--success);
-}
-
-.notification.error .notification-progress-bar {
-    background-color: var(--danger);
-}
-
-.notification.info .notification-progress-bar {
-    background-color: var(--info);
-}
-
-.notification.warning .notification-progress-bar {
-    background-color: var(--warning);
-}
-
-/* Animation for progress bar */
-@keyframes progress {
-    from { width: 100%; }
-    to { width: 0%; }
-}
-
-/* Responsive adjustments for notifications */
-@media (max-width: 640px) {
-    .notification-container {
-        left: 20px;
-        right: 20px;
-        align-items: center;
-    }
-    
-    .notification {
-        max-width: 100%;
-        width: 100%;
-    }
-}
+        
         /* ========== FILTER ACTIONS ========== */
-.filter-actions {
-    display: flex;
-    align-items: center;
-}
+        .filter-actions {
+            display: flex;
+            align-items: center;
+        }
 
-.filter-buttons {
-    display: flex;
-    gap: var(--space-sm);
-    flex-wrap: wrap;
-}
+        .filter-buttons {
+            display: flex;
+            gap: var(--space-sm);
+            flex-wrap: wrap;
+        }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .filter-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--space-md);
-    }
-    
-    .filter-actions {
-        width: 100%;
-    }
-    
-    .filter-buttons {
-        width: 100%;
-    }
-    
-    .filter-buttons .filter-reset {
-        flex: 1;
-        min-width: 140px;
-    }
-}
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .filter-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-md);
+            }
+            
+            .filter-actions {
+                width: 100%;
+            }
+            
+            .filter-buttons {
+                width: 100%;
+            }
+            
+            .filter-buttons .filter-reset {
+                flex: 1;
+                min-width: 140px;
+            }
+        }
 
-@media (max-width: 480px) {
-    .filter-buttons {
-        flex-direction: column;
-    }
-    
-    .filter-buttons .filter-reset {
-        width: 100%;
-    }
-}
-
+        @media (max-width: 480px) {
+            .filter-buttons {
+                flex-direction: column;
+            }
+            
+            .filter-buttons .filter-reset {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
     <div id="sidebar-container"></div>
     <button class="menu-toggle">
-                <i class="fas fa-bars"></i>
-            </button>
+        <i class="fas fa-bars"></i>
+    </button>
+    
     <!-- Main Content -->
     <div class="main-content">
         <div class="header">
-            <h1><i class="fas fa-users"></i> Weekly Meetings</h1>
+            <h1><i class="fas fa-shield-alt"></i> Phishing Alerts</h1>
             
             <div class="header-actions">
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search meetings..." id="meetingsSearch">
+                    <input type="text" placeholder="Search alerts..." id="alertsSearch">
                 </div>
+                
+                <button class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
                 <div class="user-profile">
                     <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
                     <div class="user-info">
                         <h4>Adrian Abdul Arif</h4>
-                        <p>Meeting Coordinator</p>
+                        <p>Customer Service Support</p>
                     </div>
                 </div>
             </div>
         </div>
-    
         
         <!-- Stats Overview -->
         <div class="stats-container fade-in">
             <div class="stat-card">
                 <div class="stat-header">
-                    <span class="stat-title">Total Meetings</span>
-                    <div class="stat-icon">
-                        <i class="fas fa-calendar-alt"></i>
+                    <span class="stat-title">Total Alerts</span>
+                    <div class="stat-icon" style="background-color: rgba(239, 68, 68, 0.1); color: #ef4444;">
+                        <i class="fas fa-exclamation-triangle"></i>
                     </div>
                 </div>
                 <div class="stat-content">
-                    <h3 id="totalMeetings">0</h3>
-                    <p>All meetings</p>
+                    <h3 id="totalAlerts">0</h3>
+                    <p>Phishing alerts detected</p>
                 </div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-header">
-                    <span class="stat-title">Upcoming</span>
-                    <div class="stat-icon">
+                    <span class="stat-title">Critical</span>
+                    <div class="stat-icon" style="background-color: rgba(239, 68, 68, 0.1); color: #ef4444;">
+                        <i class="fas fa-radiation"></i>
+                    </div>
+                </div>
+                <div class="stat-content">
+                    <h3 id="criticalAlerts">0</h3>
+                    <p>High priority threats</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Resolved</span>
+                    <div class="stat-icon" style="background-color: rgba(16, 185, 129, 0.1); color: #10b981;">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+                <div class="stat-content">
+                    <h3 id="resolvedAlerts">0</h3>
+                    <p>Alerts resolved</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Pending</span>
+                    <div class="stat-icon" style="background-color: rgba(245, 158, 11, 0.1); color: #f59e0b;">
                         <i class="fas fa-clock"></i>
                     </div>
                 </div>
                 <div class="stat-content">
-                    <h3 id="upcomingMeetings">0</h3>
-                    <p>Scheduled this week</p>
+                    <h3 id="pendingAlerts">0</h3>
+                    <p>Alerts awaiting action</p>
                 </div>
             </div>
-
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span class="stat-title">Participants</span>
-                    <div class="stat-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                </div>
-                <div class="stat-content">
-                    <h3 id="totalParticipants">0</h3>
-                    <p>Total attendees</p>
-                </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="quick-actions fade-in">
+            <div class="quick-action-btn" id="quickAdd">
+                <i class="fas fa-plus"></i>
+                <span>New Alert</span>
             </div>
-
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span class="stat-title">Completion Rate</span>
-                    <div class="stat-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                </div>
-                <div class="stat-content">
-                    <h3 id="completionRate">0%</h3>
-                    <p>Meetings completed</p>
-                </div>
+            <div class="quick-action-btn" id="quickScan">
+                <i class="fas fa-search"></i>
+                <span>Scan Emails</span>
+            </div>
+            <div class="quick-action-btn" id="quickReport">
+                <i class="fas fa-chart-pie"></i>
+                <span>Generate Report</span>
+            </div>
+            <div class="quick-action-btn" id="quickExport">
+                <i class="fas fa-file-export"></i>
+                <span>Export Data</span>
             </div>
         </div>
         
         <!-- Filter Panel -->
         <div class="filter-panel fade-in">
             <div class="filter-header">
-                <h3 class="filter-title">Filter Meetings</h3>
-                <div>
-                    <button class="filter-reset" id="resetFilters">
-                        <i class="fas fa-sync-alt"></i> Reset Filters
-                    </button>
-                    <button class="filter-reset" id="toggleViewOptions" style="margin-left: 10px;">
-                        <i class="fas fa-sliders-h"></i> View Options
-                    </button>
+                <h3 class="filter-title">Filter Alerts</h3>
+                <div class="filter-actions">
+                    <div class="filter-buttons">
+                        <button class="filter-reset" id="resetFilters">
+                            <i class="fas fa-sync-alt"></i> Reset Filters
+                        </button>
+                        <button class="filter-reset" id="toggleAdvancedFilters">
+                            <i class="fas fa-sliders-h"></i> Advanced Filters
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="filter-grid">
                 <div class="filter-group">
+                    <label class="filter-label">Severity</label>
+                    <select class="filter-select" id="severityFilter">
+                        <option value="">All Severity</option>
+                        <option value="critical">Critical</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+                <div class="filter-group">
                     <label class="filter-label">Status</label>
                     <select class="filter-select" id="statusFilter">
                         <option value="">All Status</option>
-                        <option value="upcoming">Upcoming</option>
-                        <option value="ongoing">Ongoing</option>
-                        <option value="completed">Completed</option>
-                        <option value="cancelled">Cancelled</option>
+                        <option value="new">New</option>
+                        <option value="investigating">Investigating</option>
+                        <option value="resolved">Resolved</option>
+                        <option value="false-positive">False Positive</option>
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label class="filter-label">Meeting Type</label>
-                    <select class="filter-select" id="typeFilter">
-                        <option value="">All Types</option>
-                        <option value="team">Case Mingguan</option>
-                        <option value="project">Project Review</option>
-                        <option value="client">Client Meeting</option>
-                        <option value="planning">Planning Session</option>
-                        <option value="review">Performance Review</option>
-                        <option value="training">Training Session</option>
+                    <label class="filter-label">Brand</label>
+                    <select class="filter-select" id="brandFilter">
+                        <option value="">All Brands</option>
+                        <option value="CINTAWIN88 (D-GAMING)">CINTAWIN88 (D-GAMING)</option>
+                        <option value="CERIASLOT99 (D-GAMING)">CERIASLOT99 (D-GAMING)</option>
+                        <option value="RAJASCATTER88 (D-GAMING)">RAJASCATTER88 (D-GAMING)</option>
+                        <option value="MAHJONGJP88 (D-GAMING)">MAHJONGJP88 (D-GAMING)</option>
+                        <option value="NAGAHOKI88 (D-GAMING)">NAGAHOKI88 (D-GAMING)</option>
+                        <option value="SPACEMAN88 (D-GAMING)">SPACEMAN88 (D-GAMING)</option>
+                        <option value="RAJAPANEN (D-GAMING)">RAJAPANEN (D-GAMING)</option>
+                        <option value="BROTO88 (D-GAMING)">BROTO88 (D-GAMING)</option>
+                        <option value="MEDUSA88 (GACHA)">MEDUSA88 (GACHA)</option>
+                        <option value="ARES GACOR (GACHA)">ARES GACOR (GACHA)</option>
+                        <option value="RAJA MAHJONG (GACHA)">RAJA MAHJONG (GACHA)</option>
+                        <option value="OLYMPUS1000 (GACHA)">OLYMPUS1000 (GACHA)</option>
+                        <option value="CLICKBET (GACHA)">CLICKBET (GACHA)</option>
+                        <option value="GACHA99 (GACHA)">GACHA99 (GACHA)</option>
+                        <option value="UJANGBET (BREM)">UJANGBET (BREM)</option>
+                        <option value="EPISODEBET (BREM)">EPISODEBET (BREM)</option>
+                        <option value="FOKUSBET88 (89ENGINE)">FOKUSBET88 (89ENGINE)</option>
+                        <option value="RAJAKING88 (89ENGINE)">RAJAKING88 (89ENGINE)</option>
+                        <option value="RAJANAGA99 (89ENGINE)">RAJANAGA99 (89ENGINE)</option>
+                        <option value="JOIN999 (LUXION)">JOIN999 (LUXION)</option>
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label class="filter-label">Date Range</label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="date" class="filter-input" id="dateFrom" placeholder="From">
-                        <input type="date" class="filter-input" id="dateTo" placeholder="To">
-                    </div>
+                    <label class="filter-label">Sort By</label>
+                    <select class="filter-select" id="sortBy">
+                        <option value="date">Date Detected</option>
+                        <option value="severity">Severity</option>
+                        <option value="status">Status</option>
+                        <option value="sender">Sender</option>
+                    </select>
                 </div>
             </div>
             
-            <!-- View Options -->
-            <div class="advanced-filter" id="viewOptions" style="display: none;">
+            <!-- Advanced Filters -->
+            <div class="advanced-filter" id="advancedFilters">
                 <div class="filter-header">
-                    <h3 class="filter-title">View Options</h3>
+                    <h3 class="filter-title">Advanced Filters</h3>
                 </div>
                 <div class="filter-grid">
                     <div class="filter-group">
-                        <label class="filter-label">View Mode</label>
-                        <select class="filter-select" id="viewMode">
-                            <option value="grid">Grid View</option>
-                            <option value="timeline">Timeline View</option>
-                            <option value="calendar">Calendar View</option>
-                        </select>
+                        <label class="filter-label">Date Range</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="date" class="filter-input" id="dateFrom" placeholder="From">
+                            <input type="date" class="filter-input" id="dateTo" placeholder="To">
+                        </div>
                     </div>
                     <div class="filter-group">
-                        <label class="filter-label">Sort By</label>
-                        <select class="filter-select" id="sortBy">
-                            <option value="date">Date</option>
-                            <option value="title">Title</option>
-                            <option value="duration">Duration</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label class="filter-label">Order</label>
-                        <select class="filter-select" id="sortOrder">
-                            <option value="asc">Ascending</option>
-                            <option value="desc">Descending</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label class="filter-label">Items Per Page</label>
-                        <select class="filter-select" id="itemsPerPage">
-                            <option value="10">10 items</option>
-                            <option value="20">20 items</option>
-                            <option value="50">50 items</option>
-                            <option value="100">100 items</option>
-                        </select>
+                        <label class="filter-label">Sender Domain</label>
+                        <input type="text" class="filter-input" id="senderDomain" placeholder="e.g. example.com">
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- Meetings Section -->
-        <div class="meetings-section fade-in">
+        <!-- Alerts Section -->
+        <div class="alerts-section fade-in">
             <div class="section-header">
-                <h2 class="section-title"><i class="fas fa-list"></i> Meetings Schedule</h2>
+                <h2 class="section-title"><i class="fas fa-shield-alt"></i> All Alerts</h2>
                 <div class="section-actions">
                     <div class="view-toggle">
+                        <button class="view-toggle-btn active" id="gridView">
+                            <i class="fas fa-th"></i>
+                        </button>
+                        <button class="view-toggle-btn" id="listView">
+                            <i class="fas fa-list"></i>
+                        </button>
                     </div>
-                    <button class="btn btn-outline" id="refreshMeetings">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                    <button class="btn btn-primary" id="scheduleMeetingBtn">
-                        <i class="fas fa-plus"></i> Schedule Meeting
+                    <button class="btn btn-primary" id="addAlertBtn">
+                        <i class="fas fa-plus"></i> Add Alert
                     </button>
                 </div>
             </div>
             
-            <!-- Grid View -->
-            <div class="meetings-grid" id="meetingsGrid">
-                <!-- Meetings will be loaded dynamically -->
+            <!-- Alerts Grid -->
+            <div class="alerts-grid" id="alertsGrid">
+                <!-- Alert cards will be dynamically inserted here -->
             </div>
             
-            <!-- Timeline View -->
-            <div class="timeline-view" id="timelineView">
-                <!-- Timeline will be loaded dynamically -->
-            </div>
-            
-            <!-- Calendar View -->
-            <div class="calendar-view" id="calendarView">
-                <!-- Calendar will be loaded dynamically -->
-            </div>
-            
-            <div id="noMeetings" class="empty-state" style="display: none;">
-                <i class="fas fa-calendar-times"></i>
-                <h3>No Meetings Found</h3>
-                <p>There are no meetings matching your criteria. Try adjusting your filters or schedule a new meeting.</p>
-            </div>
-        </div>
-        
-        <!-- Schedule Meeting Modal -->
-        <div class="modal-overlay" id="scheduleMeetingModal">
-            <div class="modal">
-                <div class="modal-header">
-                    <h3 class="modal-title"><i class="fas fa-plus"></i> Schedule New Meeting</h3>
-                    <button class="modal-close" id="closeScheduleModal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <form id="meetingForm">
-                        <div class="form-grid">
-                            <div class="form-group full-width">
-                                <label class="form-label required">Meeting Title</label>
-                                <input type="text" class="form-input" id="meetingTitle" required placeholder="Enter meeting title">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label required">Meeting Type</label>
-                                <select class="form-select" id="meetingType" required>
-                                    <option value="">Select Type</option>
-                                    <option value="team">Case Mingguan</option>
-                                    <option value="project">Project Review</option>
-                                    <option value="client">Client Meeting</option>
-                                    <option value="planning">Planning Session</option>
-                                    <option value="review">Performance Review</option>
-                                    <option value="training">Training Session</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label required">Start Date & Time</label>
-                                <input type="datetime-local" class="form-input" id="meetingStart" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label required">End Date & Time</label>
-                                <input type="datetime-local" class="form-input" id="meetingEnd" required>
-                            </div>
-                            
-                            <div class="form-group full-width">
-                                <label class="form-label">Meeting Description</label>
-                                <textarea class="form-textarea" id="meetingDescription" placeholder="Enter meeting agenda and description"></textarea>
-                            </div>
-                            
-                            <div class="form-group full-width">
-                                <label class="form-label">Participants</label>
-                                <div class="form-checkbox-group" id="participantsList">
-                                    <!-- Participants will be loaded dynamically -->
-                                </div>
-                            </div>
-                            
-                            <div class="form-group full-width">
-                                <label class="form-label">Agenda Items</label>
-                                <div id="agendaItems">
-                                    <div class="agenda-item-input" style="display: flex; gap: 10px; margin-bottom: 10px;">
-                                        <input type="text" class="form-input" placeholder="Agenda item" style="flex: 1;">
-                                        <input type="number" class="form-input" placeholder="Duration (min)" style="width: 100px;" min="1">
-                                        <button type="button" class="btn btn-danger" onclick="removeAgendaItem(this)">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <button type="button" class="btn btn-outline btn-sm" id="addAgendaItemBtn" style="margin-top: 10px;">
-                                    <i class="fas fa-plus"></i> Add Agenda Item
-                                </button>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">Reminder</label>
-                                <select class="form-select" id="meetingReminder">
-                                    <option value="none">No Reminder</option>
-                                    <option value="5">5 minutes before</option>
-                                    <option value="15">15 minutes before</option>
-                                    <option value="30">30 minutes before</option>
-                                    <option value="60">1 hour before</option>
-                                    <option value="1440">1 day before</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">Recurrence</label>
-                                <select class="form-select" id="meetingRecurrence">
-                                    <option value="none">Does not repeat</option>
-                                    <option value="daily">Daily</option>
-                                    <option value="weekly">Weekly</option>
-                                    <option value="monthly">Monthly</option>
-                                </select>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline" id="cancelScheduleMeeting">Cancel</button>
-                    <button class="btn btn-primary" id="saveMeeting">Schedule Meeting</button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Edit Meeting Modal -->
-        <div class="modal-overlay" id="editMeetingModal">
-            <div class="modal">
-                <div class="modal-header">
-                    <h3 class="modal-title"><i class="fas fa-edit"></i> Edit Meeting</h3>
-                    <button class="modal-close" id="closeEditModal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <!-- Form will be populated dynamically -->
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline" id="cancelEditMeeting">Cancel</button>
-                    <button class="btn btn-primary" id="updateMeeting">Update Meeting</button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Meeting Details Modal -->
-        <div class="modal-overlay" id="meetingDetailsModal">
-            <div class="modal">
-                <div class="modal-header">
-                    <h3 class="modal-title"><i class="fas fa-info-circle"></i> Meeting Details</h3>
-                    <button class="modal-close" id="closeDetailsModal">&times;</button>
-                </div>
-                <div class="modal-body" id="meetingDetailsContent">
-                    <!-- Details will be populated dynamically -->
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline" id="closeDetails">Close</button>
-                    <button class="btn btn-primary" id="editFromDetails">Edit Meeting</button>
-                </div>
+            <div class="empty-state">
+                <i class="fa-solid fa-shield icon-empty"></i>
+                <h3>No alerts found</h3>
+                <p>Try adjusting your filters or add a new alert to get started.</p>
+                <button class="btn btn-primary" id="emptyAddAlert">
+                    <i class="fas fa-plus"></i> Add Alert
+                </button>
             </div>
         </div>
     </div>
-
+    
+    <!-- Add Alert Modal -->
+    <div class="modal-overlay" id="addAlertModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-plus"></i> Add New Alert</h3>
+                <button class="modal-close" id="closeAddModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addAlertForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label required">Alert Title</label>
+                            <input type="text" class="form-input" id="alertTitle" placeholder="Enter alert title" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required">Severity</label>
+                            <select class="form-select" id="alertSeverity" required>
+                                <option value="">Select severity</option>
+                                <option value="critical">Critical</option>
+                                <option value="high">High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required">Brand</label>
+                            <select class="form-select" id="alertBrand" required>
+                                <option value="">Select brand</option>
+                                <option value="CINTAWIN88 (D-GAMING)">CINTAWIN88 (D-GAMING)</option>
+                                <option value="CERIASLOT99 (D-GAMING)">CERIASLOT99 (D-GAMING)</option>
+                                <option value="RAJASCATTER88 (D-GAMING)">RAJASCATTER88 (D-GAMING)</option>
+                                <option value="MAHJONGJP88 (D-GAMING)">MAHJONGJP88 (D-GAMING)</option>
+                                <option value="NAGAHOKI88 (D-GAMING)">NAGAHOKI88 (D-GAMING)</option>
+                                <option value="SPACEMAN88 (D-GAMING)">SPACEMAN88 (D-GAMING)</option>
+                                <option value="RAJAPANEN (D-GAMING)">RAJAPANEN (D-GAMING)</option>
+                                <option value="BROTO88 (D-GAMING)">BROTO88 (D-GAMING)</option>
+                                <option value="MEDUSA88 (GACHA)">MEDUSA88 (GACHA)</option>
+                                <option value="ARES GACOR (GACHA)">ARES GACOR (GACHA)</option>
+                                <option value="RAJA MAHJONG (GACHA)">RAJA MAHJONG (GACHA)</option>
+                                <option value="OLYMPUS1000 (GACHA)">OLYMPUS1000 (GACHA)</option>
+                                <option value="CLICKBET (GACHA)">CLICKBET (GACHA)</option>
+                                <option value="GACHA99 (GACHA)">GACHA99 (GACHA)</option>
+                                <option value="UJANGBET (BREM)">UJANGBET (BREM)</option>
+                                <option value="EPISODEBET (BREM)">EPISODEBET (BREM)</option>
+                                <option value="FOKUSBET88 (89ENGINE)">FOKUSBET88 (89ENGINE)</option>
+                                <option value="RAJAKING88 (89ENGINE)">RAJAKING88 (89ENGINE)</option>
+                                <option value="RAJANAGA99 (89ENGINE)">RAJANAGA99 (89ENGINE)</option>
+                                <option value="JOIN999 (LUXION)">JOIN999 (LUXION)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required">Status</label>
+                            <select class="form-select" id="alertStatus" required>
+                                <option value="">Select status</option>
+                                <option value="new">New</option>
+                                <option value="investigating">Investigating</option>
+                                <option value="resolved">Resolved</option>
+                                <option value="false-positive">False Positive</option>
+                            </select>
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label required">Description</label>
+                            <textarea class="form-textarea" id="alertDescription" placeholder="Enter alert description" rows="4" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Sender Email</label>
+                            <input type="email" class="form-input" id="alertSender" placeholder="e.g. phishing@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Target URL</label>
+                            <input type="url" class="form-input" id="alertUrl" placeholder="e.g. https://phishing-site.com">
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label">Screenshot</label>
+                            <div class="image-upload" id="imageUploadArea">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Click to upload screenshot</p>
+                                <input type="file" id="alertScreenshot" accept="image/*">
+                            </div>
+                            <div class="image-preview" id="imagePreview">
+                                <img src="" alt="Preview">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelAddAlert">Cancel</button>
+                <button class="btn btn-primary" id="saveAlert">Save Alert</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Alert Details Modal -->
+    <div class="modal-overlay" id="alertDetailsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-shield-alt"></i> Alert Details</h3>
+                <button class="modal-close" id="closeDetailsModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="alertDetailsContent">
+                    <!-- Alert details will be dynamically inserted here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="closeDetails">Close</button>
+                <button class="btn btn-primary" id="editAlert">Edit</button>
+                <button class="btn btn-danger" id="deleteAlert">Delete</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading alerts...</p>
+        </div>
+    </div>
         <script src="sidebar-loader.js"></script>
     <script src="user-profile.js"></script>
-   <script>
-    // ========== FIREBASE INITIALIZATION ==========
-    // ========== FIREBASE INITIALIZATION ==========
-const firebaseConfig = {
-    apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
-    authDomain: "dashboard-css.firebaseapp.com",
-    databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "dashboard-css",
-    storageBucket: "dashboard-css.appspot.com",
-    messagingSenderId: "771131792881",
-    appId: "1:771131792881:web:ad634424225bd7de847850",
-    measurementId: "G-3CYBC5B101"
-};
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD9q7uQEa2pY-dW2Q-fp6VqNYvbgfJqZ6s",
+            authDomain: "phishing-alerts-dashboard.firebaseapp.com",
+            projectId: "phishing-alerts-dashboard",
+            storageBucket: "phishing-alerts-dashboard.firebasestorage.app",
+            messagingSenderId: "1234567890",
+            appId: "1:1234567890:web:abcdef123456"
+        };
 
-// Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-// Variabel global
-let currentUser = null;
-let unsubscribeMeetings = null;
-let meetingsData = [];
-let currentCalendarMonth = new Date().getMonth();
-let currentCalendarYear = new Date().getFullYear();
-
-// ========== FUNGSI NOTIFIKASI ==========
-function showNotification(message, type = 'info') {
-    // Buat container notifikasi jika belum ada
-    let container = document.getElementById('notificationContainer');
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'notificationContainer';
-        container.className = 'notification-container';
-        document.body.appendChild(container);
-    }
-    
-    // Buat elemen notifikasi
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    
-    // Tentukan ikon berdasarkan jenis notifikasi
-    let iconClass = 'fa-info-circle';
-    if (type === 'success') iconClass = 'fa-check-circle';
-    if (type === 'error') iconClass = 'fa-exclamation-circle';
-    if (type === 'warning') iconClass = 'fa-exclamation-triangle';
-    
-    notification.innerHTML = `
-        <div class="notification-icon">
-            <i class="fas ${iconClass}"></i>
-        </div>
-        <div class="notification-content">
-            <h4 class="notification-title">${type.charAt(0).toUpperCase() + type.slice(1)}</h4>
-            <p class="notification-message">${message}</p>
-        </div>
-        <button class="notification-close">
-            <i class="fas fa-times"></i>
-        </button>
-        <div class="notification-progress">
-            <div class="notification-progress-bar"></div>
-        </div>
-    `;
-    
-    // Tambahkan ke container notifikasi
-    container.appendChild(notification);
-    
-    // Animasikan masuk
-    setTimeout(() => {
-        notification.classList.add('show');
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
         
-        // Animasikan progress bar
-        const progressBar = notification.querySelector('.notification-progress-bar');
-        progressBar.style.animation = 'progress 5s linear forwards';
-    }, 10);
-    
-    // Set timeout untuk menghapus notifikasi
-    const removeNotification = () => {
-        notification.classList.remove('show');
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
-            }
-        }, 300);
-    };
-    
-    setTimeout(removeNotification, 5000);
-    
-    // Event listener untuk tombol tutup
-    notification.querySelector('.notification-close').addEventListener('click', removeNotification);
-}
-
-// ========== FUNGSI UTAMA ==========
-
-// Fungsi untuk memeriksa status autentikasi
-function checkAuthState() {
-    auth.onAuthStateChanged((user) => {
-        if (user) {
-            currentUser = user;
-            console.log("User is signed in:", user.uid);
-            loadMeetingsData();
+        // DOM Elements
+        const alertsGrid = document.getElementById('alertsGrid');
+        const totalAlerts = document.getElementById('totalAlerts');
+        const criticalAlerts = document.getElementById('criticalAlerts');
+        const resolvedAlerts = document.getElementById('resolvedAlerts');
+        const pendingAlerts = document.getElementById('pendingAlerts');
+        const addAlertBtn = document.getElementById('addAlertBtn');
+        const emptyAddAlert = document.getElementById('emptyAddAlert');
+        const addAlertModal = document.getElementById('addAlertModal');
+        const closeAddModal = document.getElementById('closeAddModal');
+        const cancelAddAlert = document.getElementById('cancelAddAlert');
+        const saveAlert = document.getElementById('saveAlert');
+        const alertDetailsModal = document.getElementById('alertDetailsModal');
+        const closeDetailsModal = document.getElementById('closeDetailsModal');
+        const closeDetails = document.getElementById('closeDetails');
+        const editAlert = document.getElementById('editAlert');
+        const deleteAlert = document.getElementById('deleteAlert');
+        const alertsSearch = document.getElementById('alertsSearch');
+        const severityFilter = document.getElementById('severityFilter');
+        const statusFilter = document.getElementById('statusFilter');
+        const brandFilter = document.getElementById('brandFilter');
+        const sortBy = document.getElementById('sortBy');
+        const resetFilters = document.getElementById('resetFilters');
+        const toggleAdvancedFilters = document.getElementById('toggleAdvancedFilters');
+        const advancedFilters = document.getElementById('advancedFilters');
+        const gridView = document.getElementById('gridView');
+        const listView = document.getElementById('listView');
+        const quickAdd = document.getElementById('quickAdd');
+        const quickScan = document.getElementById('quickScan');
+        const quickReport = document.getElementById('quickReport');
+        const quickExport = document.getElementById('quickExport');
+        const imageUploadArea = document.getElementById('imageUploadArea');
+        const alertScreenshot = document.getElementById('alertScreenshot');
+        const imagePreview = document.getElementById('imagePreview');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        
+        // Global variables
+        let alerts = [];
+        let filteredAlerts = [];
+        let currentView = 'grid';
+        let selectedAlertId = null;
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAlerts();
             setupEventListeners();
-            initializeViewToggleButtons();
-        } else {
-            console.log("User is signed out");
-            window.location.href = "login.html";
-        }
-    });
-}
-
-// Fungsi untuk memuat data meetings
-function loadMeetingsData() {
-    // Hentikan listener sebelumnya jika ada
-    if (unsubscribeMeetings) {
-        unsubscribeMeetings();
-    }
-    
-    // Setup real-time listener untuk meetings
-    unsubscribeMeetings = db.collection('weeklyMeetings')
-        .where('userId', '==', currentUser.uid)
-        .onSnapshot((snapshot) => {
-            const meetings = [];
-            snapshot.forEach((doc) => {
-                meetings.push({ id: doc.id, ...doc.data() });
-            });
-            
-            // Urutkan secara manual berdasarkan start date (descending)
-            meetings.sort((a, b) => {
-                return b.start.seconds - a.start.seconds;
-            });
-            
-            meetingsData = meetings;
-            renderMeetings();
-            updateMeetingStats();
-        }, (error) => {
-            console.error("Error loading meetings:", error);
-            showNotification('Error loading meetings', 'error');
         });
-}
-
-// Fungsi untuk mengatur event listener
-function setupEventListeners() {
-    // Event listener untuk tombol schedule meeting
-    const scheduleMeetingBtn = document.getElementById('scheduleMeetingBtn');
-    if (scheduleMeetingBtn) {
-        scheduleMeetingBtn.addEventListener('click', openScheduleMeetingModal);
-    }
-    
-    // Event listener untuk tombol save meeting
-    const saveMeetingBtn = document.getElementById('saveMeeting');
-    if (saveMeetingBtn) {
-        saveMeetingBtn.addEventListener('click', saveMeetingToFirestore);
-    }
-    
-    // Event listener untuk tombol refresh
-    const refreshButton = document.getElementById('refreshMeetings');
-    if (refreshButton) {
-        refreshButton.addEventListener('click', () => {
-            loadMeetingsData();
-            showNotification('Meetings refreshed successfully!', 'success');
-        });
-    }
-    
-    // Event listener untuk tombol add agenda item
-    const addAgendaItemBtn = document.getElementById('addAgendaItemBtn');
-    if (addAgendaItemBtn) {
-        addAgendaItemBtn.addEventListener('click', addAgendaItem);
-    }
-    
-    // Event listener untuk filter
-    const statusFilter = document.getElementById('statusFilter');
-    if (statusFilter) {
-        statusFilter.addEventListener('change', renderMeetings);
-    }
-    
-    const typeFilter = document.getElementById('typeFilter');
-    if (typeFilter) {
-        typeFilter.addEventListener('change', renderMeetings);
-    }
-    
-    const dateFrom = document.getElementById('dateFrom');
-    if (dateFrom) {
-        dateFrom.addEventListener('change', renderMeetings);
-    }
-    
-    const dateTo = document.getElementById('dateTo');
-    if (dateTo) {
-        dateTo.addEventListener('change', renderMeetings);
-    }
-    
-    const searchInput = document.getElementById('meetingsSearch');
-    if (searchInput) {
-        searchInput.addEventListener('input', debounce(renderMeetings, 300));
-    }
-    
-    // Event listener untuk reset filters
-    const resetFilters = document.getElementById('resetFilters');
-    if (resetFilters) {
-        resetFilters.addEventListener('click', resetAllFilters);
-    }
-    
-    // Event listener untuk view mode
-    const viewMode = document.getElementById('viewMode');
-    if (viewMode) {
-        viewMode.addEventListener('change', renderMeetings);
-    }
-    
-    // Event listener untuk tombol close modal
-    document.querySelectorAll('.modal-close, .btn-outline').forEach(btn => {
-        if (btn.id === 'cancelScheduleMeeting' || btn.id === 'closeScheduleModal') {
-            btn.addEventListener('click', closeScheduleMeetingModal);
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Modal controls
+            addAlertBtn.addEventListener('click', openAddAlertModal);
+            emptyAddAlert.addEventListener('click', openAddAlertModal);
+            quickAdd.addEventListener('click', openAddAlertModal);
+            closeAddModal.addEventListener('click', closeAddAlertModal);
+            cancelAddAlert.addEventListener('click', closeAddAlertModal);
+            closeDetailsModal.addEventListener('click', closeAlertDetailsModal);
+            closeDetails.addEventListener('click', closeAlertDetailsModal);
+            
+            // Form submission
+            saveAlert.addEventListener('click', saveNewAlert);
+            
+            // Filter controls
+            alertsSearch.addEventListener('input', applyFilters);
+            severityFilter.addEventListener('change', applyFilters);
+            statusFilter.addEventListener('change', applyFilters);
+            brandFilter.addEventListener('change', applyFilters);
+            sortBy.addEventListener('change', applyFilters);
+            resetFilters.addEventListener('click', resetAllFilters);
+            toggleAdvancedFilters.addEventListener('click', toggleAdvancedFiltersView);
+            
+            // View controls
+            gridView.addEventListener('click', () => switchView('grid'));
+            listView.addEventListener('click', () => switchView('list'));
+            
+            // Quick actions
+            quickScan.addEventListener('click', quickScanEmails);
+            quickReport.addEventListener('click', generateReport);
+            quickExport.addEventListener('click', exportData);
+            
+            // Image upload
+            imageUploadArea.addEventListener('click', () => alertScreenshot.click());
+            alertScreenshot.addEventListener('change', handleImageUpload);
+            
+            // Alert actions
+            editAlert.addEventListener('click', editSelectedAlert);
+            deleteAlert.addEventListener('click', deleteSelectedAlert);
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === addAlertModal) closeAddAlertModal();
+                if (e.target === alertDetailsModal) closeAlertDetailsModal();
+            });
         }
-    });
-    
-    // Event listener untuk toggle view options
-    const toggleViewOptions = document.getElementById('toggleViewOptions');
-    if (toggleViewOptions) {
-        toggleViewOptions.addEventListener('click', () => {
-            const viewOptions = document.getElementById('viewOptions');
-            if (viewOptions.style.display === 'none') {
-                viewOptions.style.display = 'block';
-            } else {
-                viewOptions.style.display = 'none';
+        
+        // Load alerts from Firebase
+        function loadAlerts() {
+            showLoading();
+            
+            // In a real application, this would fetch data from Firebase
+            // For demo purposes, we'll use mock data
+            setTimeout(() => {
+                // Mock data
+                alerts = [
+                    {
+                        id: '1',
+                        title: 'Suspicious Email from fake-cintawin88.com',
+                        severity: 'critical',
+                        status: 'new',
+                        brand: 'CINTAWIN88 (D-GAMING)',
+                        description: 'Phishing email attempting to impersonate CINTAWIN88 customer support. Contains malicious link to fake login page.',
+                        sender: 'support@fake-cintawin88.com',
+                        url: 'https://fake-cintawin88.com/login',
+                        dateDetected: new Date('2023-10-15').toISOString(),
+                        dateResolved: null
+                    },
+                    {
+                        id: '2',
+                        title: 'Fake CERIASLOT99 Registration Page',
+                        severity: 'high',
+                        status: 'investigating',
+                        brand: 'CERIASLOT99 (D-GAMING)',
+                        description: 'Fake registration page designed to steal user credentials. Domain registered recently with suspicious details.',
+                        sender: null,
+                        url: 'https://ceriaslot99-register.com',
+                        dateDetected: new Date('2023-10-14').toISOString(),
+                        dateResolved: null
+                    },
+                    {
+                        id: '3',
+                        title: 'RAJASCATTER88 Phishing SMS',
+                        severity: 'medium',
+                        status: 'resolved',
+                        brand: 'RAJASCATTER88 (D-GAMING)',
+                        description: 'SMS phishing campaign targeting RAJASCATTER88 users with fake bonus offers. Link leads to credential harvesting page.',
+                        sender: null,
+                        url: 'https://rajascatter-bonus.com',
+                        dateDetected: new Date('2023-10-10').toISOString(),
+                        dateResolved: new Date('2023-10-12').toISOString()
+                    },
+                    {
+                        id: '4',
+                        title: 'MAHJONGJP88 Fake App Download',
+                        severity: 'high',
+                        status: 'false-positive',
+                        brand: 'MAHJONGJP88 (D-GAMING)',
+                        description: 'Fake mobile app claiming to be MAHJONGJP88. Actually malware designed to steal personal information.',
+                        sender: 'downloads@mahjongjp-mobile.com',
+                        url: 'https://mahjongjp-mobile.com/download',
+                        dateDetected: new Date('2023-10-08').toISOString(),
+                        dateResolved: new Date('2023-10-09').toISOString()
+                    },
+                    {
+                        id: '5',
+                        title: 'NAGAHOKI88 Social Media Impersonation',
+                        severity: 'low',
+                        status: 'new',
+                        brand: 'NAGAHOKI88 (D-GAMING)',
+                        description: 'Fake social media account pretending to be official NAGAHOKI88 support. Directing users to phishing sites.',
+                        sender: null,
+                        url: 'https://instagram.com/nagahoki88_support',
+                        dateDetected: new Date('2023-10-05').toISOString(),
+                        dateResolved: null
+                    }
+                ];
+                
+                filteredAlerts = [...alerts];
+                updateStats();
+                renderAlerts();
+                hideLoading();
+            }, 1000);
+        }
+        
+        // Update statistics
+        function updateStats() {
+            totalAlerts.textContent = alerts.length;
+            
+            const criticalCount = alerts.filter(alert => alert.severity === 'critical').length;
+            criticalAlerts.textContent = criticalCount;
+            
+            const resolvedCount = alerts.filter(alert => alert.status === 'resolved').length;
+            resolvedAlerts.textContent = resolvedCount;
+            
+            const pendingCount = alerts.filter(alert => 
+                alert.status === 'new' || alert.status === 'investigating'
+            ).length;
+            pendingAlerts.textContent = pendingCount;
+        }
+        
+        // Render alerts to the grid
+        function renderAlerts() {
+            if (filteredAlerts.length === 0) {
+                alertsGrid.innerHTML = '';
+                document.querySelector('.empty-state').style.display = 'flex';
+                return;
             }
-        });
-    }
-    
-    // Event listener untuk tombol di modal details
-    document.getElementById('closeDetails')?.addEventListener('click', () => {
-        document.getElementById('meetingDetailsModal').classList.remove('active');
-    });
-    
-    document.getElementById('editFromDetails')?.addEventListener('click', function() {
-        const meetingId = document.getElementById('meetingDetailsModal').dataset.meetingId;
-        document.getElementById('meetingDetailsModal').classList.remove('active');
-        openEditMeetingModal(meetingId);
-    });
-}
-
-// ========== CRUD OPERATIONS ==========
-
-// Fungsi untuk menyimpan meeting ke Firestore
-async function saveMeetingToFirestore() {
-    const title = document.getElementById('meetingTitle').value;
-    const type = document.getElementById('meetingType').value;
-    const start = document.getElementById('meetingStart').value;
-    const end = document.getElementById('meetingEnd').value;
-    const description = document.getElementById('meetingDescription').value;
-    const reminder = document.getElementById('meetingReminder').value;
-    const recurrence = document.getElementById('meetingRecurrence').value;
-    
-    // Validasi form
-    if (!title || !type || !start || !end) {
-        showNotification('Please fill in all required fields', 'error');
-        return;
-    }
-    
-    // Dapatkan peserta yang dipilih
-    const selectedParticipants = Array.from(document.querySelectorAll('input[name="participants"]:checked')).map(input => parseInt(input.value));
-    
-    // Dapatkan item agenda
-    const agendaInputs = document.querySelectorAll('#agendaItems .agenda-item-input');
-    const agenda = Array.from(agendaInputs).map(input => {
-        const itemInput = input.querySelector('input[type="text"]');
-        const durationInput = input.querySelector('input[type="number"]');
-        return {
-            item: itemInput.value,
-            duration: durationInput.value ? parseInt(durationInput.value) : 0
-        };
-    }).filter(item => item.item); // Hanya item dengan teks
-    
-    // Tentukan status berdasarkan waktu
-    const now = new Date();
-    const startTime = new Date(start);
-    const endTime = new Date(end);
-    let status = "upcoming";
-    
-    if (now >= startTime && now <= endTime) {
-        status = "ongoing";
-    } else if (now > endTime) {
-        status = "completed";
-    }
-    
-    // Data meeting
-    const meetingData = {
-        title,
-        type,
-        start: firebase.firestore.Timestamp.fromDate(startTime),
-        end: firebase.firestore.Timestamp.fromDate(endTime),
-        description,
-        participants: selectedParticipants,
-        agenda,
-        status,
-        reminder,
-        recurrence,
-        userId: currentUser.uid,
-        organizer: currentUser.uid,
-        dateCreated: firebase.firestore.Timestamp.now(),
-        dateUpdated: firebase.firestore.Timestamp.now()
-    };
-    
-    try {
-        // Cek apakah ini edit atau create baru
-        const editId = document.getElementById('scheduleMeetingModal').dataset.editId;
+            
+            document.querySelector('.empty-state').style.display = 'none';
+            
+            alertsGrid.innerHTML = '';
+            
+            filteredAlerts.forEach(alert => {
+                const alertCard = createAlertCard(alert);
+                alertsGrid.appendChild(alertCard);
+            });
+        }
         
-        if (editId) {
-            // Update meeting yang sudah ada
-            await db.collection('weeklyMeetings').doc(editId).update({
-                ...meetingData,
-                dateUpdated: firebase.firestore.Timestamp.now()
+        // Create an alert card element
+        function createAlertCard(alert) {
+            const card = document.createElement('div');
+            card.className = 'alert-card fade-in';
+            card.dataset.id = alert.id;
+            
+            // Format date
+            const detectedDate = new Date(alert.dateDetected);
+            const formattedDate = detectedDate.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
             });
             
-            showNotification(`"${title}" has been updated successfully!`, 'success');
-        } else {
-            // Buat meeting baru
-            await db.collection('weeklyMeetings').add(meetingData);
-            
-            showNotification(`"${title}" has been scheduled successfully!`, 'success');
-        }
-        
-        // Tutup modal
-        closeScheduleMeetingModal();
-        
-    } catch (error) {
-        console.error("Error saving meeting:", error);
-        showNotification('Error saving meeting', 'error');
-    }
-}
-
-// Fungsi untuk mengubah status meeting
-async function updateMeetingStatus(meetingId, status) {
-    try {
-        await db.collection('weeklyMeetings').doc(meetingId).update({
-            status,
-            dateUpdated: firebase.firestore.Timestamp.now()
-        });
-        
-        showNotification(`Meeting status updated to ${status}`, 'success');
-    } catch (error) {
-        console.error("Error updating meeting status:", error);
-        showNotification('Error updating meeting status', 'error');
-    }
-}
-
-// Fungsi untuk menghapus meeting
-async function deleteMeeting(meetingId) {
-    try {
-        await db.collection('weeklyMeetings').doc(meetingId).delete();
-        
-        showNotification('Meeting deleted successfully!', 'success');
-    } catch (error) {
-        console.error("Error deleting meeting:", error);
-        showNotification('Error deleting meeting', 'error');
-    }
-}
-
-// ========== UI FUNCTIONS ==========
-
-// Fungsi untuk merender meetings
-function renderMeetings() {
-    const meetingsGrid = document.getElementById('meetingsGrid');
-    const timelineView = document.getElementById('timelineView');
-    const calendarView = document.getElementById('calendarView');
-    const noMeetings = document.getElementById('noMeetings');
-    
-    // Dapatkan nilai filter
-    const statusFilter = document.getElementById('statusFilter').value;
-    const typeFilter = document.getElementById('typeFilter').value;
-    const dateFrom = document.getElementById('dateFrom').value;
-    const dateTo = document.getElementById('dateTo').value;
-    const searchValue = document.getElementById('meetingsSearch').value.toLowerCase();
-    const viewMode = document.getElementById('viewMode').value;
-    
-    // Filter meetings
-    let filteredMeetings = [...meetingsData];
-    
-    if (statusFilter) {
-        filteredMeetings = filteredMeetings.filter(meeting => meeting.status === statusFilter);
-    }
-    
-    if (typeFilter) {
-        filteredMeetings = filteredMeetings.filter(meeting => meeting.type === typeFilter);
-    }
-    
-    if (dateFrom) {
-        const fromDate = new Date(dateFrom);
-        filteredMeetings = filteredMeetings.filter(meeting => {
-            const meetingDate = new Date(meeting.start.seconds * 1000);
-            return meetingDate >= fromDate;
-        });
-    }
-    
-    if (dateTo) {
-        const toDate = new Date(dateTo);
-        toDate.setHours(23, 59, 59, 999); // Set to end of day
-        filteredMeetings = filteredMeetings.filter(meeting => {
-            const meetingDate = new Date(meeting.start.seconds * 1000);
-            return meetingDate <= toDate;
-        });
-    }
-    
-    if (searchValue) {
-        filteredMeetings = filteredMeetings.filter(meeting => 
-            meeting.title.toLowerCase().includes(searchValue) || 
-            (meeting.description && meeting.description.toLowerCase().includes(searchValue))
-        );
-    }
-    
-    // Tampilkan pesan jika tidak ada meetings
-    if (filteredMeetings.length === 0) {
-        if (noMeetings) noMeetings.style.display = 'block';
-        if (meetingsGrid) meetingsGrid.style.display = 'none';
-        if (timelineView) timelineView.style.display = 'none';
-        if (calendarView) calendarView.style.display = 'none';
-        return;
-    }
-    
-    if (noMeetings) noMeetings.style.display = 'none';
-    
-    // Render berdasarkan view mode
-    if (viewMode === 'grid') {
-        renderGridView(filteredMeetings, meetingsGrid);
-        updateViewButtons('grid');
-    } else if (viewMode === 'timeline') {
-        renderTimelineView(filteredMeetings, timelineView);
-        updateViewButtons('timeline');
-    } else if (viewMode === 'calendar') {
-        renderCalendarView(filteredMeetings, calendarView);
-        updateViewButtons('calendar');
-    }
-}
-
-// Fungsi untuk merender grid view
-function renderGridView(meetings, container) {
-    if (!container) return;
-    
-    container.innerHTML = '';
-    container.style.display = 'grid';
-    document.getElementById('timelineView').style.display = 'none';
-    document.getElementById('calendarView').style.display = 'none';
-    
-    meetings.forEach(meeting => {
-        const meetingCard = createMeetingCard(meeting);
-        container.appendChild(meetingCard);
-    });
-}
-
-// Fungsi untuk membuat kartu meeting
-function createMeetingCard(meeting) {
-    const card = document.createElement('div');
-    card.className = 'meeting-card';
-    card.dataset.id = meeting.id;
-    
-    // Tentukan status badge
-    let statusBadge = '';
-    let statusClass = '';
-    switch(meeting.status) {
-        case 'upcoming':
-            statusBadge = 'Upcoming';
-            statusClass = 'status-upcoming';
-            break;
-        case 'ongoing':
-            statusBadge = 'Ongoing';
-            statusClass = 'status-ongoing';
-            break;
-        case 'completed':
-            statusBadge = 'Completed';
-            statusClass = 'status-completed';
-            break;
-        case 'cancelled':
-            statusBadge = 'Cancelled';
-            statusClass = 'status-cancelled';
-            break;
-    }
-    
-    // Format tanggal
-    const startDate = new Date(meeting.start.seconds * 1000);
-    const endDate = new Date(meeting.end.seconds * 1000);
-    
-    card.innerHTML = `
-        <div class="meeting-header">
-            <div>
-                <h3 class="meeting-title">${meeting.title}</h3>
-                <div class="meeting-date">
-                    <i class="fas fa-calendar-alt"></i>
-                    ${formatDisplayDate(startDate)}
-                </div>
-            </div>
-            <div class="meeting-status ${statusClass}">${statusBadge}</div>
-        </div>
-        
-        <div class="meeting-content">
-            <div class="meeting-details">
-                <div class="meeting-detail-item">
-                    <span class="detail-label">Type</span>
-                    <span class="detail-value">${getMeetingTypeDisplayName(meeting.type)}</span>
-                </div>
-                <div class="meeting-detail-item">
-                    <span class="detail-label">Duration</span>
-                    <span class="detail-value">${formatDuration(startDate, endDate)}</span>
-                </div>
-            </div>
-            
-            <div class="meeting-actions">
-                <button class="btn btn-outline btn-sm view-meeting" data-id="${meeting.id}">
-                    <i class="fas fa-eye"></i> View
-                </button>
-                <button class="btn btn-primary btn-sm edit-meeting" data-id="${meeting.id}">
-                    <i class="fas fa-edit"></i> Edit
-                </button>
-                ${meeting.status === 'upcoming' ? `
-                    <button class="btn btn-success btn-sm start-meeting" data-id="${meeting.id}">
-                        <i class="fas fa-play"></i> Start
-                    </button>
-                ` : ''}
-                ${meeting.status === 'ongoing' ? `
-                    <button class="btn btn-warning btn-sm complete-meeting" data-id="${meeting.id}">
-                        <i class="fas fa-check"></i> Complete
-                    </button>
-                ` : ''}
-                ${meeting.status === 'upcoming' || meeting.status === 'ongoing' ? `
-                    <button class="btn btn-danger btn-sm cancel-meeting" data-id="${meeting.id}">
-                        <i class="fas fa-times"></i> Cancel
-                    </button>
-                ` : ''}
-                ${meeting.status === 'completed' || meeting.status === 'cancelled' ? `
-                    <button class="btn btn-danger btn-sm delete-meeting" data-id="${meeting.id}">
-                        <i class="fas fa-trash"></i> Delete
-                    </button>
-                ` : ''}
-            </div>
-        </div>
-    `;
-    
-    // Tambahkan event listeners
-    card.querySelector('.view-meeting').addEventListener('click', () => viewMeetingDetails(meeting.id));
-    card.querySelector('.edit-meeting').addEventListener('click', () => openEditMeetingModal(meeting.id));
-    
-    if (card.querySelector('.start-meeting')) {
-        card.querySelector('.start-meeting').addEventListener('click', () => updateMeetingStatus(meeting.id, 'ongoing'));
-    }
-    
-    if (card.querySelector('.complete-meeting')) {
-        card.querySelector('.complete-meeting').addEventListener('click', () => updateMeetingStatus(meeting.id, 'completed'));
-    }
-    
-    if (card.querySelector('.cancel-meeting')) {
-        card.querySelector('.cancel-meeting').addEventListener('click', () => {
-            if (confirm('Are you sure you want to cancel this meeting?')) {
-                updateMeetingStatus(meeting.id, 'cancelled');
+            // Severity badge class
+            let badgeClass = '';
+            switch(alert.severity) {
+                case 'critical':
+                    badgeClass = 'badge-critical';
+                    break;
+                case 'high':
+                    badgeClass = 'badge-high';
+                    break;
+                case 'medium':
+                    badgeClass = 'badge-medium';
+                    break;
+                case 'low':
+                    badgeClass = 'badge-low';
+                    break;
             }
-        });
-    }
-    
-    if (card.querySelector('.delete-meeting')) {
-        card.querySelector('.delete-meeting').addEventListener('click', () => {
-            if (confirm('Are you sure you want to delete this meeting?')) {
-                deleteMeeting(meeting.id);
-            }
-        });
-    }
-    
-    return card;
-}
-
-// Fungsi untuk membuka modal edit meeting
-async function openEditMeetingModal(meetingId) {
-    try {
-        const doc = await db.collection('weeklyMeetings').doc(meetingId).get();
-        
-        if (!doc.exists) {
-            showNotification('Meeting not found!', 'error');
-            return;
-        }
-        
-        const meeting = doc.data();
-        
-        // Isi form dengan data meeting
-        document.getElementById('meetingTitle').value = meeting.title;
-        document.getElementById('meetingType').value = meeting.type;
-        
-        // Format datetime untuk input
-        const startDate = new Date(meeting.start.seconds * 1000);
-        const endDate = new Date(meeting.end.seconds * 1000);
-        
-        document.getElementById('meetingStart').value = formatDateTimeLocal(startDate);
-        document.getElementById('meetingEnd').value = formatDateTimeLocal(endDate);
-        document.getElementById('meetingDescription').value = meeting.description || '';
-        document.getElementById('meetingReminder').value = meeting.reminder || 'none';
-        document.getElementById('meetingRecurrence').value = meeting.recurrence || 'none';
-        
-        // Isi daftar peserta
-        const participantsList = document.getElementById('participantsList');
-        participantsList.innerHTML = '';
-        
-        // Dummy participants data - dalam implementasi nyata, ini harus dari database
-        const participants = [
-            { id: 1, name: "Adrian Abdul Arif", role: "Meeting Coordinator", avatar: "https://iili.io/Fpiva7S.png" }
-        ];
-        
-        participants.forEach(participant => {
-            const isChecked = meeting.participants && meeting.participants.includes(participant.id);
-            participantsList.innerHTML += `
-                <div class="checkbox-item">
-                    <input type="checkbox" id="participant-${participant.id}" name="participants" value="${participant.id}" ${isChecked ? 'checked' : ''}>
-                    <label for="participant-${participant.id}">
-                        <img src="${participant.avatar}" alt="${participant.name}" width="20" height="20" style="border-radius: 50%; margin-right: 8px;">
-                        ${participant.name} (${participant.role})
-                    </label>
-                </div>
-            `;
-        });
-        
-        // Isi agenda items
-        const agendaItems = document.getElementById('agendaItems');
-        agendaItems.innerHTML = '';
-        
-        if (meeting.agenda && meeting.agenda.length > 0) {
-            meeting.agenda.forEach(item => {
-                addAgendaItem(item.item, item.duration);
-            });
-        } else {
-            addAgendaItem(); // Tambahkan agenda item kosong
-        }
-        
-        // Simpan ID meeting untuk edit
-        document.getElementById('scheduleMeetingModal').dataset.editId = meetingId;
-        
-        // Update modal title
-        document.querySelector('#scheduleMeetingModal .modal-title').innerHTML = '<i class="fas fa-edit"></i> Edit Meeting';
-        
-        // Buka modal
-        document.getElementById('scheduleMeetingModal').classList.add('active');
-        document.body.style.overflow = 'hidden';
-        
-    } catch (error) {
-        console.error("Error opening edit modal:", error);
-        showNotification('Error loading meeting details', 'error');
-    }
-}
-
-// Fungsi untuk membuka modal jadwal meeting
-function openScheduleMeetingModal() {
-    // Reset form
-    document.getElementById('meetingForm').reset();
-    
-    // Set tanggal default
-    const now = new Date();
-    const defaultStart = new Date(now.getTime() + 60 * 60 * 1000); // 1 jam dari sekarang
-    const defaultEnd = new Date(defaultStart.getTime() + 60 * 60 * 1000); // 2 jam dari sekarang
-    
-    document.getElementById('meetingStart').value = formatDateTimeLocal(defaultStart);
-    document.getElementById('meetingEnd').value = formatDateTimeLocal(defaultEnd);
-    
-    // Isi daftar peserta
-    const participantsList = document.getElementById('participantsList');
-    participantsList.innerHTML = '';
-    
-    // Dummy participants data
-    const participants = [
-        { id: 1, name: "Adrian Abdul Arif", role: "Meeting Coordinator", avatar: "https://iili.io/Fpiva7S.png" }
-    ];
-    
-    participants.forEach(participant => {
-        participantsList.innerHTML += `
-            <div class="checkbox-item">
-                <input type="checkbox" id="participant-${participant.id}" name="participants" value="${participant.id}" checked>
-                <label for="participant-${participant.id}">
-                    <img src="${participant.avatar}" alt="${participant.name}" width="20" height="20" style="border-radius: 50%; margin-right: 8px;">
-                    ${participant.name} (${participant.role})
-                </label>
-            </div>
-        `;
-    });
-    
-    // Reset agenda items
-    document.getElementById('agendaItems').innerHTML = '';
-    addAgendaItem(); // Tambahkan agenda item kosong
-    
-    // Hapus edit ID jika ada
-    delete document.getElementById('scheduleMeetingModal').dataset.editId;
-    
-    // Update modal title
-    document.querySelector('#scheduleMeetingModal .modal-title').innerHTML = '<i class="fas fa-plus"></i> Schedule New Meeting';
-    
-    // Buka modal
-    document.getElementById('scheduleMeetingModal').classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-// Fungsi untuk menutup modal jadwal meeting
-function closeScheduleMeetingModal() {
-    document.getElementById('scheduleMeetingModal').classList.remove('active');
-    document.body.style.overflow = '';
-}
-
-// Fungsi untuk menambah agenda item
-function addAgendaItem(item = '', duration = '') {
-    const agendaItems = document.getElementById('agendaItems');
-    const newItem = document.createElement('div');
-    newItem.className = 'agenda-item-input';
-    newItem.style = 'display: flex; gap: 10px; margin-bottom: 10px;';
-    newItem.innerHTML = `
-        <input type="text" class="form-input" placeholder="Agenda item" style="flex: 1;" value="${item}">
-        <input type="number" class="form-input" placeholder="Duration (min)" style="width: 100px;" min="1" value="${duration}">
-        <button type="button" class="btn btn-danger" onclick="removeAgendaItem(this)">
-            <i class="fas fa-times"></i>
-        </button>
-    `;
-    agendaItems.appendChild(newItem);
-}
-
-// Fungsi untuk menghapus agenda item
-function removeAgendaItem(button) {
-    const agendaItems = document.getElementById('agendaItems');
-    if (agendaItems.children.length > 1) {
-        button.parentElement.remove();
-    }
-}
-
-// Fungsi untuk melihat detail meeting
-async function viewMeetingDetails(meetingId) {
-    try {
-        const doc = await db.collection('weeklyMeetings').doc(meetingId).get();
-        
-        if (!doc.exists) {
-            showNotification('Meeting not found!', 'error');
-            return;
-        }
-        
-        const meeting = doc.data();
-        const startDate = new Date(meeting.start.seconds * 1000);
-        const endDate = new Date(meeting.end.seconds * 1000);
-        
-        // Tentukan status badge
-        let statusBadge = '';
-        let statusClass = '';
-        switch(meeting.status) {
-            case 'upcoming':
-                statusBadge = 'Upcoming';
-                statusClass = 'status-upcoming';
-                break;
-            case 'ongoing':
-                statusBadge = 'Ongoing';
-                statusClass = 'status-ongoing';
-                break;
-            case 'completed':
-                statusBadge = 'Completed';
-                statusClass = 'status-completed';
-                break;
-            case 'cancelled':
-                statusBadge = 'Cancelled';
-                statusClass = 'status-cancelled';
-                break;
-        }
-        
-        // Dapatkan daftar peserta
-        let participantsHtml = '';
-        if (meeting.participants && meeting.participants.length > 0) {
-            // Dummy data peserta
-            const allParticipants = [
-                { id: 1, name: "Adrian Abdul Arif", role: "Meeting Coordinator", avatar: "https://iili.io/Fpiva7S.png" }
-            ];
             
-            meeting.participants.forEach(participantId => {
-                const participant = allParticipants.find(p => p.id === participantId);
-                if (participant) {
-                    participantsHtml += `
-                        <div class="participant">
-                            <img src="${participant.avatar}" alt="${participant.name}">
-                            <span>${participant.name}</span>
+            card.innerHTML = `
+                <div class="alert-header">
+                    <h4 class="alert-title">${alert.title}</h4>
+                    <span class="alert-badge ${badgeClass}">${alert.severity}</span>
+                </div>
+                <div class="alert-content">
+                    <p class="alert-description">${alert.description}</p>
+                    <div class="alert-details">
+                        <div class="alert-detail-item">
+                            <span class="detail-label">Brand</span>
+                            <span class="detail-value">${alert.brand}</span>
                         </div>
-                    `;
-                }
-            });
-        } else {
-            participantsHtml = '<p>No participants</p>';
-        }
-        
-        // Dapatkan agenda
-        let agendaHtml = '';
-        if (meeting.agenda && meeting.agenda.length > 0) {
-            meeting.agenda.forEach(item => {
-                agendaHtml += `<li class="agenda-item">${item.item} (${item.duration} minutes)</li>`;
-            });
-        } else {
-            agendaHtml = '<p>No agenda items</p>';
-        }
-        
-        // Isi modal detail meeting
-        document.getElementById('meetingDetailsContent').innerHTML = `
-            <div class="meeting-header">
-                <div>
-                    <h3 class="meeting-title">${meeting.title}</h3>
-                    <div class="meeting-date">
-                        <i class="fas fa-calendar-alt"></i>
-                        ${formatDisplayDate(startDate)}
+                        <div class="alert-detail-item">
+                            <span class="detail-label">Status</span>
+                            <span class="detail-value">${alert.status}</span>
+                        </div>
+                        <div class="alert-detail-item">
+                            <span class="detail-label">Detected</span>
+                            <span class="detail-value">${formattedDate}</span>
+                        </div>
+                        <div class="alert-detail-item">
+                            <span class="detail-label">Type</span>
+                            <span class="detail-value">${alert.sender ? 'Email' : 'Website'}</span>
+                        </div>
+                    </div>
+                    <div class="alert-actions">
+                        <button class="btn btn-outline btn-sm view-details">
+                            <i class="fas fa-eye"></i> Details
+                        </button>
+                        <button class="btn btn-primary btn-sm resolve-alert">
+                            <i class="fas fa-check"></i> Resolve
+                        </button>
                     </div>
                 </div>
-                <div class="meeting-status ${statusClass}">${statusBadge}</div>
-            </div>
+            `;
             
-            <div class="meeting-content">
-                <div class="meeting-details">
-                    <div class="meeting-detail-item">
-                        <span class="detail-label">Type</span>
-                        <span class="detail-value">${getMeetingTypeDisplayName(meeting.type)}</span>
-                    </div>
-                    <div class="meeting-detail-item">
-                        <span class="detail-label">Duration</span>
-                        <span class="detail-value">${formatDuration(startDate, endDate)}</span>
-                    </div>
-                    <div class="meeting-detail-item">
-                        <span class="detail-label">Start Time</span>
-                        <span class="detail-value">${startDate.toLocaleTimeString()}</span>
-                    </div>
-                    <div class="meeting-detail-item">
-                        <span class="detail-label">End Time</span>
-                        <span class="detail-value">${endDate.toLocaleTimeString()}</span>
-                    </div>
-                </div>
-                
-                <div class="meeting-participants">
-                    <h4 class="participants-title">Participants</h4>
-                    <div class="participants-list">
-                        ${participantsHtml}
-                    </div>
-                </div>
-                
-                <div class="meeting-agenda">
-                    <h4 class="agenda-title">Agenda</h4>
-                    <ul class="agenda-items">
-                        ${agendaHtml}
-                    </ul>
-                </div>
-                
-                ${meeting.description ? `
-                    <div class="meeting-description">
-                        <h4 class="description-title">Description</h4>
-                        <p>${meeting.description}</p>
-                    </div>
-                ` : ''}
-            </div>
-        `;
-        
-        // Simpan ID meeting untuk edit
-        document.getElementById('meetingDetailsModal').dataset.meetingId = meetingId;
-        
-        // Buka modal
-        document.getElementById('meetingDetailsModal').classList.add('active');
-        document.body.style.overflow = 'hidden';
-        
-    } catch (error) {
-        console.error("Error viewing meeting details:", error);
-        showNotification('Error loading meeting details', 'error');
-    }
-}
-
-// Fungsi untuk memperbarui statistik meeting
-function updateMeetingStats() {
-    const totalCount = meetingsData.length;
-    const upcomingCount = meetingsData.filter(meeting => meeting.status === 'upcoming').length;
-    const completedCount = meetingsData.filter(meeting => meeting.status === 'completed').length;
-    
-    // Hitung tingkat penyelesaian
-    const completionRate = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
-    
-    // Perbarui UI
-    document.getElementById('totalMeetings').textContent = totalCount;
-    document.getElementById('upcomingMeetings').textContent = upcomingCount;
-    document.getElementById('totalParticipants').textContent = meetingsData.reduce((acc, meeting) => acc + (meeting.participants ? meeting.participants.length : 0), 0);
-    document.getElementById('completionRate').textContent = `${completionRate}%`;
-}
-
-// Fungsi untuk mereset semua filter
-function resetAllFilters() {
-    document.getElementById('statusFilter').value = '';
-    document.getElementById('typeFilter').value = '';
-    document.getElementById('dateFrom').value = '';
-    document.getElementById('dateTo').value = '';
-    document.getElementById('meetingsSearch').value = '';
-    
-    renderMeetings();
-}
-
-// ========== VIEW TOGGLE FUNCTIONS ==========
-
-// Fungsi untuk memperbarui tampilan tombol view
-function updateViewButtons(activeView) {
-    const gridViewBtn = document.getElementById('gridViewBtn');
-    const timelineViewBtn = document.getElementById('timelineViewBtn');
-    const calendarViewBtn = document.getElementById('calendarViewBtn');
-    
-    // Reset semua tombol
-    if (gridViewBtn) gridViewBtn.classList.remove('active');
-    if (timelineViewBtn) timelineViewBtn.classList.remove('active');
-    if (calendarViewBtn) calendarViewBtn.classList.remove('active');
-    
-    // Aktifkan tombol yang sesuai
-    if (activeView === 'grid' && gridViewBtn) {
-        gridViewBtn.classList.add('active');
-    } else if (activeView === 'timeline' && timelineViewBtn) {
-        timelineViewBtn.classList.add('active');
-    } else if (activeView === 'calendar' && calendarViewBtn) {
-        calendarViewBtn.classList.add('active');
-    }
-}
-
-// Fungsi untuk merender timeline view
-function renderTimelineView(meetings, container) {
-    if (!container) return;
-    
-    container.innerHTML = '';
-    container.style.display = 'block';
-    document.getElementById('meetingsGrid').style.display = 'none';
-    document.getElementById('calendarView').style.display = 'none';
-    
-    if (meetings.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-calendar-times"></i>
-                <h3>No Meetings Found</h3>
-                <p>There are no meetings matching your criteria. Try adjusting your filters.</p>
-            </div>
-        `;
-        return;
-    }
-    
-    // Urutkan meeting berdasarkan tanggal
-    const sortedMeetings = [...meetings].sort((a, b) => {
-        return a.start.seconds - b.start.seconds;
-    });
-    
-    sortedMeetings.forEach(meeting => {
-        const timelineItem = document.createElement('div');
-        timelineItem.className = 'timeline-item';
-        
-        const startDate = new Date(meeting.start.seconds * 1000);
-        const endDate = new Date(meeting.end.seconds * 1000);
-        
-        // Tentukan status badge
-        let statusClass = '';
-        switch(meeting.status) {
-            case 'upcoming':
-                statusClass = 'status-upcoming';
-                break;
-            case 'ongoing':
-                statusClass = 'status-ongoing';
-                break;
-            case 'completed':
-                statusClass = 'status-completed';
-                break;
-            case 'cancelled':
-                statusClass = 'status-cancelled';
-                break;
-        }
-        
-        timelineItem.innerHTML = `
-            <div class="timeline-dot"></div>
-            <div class="timeline-content">
-                <div class="timeline-date">${formatDisplayDate(startDate)}</div>
-                <h3 class="timeline-title">${meeting.title}</h3>
-                <p class="timeline-description">
-                    <span class="meeting-status ${statusClass}">${meeting.status.charAt(0).toUpperCase() + meeting.status.slice(1)}</span> • 
-                    ${formatDuration(startDate, endDate)} • 
-                    ${getMeetingTypeDisplayName(meeting.type)}
-                </p>
-                <div class="meeting-actions">
-                    <button class="btn btn-outline btn-sm view-meeting" data-id="${meeting.id}">
-                        <i class="fas fa-eye"></i> View
-                    </button>
-                    <button class="btn btn-primary btn-sm edit-meeting" data-id="${meeting.id}">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-                </div>
-            </div>
-        `;
-        
-        // Tambahkan event listeners
-        timelineItem.querySelector('.view-meeting').addEventListener('click', () => viewMeetingDetails(meeting.id));
-        timelineItem.querySelector('.edit-meeting').addEventListener('click', () => openEditMeetingModal(meeting.id));
-        
-        container.appendChild(timelineItem);
-    });
-}
-
-// Fungsi untuk merender calendar view
-function renderCalendarView(meetings, container) {
-    if (!container) return;
-    
-    container.innerHTML = '';
-    container.style.display = 'block';
-    document.getElementById('meetingsGrid').style.display = 'none';
-    document.getElementById('timelineView').style.display = 'none';
-    
-    // Buat struktur kalender
-    const now = new Date();
-    const firstDay = new Date(currentCalendarYear, currentCalendarMonth, 1).getDay();
-    const daysInMonth = new Date(currentCalendarYear, currentCalendarMonth + 1, 0).getDate();
-    
-    // Nama bulan dan hari
-    const monthNames = ["January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
-    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    
-    // Header kalender
-    const calendarHeader = document.createElement('div');
-    calendarHeader.className = 'calendar-header';
-    calendarHeader.innerHTML = `
-        <div class="calendar-nav">
-            <button class="btn btn-outline btn-sm" id="prevMonthBtn">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <h3 class="calendar-title">${monthNames[currentCalendarMonth]} ${currentCalendarYear}</h3>
-            <button class="btn btn-outline btn-sm" id="nextMonthBtn">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-        </div>
-        <button class="btn btn-primary btn-sm" id="todayBtn">
-            Today
-        </button>
-    `;
-    container.appendChild(calendarHeader);
-    
-    // Grid kalender
-    const calendarGrid = document.createElement('div');
-    calendarGrid.className = 'calendar-grid';
-    
-    // Tambahkan header hari
-    dayNames.forEach(day => {
-        const dayHeader = document.createElement('div');
-        dayHeader.className = 'calendar-day-header';
-        dayHeader.textContent = day;
-        calendarGrid.appendChild(dayHeader);
-    });
-    
-    // Tambahkan sel kosong untuk hari sebelum bulan dimulai
-    for (let i = 0; i < firstDay; i++) {
-        const emptyDay = document.createElement('div');
-        emptyDay.className = 'calendar-day empty';
-        calendarGrid.appendChild(emptyDay);
-    }
-    
-    // Tambahkan hari dalam bulan
-    for (let day = 1; day <= daysInMonth; day++) {
-        const dayElement = document.createElement('div');
-        dayElement.className = 'calendar-day';
-        
-        const dayNumber = document.createElement('div');
-        dayNumber.className = 'day-number';
-        dayNumber.textContent = day;
-        
-        // Highlight hari ini
-        if (day === now.getDate() && currentCalendarMonth === now.getMonth() && currentCalendarYear === now.getFullYear()) {
-            dayNumber.style.fontWeight = 'bold';
-            dayNumber.style.color = 'var(--primary)';
-        }
-        
-        dayElement.appendChild(dayNumber);
-        
-        // Tambahkan meeting untuk hari ini
-        const currentDate = `${currentCalendarYear}-${String(currentCalendarMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        
-        const dayMeetings = meetings.filter(meeting => {
-            const meetingDate = new Date(meeting.start.seconds * 1000);
-            const meetingDateStr = `${meetingDate.getFullYear()}-${String(meetingDate.getMonth() + 1).padStart(2, '0')}-${String(meetingDate.getDate()).padStart(2, '0')}`;
-            return meetingDateStr === currentDate;
-        });
-        
-        dayMeetings.forEach(meeting => {
-            const meetingElement = document.createElement('div');
-            meetingElement.className = 'calendar-meeting';
+            // Add event listeners to buttons
+            card.querySelector('.view-details').addEventListener('click', () => viewAlertDetails(alert.id));
+            card.querySelector('.resolve-alert').addEventListener('click', () => resolveAlert(alert.id));
             
-            // Tentukan warna berdasarkan status
-            let statusClass = '';
-            switch(meeting.status) {
-                case 'upcoming':
-                    statusClass = 'status-upcoming';
+            return card;
+        }
+        
+        // Apply filters to alerts
+        function applyFilters() {
+            const searchTerm = alertsSearch.value.toLowerCase();
+            const severityValue = severityFilter.value;
+            const statusValue = statusFilter.value;
+            const brandValue = brandFilter.value;
+            const sortValue = sortBy.value;
+            
+            filteredAlerts = alerts.filter(alert => {
+                // Search filter
+                const matchesSearch = !searchTerm || 
+                    alert.title.toLowerCase().includes(searchTerm) ||
+                    alert.description.toLowerCase().includes(searchTerm) ||
+                    alert.brand.toLowerCase().includes(searchTerm);
+                
+                // Severity filter
+                const matchesSeverity = !severityValue || alert.severity === severityValue;
+                
+                // Status filter
+                const matchesStatus = !statusValue || alert.status === statusValue;
+                
+                // Brand filter
+                const matchesBrand = !brandValue || alert.brand === brandValue;
+                
+                return matchesSearch && matchesSeverity && matchesStatus && matchesBrand;
+            });
+            
+            // Sort alerts
+            sortAlerts(sortValue);
+            
+            // Render filtered alerts
+            renderAlerts();
+        }
+        
+        // Sort alerts by selected criteria
+        function sortAlerts(sortBy) {
+            switch(sortBy) {
+                case 'date':
+                    filteredAlerts.sort((a, b) => new Date(b.dateDetected) - new Date(a.dateDetected));
                     break;
-                case 'ongoing':
-                    statusClass = 'status-ongoing';
+                case 'severity':
+                    const severityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
+                    filteredAlerts.sort((a, b) => severityOrder[b.severity] - severityOrder[a.severity]);
                     break;
-                case 'completed':
-                    statusClass = 'status-completed';
+                case 'status':
+                    filteredAlerts.sort((a, b) => a.status.localeCompare(b.status));
                     break;
-                case 'cancelled':
-                    statusClass = 'status-cancelled';
+                case 'sender':
+                    filteredAlerts.sort((a, b) => {
+                        const aSender = a.sender || '';
+                        const bSender = b.sender || '';
+                        return aSender.localeCompare(bSender);
+                    });
+                    break;
+            }
+        }
+        
+        // Reset all filters
+        function resetAllFilters() {
+            alertsSearch.value = '';
+            severityFilter.value = '';
+            statusFilter.value = '';
+            brandFilter.value = '';
+            sortBy.value = 'date';
+            
+            // Reset advanced filters if visible
+            const dateFrom = document.getElementById('dateFrom');
+            const dateTo = document.getElementById('dateTo');
+            const senderDomain = document.getElementById('senderDomain');
+            
+            if (dateFrom) dateFrom.value = '';
+            if (dateTo) dateTo.value = '';
+            if (senderDomain) senderDomain.value = '';
+            
+            filteredAlerts = [...alerts];
+            renderAlerts();
+        }
+        
+        // Toggle advanced filters view
+        function toggleAdvancedFiltersView() {
+            advancedFilters.classList.toggle('show');
+            
+            const icon = toggleAdvancedFilters.querySelector('i');
+            if (advancedFilters.classList.contains('show')) {
+                icon.className = 'fas fa-chevron-up';
+                toggleAdvancedFilters.innerHTML = `<i class="fas fa-chevron-up"></i> Advanced Filters`;
+            } else {
+                icon.className = 'fas fa-sliders-h';
+                toggleAdvancedFilters.innerHTML = `<i class="fas fa-sliders-h"></i> Advanced Filters`;
+            }
+        }
+        
+        // Switch between grid and list view
+        function switchView(view) {
+            currentView = view;
+            
+            if (view === 'grid') {
+                gridView.classList.add('active');
+                listView.classList.remove('active');
+                alertsGrid.classList.remove('list-view');
+            } else {
+                gridView.classList.remove('active');
+                listView.classList.add('active');
+                alertsGrid.classList.add('list-view');
+            }
+            
+            // In a real implementation, you would adjust the styling for list view
+            // For this demo, we'll just keep the grid view
+        }
+        
+        // Open add alert modal
+        function openAddAlertModal() {
+            addAlertModal.classList.add('active');
+            document.getElementById('addAlertForm').reset();
+            imagePreview.style.display = 'none';
+        }
+        
+        // Close add alert modal
+        function closeAddAlertModal() {
+            addAlertModal.classList.remove('active');
+        }
+        
+        // Save new alert
+        function saveNewAlert() {
+            const title = document.getElementById('alertTitle').value;
+            const severity = document.getElementById('alertSeverity').value;
+            const brand = document.getElementById('alertBrand').value;
+            const status = document.getElementById('alertStatus').value;
+            const description = document.getElementById('alertDescription').value;
+            const sender = document.getElementById('alertSender').value;
+            const url = document.getElementById('alertUrl').value;
+            
+            // Basic validation
+            if (!title || !severity || !brand || !status || !description) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Create new alert object
+            const newAlert = {
+                id: Date.now().toString(),
+                title,
+                severity,
+                status,
+                brand,
+                description,
+                sender: sender || null,
+                url: url || null,
+                dateDetected: new Date().toISOString(),
+                dateResolved: status === 'resolved' ? new Date().toISOString() : null
+            };
+            
+            // In a real application, this would save to Firebase
+            alerts.unshift(newAlert);
+            filteredAlerts.unshift(newAlert);
+            
+            // Update UI
+            updateStats();
+            renderAlerts();
+            closeAddAlertModal();
+            
+            // Show success message
+            showNotification('Alert added successfully', 'success');
+        }
+        
+        // View alert details
+        function viewAlertDetails(alertId) {
+            selectedAlertId = alertId;
+            const alert = alerts.find(a => a.id === alertId);
+            
+            if (!alert) return;
+            
+            // Format dates
+            const detectedDate = new Date(alert.dateDetected);
+            const formattedDetectedDate = detectedDate.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            const resolvedDate = alert.dateResolved ? 
+                new Date(alert.dateResolved).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }) : 'Not resolved';
+            
+            // Severity badge class
+            let badgeClass = '';
+            switch(alert.severity) {
+                case 'critical':
+                    badgeClass = 'badge-critical';
+                    break;
+                case 'high':
+                    badgeClass = 'badge-high';
+                    break;
+                case 'medium':
+                    badgeClass = 'badge-medium';
+                    break;
+                case 'low':
+                    badgeClass = 'badge-low';
                     break;
             }
             
-            meetingElement.innerHTML = `
-                <strong>${new Date(meeting.start.seconds * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</strong>
-                ${meeting.title}
+            document.getElementById('alertDetailsContent').innerHTML = `
+                <div class="alert-details-full">
+                    <div class="detail-header">
+                        <h4>${alert.title}</h4>
+                        <span class="alert-badge ${badgeClass}">${alert.severity}</span>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h5>Description</h5>
+                        <p>${alert.description}</p>
+                    </div>
+                    
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <label>Brand</label>
+                            <span>${alert.brand}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Status</label>
+                            <span>${alert.status}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Severity</label>
+                            <span>${alert.severity}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Type</label>
+                            <span>${alert.sender ? 'Email' : 'Website'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Date Detected</label>
+                            <span>${formattedDetectedDate}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Date Resolved</label>
+                            <span>${resolvedDate}</span>
+                        </div>
+                    </div>
+                    
+                    ${alert.sender ? `
+                    <div class="detail-section">
+                        <h5>Sender Information</h5>
+                        <p>${alert.sender}</p>
+                    </div>
+                    ` : ''}
+                    
+                    ${alert.url ? `
+                    <div class="detail-section">
+                        <h5>Target URL</h5>
+                        <p><a href="${alert.url}" target="_blank">${alert.url}</a></p>
+                    </div>
+                    ` : ''}
+                </div>
             `;
             
-            meetingElement.classList.add(statusClass);
-            meetingElement.addEventListener('click', () => viewMeetingDetails(meeting.id));
-            dayElement.appendChild(meetingElement);
-        });
+            alertDetailsModal.classList.add('active');
+        }
         
-        calendarGrid.appendChild(dayElement);
-    }
-    
-    container.appendChild(calendarGrid);
-    
-    // Tambahkan event listeners untuk navigasi kalender
-    document.getElementById('prevMonthBtn').addEventListener('click', () => {
-        currentCalendarMonth--;
-        if (currentCalendarMonth < 0) {
-            currentCalendarMonth = 11;
-            currentCalendarYear--;
+        // Close alert details modal
+        function closeAlertDetailsModal() {
+            alertDetailsModal.classList.remove('active');
+            selectedAlertId = null;
         }
-        renderMeetings();
-    });
-    
-    document.getElementById('nextMonthBtn').addEventListener('click', () => {
-        currentCalendarMonth++;
-        if (currentCalendarMonth > 11) {
-            currentCalendarMonth = 0;
-            currentCalendarYear++;
+        
+        // Edit selected alert
+        function editSelectedAlert() {
+            if (!selectedAlertId) return;
+            
+            // In a real application, this would open an edit form
+            // For this demo, we'll just show a message
+            showNotification('Edit functionality would open here', 'info');
+            closeAlertDetailsModal();
         }
-        renderMeetings();
-    });
-    
-    document.getElementById('todayBtn').addEventListener('click', () => {
-        const now = new Date();
-        currentCalendarMonth = now.getMonth();
-        currentCalendarYear = now.getFullYear();
-        renderMeetings();
-    });
-}
+        
+        // Delete selected alert
+        function deleteSelectedAlert() {
+            if (!selectedAlertId) return;
+            
+            if (confirm('Are you sure you want to delete this alert?')) {
+                // Remove alert from arrays
+                alerts = alerts.filter(alert => alert.id !== selectedAlertId);
+                filteredAlerts = filteredAlerts.filter(alert => alert.id !== selectedAlertId);
+                
+                // Update UI
+                updateStats();
+                renderAlerts();
+                closeAlertDetailsModal();
+                
+                // Show success message
+                showNotification('Alert deleted successfully', 'success');
+            }
+        }
+        
+        // Resolve alert
+        function resolveAlert(alertId) {
+            const alertIndex = alerts.findIndex(alert => alert.id === alertId);
+            
+            if (alertIndex !== -1) {
+                alerts[alertIndex].status = 'resolved';
+                alerts[alertIndex].dateResolved = new Date().toISOString();
+                
+                // Update filtered alerts if needed
+                const filteredIndex = filteredAlerts.findIndex(alert => alert.id === alertId);
+                if (filteredIndex !== -1) {
+                    filteredAlerts[filteredIndex] = {...alerts[alertIndex]};
+                }
+                
+                // Update UI
+                updateStats();
+                renderAlerts();
+                
+                // Show success message
+                showNotification('Alert resolved successfully', 'success');
+            }
+        }
+        
+        // Handle image upload
+        function handleImageUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            // Check if file is an image
+            if (!file.type.match('image.*')) {
+                alert('Please select an image file');
+                return;
+            }
+            
+            // Create a preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                imagePreview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // Quick scan emails
+        function quickScanEmails() {
+            showNotification('Scanning emails for phishing attempts...', 'info');
+            
+            // Simulate scanning process
+            setTimeout(() => {
+                showNotification('Email scan completed. No new threats detected.', 'success');
+            }, 2000);
+        }
+        
+        // Generate report
+        function generateReport() {
+            showNotification('Generating phishing report...', 'info');
+            
+            // Simulate report generation
+            setTimeout(() => {
+                showNotification('Report generated successfully', 'success');
+            }, 1500);
+        }
+        
+        // Export data
+        function exportData() {
+            showNotification('Exporting alert data...', 'info');
+            
+            // Simulate export process
+            setTimeout(() => {
+                showNotification('Data exported successfully', 'success');
+            }, 1500);
+        }
+        
+        // Show loading overlay
+        function showLoading() {
+            loadingOverlay.style.display = 'flex';
+        }
+        
+        // Hide loading overlay
+        function hideLoading() {
+            loadingOverlay.style.display = 'none';
+        }
+        
+        // Show notification
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+                <button class="notification-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            // Add to page
+            document.body.appendChild(notification);
+            
+            // Show notification
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                closeNotification(notification);
+            }, 5000);
+            
+            // Close on button click
+            notification.querySelector('.notification-close').addEventListener('click', () => {
+                closeNotification(notification);
+            });
+        }
+        
+        // Close notification
+        function closeNotification(notification) {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }
+        
+        // Add notification styles if not already present
+        if (!document.querySelector('#notification-styles')) {
+            const style = document.createElement('style');
+            style.id = 'notification-styles';
+            style.textContent = `
+                .notification {
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: var(--card-bg);
+                    border-radius: var(--radius-md);
+                    padding: var(--space-md) var(--space-lg);
+                    box-shadow: var(--shadow-lg);
+                    border-left: 4px solid var(--primary);
+                    z-index: var(--z-modal);
+                    transform: translateX(100%);
+                    transition: transform var(--transition-normal);
+                    max-width: 400px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: var(--space-md);
+                }
+                
+                .notification.show {
+                    transform: translateX(0);
+                }
+                
+                .notification-success {
+                    border-left-color: var(--success);
+                }
+                
+                .notification-error {
+                    border-left-color: var(--danger);
+                }
+                
+                .notification-info {
+                    border-left-color: var(--info);
+                }
+                
+                .notification-content {
+                    display: flex;
+                    align-items: center;
+                    gap: var(--space-sm);
+                }
+                
+                .notification-content i {
+                    font-size: 1.2rem;
+                }
+                
+                .notification-success .notification-content i {
+                    color: var(--success);
+                }
+                
+                .notification-error .notification-content i {
+                    color: var(--danger);
+                }
+                
+                .notification-info .notification-content i {
+                    color: var(--info);
+                }
+                
+                .notification-close {
+                    background: none;
+                    border: none;
+                    color: var(--text-secondary);
+                    cursor: pointer;
+                    padding: 0;
+                    width: 24px;
+                    height: 24px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: var(--radius-sm);
+                    transition: background-color var(--transition-fast);
+                }
+                
+                .notification-close:hover {
+                    background-color: var(--hover-color);
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        // ========== FUNGSI TERJEMAHAN DASHBOARD ==========
 
-// Fungsi untuk inisialisasi tombol view toggle
-function initializeViewToggleButtons() {
-    const sectionActions = document.querySelector('.section-actions');
-    if (sectionActions) {
-        // Hapus view toggle yang ada jika ada
-        const existingViewToggle = sectionActions.querySelector('.view-toggle');
-        if (existingViewToggle) {
-            existingViewToggle.remove();
-        }
-        
-        // Buat view toggle baru
-        const viewToggle = document.createElement('div');
-        viewToggle.className = 'view-toggle';
-        viewToggle.innerHTML = `
-            <button class="view-toggle-btn active" id="gridViewBtn" title="Grid View">
-                <i class="fas fa-th"></i>
-            </button>
-            <button class="view-toggle-btn" id="timelineViewBtn" title="Timeline View">
-                <i class="fas fa-list"></i>
-            </button>
-            <button class="view-toggle-btn" id="calendarViewBtn" title="Calendar View">
-                <i class="fas fa-calendar"></i>
-            </button>
-        `;
-        
-        // Sisipkan sebelum tombol refresh
-        const refreshButton = sectionActions.querySelector('#refreshMeetings');
-        if (refreshButton) {
-            sectionActions.insertBefore(viewToggle, refreshButton);
-        } else {
-            sectionActions.appendChild(viewToggle);
-        }
-        
-        // Tambahkan event listeners untuk tombol view
-        document.getElementById('gridViewBtn').addEventListener('click', () => {
-            document.getElementById('viewMode').value = 'grid';
-            renderMeetings();
-        });
-        
-        document.getElementById('timelineViewBtn').addEventListener('click', () => {
-            document.getElementById('viewMode').value = 'timeline';
-            renderMeetings();
-        });
-        
-        document.getElementById('calendarViewBtn').addEventListener('click', () => {
-            document.getElementById('viewMode').value = 'calendar';
-            renderMeetings();
-        });
-    }
-}
+function applyDashboardTranslations(language) {
+    const lang = translations[language] || translations['id'];
+    
+    if (!lang) return;
 
-// ========== UTILITY FUNCTIONS ==========
+    console.log("Applying dashboard translations for:", language);
 
-// Format tanggal untuk tampilan
-function formatDisplayDate(date) {
-    const options = { 
-        year: 'numeric', 
-        month: 'short', 
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
+    // Terjemahkan elemen utama dashboard
+    const elements = {
+        'dashboardTitle': '.header h1',
+        'weeklyPerformance': '.summary-stat-card:nth-child(1) .stat-title',
+        'resolutionTrend': '.summary-stat-card:nth-child(2) .stat-title', 
+        'topBrand': '.summary-stat-card:nth-child(3) .stat-title',
+        'categoryFilter': '.filter-group:nth-child(1) label',
+        'brandFilter': '.filter-group:nth-child(2) label',
+        'dateRange': '.filter-group:nth-child(3) label',
+        'searchReports': '#summarySearch',
+        'reportsByStatus': '.chart-card:nth-child(1) .chart-title',
+        'weeklyResolutionTrend': '.chart-card:nth-child(2) .chart-title',
+        'reportsByCategory': '.chart-card:nth-child(3) .chart-title',
+        'reportsByBrand': '.chart-card:nth-child(4) .chart-title',
+        'newGameReleases': '.chart-card:nth-child(5) .chart-title',
+        'newfeatureReleases': '.chart-card:nth-child(6) .chart-title'
     };
-    return date.toLocaleDateString('en-US', options);
+
+    Object.keys(elements).forEach(key => {
+        const element = document.querySelector(elements[key]);
+        if (element && lang[key]) {
+            if (key === 'searchReports') {
+                element.placeholder = lang[key];
+            } else {
+                // Simpan ikon jika ada sebelum mengganti teks
+                const iconMatch = element.innerHTML.match(/(<i[^>]*><\/i>)/);
+                if (iconMatch) {
+                    element.innerHTML = iconMatch[0] + ' ' + lang[key];
+                } else {
+                    element.textContent = lang[key];
+                }
+            }
+        }
+    });
+
+    // Update tooltips
+    const tooltips = {
+        'performanceTooltip': '.summary-stat-card:nth-child(1) .tooltip-text',
+        'trendTooltip': '.summary-stat-card:nth-child(2) .tooltip-text',
+        'topBrandTooltip': '.summary-stat-card:nth-child(3) .tooltip-text'
+    };
+
+    Object.keys(tooltips).forEach(key => {
+        const element = document.querySelector(tooltips[key]);
+        if (element && lang[key]) {
+            element.textContent = lang[key];
+        }
+    });
+
+    // Update option values di filter
+    updateFilterOptions(language);
+    
+    // Update stat descriptions
+    updateStatDescriptions(language);
 }
 
-// Format datetime untuk input datetime-local
-function formatDateTimeLocal(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
+// Update opsi filter
+function updateFilterOptions(language) {
+    const lang = translations[language] || translations['id'];
     
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-}
-
-// Format durasi meeting
-function formatDuration(start, end) {
-    const durationMs = end - start;
-    const durationMins = Math.floor(durationMs / 60000);
+    // Update category filter options
+    const categoryFilter = document.getElementById('categoryFilter');
+    if (categoryFilter && lang.allCategories) {
+        categoryFilter.options[0].text = lang.allCategories;
+    }
     
-    if (durationMins < 60) {
-        return `${durationMins} min`;
-    } else {
-        const hours = Math.floor(durationMins / 60);
-        const mins = durationMins % 60;
-        return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+    // Update brand filter options  
+    const brandFilter = document.getElementById('brandFilter');
+    if (brandFilter && lang.allBrands) {
+        brandFilter.options[0].text = lang.allBrands;
     }
 }
 
-// Dapatkan nama tampilan untuk tipe meeting
-function getMeetingTypeDisplayName(type) {
-    const typeMap = {
-        'team': 'Case Mingguan',
-        'project': 'Project Review',
-        'client': 'Client Meeting',
-        'planning': 'Planning Session',
-        'review': 'Performance Review',
-        'training': 'Training Session'
-    };
+// Update deskripsi statistik
+function updateStatDescriptions(language) {
+    const lang = translations[language] || translations['id'];
     
-    return typeMap[type] || type.charAt(0).toUpperCase() + type.slice(1);
-}
-
-// Debounce function untuk search input
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-// ========== INISIALISASI ==========
-
-// Inisialisasi saat halaman dimuat
-document.addEventListener('DOMContentLoaded', function() {
-    checkAuthState();
-    
-    // Tambahkan container notifikasi jika belum ada
-    if (!document.getElementById('notificationContainer')) {
-        const container = document.createElement('div');
-        container.id = 'notificationContainer';
-        container.className = 'notification-container';
-        document.body.appendChild(container);
+    // Update deskripsi di stat cards
+    const performanceDesc = document.querySelector('.summary-stat-card:nth-child(1) .stat-description');
+    if (performanceDesc && lang.fromLastWeek) {
+        const arrowElement = performanceDesc.querySelector('i');
+        if (arrowElement) {
+            performanceDesc.innerHTML = `<span id="performanceChange" class="positive">${arrowElement.outerHTML} 0% ${lang.fromLastWeek}</span>`;
+        }
     }
+    
+    const trendDesc = document.querySelector('.summary-stat-card:nth-child(2) .stat-description');
+    if (trendDesc && lang.improvement) {
+        const arrowElement = trendDesc.querySelector('i');
+        if (arrowElement) {
+            trendDesc.innerHTML = `<span id="trendChange" class="positive">${arrowElement.outerHTML} 0% ${lang.improvement}</span>`;
+        }
+    }
+    
+    const topBrandDesc = document.querySelector('.summary-stat-card:nth-child(3) .stat-description');
+    if (topBrandDesc && lang.mostReports) {
+        topBrandDesc.textContent = lang.mostReports;
+    }
+}
+
+// ========== INTEGRASI DENGAN SISTEM BAHASA ==========
+
+// Panggil fungsi ini saat bahasa berubah
+window.addEventListener('languageChanged', function(event) {
+    applyDashboardTranslations(event.detail.language);
 });
 
-// Ekspos fungsi global yang diperlukan
-window.removeAgendaItem = removeAgendaItem;
-    
-</script>
+// Panggil saat halaman dimuat
+document.addEventListener('DOMContentLoaded', function() {
+    const savedLanguage = localStorage.getItem('language') || 'id';
+    // Tunggu sebentar untuk memastikan DOM sudah sepenuhnya terload
+    setTimeout(() => {
+        applyDashboardTranslations(savedLanguage);
+    }, 100);
+});
+    </script>
 </body>
 </html>

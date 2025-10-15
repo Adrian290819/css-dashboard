@@ -710,6 +710,249 @@
             outline: 2px solid var(--primary);
             outline-offset: 2px;
         }
+        /* ========== SIMPLE VIEW MODAL STYLING ========== */
+.task-detail-view {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.task-header {
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 15px;
+    margin-bottom: 10px;
+}
+
+.task-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 10px 0;
+}
+
+.task-meta {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.task-id {
+    font-family: 'Courier New', monospace;
+    background: var(--bg-secondary);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+/* Timeline Simple */
+.timeline-section {
+    background: var(--card-bg);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.timeline-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.timeline-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.timeline-icon.start {
+    background: var(--success);
+    color: white;
+}
+
+.timeline-icon.end {
+    background: var(--warning);
+    color: white;
+}
+
+.timeline-content {
+    flex: 1;
+}
+
+.timeline-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+}
+
+.timeline-value {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.time-remaining {
+    font-size: 0.8rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.time-overdue {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.time-warning {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.time-normal {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+/* Details Grid Simple */
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    background: var(--card-bg);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.detail-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.detail-label i {
+    color: var(--primary);
+    width: 14px;
+}
+
+.detail-value {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    font-weight: 400;
+}
+
+/* Content Sections */
+.description-section,
+.notes-section {
+    background: var(--card-bg);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.section-subtitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-subtitle i {
+    color: var(--primary);
+}
+
+.description-content,
+.notes-content {
+    line-height: 1.5;
+    color: var(--text-primary);
+    white-space: pre-line;
+}
+
+/* Simple Status Badges */
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.status-in-progress {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.status-completed {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+/* Modal Footer Simple */
+.modal-footer {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.modal-footer .btn {
+    min-width: 100px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .task-meta {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-footer {
+        flex-direction: column;
+    }
+    
+    .modal-footer .btn {
+        width: 100%;
+    }
+}
     </style>
 </head>
 <body>
@@ -794,17 +1037,17 @@
             
             <div class="maintenance-table-container">
                 <table class="maintenance-table" id="maintenanceTable">
-                    <thead>
-                        <tr>
-                            <th>Task ID</th>
-                            <th>Title</th>
-                            <th>Category</th>
-                            <th>Status</th>
-                            <th>Due Date</th>
-                            <th>Assigned To</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
+<thead>
+    <tr>
+        <th>Task ID</th>
+        <th>Title</th>
+        <th>Category</th>
+        <th>Status</th>
+        <th>Dates</th>
+        <th>Assigned To</th>
+        <th>Actions</th>
+    </tr>
+</thead>
                     <tbody id="maintenanceTableBody">
                         <!-- Data will be loaded dynamically -->
                     </tbody>
@@ -830,57 +1073,65 @@
             <button class="modal-close" id="closeModal">&times;</button>
         </div>
         <div class="modal-body">
-            <form id="maintenanceForm">
-                <input type="hidden" id="taskId">
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="taskTitle" class="form-label">Title *</label>
-                        <input type="text" id="taskTitle" class="form-input" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="taskCategory" class="form-label">Category *</label>
-                        <select id="taskCategory" class="form-select" required>
-                            <option value="">Select Category</option>
-                            <option value="server">Server Maintenance</option>
-                            <option value="database">Database</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="taskStatus" class="form-label">Status *</label>
-                        <select id="taskStatus" class="form-select" required>
-                            <option value="">Select Status</option>
-                            <option value="pending">Pending</option>
-                            <option value="in-progress">In Progress</option>
-                            <option value="completed">Completed</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="taskDueDate" class="form-label">Due Date *</label>
-                        <input type="date" id="taskDueDate" class="form-input" required>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="taskAssignedTo" class="form-label">Assigned To</label>
-                    <input type="text" id="taskAssignedTo" class="form-input" value="Nama Masing-masing">
-                </div>
-                
-                <div class="form-group">
-                    <label for="taskDescription" class="form-label">Description</label>
-                    <textarea id="taskDescription" class="form-textarea" placeholder="Describe the maintenance task..." rows="3"></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="taskNotes" class="form-label">Notes</label>
-                    <textarea id="taskNotes" class="form-textarea" placeholder="Add any additional notes..." rows="2"></textarea>
-                </div>
-            </form>
+            <!-- Ganti bagian form di dalam modal dengan ini: -->
+<form id="maintenanceForm">
+    <input type="hidden" id="taskId">
+    
+    <div class="form-row">
+        <div class="form-group">
+            <label for="taskTitle" class="form-label">Title *</label>
+            <input type="text" id="taskTitle" class="form-input" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="taskCategory" class="form-label">Category *</label>
+            <select id="taskCategory" class="form-select" required>
+                <option value="">Select Category</option>
+                <option value="server">Server Maintenance</option>
+                <option value="database">Database</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="form-row">
+        <div class="form-group">
+            <label for="taskStartDate" class="form-label">Start Date & Time *</label>
+            <input type="datetime-local" id="taskStartDate" class="form-input" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="taskEndDate" class="form-label">End Date & Time *</label>
+            <input type="datetime-local" id="taskEndDate" class="form-input" required>
+        </div>
+    </div>
+    
+    <div class="form-row">
+        <div class="form-group">
+            <label for="taskStatus" class="form-label">Status *</label>
+            <select id="taskStatus" class="form-select" required>
+                <option value="">Select Status</option>
+                <option value="pending">Pending</option>
+                <option value="in-progress">In Progress</option>
+                <option value="completed">Completed</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="taskAssignedTo" class="form-label">Assigned To</label>
+            <input type="text" id="taskAssignedTo" class="form-input" value="Nama Masing-masing">
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label for="taskDescription" class="form-label">Description</label>
+        <textarea id="taskDescription" class="form-textarea" placeholder="Describe the maintenance task..." rows="3"></textarea>
+    </div>
+    
+    <div class="form-group">
+        <label for="taskNotes" class="form-label">Notes</label>
+        <textarea id="taskNotes" class="form-textarea" placeholder="Add any additional notes..." rows="2"></textarea>
+    </div>
+</form>
         </div>
         <div class="modal-footer">
             <button class="btn btn-outline" id="cancelBtn">Cancel</button>
@@ -1598,6 +1849,680 @@ document.addEventListener('DOMContentLoaded', function() {
         initializeMaintenanceLanguage();
     }, 100);
 });
+// ========== FUNGSI TAMBAHAN UNTUK START DATE DAN END DATE ==========
+
+// Update renderMaintenanceTable untuk menampilkan start date dan end date dengan waktu
+function renderMaintenanceTable() {
+    const tableBody = document.getElementById('maintenanceTableBody');
+    const noTasks = document.getElementById('noTasks');
+    const tasksCount = document.getElementById('tasksCount');
+    const statusFilter = document.getElementById('statusFilter').value;
+    const categoryFilter = document.getElementById('categoryFilter').value;
+    const dateFilter = document.getElementById('dateFilter').value;
+    const searchTerm = document.getElementById('maintenanceSearch').value.toLowerCase();
+    
+    let filteredTasks = [...maintenanceTasks];
+    
+    // Apply filters
+    if (statusFilter !== 'all') {
+        filteredTasks = filteredTasks.filter(task => task.status === statusFilter);
+    }
+    
+    if (categoryFilter !== 'all') {
+        filteredTasks = filteredTasks.filter(task => task.category === categoryFilter);
+    }
+    
+    // Apply date filter
+    if (dateFilter !== 'all') {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        filteredTasks = filteredTasks.filter(task => {
+            const dueDate = new Date(task.dueDate);
+            dueDate.setHours(0, 0, 0, 0);
+            
+            switch(dateFilter) {
+                case 'today':
+                    return dueDate.getTime() === today.getTime();
+                case 'tomorrow':
+                    const tomorrow = new Date(today);
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    return dueDate.getTime() === tomorrow.getTime();
+                case 'week':
+                    const nextWeek = new Date(today);
+                    nextWeek.setDate(nextWeek.getDate() + 7);
+                    return dueDate >= today && dueDate <= nextWeek;
+                case 'month':
+                    const nextMonth = new Date(today);
+                    nextMonth.setMonth(nextMonth.getMonth() + 1);
+                    return dueDate >= today && dueDate <= nextMonth;
+                default:
+                    return true;
+            }
+        });
+    }
+    
+    // Apply search
+    if (searchTerm) {
+        filteredTasks = filteredTasks.filter(task => 
+            task.title.toLowerCase().includes(searchTerm) ||
+            (task.description && task.description.toLowerCase().includes(searchTerm)) ||
+            task.id.toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    // Update tasks count
+    tasksCount.textContent = `${filteredTasks.length} task${filteredTasks.length !== 1 ? 's' : ''}`;
+    
+    if (filteredTasks.length === 0) {
+        tableBody.innerHTML = '';
+        noTasks.style.display = 'block';
+        return;
+    }
+    
+    noTasks.style.display = 'none';
+    tableBody.innerHTML = '';
+    
+    // Sort tasks by due date (soonest first) and status
+    filteredTasks.sort((a, b) => {
+        // First by status (pending and in-progress first)
+        const statusOrder = { 'pending': 1, 'in-progress': 2, 'completed': 3 };
+        if (statusOrder[a.status] !== statusOrder[b.status]) {
+            return statusOrder[a.status] - statusOrder[b.status];
+        }
+        
+        // Then by due date (soonest first)
+        const aDue = new Date(a.dueDate);
+        const bDue = new Date(b.dueDate);
+        return aDue - bDue;
+    });
+    
+    // Render each task
+    filteredTasks.forEach(task => {
+        const row = document.createElement('tr');
+        
+        // Get status badge class
+        let statusClass = '';
+        let statusText = '';
+        switch(task.status) {
+            case 'pending':
+                statusClass = 'status-pending';
+                statusText = 'Pending';
+                break;
+            case 'in-progress':
+                statusClass = 'status-in-progress';
+                statusText = 'In Progress';
+                break;
+            case 'completed':
+                statusClass = 'status-completed';
+                statusText = 'Completed';
+                break;
+        }
+        
+        // Format category text
+        let categoryText = '';
+        switch(task.category) {
+            case 'server':
+                categoryText = 'Server Maintenance';
+                break;
+            case 'database':
+                categoryText = 'Database';
+                break;
+            default:
+                categoryText = task.category;
+        }
+        
+        // Format dates with time
+        const startDateTime = task.startDate ? formatDisplayDateTime(task.startDate) : '-';
+        const endDateTime = task.endDate ? formatDisplayDateTime(task.endDate) : '-';
+        
+        row.innerHTML = `
+            <td>${task.id}</td>
+            <td>${task.title}</td>
+            <td>${categoryText}</td>
+            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+            <td>
+                <div><strong>Start:</strong> ${startDateTime}</div>
+                <div><strong>End:</strong> ${endDateTime}</div>
+                <div>${getDaysLeftText(task.dueDate, task.status)}</div>
+            </td>
+            <td>${task.assignedTo || 'Nama Masing-masing'}</td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn-icon view" data-id="${task.id}" title="View Details">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn-icon edit" data-id="${task.id}" title="Edit Task">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    ${task.status !== 'completed' ? `
+                        <button class="btn-icon complete" data-id="${task.id}" title="Mark as Completed">
+                            <i class="fas fa-check"></i>
+                        </button>
+                    ` : ''}
+                    <button class="btn-icon delete" data-id="${task.id}" title="Delete Task">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+        
+        tableBody.appendChild(row);
+    });
+    
+    // Add event listeners to action buttons
+    document.querySelectorAll('.btn-icon.view').forEach(btn => {
+        btn.addEventListener('click', () => viewTask(btn.dataset.id));
+    });
+    
+    document.querySelectorAll('.btn-icon.edit').forEach(btn => {
+        btn.addEventListener('click', () => editTask(btn.dataset.id));
+    });
+    
+    document.querySelectorAll('.btn-icon.complete').forEach(btn => {
+        btn.addEventListener('click', () => completeTask(btn.dataset.id));
+    });
+    
+    document.querySelectorAll('.btn-icon.delete').forEach(btn => {
+        btn.addEventListener('click', () => deleteTask(btn.dataset.id));
+    });
+}
+
+// Format date and time for display
+function formatDisplayDateTime(dateTimeString) {
+    const date = new Date(dateTimeString);
+    const options = { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    };
+    return date.toLocaleDateString('en-US', options);
+}
+
+// Update openAddTaskModal untuk menambahkan start date dan end date dengan waktu
+function openAddTaskModal() {
+    // Reset the form
+    document.getElementById('maintenanceForm').reset();
+    document.getElementById('taskId').value = '';
+    document.getElementById('taskAssignedTo').value = 'Nama Masing-masing';
+    
+    // Set default start date to current date and time
+    const now = new Date();
+    const startDate = now.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:mm
+    document.getElementById('taskStartDate').value = startDate;
+    
+    // Set default end date to tomorrow same time
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const endDate = tomorrow.toISOString().slice(0, 16);
+    document.getElementById('taskEndDate').value = endDate;
+    
+    // Update modal title
+    document.getElementById('modalTitle').textContent = 'Add Maintenance Task';
+    
+    // Show the modal
+    document.getElementById('maintenanceModal').classList.add('active');
+}
+
+// Update saveTask untuk handle start date dan end date dengan waktu
+async function saveTask() {
+    const taskId = document.getElementById('taskId').value;
+    const title = document.getElementById('taskTitle').value;
+    const category = document.getElementById('taskCategory').value;
+    const status = document.getElementById('taskStatus').value;
+    const startDate = document.getElementById('taskStartDate').value;
+    const endDate = document.getElementById('taskEndDate').value;
+    const assignedTo = document.getElementById('taskAssignedTo').value;
+    const description = document.getElementById('taskDescription').value;
+    const notes = document.getElementById('taskNotes').value;
+    
+    // Basic validation
+    if (!title || !category || !status || !startDate || !endDate) {
+        showNotification('Please fill in all required fields.', 'error');
+        return;
+    }
+    
+    // Validate date range
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    
+    if (start >= end) {
+        showNotification('End date must be after start date.', 'error');
+        return;
+    }
+    
+    try {
+        if (taskId) {
+            // Update existing task
+            await db.collection('maintenanceReports').doc(taskId).update({
+                title,
+                category,
+                status,
+                startDate,
+                endDate,
+                assignedTo,
+                description,
+                notes,
+                dateUpdated: new Date()
+            });
+            
+            showNotification('Task updated successfully!', 'success');
+        } else {
+            // Add new task
+            await db.collection('maintenanceReports').add({
+                title,
+                category,
+                status,
+                startDate,
+                endDate,
+                assignedTo,
+                description,
+                notes,
+                dateCreated: new Date(),
+                dateUpdated: new Date()
+            });
+            
+            showNotification('Task added successfully!', 'success');
+        }
+        
+        // Close the modal
+        closeMaintenanceModal();
+        
+    } catch (error) {
+        console.error("Error saving task:", error);
+        showNotification('Error saving task', 'error');
+    }
+}
+
+// Update editTask untuk mengisi start date dan end date
+function editTask(taskId) {
+    const task = maintenanceTasks.find(t => t.id === taskId);
+    
+    if (task) {
+        // Fill the form with task data
+        document.getElementById('taskId').value = task.id;
+        document.getElementById('taskTitle').value = task.title;
+        document.getElementById('taskCategory').value = task.category;
+        document.getElementById('taskStatus').value = task.status;
+        document.getElementById('taskStartDate').value = task.startDate || '';
+        document.getElementById('taskEndDate').value = task.endDate || '';
+        document.getElementById('taskAssignedTo').value = task.assignedTo || 'Nama Masing-masing';
+        document.getElementById('taskDescription').value = task.description || '';
+        document.getElementById('taskNotes').value = task.notes || '';
+        
+        // Update modal title
+        document.getElementById('modalTitle').textContent = 'Edit Maintenance Task';
+        
+        // Show the modal
+        document.getElementById('maintenanceModal').classList.add('active');
+    }
+}
+
+// Setup date validation untuk start date dan end date
+function setupDateValidation() {
+    const startDateInput = document.getElementById('taskStartDate');
+    const endDateInput = document.getElementById('taskEndDate');
+    
+    if (startDateInput && endDateInput) {
+        startDateInput.addEventListener('change', validateDateTimeRange);
+        endDateInput.addEventListener('change', validateDateTimeRange);
+    }
+}
+
+function validateDateTimeRange() {
+    const startDate = document.getElementById('taskStartDate').value;
+    const endDate = document.getElementById('taskEndDate').value;
+    
+    if (startDate && endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        
+        if (start >= end) {
+            document.getElementById('taskEndDate').style.borderColor = 'var(--error)';
+            showNotification('End date must be after start date', 'error');
+        } else {
+            document.getElementById('taskEndDate').style.borderColor = '';
+        }
+    }
+}
+
+// Update setupMaintenanceListener untuk handle startDate dan endDate
+function setupMaintenanceListener() {
+    if (unsubscribeMaintenance) {
+        unsubscribeMaintenance();
+    }
+    
+    const maintenanceRef = db.collection('maintenanceReports');
+
+    unsubscribeMaintenance = maintenanceRef
+        .orderBy('dateCreated', 'desc')
+        .onSnapshot(snapshot => {
+            maintenanceTasks = [];
+            snapshot.forEach(doc => {
+                const task = doc.data();
+                task.id = doc.id;
+                
+                // Pastikan data yang diperlukan ada, termasuk startDate dan endDate
+                if (task.dateCreated && task.status) {
+                    // Jika task lama tidak memiliki startDate/endDate, set default values
+                    if (!task.startDate) {
+                        task.startDate = task.dateCreated;
+                    }
+                    if (!task.endDate) {
+                        task.endDate = task.dueDate || task.dateCreated;
+                    }
+                    maintenanceTasks.push(task);
+                } else {
+                    console.warn("Invalid maintenance task data:", task);
+                }
+            });
+
+            renderMaintenanceTable();
+            updateMaintenanceStats();
+
+        }, error => {
+            console.error("Error fetching maintenance tasks:", error);
+            showNotification("Error loading maintenance tasks", "error");
+        });
+}
+
+// Update initMaintenancePage untuk menambahkan date validation
+function initMaintenancePage() {
+    // Check authentication state
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            currentUser = user;
+            console.log("User logged in:", user.uid);
+            
+            // Setup listener for maintenance reports
+            setupMaintenanceListener();
+            
+            // Add event listeners
+            document.getElementById('addMaintenanceBtn').addEventListener('click', openAddTaskModal);
+            document.getElementById('addFirstTaskBtn').addEventListener('click', openAddTaskModal);
+            document.getElementById('saveTaskBtn').addEventListener('click', saveTask);
+            document.getElementById('closeModal').addEventListener('click', closeMaintenanceModal);
+            document.getElementById('cancelBtn').addEventListener('click', closeMaintenanceModal);
+            document.getElementById('refreshBtn').addEventListener('click', () => {
+                renderMaintenanceTable();
+                updateMaintenanceStats();
+                showNotification('Maintenance tasks refreshed.', 'success');
+            });
+            
+            // Add event listeners to filters
+            document.getElementById('statusFilter').addEventListener('change', renderMaintenanceTable);
+            document.getElementById('categoryFilter').addEventListener('change', renderMaintenanceTable);
+            document.getElementById('dateFilter').addEventListener('change', renderMaintenanceTable);
+            
+            // Add event listener to search input
+            document.getElementById('maintenanceSearch').addEventListener('input', renderMaintenanceTable);
+            
+            // Setup date validation
+            setupDateValidation();
+            
+            // Close modal when clicking outside
+            document.getElementById('maintenanceModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('maintenanceModal')) {
+                    closeMaintenanceModal();
+                }
+            });
+            
+            // Toggle sidebar functionality
+            const menuToggle = document.querySelector('.menu-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            const mainContent = document.querySelector('.main-content');
+
+            if (menuToggle && sidebar && mainContent) {
+                menuToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('collapsed');
+                    mainContent.classList.toggle('sidebar-collapsed');
+                });
+            }
+            
+        } else {
+            // User not logged in, redirect to login page
+            console.log("User not logged in, redirecting...");
+            window.location.href = "login.html";
+        }
+    });
+}
+// Update viewTask function dengan modal yang lebih menarik
+function viewTask(taskId) {
+    const task = maintenanceTasks.find(t => t.id === taskId);
+    
+    if (task) {
+        // Create detailed view modal
+        const modalHTML = `
+            <div class="modal-overlay active" id="viewTaskModal">
+                <div class="modal" style="max-width: 600px;">
+                    <div class="modal-header">
+                        <h3 class="modal-title">
+                            <i class="fas fa-eye"></i> Task Details
+                        </h3>
+                        <button class="modal-close" id="closeViewModal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="task-detail-view">
+                            <!-- Task Header -->
+                            <div class="task-header">
+                                <div class="task-title-section">
+                                    <h2 class="task-title">${task.title}</h2>
+                                    <span class="status-badge large ${getStatusClass(task.status)}">
+                                        ${getStatusText(task.status)}
+                                    </span>
+                                </div>
+                                <div class="task-meta">
+                                    <div class="task-id">Task ID: ${task.id}</div>
+                                    <div class="task-category">${getCategoryText(task.category)}</div>
+                                </div>
+                            </div>
+
+                            <!-- Timeline -->
+                            <div class="timeline-section">
+                                <h4 class="section-subtitle">
+                                    <i class="fas fa-clock"></i> Timeline
+                                </h4>
+                                <div class="timeline">
+                                    <div class="timeline-item">
+                                        <div class="timeline-icon start">
+                                            <i class="fas fa-play-circle"></i>
+                                        </div>
+                                        <div class="timeline-content">
+                                            <div class="timeline-label">Start Date & Time</div>
+                                            <div class="timeline-value">${formatDisplayDateTime(task.startDate)}</div>
+                                        </div>
+                                    </div>
+                                    <div class="timeline-item">
+                                        <div class="timeline-icon end">
+                                            <i class="fas fa-flag-checkered"></i>
+                                        </div>
+                                        <div class="timeline-content">
+                                            <div class="timeline-label">End Date & Time</div>
+                                            <div class="timeline-value">${formatDisplayDateTime(task.endDate)}</div>
+                                            <div class="time-remaining ${getTimeRemainingClass(task.endDate)}">
+                                                ${getTimeRemainingText(task.endDate)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Task Details -->
+                            <div class="details-grid">
+                                <div class="detail-item">
+                                    <div class="detail-label">
+                                        <i class="fas fa-user"></i> Assigned To
+                                    </div>
+                                    <div class="detail-value">${task.assignedTo || 'Nama Masing-masing'}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">
+                                        <i class="fas fa-layer-group"></i> Category
+                                    </div>
+                                    <div class="detail-value">${getCategoryText(task.category)}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">
+                                        <i class="fas fa-flag"></i> Status
+                                    </div>
+                                    <div class="detail-value">
+                                        <span class="status-badge ${getStatusClass(task.status)}">
+                                            ${getStatusText(task.status)}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">
+                                        <i class="fas fa-calendar-plus"></i> Created
+                                    </div>
+                                    <div class="detail-value">${formatDisplayDateTime(task.dateCreated)}</div>
+                                </div>
+                            </div>
+
+                            <!-- Description -->
+                            ${task.description ? `
+                            <div class="description-section">
+                                <h4 class="section-subtitle">
+                                    <i class="fas fa-align-left"></i> Description
+                                </h4>
+                                <div class="description-content">
+                                    ${task.description}
+                                </div>
+                            </div>
+                            ` : ''}
+
+                            <!-- Notes -->
+                            ${task.notes ? `
+                            <div class="notes-section">
+                                <h4 class="section-subtitle">
+                                    <i class="fas fa-sticky-note"></i> Notes
+                                </h4>
+                                <div class="notes-content">
+                                    ${task.notes}
+                                </div>
+                            </div>
+                            ` : ''}
+
+                            <!-- Progress Bar (for in-progress tasks) -->
+                            ${task.status === 'in-progress' ? `
+                            <div class="progress-section">
+                                <h4 class="section-subtitle">
+                                    <i class="fas fa-tasks"></i> Progress
+                                </h4>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 50%"></div>
+                                    </div>
+                                    <div class="progress-text">50% Complete</div>
+                                </div>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" id="editFromViewBtn" data-id="${task.id}">
+                            <i class="fas fa-edit"></i> Edit Task
+                        </button>
+                        ${task.status !== 'completed' ? `
+                        <button class="btn btn-primary" id="completeFromViewBtn" data-id="${task.id}">
+                            <i class="fas fa-check"></i> Mark as Completed
+                        </button>
+                        ` : ''}
+                        <button class="btn btn-secondary" id="closeViewBtn">
+                            <i class="fas fa-times"></i> Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Add modal to body
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+        // Add event listeners for the view modal
+        document.getElementById('closeViewModal').addEventListener('click', closeViewModal);
+        document.getElementById('closeViewBtn').addEventListener('click', closeViewModal);
+        document.getElementById('editFromViewBtn').addEventListener('click', function() {
+            closeViewModal();
+            editTask(this.dataset.id);
+        });
+        
+        if (document.getElementById('completeFromViewBtn')) {
+            document.getElementById('completeFromViewBtn').addEventListener('click', function() {
+                closeViewModal();
+                completeTask(this.dataset.id);
+            });
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('viewTaskModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeViewModal();
+            }
+        });
+    }
+}
+
+// Helper functions for view modal
+function getStatusClass(status) {
+    switch(status) {
+        case 'pending': return 'status-pending';
+        case 'in-progress': return 'status-in-progress';
+        case 'completed': return 'status-completed';
+        default: return 'status-pending';
+    }
+}
+
+function getStatusText(status) {
+    switch(status) {
+        case 'pending': return 'Pending';
+        case 'in-progress': return 'In Progress';
+        case 'completed': return 'Completed';
+        default: return 'Pending';
+    }
+}
+
+function getCategoryText(category) {
+    switch(category) {
+        case 'server': return 'Server Maintenance';
+        case 'database': return 'Database';
+        default: return category;
+    }
+}
+
+function getTimeRemainingClass(endDate) {
+    const now = new Date();
+    const end = new Date(endDate);
+    const diffTime = end - now;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0) return 'time-overdue';
+    if (diffDays === 0) return 'time-warning';
+    if (diffDays <= 3) return 'time-warning';
+    return 'time-normal';
+}
+
+function getTimeRemainingText(endDate) {
+    const now = new Date();
+    const end = new Date(endDate);
+    const diffTime = end - now;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0) return `${Math.abs(diffDays)} days overdue`;
+    if (diffDays === 0) return 'Due today';
+    if (diffDays === 1) return 'Due tomorrow';
+    return `${diffDays} days remaining`;
+}
+
+// Close view modal function
+function closeViewModal() {
+    const modal = document.getElementById('viewTaskModal');
+    if (modal) {
+        modal.remove();
+    }
+}
 </script>
 </body>
 </html>

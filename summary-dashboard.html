@@ -1543,25 +1543,34 @@ function updateCombinedReports() {
     // ========== FUNGSI STATISTIK & UI UPDATE ==========
 
 // Fungsi untuk menghitung statistik dashboard
-function calculateRealStats(reports) {
-    // Hitung total reports (semua jenis laporan)
-    const totalReports = reports.length;
+function calculateRealStats(filteredReports) {
+    console.log("Calculating stats from", filteredReports.length, "filtered reports");
     
-    // Hitung solved reports HANYA dari solvedReports collection
-    const solvedReports = window.solvedReportsCache ? window.solvedReportsCache.length : 0;
+    // GUNAKAN filteredReports, BUKAN CACHE GLOBAL
+    const totalReports = filteredReports.length;
     
-    // Hitung pending reports HANYA dari pendingReports collection  
-    const pendingReports = window.pendingReportsCache ? window.pendingReportsCache.length : 0;
+    // Hitung berdasarkan data yang sudah difilter
+    const solvedReports = filteredReports.filter(report => 
+        report.status === 'Solved' || report.collection === 'solvedReports'
+    ).length;
     
-    // Hitung maintenance reports HANYA dari maintenanceReports collection
-    const maintenanceReports = window.maintenanceReportsCache ? window.maintenanceReportsCache.length : 0;
+    const pendingReports = filteredReports.filter(report => 
+        report.status === 'Pending' || report.collection === 'pendingReports'
+    ).length;
     
-    // Hitung solved maintenance HANYA dari solvedMaintenance collection
-    const solvedMaintenance = window.solvedMaintenanceCache ? window.solvedMaintenanceCache.length : 0;
+    const maintenanceReports = filteredReports.filter(report => 
+        report.status === 'Maintenance' || report.collection === 'maintenanceReports'
+    ).length;
+    
+    const solvedMaintenance = filteredReports.filter(report => 
+        report.status === 'Maintenance Solved' || report.collection === 'solvedMaintenance'
+    ).length;
     
     // Hitung resolution rate (hanya dari reports biasa, tidak termasuk maintenance)
-    const regularReports = (window.pendingReportsCache ? window.pendingReportsCache.length : 0) + 
-                          (window.solvedReportsCache ? window.solvedReportsCache.length : 0);
+    const regularReports = filteredReports.filter(report => 
+        report.collection === 'pendingReports' || report.collection === 'solvedReports'
+    ).length;
+    
     const resolutionRate = regularReports > 0 ? 
         Math.round((solvedReports / regularReports) * 100) : 0;
     
@@ -1569,7 +1578,7 @@ function calculateRealStats(reports) {
     let totalResolutionTime = 0;
     let countWithResolutionTime = 0;
     
-    reports.forEach(report => {
+    filteredReports.forEach(report => {
         if (report.isSolved && report.resolutionTime) {
             totalResolutionTime += report.resolutionTime;
             countWithResolutionTime++;
@@ -1578,7 +1587,7 @@ function calculateRealStats(reports) {
     
     // Hitung reports per brand
     const brandCounts = {};
-    reports.forEach(report => {
+    filteredReports.forEach(report => {
         if (report.brand) {
             brandCounts[report.brand] = (brandCounts[report.brand] || 0) + 1;
         }
@@ -1594,7 +1603,7 @@ function calculateRealStats(reports) {
     
     // Hitung reports per kategori
     const categoryCounts = {};
-    reports.forEach(report => {
+    filteredReports.forEach(report => {
         if (report.category) {
             categoryCounts[report.category] = (categoryCounts[report.category] || 0) + 1;
         }
@@ -1608,12 +1617,21 @@ function calculateRealStats(reports) {
         'Maintenance Solved': solvedMaintenance
     };
     
+    console.log("Calculated stats:", {
+        totalReports,
+        solvedCount: solvedReports,
+        pendingCount: pendingReports,
+        maintenanceCount: maintenanceReports,
+        solvedMaintenanceCount: solvedMaintenance,
+        resolutionRate
+    });
+    
     return {
         totalReports,
-        solvedCount: solvedReports,        // HANYA dari solvedReports
-        pendingCount: pendingReports,      // HANYA dari pendingReports  
-        maintenanceCount: maintenanceReports, // HANYA dari maintenanceReports
-        solvedMaintenanceCount: solvedMaintenance, // HANYA dari solvedMaintenance
+        solvedCount: solvedReports,
+        pendingCount: pendingReports,
+        maintenanceCount: maintenanceReports,
+        solvedMaintenanceCount: solvedMaintenance,
         resolutionRate,
         topBrand,
         categoryCounts,
@@ -1623,31 +1641,37 @@ function calculateRealStats(reports) {
 }
 
 // Fungsi untuk memperbarui statistik dashboard
+// Ganti fungsi updateDashboardStats yang ada dengan ini:
 function updateDashboardStats(reports) {
-    const stats = calculateRealStats(reports);
+    console.log("Updating dashboard stats with", reports.length, "reports");
     
-    // Update semua statistik utama
+    // Pastikan filter diterapkan
+    const filteredReports = applyFilters(reports);
+    console.log("After applying filters:", filteredReports.length, "reports");
+    
+    const stats = calculateRealStats(filteredReports);
+    
+    // Update semua statistik
     document.getElementById('weeklyPerformance').textContent = `${stats.resolutionRate}%`;
     document.getElementById('resolutionRate').textContent = `${stats.resolutionRate}%`;
     document.getElementById('topBrand').textContent = stats.topBrand.name;
     
-    // Update additional stats - DENGAN DATA YANG TEPAT
+    // Update additional stats - SEKARANG SUDAH TERFILTER
     document.getElementById('totalReports').textContent = stats.totalReports;
-    document.getElementById('solvedReports').textContent = stats.solvedCount;           // HANYA solvedReports
-    document.getElementById('pendingReports').textContent = stats.pendingCount;         // HANYA pendingReports
-    document.getElementById('maintenanceReports').textContent = stats.maintenanceCount; // HANYA maintenanceReports
-    document.getElementById('solvedMaintenance').textContent = stats.solvedMaintenanceCount; // HANYA solvedMaintenance
+    document.getElementById('solvedReports').textContent = stats.solvedCount;
+    document.getElementById('pendingReports').textContent = stats.pendingCount;
+    document.getElementById('maintenanceReports').textContent = stats.maintenanceCount;
+    document.getElementById('solvedMaintenance').textContent = stats.solvedMaintenanceCount;
     
-    // Update new game releases (ambil dari data game jika tersedia)
+    // Update new game releases (tetap dari data global karena tidak terkait filter tanggal)
     const newGameReleases = window.newGamesData ? window.newGamesData.length : 0;
     document.getElementById('newGameReleases').textContent = newGameReleases;
     
-    // Update new feature releases (ambil dari data features jika tersedia)
     const newFeatureReleases = window.featuresData ? window.featuresData.length : 0;
     document.getElementById('newfeatureReleases').textContent = newFeatureReleases;
     
-    // Update trend indicators dengan data yang lebih realistis
-    const performanceChange = calculatePerformanceChange(reports);
+    // Update trend indicators dengan data yang sudah difilter
+    const performanceChange = calculatePerformanceChange(filteredReports);
     const performanceChangeElement = document.getElementById('performanceChange');
     if (performanceChangeElement) {
         performanceChangeElement.innerHTML = 
@@ -1655,11 +1679,10 @@ function updateDashboardStats(reports) {
             `<i class="fas fa-arrow-up"></i> ${performanceChange}% from last week` :
             `<i class="fas fa-arrow-down"></i> ${Math.abs(performanceChange)}% from last week`;
         
-        // Update class untuk warna
         performanceChangeElement.className = performanceChange >= 0 ? 'positive' : 'negative';
     }
     
-    const trendChange = calculateTrendChange(reports);
+    const trendChange = calculateTrendChange(filteredReports);
     const trendChangeElement = document.getElementById('trendChange');
     if (trendChangeElement) {
         trendChangeElement.innerHTML = 
@@ -1667,18 +1690,10 @@ function updateDashboardStats(reports) {
             `<i class="fas fa-arrow-up"></i> ${trendChange}% improvement` :
             `<i class="fas fa-arrow-down"></i> ${Math.abs(trendChange)}% decline`;
         
-        // Update class untuk warna
         trendChangeElement.className = trendChange >= 0 ? 'positive' : 'negative';
     }
     
-    console.log("Dashboard stats updated:", {
-        total: stats.totalReports,
-        solved: stats.solvedCount,
-        pending: stats.pendingCount,
-        maintenance: stats.maintenanceCount,
-        solvedMaintenance: stats.solvedMaintenanceCount,
-        resolutionRate: stats.resolutionRate
-    });
+    console.log("Dashboard stats updated with filtered data");
 }
     // Fungsi bantu untuk menghitung perubahan performa
     function calculatePerformanceChange(reports) {
@@ -1952,9 +1967,10 @@ function applyFilters(reports) {
     console.log("After filtering - Category:", categoryFilter, "Brand:", brandFilter, "Results:", filteredReports.length);
     return filteredReports;
 }
+// Ganti fungsi updateChartsWithFilteredData yang ada dengan ini:
 function updateChartsWithFilteredData(reports) {
-    const filteredReports = applyFilters(reports);
-    updateCharts(filteredReports);
+    // Tidak perlu memanggil applyFilters lagi karena sudah diterima data yang difilter
+    updateCharts(reports);
 }
     // ========== FUNGSI PAGINATION ==========
 
@@ -2973,9 +2989,10 @@ function updateDashboardWithFilteredData(reports) {
     updateDashboardStats(filteredReports);
 }
 
+// Ganti fungsi updateSummaryWithFilteredData yang ada dengan ini:
 function updateSummaryWithFilteredData(reports) {
-    const filteredReports = applyFilters(reports);
-    updateSummaryTable(filteredReports);
+    // Tidak perlu memanggil applyFilters lagi karena sudah diterima data yang difilter
+    updateSummaryTable(reports);
 }
 
 // ========== FUNGSI RESET FILTER TANGGAL ==========
@@ -3056,41 +3073,40 @@ document.addEventListener('DOMContentLoaded', function() {
     const endDateInput = document.getElementById('endDate');
 
     // Event listener untuk category filter
-    if (categoryFilter) {
-        categoryFilter.addEventListener('change', () => {
-            console.log("Category filter changed to:", categoryFilter.value);
-            currentPage = 1;
-            updateAllWithFilters();
-        });
-    }
+    // Di dalam DOMContentLoaded, pastikan event listeners seperti ini:
+if (categoryFilter) {
+    categoryFilter.addEventListener('change', () => {
+        console.log("Category filter changed to:", categoryFilter.value);
+        currentPage = 1;
+        updateAllWithFilters(); // Ini yang penting
+    });
+}
 
-    // Event listener untuk brand filter
-    if (brandFilter) {
-        brandFilter.addEventListener('change', () => {
-            console.log("Brand filter changed to:", brandFilter.value);
-            currentPage = 1;
-            updateAllWithFilters();
-        });
-    }
+if (brandFilter) {
+    brandFilter.addEventListener('change', () => {
+        console.log("Brand filter changed to:", brandFilter.value);
+        currentPage = 1;
+        updateAllWithFilters(); // Ini yang penting
+    });
+}
 
-    // Event listener untuk date filter (TAMBAH INI)
-    if (startDateInput && endDateInput) {
-        startDateInput.addEventListener('change', function() {
-            if (validateDateRange()) {
-                console.log("Start date changed to:", this.value);
-                currentPage = 1;
-                updateAllWithFilters();
-            }
-        });
-        
-        endDateInput.addEventListener('change', function() {
-            if (validateDateRange()) {
-                console.log("End date changed to:", this.value);
-                currentPage = 1;
-                updateAllWithFilters();
-            }
-        });
-    }
+if (startDateInput && endDateInput) {
+    startDateInput.addEventListener('change', function() {
+        if (validateDateRange()) {
+            console.log("Start date changed to:", this.value);
+            currentPage = 1;
+            updateAllWithFilters(); // Ini yang penting
+        }
+    });
+    
+    endDateInput.addEventListener('change', function() {
+        if (validateDateRange()) {
+            console.log("End date changed to:", this.value);
+            currentPage = 1;
+            updateAllWithFilters(); // Ini yang penting
+        }
+    });
+}
 
     // Setup search listener
     const searchInput = document.getElementById('summarySearch');
@@ -3124,13 +3140,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // ========== FUNGSI UNTUK UPDATE SEMUA KOMPONEN DENGAN FILTER ==========
 
+// Ganti fungsi updateAllWithFilters yang ada dengan ini:
 function updateAllWithFilters() {
     if (allReportsData && allReportsData.length > 0) {
-        updateDashboardWithFilteredData(allReportsData);
-        updateChartsWithFilteredData(allReportsData);
-        updateSummaryWithFilteredData(allReportsData);
+        console.log("Updating all components with filters...");
+        
+        // Terapkan filter sekali saja untuk konsistensi
+        const filteredReports = applyFilters(allReportsData);
+        
+        // Update semua komponen dengan data yang SAMA sudah difilter
+        updateDashboardStats(filteredReports);
+        updateChartsWithFilteredData(filteredReports);
+        updateSummaryWithFilteredData(filteredReports);
     }
 }
+
 
 // ========== PERBAIKAN FUNGSI SETUPDATEFILTERS ==========
 
@@ -3217,12 +3241,6 @@ window.addEventListener('languageChanged', function(event) {
     applyTranslations(event.detail.language);
 });
 
-// Di halaman pengaturan, trigger event saat bahasa berubah
-document.getElementById('languageSelect').addEventListener('change', function() {
-    const selectedLanguage = this.value;
-    changeLanguage(selectedLanguage);
-    triggerLanguageChange(selectedLanguage);
-});
 // Di summary-dashboard.html, tambahkan:
 function setupLanguageForDashboard() {
     const lang = translations[localStorage.getItem('language') || 'id'] || translations.id;
@@ -3475,6 +3493,82 @@ document.addEventListener('DOMContentLoaded', function() {
         applyDashboardTranslations(savedLanguage);
     }, 100);
 });
+// Tambahkan fungsi ini untuk debugging
+function debugDateFilter() {
+    const startDateInput = document.getElementById('startDate');
+    const endDateInput = document.getElementById('endDate');
+    
+    console.log("=== DATE FILTER DEBUG ===");
+    console.log("Start Date:", startDateInput?.value);
+    console.log("End Date:", endDateInput?.value);
+    console.log("All Reports Data:", allReportsData?.length);
+    
+    if (startDateInput?.value && endDateInput?.value) {
+        const startDate = new Date(startDateInput.value);
+        const endDate = new Date(endDateInput.value);
+        console.log("Start Date (JS):", startDate);
+        console.log("End Date (JS):", endDate);
+        
+        // Test filter pada sample data
+        const testFiltered = applyDateFilter(allReportsData || []);
+        console.log("After date filtering:", testFiltered.length, "reports");
+    }
+    console.log("=========================");
+}
+
+// Panggil fungsi debug saat filter berubah
+document.addEventListener('DOMContentLoaded', function() {
+    // ... kode yang sudah ada ...
+    
+    // Tambahkan event listener untuk debugging
+    const startDateInput = document.getElementById('startDate');
+    const endDateInput = document.getElementById('endDate');
+    
+    if (startDateInput && endDateInput) {
+        startDateInput.addEventListener('change', function() {
+            console.log("Start date changed, debugging...");
+            debugDateFilter();
+        });
+        
+        endDateInput.addEventListener('change', function() {
+            console.log("End date changed, debugging..."); 
+            debugDateFilter();
+        });
+    }
+});
+function debugFilterDate(reports) {
+    const startDateInput = document.getElementById('startDate');
+    const endDateInput = document.getElementById('endDate');
+    
+    console.log("=== FILTER DATE DEBUG ===");
+    console.log("Start Date:", startDateInput?.value);
+    console.log("End Date:", endDateInput?.value);
+    
+    if (startDateInput?.value && endDateInput?.value) {
+        const startDate = new Date(startDateInput.value);
+        const endDate = new Date(endDateInput.value);
+        endDate.setHours(23, 59, 59, 999);
+        
+        console.log("Date range:", startDate, "to", endDate);
+        
+        // Hitung solved reports sebelum filter
+        const totalSolvedBefore = reports.filter(report => 
+            report.status === 'Solved' || report.collection === 'solvedReports'
+        ).length;
+        
+        // Terapkan filter tanggal
+        const dateFiltered = applyDateFilter(reports);
+        
+        // Hitung solved reports setelah filter
+        const totalSolvedAfter = dateFiltered.filter(report => 
+            report.status === 'Solved' || report.collection === 'solvedReports'
+        ).length;
+        
+        console.log("Solved reports - Before filter:", totalSolvedBefore, "After filter:", totalSolvedAfter);
+        console.log("Total reports - Before:", reports.length, "After:", dateFiltered.length);
+    }
+    console.log("=========================");
+}
 </script>
 </body>
 </html>

@@ -276,19 +276,18 @@
                     </div>
                 </div>
 
-                <div class="kpi-header-container">
-    <h2>Data KPI Performance</h2>
-    <div class="action-buttons">
-        <button class="btn-edit-all" id="edit-all-btn">
-            <i class="fas fa-edit"></i>
-            Edit All
-        </button>
-        <button class="btn-reset" id="reset-data-btn" title="Reset Data KPI">
-            <i class="fas fa-sync-alt"></i>
-            Reset All
-        </button>
-    </div>
-</div>
+                <div class="kpi-container fade-in">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h2 style="margin: 0;">Data KPI Performance</h2>
+                        <button class="btn-edit-all" id="edit-all-btn">
+                            <i class="fas fa-edit"></i>
+                            Edit All
+                        </button>
+                        <button class="btn-reset" id="reset-data-btn" title="Reset Data KPI">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Reset</span>
+                </button>
+                    </div>
                     
                     <table class="kpi-table">
                         <thead>
@@ -632,6 +631,7 @@ function setupRealTimeListeners() {
     // Elemen DOM
     const editAllBtn = document.getElementById('edit-all-btn');
     const resetBtn = document.getElementById('reset-data-btn');
+    const resetModal = document.getElementById('reset-modal');
     const resetCancel = document.getElementById('reset-cancel');
     const resetConfirm = document.getElementById('reset-confirm');
     const resetPassword = document.getElementById('reset-password');
@@ -2557,33 +2557,33 @@ function displayAllUsersData(usersData) {
 async function loadKpiData(filter = 'current', specificUserId = null) {
     try {
         const currentUser = firebase.auth().currentUser;
-        if (!currentUser) return;
-        
-        console.log('👤 Current user:', currentUser.uid, currentUser.email);
-        
-        let targetUserId = currentUser.uid;
-        let targetUserName = 'Loading...'; // Default temporary
-        
-        if (filter === 'all' && isSuperAdminUser) {
-            await loadAllUsersData();
+        if (!currentUser) {
+            console.log('No user logged in');
             return;
         }
         
-        if (specificUserId && specificUserId !== currentUser.uid) {
-            targetUserId = specificUserId;
-            targetUserName = await getUserNameById(specificUserId);
-        } else {
-            // Untuk user sendiri, coba dapatkan nama dari berbagai sumber
-            targetUserName = await getUserNameById(currentUser.uid);
+        console.log('🔄 Loading KPI data with filter:', filter, 'isSuperAdmin:', isSuperAdminUser);
+        
+        if (filter === 'current' || specificUserId) {
+            const userId = specificUserId || currentUser.uid;
+            console.log('👤 Loading data for user:', userId);
+            await updateAllKpiData(userId);
+            
+        } else if (filter === 'all') {
+            if (isSuperAdminUser) {
+                console.log('👥 Loading ALL users data as super admin');
+                await loadAllUsersData();
+            } else {
+                console.log('❌ Access denied - not super admin');
+                showNotification('Hanya Super Admin yang dapat melihat semua data', 'error');
+                // Fallback ke data sendiri
+                await updateAllKpiData(currentUser.uid);
+            }
         }
-        
-        console.log('🎯 Loading data for:', targetUserId, targetUserName);
-        
-        displayUserNameInHeader(targetUserName);
-        await updateAllKpiData(targetUserId);
         
     } catch (error) {
         console.error('❌ Error loading KPI data:', error);
+        showNotification('Error memuat data KPI: ' + error.message, 'error');
     }
 }
 

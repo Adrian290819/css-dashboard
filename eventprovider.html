@@ -2427,6 +2427,2616 @@ function addSampleData() {
         });
     }
 }
+// ========== FUNGSI DETAIL VIEW FOTO ==========
+
+// View event details with image functionality
+function viewEvent(eventId) {
+    const event = events.find(e => e.id === eventId);
+    if (!event) return;
+    
+    const modal = document.getElementById('eventDetailsModal');
+    if (!modal) return;
+    
+    // Set modal title
+    modal.querySelector('.modal-title').innerHTML = `<i class="fas fa-info-circle"></i> ${event.title}`;
+    
+    // Create details content with enhanced image viewing
+    const detailsContent = document.createElement('div');
+    detailsContent.innerHTML = `
+        <div class="event-details">
+            <!-- Image Section -->
+            <div style="margin-bottom: 25px;">
+                <div style="position: relative; text-align: center;">
+                    <img id="detailEventImage" src="${event.image || 'https://via.placeholder.com/600x400?text=Event+Image'}" 
+                         alt="${event.title}" 
+                         style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 12px; border: 2px solid var(--border-color); cursor: pointer;"
+                         onclick="openEventImageFullscreen(this.src, '${event.title.replace(/'/g, "\\'")}')">
+                    <div class="event-badge ${getEventStatusClass(event)}" 
+                         style="position: absolute; top: 12px; right: 12px;">
+                        ${getEventStatusText(event)}
+                    </div>
+                </div>
+                <div class="image-actions" style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+                    <button class="btn btn-outline btn-sm" onclick="openEventImageFullscreen(document.getElementById('detailEventImage').src, '${event.title.replace(/'/g, "\\'")}')">
+                        <i class="fas fa-expand"></i> View Full Size
+                    </button>
+                    <button class="btn btn-outline btn-sm" onclick="downloadEventImage(document.getElementById('detailEventImage').src, '${event.title.replace(/'/g, "\\'")}')">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Details Section -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <div class="detail-item">
+                    <strong style="color: var(--text-secondary); font-size: 0.9rem;">Category:</strong>
+                    <p style="margin: 5px 0; font-weight: 500;">${event.category || 'Not specified'}</p>
+                </div>
+                <div class="detail-item">
+                    <strong style="color: var(--text-secondary); font-size: 0.9rem;">Provider:</strong>
+                    <p style="margin: 5px 0; font-weight: 500;">${event.provider || 'Not specified'}</p>
+                </div>
+                <div class="detail-item">
+                    <strong style="color: var(--text-secondary); font-size: 0.9rem;">Status:</strong>
+                    <p style="margin: 5px 0; font-weight: 500;">${getEventStatusText(event)}</p>
+                </div>
+                <div class="detail-item">
+                    <strong style="color: var(--text-secondary); font-size: 0.9rem;">Start Date:</strong>
+                    <p style="margin: 5px 0; font-weight: 500;">${formatDisplayDateTime(event.startDate)}</p>
+                </div>
+                <div class="detail-item">
+                    <strong style="color: var(--text-secondary); font-size: 0.9rem;">End Date:</strong>
+                    <p style="margin: 5px 0; font-weight: 500;">${formatDisplayDateTime(event.endDate)}</p>
+                </div>
+            </div>
+            
+            <!-- Description Section -->
+            <div class="detail-item">
+                <strong style="color: var(--text-secondary); font-size: 0.9rem;">Description:</strong>
+                <p style="margin: 10px 0; line-height: 1.6; background: var(--bg-secondary); padding: 15px; border-radius: 8px; border-left: 4px solid var(--primary);">
+                    ${event.description || 'No description available.'}
+                </p>
+            </div>
+            
+            <!-- Additional Info -->
+            <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border-color);">
+                <strong style="color: var(--text-secondary); font-size: 0.9rem;">Additional Information:</strong>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                    <div>
+                        <small style="color: var(--text-secondary);">Created:</small>
+                        <p style="margin: 2px 0; font-size: 0.85rem;">${formatDate(event.dateCreated) || 'Not available'}</p>
+                    </div>
+                    <div>
+                        <small style="color: var(--text-secondary);">Last Updated:</small>
+                        <p style="margin: 2px 0; font-size: 0.85rem;">${formatDate(event.dateUpdated) || 'Not available'}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    modal.querySelector('#eventDetailsContainer').innerHTML = '';
+    modal.querySelector('#eventDetailsContainer').appendChild(detailsContent);
+    
+    // Set event ID for edit button
+    modal.querySelector('#editFromDetails').dataset.id = eventId;
+    
+    modal.classList.add('active');
+}
+
+// Helper function untuk mendapatkan status class event
+function getEventStatusClass(event) {
+    const now = new Date();
+    const startDate = new Date(event.startDate);
+    const endDate = new Date(event.endDate);
+    
+    if (startDate > now) {
+        return 'badge-upcoming';
+    } else if (startDate <= now && endDate >= now) {
+        return 'badge-active';
+    } else {
+        return 'badge-inactive';
+    }
+}
+
+// Helper function untuk mendapatkan status text event
+function getEventStatusText(event) {
+    const now = new Date();
+    const startDate = new Date(event.startDate);
+    const endDate = new Date(event.endDate);
+    
+    if (startDate > now) {
+        return 'Upcoming';
+    } else if (startDate <= now && endDate >= now) {
+        return 'Active';
+    } else {
+        return 'Completed';
+    }
+}
+
+// Format date untuk detail view
+function formatDate(dateString) {
+    try {
+        if (!dateString) return 'Not set';
+        const options = { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+    } catch (error) {
+        return dateString || 'Invalid date';
+    }
+}
+
+// ========== FUNGSI FULLSCREEN IMAGE ==========
+
+// Open event image in fullscreen
+function openEventImageFullscreen(imageSrc, title = 'Event Image') {
+    // Create fullscreen overlay
+    const fullscreenOverlay = document.createElement('div');
+    fullscreenOverlay.id = 'eventImageFullscreenOverlay';
+    fullscreenOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    `;
+    
+    // Create image container
+    const imageContainer = document.createElement('div');
+    imageContainer.style.cssText = `
+        position: relative;
+        max-width: 95%;
+        max-height: 95%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    `;
+    
+    // Create fullscreen image
+    const fullscreenImage = document.createElement('img');
+    fullscreenImage.src = imageSrc;
+    fullscreenImage.alt = title;
+    fullscreenImage.style.cssText = `
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        transform: scale(0.8);
+        transition: transform 0.3s ease;
+    `;
+    
+    // Create close button
+    const closeButton = document.createElement('button');
+    closeButton.innerHTML = '&times;';
+    closeButton.style.cssText = `
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        font-size: 2rem;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s ease;
+    `;
+    
+    // Create download button
+    const downloadButton = document.createElement('button');
+    downloadButton.innerHTML = '<i class="fas fa-download"></i>';
+    downloadButton.style.cssText = `
+        position: absolute;
+        top: -50px;
+        right: 30px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s ease;
+    `;
+    
+    // Create title display
+    const imageTitle = document.createElement('div');
+    imageTitle.textContent = title;
+    imageTitle.style.cssText = `
+        position: absolute;
+        bottom: -60px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        color: white;
+        font-size: 1.2rem;
+        font-weight: 500;
+        padding: 10px;
+    `;
+    
+    // Create image info
+    const imageInfo = document.createElement('div');
+    imageInfo.style.cssText = `
+        position: absolute;
+        bottom: -90px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+    `;
+    imageInfo.textContent = 'Click outside image or press ESC to close';
+    
+    // Add event listeners
+    closeButton.addEventListener('click', closeEventFullscreen);
+    downloadButton.addEventListener('click', () => {
+        downloadEventImage(imageSrc, title);
+    });
+    fullscreenOverlay.addEventListener('click', (e) => {
+        if (e.target === fullscreenOverlay) {
+            closeEventFullscreen();
+        }
+    });
+    
+    // Keyboard support
+    const handleKeydown = (e) => {
+        if (e.key === 'Escape') {
+            closeEventFullscreen();
+        }
+    };
+    
+    function closeEventFullscreen() {
+        fullscreenOverlay.style.opacity = '0';
+        setTimeout(() => {
+            if (fullscreenOverlay.parentNode) {
+                fullscreenOverlay.remove();
+            }
+        }, 300);
+        document.removeEventListener('keydown', handleKeydown);
+    }
+    
+    // Assemble and show
+    imageContainer.appendChild(fullscreenImage);
+    imageContainer.appendChild(closeButton);
+    imageContainer.appendChild(downloadButton);
+    imageContainer.appendChild(imageTitle);
+    imageContainer.appendChild(imageInfo);
+    fullscreenOverlay.appendChild(imageContainer);
+    document.body.appendChild(fullscreenOverlay);
+    document.addEventListener('keydown', handleKeydown);
+    
+    // Animate in
+    setTimeout(() => {
+        fullscreenOverlay.style.opacity = '1';
+        fullscreenImage.style.transform = 'scale(1)';
+    }, 10);
+    
+    // Add hover effects
+    closeButton.addEventListener('mouseenter', () => {
+        closeButton.style.background = 'rgba(255, 255, 255, 0.3)';
+    });
+    closeButton.addEventListener('mouseleave', () => {
+        closeButton.style.background = 'rgba(255, 255, 255, 0.2)';
+    });
+    
+    downloadButton.addEventListener('mouseenter', () => {
+        downloadButton.style.background = 'rgba(255, 255, 255, 0.3)';
+    });
+    downloadButton.addEventListener('mouseleave', () => {
+        downloadButton.style.background = 'rgba(255, 255, 255, 0.2)';
+    });
+}
+
+// ========== FUNGSI DOWNLOAD IMAGE ==========
+
+// Download event image
+function downloadEventImage(imageSrc, fileName) {
+    // Create temporary anchor element
+    const link = document.createElement('a');
+    link.href = imageSrc;
+    
+    // Clean filename untuk download
+    const cleanFileName = fileName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    link.download = `${cleanFileName}_event_image.jpg`;
+    
+    // Check if it's a data URL (base64) or external URL
+    if (imageSrc.startsWith('data:')) {
+        // For base64 images
+        link.click();
+    } else {
+        // For external URLs, we need to fetch and convert
+        fetch(imageSrc)
+            .then(response => response.blob())
+            .then(blob => {
+                const blobUrl = URL.createObjectURL(blob);
+                link.href = blobUrl;
+                link.click();
+                
+                // Clean up
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+            })
+            .catch(error => {
+                console.error('Error downloading event image:', error);
+                showNotification('Error downloading image. Please try again.', 'error');
+                
+                // Fallback: try direct download
+                link.click();
+            });
+    }
+    
+    showNotification('Event image download started!', 'success');
+}
+
+// ========== STYLING TAMBAHAN ==========
+
+// Inject additional styles untuk detail view
+function injectDetailViewStyles() {
+    const additionalStyles = `
+        .detail-item {
+            margin-bottom: 15px;
+        }
+        
+        .detail-item strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .detail-item p {
+            margin: 0;
+            word-break: break-word;
+        }
+        
+        #eventImageFullscreenOverlay button:hover {
+            background: rgba(255, 255, 255, 0.3) !important;
+            transform: scale(1.05);
+            transition: all 0.2s ease;
+        }
+        
+        .image-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        /* Zoom effect on image hover in detail view */
+        #detailEventImage {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        #detailEventImage:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Enhanced badge styling for detail view */
+        .event-badge {
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Loading state for images */
+        .image-loading {
+            opacity: 0.7;
+            filter: blur(2px);
+            transition: opacity 0.3s ease, filter 0.3s ease;
+        }
+        
+        .image-loaded {
+            opacity: 1;
+            filter: blur(0);
+        }
+    `;
+    
+    // Inject styles jika belum ada
+    if (!document.getElementById('event-detail-view-styles')) {
+        const styleElement = document.createElement('style');
+        styleElement.id = 'event-detail-view-styles';
+        styleElement.textContent = additionalStyles;
+        document.head.appendChild(styleElement);
+    }
+}
+
+// ========== UPDATE EVENT CARD ==========
+
+// Update createEventCard function untuk menambahkan fitur detail view
+function createEventCard(event) {
+    const card = document.createElement('div');
+    card.className = 'event-card';
+    card.dataset.id = event.id;
+    
+    // Determine badge based on status
+    let badge = '';
+    const now = new Date();
+    const startDate = new Date(event.startDate);
+    const endDate = new Date(event.endDate);
+    
+    if (startDate > now) {
+        badge = `<div class="event-badge badge-upcoming">Upcoming</div>`;
+    } else if (startDate <= now && endDate >= now) {
+        badge = `<div class="event-badge badge-active">Active</div>`;
+    } else if (endDate < now) {
+        badge = `<div class="event-badge badge-inactive">Completed</div>`;
+    }
+    
+    card.innerHTML = `
+        <div class="event-image">
+            <img src="${event.image || 'https://via.placeholder.com/300x180?text=Event+Image'}" 
+                 alt="${event.title}" 
+                 onerror="this.src='https://via.placeholder.com/300x180?text=Event+Image'"
+                 style="cursor: pointer;"
+                 onclick="viewEvent('${event.id}')">
+            ${badge}
+        </div>
+        <div class="event-content">
+            <h3 class="event-title" style="cursor: pointer;" onclick="viewEvent('${event.id}')">${event.title}</h3>
+            <p class="event-description">${event.description || 'No description available.'}</p>
+            
+            <div class="event-details">
+                <div class="event-detail-item">
+                    <span class="detail-label">Category</span>
+                    <span class="detail-value">${event.category}</span>
+                </div>
+                <div class="event-detail-item">
+                    <span class="detail-label">Provider</span>
+                    <span class="detail-value">${event.provider || 'N/A'}</span>
+                </div>
+                <div class="event-detail-item">
+                    <span class="detail-label">Start Date</span>
+                    <span class="detail-value">${formatDisplayDateTime(event.startDate)}</span>
+                </div>
+                <div class="event-detail-item">
+                    <span class="detail-label">End Date</span>
+                    <span class="detail-value">${formatDisplayDateTime(event.endDate)}</span>
+                </div>
+                <div class="event-detail-item">
+                    <span class="detail-label">Status</span>
+                    <span class="detail-value">${event.status || 'active'}</span>
+                </div>
+            </div>
+            
+            <div class="event-actions">
+                <button class="btn btn-outline btn-sm edit-event" data-id="${event.id}">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="btn btn-primary btn-sm view-event" data-id="${event.id}">
+                    <i class="fas fa-eye"></i> View Details
+                </button>
+                <button class="btn btn-danger btn-sm delete-event" data-id="${event.id}">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+    `;
+    
+    // Add event listeners to buttons
+    const editBtn = card.querySelector('.edit-event');
+    const viewBtn = card.querySelector('.view-event');
+    const deleteBtn = card.querySelector('.delete-event');
+    const eventImage = card.querySelector('.event-image img');
+    const eventTitle = card.querySelector('.event-title');
+    
+    if (editBtn) editBtn.addEventListener('click', () => openEditEventModal(event.id));
+    if (viewBtn) viewBtn.addEventListener('click', () => viewEvent(event.id));
+    if (deleteBtn) deleteBtn.addEventListener('click', () => deleteEvent(event.id));
+    
+    // Add click event to image and title for quick view
+    if (eventImage) {
+        eventImage.addEventListener('click', () => viewEvent(event.id));
+    }
+    if (eventTitle) {
+        eventTitle.addEventListener('click', () => viewEvent(event.id));
+    }
+    
+    return card;
+}
+
+// ========== INITIALIZATION ==========
+
+// Update DOMContentLoaded untuk inject styles
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing events...');
+    
+    // Inject detail view styles
+    injectDetailViewStyles();
+    
+    // Initialize Firebase auth state listener
+    checkAuthState();
+});
+// ========== FUNGSI CEK MASA BERLAKU EVENT ==========
+
+// Fungsi untuk mengecek dan menampilkan notifikasi event yang habis masa berlaku
+function checkExpiredEvents() {
+    const now = new Date();
+    const expiredEvents = events.filter(event => {
+        const endDate = new Date(event.endDate);
+        return endDate < now;
+    });
+    
+    return expiredEvents;
+}
+
+// Fungsi untuk menampilkan badge expired pada event card
+function updateExpiredEventBadges() {
+    const now = new Date();
+    
+    events.forEach(event => {
+        const endDate = new Date(event.endDate);
+        const eventCard = document.querySelector(`.event-card[data-id="${event.id}"]`);
+        
+        if (eventCard && endDate < now) {
+            // Update badge jika belum ada badge expired
+            const existingBadge = eventCard.querySelector('.event-badge');
+            if (existingBadge && !existingBadge.classList.contains('badge-expired')) {
+                existingBadge.className = 'event-badge badge-expired';
+                existingBadge.textContent = 'Expired';
+            }
+        }
+    });
+}
+
+// Fungsi untuk menampilkan notifikasi event yang akan segera berakhir
+function checkUpcomingExpirations() {
+    const now = new Date();
+    const warningThreshold = new Date();
+    warningThreshold.setDate(warningThreshold.getDate() + 3); // 3 hari ke depan
+    
+    const expiringSoonEvents = events.filter(event => {
+        const endDate = new Date(event.endDate);
+        return endDate > now && endDate <= warningThreshold;
+    });
+    
+    return expiringSoonEvents;
+}
+
+// ========== FUNGSI NOTIFIKASI MASA BERLAKU ==========
+
+// Tampilkan notifikasi untuk event yang akan segera berakhir
+function showExpirationNotifications() {
+    const expiredEvents = checkExpiredEvents();
+    const expiringSoonEvents = checkUpcomingExpirations();
+    
+    // Notifikasi untuk event yang sudah expired
+    if (expiredEvents.length > 0) {
+        const eventTitles = expiredEvents.map(event => event.title).join(', ');
+        showNotification(
+            `${expiredEvents.length} event(s) telah berakhir: ${eventTitles}`,
+            'warning'
+        );
+    }
+    
+    // Notifikasi untuk event yang akan segera berakhir
+    if (expiringSoonEvents.length > 0) {
+        const eventTitles = expiringSoonEvents.map(event => event.title).join(', ');
+        showNotification(
+            `${expiringSoonEvents.length} event(s) akan berakhir dalam 3 hari: ${eventTitles}`,
+            'info'
+        );
+    }
+}
+
+// ========== UPDATE STYLING UNTUK BADGE EXPIRED ==========
+
+function addExpiredEventStyles() {
+    const expiredStyles = `
+        .badge-expired {
+            background: var(--danger-light) !important;
+            color: var(--danger) !important;
+        }
+        
+        .event-card.expired {
+            opacity: 0.7;
+            border-left: 4px solid var(--danger);
+        }
+        
+        .event-card.expired .event-title {
+            color: var(--text-secondary);
+            text-decoration: line-through;
+        }
+        
+        .expired-event-notice {
+            background: var(--danger-light);
+            border: 1px solid var(--danger);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            margin-bottom: var(--space-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        
+        .expired-event-notice i {
+            color: var(--danger);
+            font-size: 1.2rem;
+        }
+        
+        .expired-event-notice p {
+            margin: 0;
+            color: var(--danger);
+            font-weight: var(--font-medium);
+        }
+        
+        .expired-filter-option {
+            color: var(--danger) !important;
+            font-weight: var(--font-semibold) !important;
+        }
+    `;
+    
+    if (!document.getElementById('expired-event-styles')) {
+        const styleElement = document.createElement('style');
+        styleElement.id = 'expired-event-styles';
+        styleElement.textContent = expiredStyles;
+        document.head.appendChild(styleElement);
+    }
+}
+
+// ========== UPDATE FUNGSI RENDER EVENTS ==========
+
+// Update fungsi renderEvents untuk menangani event yang expired
+function renderEvents() {
+    const eventsGrid = document.getElementById('eventsGrid');
+    const noEvents = document.getElementById('noEvents');
+    
+    if (!eventsGrid) return;
+    
+    if (filteredEvents.length === 0) {
+        eventsGrid.style.display = 'none';
+        if (noEvents) noEvents.style.display = 'flex';
+        return;
+    }
+    
+    eventsGrid.style.display = 'grid';
+    if (noEvents) noEvents.style.display = 'none';
+    
+    // Clear the grid
+    eventsGrid.innerHTML = '';
+    
+    // Tambahkan notice untuk event expired jika ada
+    const expiredEvents = filteredEvents.filter(event => {
+        const endDate = new Date(event.endDate);
+        return endDate < new Date();
+    });
+    
+    if (expiredEvents.length > 0) {
+        const expiredNotice = document.createElement('div');
+        expiredNotice.className = 'expired-event-notice';
+        expiredNotice.style.gridColumn = '1 / -1';
+        expiredNotice.innerHTML = `
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>${expiredEvents.length} event(s) telah berakhir masa berlakunya dan tidak aktif</p>
+        `;
+        eventsGrid.appendChild(expiredNotice);
+    }
+    
+    // Render each event
+    filteredEvents.forEach(event => {
+        const eventCard = createEventCard(event);
+        
+        // Tambahkan class expired untuk event yang sudah berakhir
+        const endDate = new Date(event.endDate);
+        if (endDate < new Date()) {
+            eventCard.classList.add('expired');
+        }
+        
+        eventsGrid.appendChild(eventCard);
+    });
+}
+
+// ========== UPDATE FUNGSI CREATE EVENT CARD ==========
+
+// Update fungsi createEventCard untuk menangani badge expired
+function createEventCard(event) {
+    const card = document.createElement('div');
+    card.className = 'event-card';
+    card.dataset.id = event.id;
+    
+    // Determine badge based on status dan masa berlaku
+    let badge = '';
+    const now = new Date();
+    const startDate = new Date(event.startDate);
+    const endDate = new Date(event.endDate);
+    
+    if (endDate < now) {
+        badge = `<div class="event-badge badge-expired">Expired</div>`;
+    } else if (startDate > now) {
+        badge = `<div class="event-badge badge-upcoming">Upcoming</div>`;
+    } else if (startDate <= now && endDate >= now) {
+        badge = `<div class="event-badge badge-active">Active</div>`;
+    }
+    
+    card.innerHTML = `
+        <div class="event-image">
+            <img src="${event.image || 'https://via.placeholder.com/300x180?text=Event+Image'}" 
+                 alt="${event.title}" 
+                 onerror="this.src='https://via.placeholder.com/300x180?text=Event+Image'"
+                 style="cursor: pointer;"
+                 onclick="viewEvent('${event.id}')">
+            ${badge}
+        </div>
+        <div class="event-content">
+            <h3 class="event-title" style="cursor: pointer;" onclick="viewEvent('${event.id}')">${event.title}</h3>
+            <p class="event-description">${event.description || 'No description available.'}</p>
+            
+            <div class="event-details">
+                <div class="event-detail-item">
+                    <span class="detail-label">Category</span>
+                    <span class="detail-value">${event.category}</span>
+                </div>
+                <div class="event-detail-item">
+                    <span class="detail-label">Provider</span>
+                    <span class="detail-value">${event.provider || 'N/A'}</span>
+                </div>
+                <div class="event-detail-item">
+                    <span class="detail-label">Start Date</span>
+                    <span class="detail-value">${formatDisplayDateTime(event.startDate)}</span>
+                </div>
+                <div class="event-detail-item">
+                    <span class="detail-label">End Date</span>
+                    <span class="detail-value ${endDate < new Date() ? 'text-expired' : ''}">${formatDisplayDateTime(event.endDate)}</span>
+                </div>
+                <div class="event-detail-item">
+                    <span class="detail-label">Status</span>
+                    <span class="detail-value">${getEventStatusText(event)}</span>
+                </div>
+            </div>
+            
+            <div class="event-actions">
+                <button class="btn btn-outline btn-sm edit-event" data-id="${event.id}">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="btn btn-primary btn-sm view-event" data-id="${event.id}">
+                    <i class="fas fa-eye"></i> View Details
+                </button>
+                <button class="btn btn-danger btn-sm delete-event" data-id="${event.id}">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+    `;
+    
+    // Add event listeners to buttons
+    const editBtn = card.querySelector('.edit-event');
+    const viewBtn = card.querySelector('.view-event');
+    const deleteBtn = card.querySelector('.delete-event');
+    const eventImage = card.querySelector('.event-image img');
+    const eventTitle = card.querySelector('.event-title');
+    
+    if (editBtn) editBtn.addEventListener('click', () => openEditEventModal(event.id));
+    if (viewBtn) viewBtn.addEventListener('click', () => viewEvent(event.id));
+    if (deleteBtn) deleteBtn.addEventListener('click', () => deleteEvent(event.id));
+    
+    // Add click event to image and title for quick view
+    if (eventImage) {
+        eventImage.addEventListener('click', () => viewEvent(event.id));
+    }
+    if (eventTitle) {
+        eventTitle.addEventListener('click', () => viewEvent(event.id));
+    }
+    
+    return card;
+}
+
+// ========== UPDATE FUNGSI DETAIL VIEW ==========
+
+// Update fungsi viewEvent untuk menampilkan informasi expired
+function viewEvent(eventId) {
+    const event = events.find(e => e.id === eventId);
+    if (!event) return;
+    
+    const modal = document.getElementById('eventDetailsModal');
+    if (!modal) return;
+    
+    // Set modal title
+    modal.querySelector('.modal-title').innerHTML = `<i class="fas fa-info-circle"></i> ${event.title}`;
+    
+    const now = new Date();
+    const endDate = new Date(event.endDate);
+    const isExpired = endDate < now;
+    
+    // Create details content dengan informasi expired
+    const detailsContent = document.createElement('div');
+    detailsContent.innerHTML = `
+        <div class="event-details">
+            ${isExpired ? `
+            <div class="expired-event-notice" style="margin-bottom: 20px;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Event ini telah berakhir masa berlakunya pada ${formatDisplayDateTime(event.endDate)}</p>
+            </div>
+            ` : ''}
+            
+            <!-- Image Section -->
+            <div style="margin-bottom: 25px;">
+                <div style="position: relative; text-align: center;">
+                    <img id="detailEventImage" src="${event.image || 'https://via.placeholder.com/600x400?text=Event+Image'}" 
+                         alt="${event.title}" 
+                         style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 12px; border: 2px solid var(--border-color); cursor: pointer;"
+                         onclick="openEventImageFullscreen(this.src, '${event.title.replace(/'/g, "\\'")}')">
+                    <div class="event-badge ${getEventStatusClass(event)}" 
+                         style="position: absolute; top: 12px; right: 12px;">
+                        ${getEventStatusText(event)}
+                    </div>
+                </div>
+                <div class="image-actions" style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+                    <button class="btn btn-outline btn-sm" onclick="openEventImageFullscreen(document.getElementById('detailEventImage').src, '${event.title.replace(/'/g, "\\'")}')">
+                        <i class="fas fa-expand"></i> View Full Size
+                    </button>
+                    <button class="btn btn-outline btn-sm" onclick="downloadEventImage(document.getElementById('detailEventImage').src, '${event.title.replace(/'/g, "\\'")}')">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Details Section -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <div class="detail-item">
+                    <strong style="color: var(--text-secondary); font-size: 0.9rem;">Category:</strong>
+                    <p style="margin: 5px 0; font-weight: 500;">${event.category || 'Not specified'}</p>
+                </div>
+                <div class="detail-item">
+                    <strong style="color: var(--text-secondary); font-size: 0.9rem;">Provider:</strong>
+                    <p style="margin: 5px 0; font-weight: 500;">${event.provider || 'Not specified'}</p>
+                </div>
+                <div class="detail-item">
+                    <strong style="color: var(--text-secondary); font-size: 0.9rem;">Status:</strong>
+                    <p style="margin: 5px 0; font-weight: 500;">${getEventStatusText(event)}</p>
+                </div>
+                <div class="detail-item">
+                    <strong style="color: var(--text-secondary); font-size: 0.9rem;">Start Date:</strong>
+                    <p style="margin: 5px 0; font-weight: 500;">${formatDisplayDateTime(event.startDate)}</p>
+                </div>
+                <div class="detail-item">
+                    <strong style="color: var(--text-secondary); font-size: 0.9rem;">End Date:</strong>
+                    <p style="margin: 5px 0; font-weight: 500; ${isExpired ? 'color: var(--danger);' : ''}">${formatDisplayDateTime(event.endDate)} ${isExpired ? '(Expired)' : ''}</p>
+                </div>
+            </div>
+            
+            <!-- Description Section -->
+            <div class="detail-item">
+                <strong style="color: var(--text-secondary); font-size: 0.9rem;">Description:</strong>
+                <p style="margin: 10px 0; line-height: 1.6; background: var(--bg-secondary); padding: 15px; border-radius: 8px; border-left: 4px solid ${isExpired ? 'var(--danger)' : 'var(--primary)'};">
+                    ${event.description || 'No description available.'}
+                </p>
+            </div>
+            
+            <!-- Additional Info -->
+            <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border-color);">
+                <strong style="color: var(--text-secondary); font-size: 0.9rem;">Additional Information:</strong>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                    <div>
+                        <small style="color: var(--text-secondary);">Created:</small>
+                        <p style="margin: 2px 0; font-size: 0.85rem;">${formatDate(event.dateCreated) || 'Not available'}</p>
+                    </div>
+                    <div>
+                        <small style="color: var(--text-secondary);">Last Updated:</small>
+                        <p style="margin: 2px 0; font-size: 0.85rem;">${formatDate(event.dateUpdated) || 'Not available'}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    modal.querySelector('#eventDetailsContainer').innerHTML = '';
+    modal.querySelector('#eventDetailsContainer').appendChild(detailsContent);
+    
+    // Set event ID for edit button
+    modal.querySelector('#editFromDetails').dataset.id = eventId;
+    
+    modal.classList.add('active');
+}
+
+// ========== FUNGSI FILTER EXPIRED EVENTS ==========
+
+// Tambahkan opsi filter untuk event yang expired
+function addExpiredFilterOption() {
+    const statusFilter = document.getElementById('statusFilter');
+    if (statusFilter && !statusFilter.querySelector('option[value="expired"]')) {
+        const expiredOption = document.createElement('option');
+        expiredOption.value = 'expired';
+        expiredOption.textContent = 'Expired';
+        expiredOption.className = 'expired-filter-option';
+        statusFilter.appendChild(expiredOption);
+    }
+}
+
+// Update fungsi loadEvents untuk menangani filter expired
+function loadEvents() {
+    const statusFilter = document.getElementById('statusFilter')?.value || '';
+    const categoryFilter = document.getElementById('categoryFilter')?.value || '';
+    const providerFilter = document.getElementById('providerFilter')?.value || '';
+    const dateFrom = document.getElementById('dateFrom')?.value || '';
+    const dateTo = document.getElementById('dateTo')?.value || '';
+    const sortBy = document.getElementById('sortBy')?.value || 'title';
+    const sortOrder = document.getElementById('sortOrder')?.value || 'asc';
+    const searchValue = document.getElementById('eventsSearch')?.value.toLowerCase() || '';
+    
+    let result = [...events];
+    
+    // Apply filters
+    if (statusFilter === 'expired') {
+        const now = new Date();
+        result = result.filter(event => new Date(event.endDate) < now);
+    } else if (statusFilter) {
+        result = result.filter(event => event.status === statusFilter);
+    }
+    
+    if (categoryFilter) {
+        result = result.filter(event => event.category === categoryFilter);
+    }
+    
+    if (providerFilter) {
+        result = result.filter(event => event.provider === providerFilter);
+    }
+    
+    if (dateFrom) {
+        result = result.filter(event => new Date(event.startDate) >= new Date(dateFrom));
+    }
+    
+    if (dateTo) {
+        const toDate = new Date(dateTo);
+        toDate.setHours(23, 59, 59, 999); // Set to end of day
+        result = result.filter(event => new Date(event.startDate) <= toDate);
+    }
+    
+    if (searchValue) {
+        result = result.filter(event => 
+            event.title.toLowerCase().includes(searchValue) || 
+            (event.description && event.description.toLowerCase().includes(searchValue)) ||
+            (event.category && event.category.toLowerCase().includes(searchValue)) ||
+            (event.provider && event.provider.toLowerCase().includes(searchValue))
+        );
+    }
+    
+    // Apply sorting
+    result.sort((a, b) => {
+        // Prioritaskan event upcoming
+        const now = new Date();
+        const aIsUpcoming = new Date(a.startDate) > now;
+        const bIsUpcoming = new Date(b.startDate) > now;
+        
+        if (aIsUpcoming && !bIsUpcoming) return -1;
+        if (!aIsUpcoming && bIsUpcoming) return 1;
+        
+        // Jika kedua event upcoming, urutkan berdasarkan tanggal mulai (yang akan datang lebih dulu)
+        if (aIsUpcoming && bIsUpcoming) {
+            return new Date(a.startDate) - new Date(b.startDate);
+        }
+        
+        // Untuk event non-upcoming, urutkan berdasarkan tanggal mulai (yang terbaru pertama)
+        if (!aIsUpcoming && !bIsUpcoming) {
+            return new Date(b.startDate) - new Date(a.startDate);
+        }
+        
+        // Default sorting berdasarkan parameter yang dipilih
+        let valueA, valueB;
+        
+        switch (sortBy) {
+            case 'title':
+                valueA = a.title.toLowerCase();
+                valueB = b.title.toLowerCase();
+                break;
+            case 'startDate':
+                valueA = new Date(a.startDate);
+                valueB = new Date(b.startDate);
+                break;
+            case 'participants':
+                valueA = a.participants || 0;
+                valueB = b.participants || 0;
+                break;
+            default:
+                valueA = a.title.toLowerCase();
+                valueB = b.title.toLowerCase();
+        }
+        
+        if (sortOrder === 'asc') {
+            return valueA > valueB ? 1 : -1;
+        } else {
+            return valueA < valueB ? 1 : -1;
+        }
+    });
+    
+    filteredEvents = result;
+    renderEvents();
+}
+
+// ========== INISIALISASI DAN PEMANTAUAN ==========
+
+// Fungsi untuk menjalankan pengecekan expired events secara berkala
+function startExpiredEventsMonitor() {
+    // Jalankan pengecekan setiap 1 jam
+    setInterval(() => {
+        updateExpiredEventBadges();
+        showExpirationNotifications();
+    }, 60 * 60 * 1000); // 1 jam
+    
+    // Jalankan sekali saat aplikasi dimulai
+    setTimeout(() => {
+        updateExpiredEventBadges();
+        showExpirationNotifications();
+    }, 2000);
+}
+
+// ========== UPDATE INITIALIZATION ==========
+
+// Update DOMContentLoaded untuk menambahkan fitur expired events
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing events...');
+    
+    // Inject detail view styles
+    injectDetailViewStyles();
+    
+    // Add expired event styles
+    addExpiredEventStyles();
+    
+    // Add expired filter option
+    addExpiredFilterOption();
+    
+    // Initialize Firebase auth state listener
+    checkAuthState();
+    
+    // Start expired events monitor
+    startExpiredEventsMonitor();
+});
+
+// Update fungsi setupEventsListener untuk menangani expired events
+function setupEventsListener() {
+    if (unsubscribeEvents) {
+        unsubscribeEvents(); // Remove old listener if exists
+    }
+    
+    try {
+        console.log("Setting up events listener...");
+        
+        unsubscribeEvents = db.collection('events')
+            .onSnapshot(snapshot => {
+                events = [];
+                snapshot.forEach(doc => {
+                    try {
+                        const event = doc.data();
+                        event.id = doc.id;
+                        events.push(event);
+                        console.log("Event loaded:", event.title);
+                    } catch (e) {
+                        console.error("Error processing document:", e);
+                    }
+                });
+                
+                console.log(`Found ${events.length} events`);
+                filteredEvents = [...events];
+                renderEvents();
+                updateEventStats();
+                
+                // Update expired event badges setelah data dimuat
+                setTimeout(updateExpiredEventBadges, 100);
+                
+            }, error => {
+                console.error("Error fetching events:", error);
+                showNotification('Error loading events. Please check console for details.', 'error');
+            });
+        
+    } catch (error) {
+        console.error("Error setting up listener:", error);
+        showNotification('Error setting up data connection.', 'error');
+    }
+}
+// ========== FUNGSI NOTIFIKASI EVENT BERAKHIR ==========
+
+// Fungsi untuk mengecek event yang akan berakhir dalam 24 jam
+function getEventsEndingSoon() {
+    const now = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1); // 24 jam dari sekarang
+    
+    return events.filter(event => {
+        const endDate = new Date(event.endDate);
+        return endDate > now && endDate <= tomorrow;
+    });
+}
+
+// Fungsi untuk mengecek event yang sudah berakhir
+function getExpiredEvents() {
+    const now = new Date();
+    return events.filter(event => {
+        const endDate = new Date(event.endDate);
+        return endDate < now;
+    });
+}
+
+// Fungsi untuk menampilkan notifikasi event yang akan berakhir
+function showEndingSoonNotifications() {
+    const endingSoonEvents = getEventsEndingSoon();
+    const expiredEvents = getExpiredEvents();
+    
+    // Notifikasi untuk event yang akan berakhir dalam 24 jam
+    if (endingSoonEvents.length > 0) {
+        endingSoonEvents.forEach(event => {
+            const endDate = new Date(event.endDate);
+            const timeLeft = getTimeRemaining(endDate);
+            
+            showNotification(
+                `"${event.title}" akan berakhir ${timeLeft}!`,
+                'warning',
+                8000 // Tampilkan lebih lama (8 detik)
+            );
+        });
+    }
+    
+    // Notifikasi untuk event yang sudah berakhir (hanya tampilkan sekali)
+    if (expiredEvents.length > 0) {
+        expiredEvents.forEach(event => {
+            // Cek apakah sudah pernah menampilkan notifikasi untuk event ini
+            const notificationKey = `expired_notified_${event.id}`;
+            if (!localStorage.getItem(notificationKey)) {
+                showNotification(
+                    `"${event.title}" telah berakhir masa berlakunya`,
+                    'error',
+                    6000
+                );
+                // Tandai sudah notifikasi
+                localStorage.setItem(notificationKey, 'true');
+            }
+        });
+    }
+}
+
+// Fungsi untuk menghitung waktu tersisa
+function getTimeRemaining(endDate) {
+    const now = new Date();
+    const timeDiff = endDate - now;
+    
+    const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+    
+    if (hours > 0) {
+        return `dalam ${hours} jam ${minutes} menit`;
+    } else {
+        return `dalam ${minutes} menit`;
+    }
+}
+
+// Fungsi untuk update badge dan styling event card berdasarkan status waktu
+function updateEventTimeStatus() {
+    const now = new Date();
+    
+    events.forEach(event => {
+        const eventCard = document.querySelector(`.event-card[data-id="${event.id}"]`);
+        if (!eventCard) return;
+        
+        const startDate = new Date(event.startDate);
+        const endDate = new Date(event.endDate);
+        const timeUntilEnd = endDate - now;
+        const hoursUntilEnd = timeUntilEnd / (1000 * 60 * 60);
+        
+        // Hapus class status waktu sebelumnya
+        eventCard.classList.remove('ending-soon', 'expired', 'active', 'upcoming');
+        
+        // Tambahkan class status waktu yang sesuai
+        if (endDate < now) {
+            eventCard.classList.add('expired');
+        } else if (hoursUntilEnd <= 24 && hoursUntilEnd > 0) {
+            eventCard.classList.add('ending-soon');
+        } else if (startDate <= now && endDate >= now) {
+            eventCard.classList.add('active');
+        } else if (startDate > now) {
+            eventCard.classList.add('upcoming');
+        }
+        
+        // Update badge jika diperlukan
+        updateEventBadge(eventCard, event);
+    });
+}
+
+// Fungsi untuk update badge event
+function updateEventBadge(eventCard, event) {
+    let badge = eventCard.querySelector('.event-badge');
+    if (!badge) return;
+    
+    const now = new Date();
+    const startDate = new Date(event.startDate);
+    const endDate = new Date(event.endDate);
+    const timeUntilEnd = endDate - now;
+    const hoursUntilEnd = timeUntilEnd / (1000 * 60 * 60);
+    
+    if (endDate < now) {
+        badge.className = 'event-badge badge-expired';
+        badge.textContent = 'Berakhir';
+        badge.title = 'Event telah berakhir';
+    } else if (hoursUntilEnd <= 24 && hoursUntilEnd > 0) {
+        badge.className = 'event-badge badge-ending-soon';
+        badge.textContent = 'Segera Berakhir';
+        badge.title = `Akan berakhir dalam ${Math.ceil(hoursUntilEnd)} jam`;
+    } else if (startDate <= now && endDate >= now) {
+        badge.className = 'event-badge badge-active';
+        badge.textContent = 'Aktif';
+        badge.title = 'Event sedang berlangsung';
+    } else if (startDate > now) {
+        badge.className = 'event-badge badge-upcoming';
+        badge.textContent = 'Akan Datang';
+        badge.title = 'Event akan datang';
+    }
+}
+
+// ========== STYLING UNTUK STATUS EVENT ==========
+
+function addEventStatusStyles() {
+    const statusStyles = `
+        /* Badge untuk event yang akan berakhir */
+        .badge-ending-soon {
+            background: var(--warning-light) !important;
+            color: var(--warning) !important;
+            animation: pulse 2s infinite;
+        }
+        
+        /* Badge untuk event yang sudah berakhir */
+        .badge-expired {
+            background: var(--danger-light) !important;
+            color: var(--danger) !important;
+        }
+        
+        /* Styling untuk event card yang akan berakhir */
+        .event-card.ending-soon {
+            border-left: 4px solid var(--warning);
+            animation: gentle-pulse 3s infinite;
+        }
+        
+        /* Styling untuk event card yang sudah berakhir */
+        .event-card.expired {
+            opacity: 0.7;
+            border-left: 4px solid var(--danger);
+        }
+        
+        .event-card.expired .event-title {
+            color: var(--text-secondary);
+        }
+        
+        /* Animasi untuk event yang akan berakhir */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes gentle-pulse {
+            0% { box-shadow: 0 4px 12px rgba(255, 152, 0, 0.1); }
+            50% { box-shadow: 0 6px 20px rgba(255, 152, 0, 0.2); }
+            100% { box-shadow: 0 4px 12px rgba(255, 152, 0, 0.1); }
+        }
+        
+        /* Countdown timer di event card */
+        .event-countdown {
+            font-size: var(--text-xs);
+            font-weight: var(--font-semibold);
+            color: var(--warning);
+            margin-top: 4px;
+        }
+        
+        /* Warning section di detail view */
+        .event-warning {
+            background: var(--warning-light);
+            border: 1px solid var(--warning);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            margin-bottom: var(--space-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        
+        .event-warning i {
+            color: var(--warning);
+            font-size: 1.2rem;
+        }
+        
+        .event-warning p {
+            margin: 0;
+            color: var(--warning);
+            font-weight: var(--font-medium);
+        }
+        
+        .event-expired-notice {
+            background: var(--danger-light);
+            border: 1px solid var(--danger);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            margin-bottom: var(--space-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        
+        .event-expired-notice i {
+            color: var(--danger);
+            font-size: 1.2rem;
+        }
+        
+        .event-expired-notice p {
+            margin: 0;
+            color: var(--danger);
+            font-weight: var(--font-medium);
+        }
+    `;
+    
+    if (!document.getElementById('event-status-styles')) {
+        const styleElement = document.createElement('style');
+        styleElement.id = 'event-status-styles';
+        styleElement.textContent = statusStyles;
+        document.head.appendChild(styleElement);
+    }
+}
+
+// ========== UPDATE FUNGSI CREATE EVENT CARD ==========
+
+// Update fungsi createEventCard untuk menambahkan countdown dan status
+function createEventCard(event) {
+    const card = document.createElement('div');
+    card.className = 'event-card';
+    card.dataset.id = event.id;
+    
+    const now = new Date();
+    const startDate = new Date(event.startDate);
+    const endDate = new Date(event.endDate);
+    const timeUntilEnd = endDate - now;
+    const hoursUntilEnd = timeUntilEnd / (1000 * 60 * 60);
+    
+    // Tentukan badge awal
+    let badgeClass = 'badge-upcoming';
+    let badgeText = 'Akan Datang';
+    
+    if (endDate < now) {
+        badgeClass = 'badge-expired';
+        badgeText = 'Berakhir';
+    } else if (hoursUntilEnd <= 24 && hoursUntilEnd > 0) {
+        badgeClass = 'badge-ending-soon';
+        badgeText = 'Segera Berakhir';
+    } else if (startDate <= now && endDate >= now) {
+        badgeClass = 'badge-active';
+        badgeText = 'Aktif';
+    }
+    
+    const badge = `<div class="event-badge ${badgeClass}" title="${getBadgeTooltip(event)}">${badgeText}</div>`;
+    
+    // Countdown untuk event yang akan berakhir
+    let countdown = '';
+    if (hoursUntilEnd <= 24 && hoursUntilEnd > 0) {
+        const hours = Math.floor(hoursUntilEnd);
+        const minutes = Math.floor((hoursUntilEnd - hours) * 60);
+        countdown = `<div class="event-countdown">⏰ ${hours}j ${minutes}m lagi</div>`;
+    }
+    
+    card.innerHTML = `
+        <div class="event-image">
+            <img src="${event.image || 'https://via.placeholder.com/300x180?text=Event+Image'}" 
+                 alt="${event.title}" 
+                 onerror="this.src='https://via.placeholder.com/300x180?text=Event+Image'"
+                 style="cursor: pointer;"
+                 onclick="viewEvent('${event.id}')">
+            ${badge}
+        </div>
+        <div class="event-content">
+            <h3 class="event-title" style="cursor: pointer;" onclick="viewEvent('${event.id}')">${event.title}</h3>
+            <p class="event-description">${event.description || 'No description available.'}</p>
+            ${countdown}
+            
+            <div class="event-details">
+                <div class="event-detail-item">
+                    <span class="detail-label">Category</span>
+                    <span class="detail-value">${event.category}</span>
+                </div>
+                <div class="event-detail-item">
+                    <span class="detail-label">Provider</span>
+                    <span class="detail-value">${event.provider || 'N/A'}</span>
+                </div>
+                <div class="event-detail-item">
+                    <span class="detail-label">Start Date</span>
+                    <span class="detail-value">${formatDisplayDateTime(event.startDate)}</span>
+                </div>
+                <div class="event-detail-item">
+                    <span class="detail-label">End Date</span>
+                    <span class="detail-value ${endDate < now ? 'text-expired' : ''}">${formatDisplayDateTime(event.endDate)}</span>
+                </div>
+                <div class="event-detail-item">
+                    <span class="detail-label">Status</span>
+                    <span class="detail-value">${getEventStatusText(event)}</span>
+                </div>
+            </div>
+            
+            <div class="event-actions">
+                <button class="btn btn-outline btn-sm edit-event" data-id="${event.id}">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="btn btn-primary btn-sm view-event" data-id="${event.id}">
+                    <i class="fas fa-eye"></i> View Details
+                </button>
+                <button class="btn btn-danger btn-sm delete-event" data-id="${event.id}">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+    `;
+    
+    // Add event listeners
+    const editBtn = card.querySelector('.edit-event');
+    const viewBtn = card.querySelector('.view-event');
+    const deleteBtn = card.querySelector('.delete-event');
+    const eventImage = card.querySelector('.event-image img');
+    const eventTitle = card.querySelector('.event-title');
+    
+    if (editBtn) editBtn.addEventListener('click', () => openEditEventModal(event.id));
+    if (viewBtn) viewBtn.addEventListener('click', () => viewEvent(event.id));
+    if (deleteBtn) deleteBtn.addEventListener('click', () => deleteEvent(event.id));
+    
+    if (eventImage) eventImage.addEventListener('click', () => viewEvent(event.id));
+    if (eventTitle) eventTitle.addEventListener('click', () => viewEvent(event.id));
+    
+    // Set initial status class
+    updateEventCardStatus(card, event);
+    
+    return card;
+}
+
+// Helper function untuk tooltip badge
+function getBadgeTooltip(event) {
+    const now = new Date();
+    const startDate = new Date(event.startDate);
+    const endDate = new Date(event.endDate);
+    const timeUntilEnd = endDate - now;
+    const hoursUntilEnd = timeUntilEnd / (1000 * 60 * 60);
+    
+    if (endDate < now) {
+        return 'Event telah berakhir';
+    } else if (hoursUntilEnd <= 24 && hoursUntilEnd > 0) {
+        return `Akan berakhir dalam ${Math.ceil(hoursUntilEnd)} jam`;
+    } else if (startDate <= now && endDate >= now) {
+        return 'Event sedang berlangsung';
+    } else {
+        return 'Event akan datang';
+    }
+}
+
+// Update status card event
+function updateEventCardStatus(card, event) {
+    const now = new Date();
+    const startDate = new Date(event.startDate);
+    const endDate = new Date(event.endDate);
+    const timeUntilEnd = endDate - now;
+    const hoursUntilEnd = timeUntilEnd / (1000 * 60 * 60);
+    
+    // Hapus class status sebelumnya
+    card.classList.remove('ending-soon', 'expired', 'active', 'upcoming');
+    
+    // Tambahkan class status yang sesuai
+    if (endDate < now) {
+        card.classList.add('expired');
+    } else if (hoursUntilEnd <= 24 && hoursUntilEnd > 0) {
+        card.classList.add('ending-soon');
+    } else if (startDate <= now && endDate >= now) {
+        card.classList.add('active');
+    } else if (startDate > now) {
+        card.classList.add('upcoming');
+    }
+}
+
+// ========== UPDATE FUNGSI DETAIL VIEW ==========
+
+// Update fungsi viewEvent untuk menampilkan peringatan waktu
+function viewEvent(eventId) {
+    const event = events.find(e => e.id === eventId);
+    if (!event) return;
+    
+    const modal = document.getElementById('eventDetailsModal');
+    if (!modal) return;
+    
+    // Set modal title
+    modal.querySelector('.modal-title').innerHTML = `<i class="fas fa-info-circle"></i> ${event.title}`;
+    
+    const now = new Date();
+    const startDate = new Date(event.startDate);
+    const endDate = new Date(event.endDate);
+    const timeUntilEnd = endDate - now;
+    const hoursUntilEnd = timeUntilEnd / (1000 * 60 * 60);
+    const isExpired = endDate < now;
+    const isEndingSoon = hoursUntilEnd <= 24 && hoursUntilEnd > 0;
+    
+    // Warning messages
+    let warningMessage = '';
+    if (isExpired) {
+        warningMessage = `
+            <div class="event-expired-notice">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Event ini telah berakhir pada ${formatDisplayDateTime(event.endDate)}</p>
+            </div>
+        `;
+    } else if (isEndingSoon) {
+        const hours = Math.floor(hoursUntilEnd);
+        const minutes = Math.floor((hoursUntilEnd - hours) * 60);
+        warningMessage = `
+            <div class="event-warning">
+                <i class="fas fa-clock"></i>
+                <p>Event ini akan berakhir dalam ${hours} jam ${minutes} menit</p>
+            </div>
+        `;
+    }
+    
+    // Create details content
+    const detailsContent = document.createElement('div');
+    detailsContent.innerHTML = `
+        <div class="event-details">
+            ${warningMessage}
+            
+            <!-- Image Section -->
+            <div style="margin-bottom: 25px;">
+                <div style="position: relative; text-align: center;">
+                    <img id="detailEventImage" src="${event.image || 'https://via.placeholder.com/600x400?text=Event+Image'}" 
+                         alt="${event.title}" 
+                         style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 12px; border: 2px solid ${isExpired ? 'var(--danger)' : isEndingSoon ? 'var(--warning)' : 'var(--border-color)'}; cursor: pointer;"
+                         onclick="openEventImageFullscreen(this.src, '${event.title.replace(/'/g, "\\'")}')">
+                    <div class="event-badge ${getEventStatusClass(event)}" 
+                         style="position: absolute; top: 12px; right: 12px;">
+                        ${getEventStatusText(event)}
+                    </div>
+                </div>
+                <div class="image-actions" style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+                    <button class="btn btn-outline btn-sm" onclick="openEventImageFullscreen(document.getElementById('detailEventImage').src, '${event.title.replace(/'/g, "\\'")}')">
+                        <i class="fas fa-expand"></i> View Full Size
+                    </button>
+                    <button class="btn btn-outline btn-sm" onclick="downloadEventImage(document.getElementById('detailEventImage').src, '${event.title.replace(/'/g, "\\'")}')">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Time Status -->
+            <div style="margin-bottom: 20px; text-align: center;">
+                <div style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; background: var(--bg-secondary); border-radius: 20px;">
+                    <i class="fas ${isExpired ? 'fa-calendar-times text-danger' : isEndingSoon ? 'fa-clock text-warning' : 'fa-calendar-check text-primary'}"></i>
+                    <span style="font-weight: 500;">
+                        ${isExpired ? 'Telah Berakhir' : isEndingSoon ? 'Segera Berakhir' : startDate > now ? 'Akan Datang' : 'Sedang Berlangsung'}
+                    </span>
+                </div>
+                ${isEndingSoon ? `
+                    <div style="margin-top: 8px; font-size: 0.9rem; color: var(--warning);">
+                        <i class="fas fa-hourglass-half"></i>
+                        Berakhir dalam ${Math.floor(hoursUntilEnd)} jam ${Math.floor((hoursUntilEnd - Math.floor(hoursUntilEnd)) * 60)} menit
+                    </div>
+                ` : ''}
+            </div>
+            
+            <!-- Details Section -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <div class="detail-item">
+                    <strong style="color: var(--text-secondary); font-size: 0.9rem;">Category:</strong>
+                    <p style="margin: 5px 0; font-weight: 500;">${event.category || 'Not specified'}</p>
+                </div>
+                <div class="detail-item">
+                    <strong style="color: var(--text-secondary); font-size: 0.9rem;">Provider:</strong>
+                    <p style="margin: 5px 0; font-weight: 500;">${event.provider || 'Not specified'}</p>
+                </div>
+                <div class="detail-item">
+                    <strong style="color: var(--text-secondary); font-size: 0.9rem;">Status:</strong>
+                    <p style="margin: 5px 0; font-weight: 500;">${getEventStatusText(event)}</p>
+                </div>
+                <div class="detail-item">
+                    <strong style="color: var(--text-secondary); font-size: 0.9rem;">Start Date:</strong>
+                    <p style="margin: 5px 0; font-weight: 500;">${formatDisplayDateTime(event.startDate)}</p>
+                </div>
+                <div class="detail-item">
+                    <strong style="color: var(--text-secondary); font-size: 0.9rem;">End Date:</strong>
+                    <p style="margin: 5px 0; font-weight: 500; ${isExpired ? 'color: var(--danger);' : ''}">${formatDisplayDateTime(event.endDate)} ${isExpired ? '(Telah Berakhir)' : ''}</p>
+                </div>
+            </div>
+            
+            <!-- Description Section -->
+            <div class="detail-item">
+                <strong style="color: var(--text-secondary); font-size: 0.9rem;">Description:</strong>
+                <p style="margin: 10px 0; line-height: 1.6; background: var(--bg-secondary); padding: 15px; border-radius: 8px; border-left: 4px solid ${isExpired ? 'var(--danger)' : isEndingSoon ? 'var(--warning)' : 'var(--primary)'};">
+                    ${event.description || 'No description available.'}
+                </p>
+            </div>
+        </div>
+    `;
+    
+    modal.querySelector('#eventDetailsContainer').innerHTML = '';
+    modal.querySelector('#eventDetailsContainer').appendChild(detailsContent);
+    
+    // Set event ID for edit button
+    modal.querySelector('#editFromDetails').dataset.id = eventId;
+    
+    modal.classList.add('active');
+}
+
+// ========== SISTEM PEMANTAUAN REAL-TIME ==========
+
+// Fungsi untuk memantau status event secara real-time
+function startEventMonitoring() {
+    // Update status setiap menit
+    setInterval(() => {
+        updateEventTimeStatus();
+        showEndingSoonNotifications();
+    }, 60000); // 1 menit
+    
+    // Juga update saat events data berubah
+    setInterval(() => {
+        updateEventTimeStatus();
+    }, 5000); // 5 detik
+}
+
+// ========== INISIALISASI ==========
+
+// Update DOMContentLoaded untuk menambahkan monitoring
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing events...');
+    
+    // Inject detail view styles
+    injectDetailViewStyles();
+    
+    // Add event status styles
+    addEventStatusStyles();
+    
+    // Add expired filter option
+    addExpiredFilterOption();
+    
+    // Initialize Firebase auth state listener
+    checkAuthState();
+    
+    // Start expired events monitor
+    startExpiredEventsMonitor();
+    
+    // Start real-time event monitoring
+    startEventMonitoring();
+});
+
+// Update fungsi setupEventsListener untuk include monitoring
+function setupEventsListener() {
+    if (unsubscribeEvents) {
+        unsubscribeEvents(); // Remove old listener if exists
+    }
+    
+    try {
+        console.log("Setting up events listener...");
+        
+        unsubscribeEvents = db.collection('events')
+            .onSnapshot(snapshot => {
+                events = [];
+                snapshot.forEach(doc => {
+                    try {
+                        const event = doc.data();
+                        event.id = doc.id;
+                        events.push(event);
+                        console.log("Event loaded:", event.title);
+                    } catch (e) {
+                        console.error("Error processing document:", e);
+                    }
+                });
+                
+                console.log(`Found ${events.length} events`);
+                filteredEvents = [...events];
+                renderEvents();
+                updateEventStats();
+                
+                // Update status dan notifikasi
+                setTimeout(() => {
+                    updateEventTimeStatus();
+                    showEndingSoonNotifications();
+                }, 100);
+                
+            }, error => {
+                console.error("Error fetching events:", error);
+                showNotification('Error loading events. Please check console for details.', 'error');
+            });
+        
+    } catch (error) {
+        console.error("Error setting up listener:", error);
+        showNotification('Error setting up data connection.', 'error');
+    }
+}
+// ========== TRANSLATIONS FOR EVENT PROVIDERS ==========
+const eventProviderTranslations = {
+    id: {
+        // Header
+        "pageTitle": "Event Providers",
+        "searchPlaceholder": "Cari event...",
+        
+        // Stats Cards
+        "totalEvents": "Total Events",
+        "activeEvents": "Event Aktif",
+        "upcomingEvents": "Event Mendatang",
+        "currentlyRunning": "Sedang berjalan",
+        "scheduledEvents": "Event terjadwal",
+        
+        // Filter Section
+        "filterReleases": "Filter Releases",
+        "resetFilters": "Reset Filter",
+        "advancedFilters": "Filter Lanjutan",
+        "allStatus": "Semua Status",
+        "allCategories": "Semua Kategori",
+        "allProviders": "Semua Provider",
+        "eventDate": "Tanggal Event",
+        "sortBy": "Urutkan Berdasarkan",
+        "order": "Urutan",
+        "ascending": "Naik",
+        "descending": "Turun",
+        
+        // Events Section
+        "eventLibrary": "Library Event",
+        "refresh": "Refresh",
+        "addEvent": "Tambah Event",
+        "noEventsFound": "Tidak Ada Event Ditemukan",
+        "noEventsMessage": "Tidak ada event yang sesuai dengan kriteria Anda. Coba sesuaikan filter atau tambahkan event baru.",
+        "addFirstEvent": "Tambah Event Pertama Anda",
+        
+        // Modal Titles
+        "addNewEvent": "Tambah Event Baru",
+        "editEvent": "Edit Event",
+        "eventDetails": "Detail Event",
+        
+        // Form Labels
+        "eventTitle": "Judul Event",
+        "eventTitlePlaceholder": "Masukkan judul event",
+        "eventCategory": "Kategori",
+        "selectCategory": "Pilih kategori",
+        "eventProvider": "Provider",
+        "selectProvider": "Pilih provider",
+        "eventStatus": "Status",
+        "startDate": "Tanggal Mulai",
+        "endDate": "Tanggal Berakhir",
+        "description": "Deskripsi",
+        "descriptionPlaceholder": "Masukkan deskripsi event",
+        "eventImage": "Gambar Event",
+        "imageUploadText": "Klik untuk upload atau drag and drop",
+        "imageUploadHint": "JPG, PNG, GIF, WebP, SVG (semua format gambar didukung)",
+        
+        // Status Options
+        "statusActive": "Aktif",
+        "statusUpcoming": "Akan Datang",
+        "statusCompleted": "Selesai",
+        "statusInactive": "Tidak Aktif",
+        
+        // Category Options
+        "categoryTournament": "Tournament",
+        "categoryPromotion": "Promotion",
+        "categoryCompetition": "Competition",
+        "categoryGiveaway": "Giveaway",
+        "categorySpecial": "Special Event",
+        
+        // Buttons
+        "saveEvent": "Simpan Event",
+        "updateEvent": "Perbarui Event",
+        "cancel": "Batal",
+        "delete": "Hapus",
+        "edit": "Edit",
+        "viewDetails": "Lihat Detail",
+        "close": "Tutup",
+        "viewFullSize": "Lihat Ukuran Penuh",
+        "download": "Download",
+        
+        // Event Details
+        "category": "Kategori",
+        "provider": "Provider",
+        "status": "Status",
+        "startDateLabel": "Tanggal Mulai",
+        "endDateLabel": "Tanggal Berakhir",
+        "additionalInfo": "Informasi Tambahan",
+        "created": "Dibuat",
+        "lastUpdated": "Terakhir Diperbarui",
+        
+        // Notifications
+        "eventAdded": "Event berhasil ditambahkan!",
+        "eventUpdated": "Event berhasil diperbarui!",
+        "eventDeleted": "Event berhasil dihapus!",
+        "eventsRefreshed": "Daftar event telah diperbarui",
+        "fillRequiredFields": "Harap isi semua field yang wajib diisi",
+        "endDateAfterStart": "Tanggal berakhir harus setelah tanggal mulai",
+        "confirmDelete": "Apakah Anda yakin ingin menghapus event ini?",
+        
+        // Time Status
+        "expired": "Berakhir",
+        "endingSoon": "Segera Berakhir",
+        "active": "Aktif",
+        "upcoming": "Akan Datang",
+        "eventEnded": "Event telah berakhir",
+        "eventEndingSoon": "Event akan segera berakhir",
+        "eventActive": "Event sedang berlangsung",
+        "eventUpcoming": "Event akan datang"
+    },
+    
+    en: {
+        // Header
+        "pageTitle": "Event Providers",
+        "searchPlaceholder": "Search events...",
+        
+        // Stats Cards
+        "totalEvents": "Total Events",
+        "activeEvents": "Active Events",
+        "upcomingEvents": "Upcoming Events",
+        "currentlyRunning": "Currently running",
+        "scheduledEvents": "Scheduled events",
+        
+        // Filter Section
+        "filterReleases": "Filter Releases",
+        "resetFilters": "Reset Filters",
+        "advancedFilters": "Advanced Filters",
+        "allStatus": "All Status",
+        "allCategories": "All Categories",
+        "allProviders": "All Providers",
+        "eventDate": "Event Date",
+        "sortBy": "Sort By",
+        "order": "Order",
+        "ascending": "Ascending",
+        "descending": "Descending",
+        
+        // Events Section
+        "eventLibrary": "Event Library",
+        "refresh": "Refresh",
+        "addEvent": "Add Event",
+        "noEventsFound": "No Events Found",
+        "noEventsMessage": "There are no events matching your criteria. Try adjusting your filters or add a new event.",
+        "addFirstEvent": "Add Your First Event",
+        
+        // Modal Titles
+        "addNewEvent": "Add New Event",
+        "editEvent": "Edit Event",
+        "eventDetails": "Event Details",
+        
+        // Form Labels
+        "eventTitle": "Event Title",
+        "eventTitlePlaceholder": "Enter event title",
+        "eventCategory": "Category",
+        "selectCategory": "Select category",
+        "eventProvider": "Provider",
+        "selectProvider": "Select provider",
+        "eventStatus": "Status",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "description": "Description",
+        "descriptionPlaceholder": "Enter event description",
+        "eventImage": "Event Image",
+        "imageUploadText": "Click to upload or drag and drop",
+        "imageUploadHint": "JPG, PNG, GIF, WebP, SVG (all image formats supported)",
+        
+        // Status Options
+        "statusActive": "Active",
+        "statusUpcoming": "Upcoming",
+        "statusCompleted": "Completed",
+        "statusInactive": "Inactive",
+        
+        // Category Options
+        "categoryTournament": "Tournament",
+        "categoryPromotion": "Promotion",
+        "categoryCompetition": "Competition",
+        "categoryGiveaway": "Giveaway",
+        "categorySpecial": "Special Event",
+        
+        // Buttons
+        "saveEvent": "Save Event",
+        "updateEvent": "Update Event",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "viewDetails": "View Details",
+        "close": "Close",
+        "viewFullSize": "View Full Size",
+        "download": "Download",
+        
+        // Event Details
+        "category": "Category",
+        "provider": "Provider",
+        "status": "Status",
+        "startDateLabel": "Start Date",
+        "endDateLabel": "End Date",
+        "additionalInfo": "Additional Information",
+        "created": "Created",
+        "lastUpdated": "Last Updated",
+        
+        // Notifications
+        "eventAdded": "Event added successfully!",
+        "eventUpdated": "Event updated successfully!",
+        "eventDeleted": "Event deleted successfully!",
+        "eventsRefreshed": "Events list refreshed",
+        "fillRequiredFields": "Please fill in all required fields",
+        "endDateAfterStart": "End date must be after start date",
+        "confirmDelete": "Are you sure you want to delete this event?",
+        
+        // Time Status
+        "expired": "Expired",
+        "endingSoon": "Ending Soon",
+        "active": "Active",
+        "upcoming": "Upcoming",
+        "eventEnded": "Event has ended",
+        "eventEndingSoon": "Event ending soon",
+        "eventActive": "Event is active",
+        "eventUpcoming": "Event is upcoming"
+    },
+    
+    ja: {
+        // Header
+        "pageTitle": "イベントプロバイダー",
+        "searchPlaceholder": "イベントを検索...",
+        
+        // Stats Cards
+        "totalEvents": "総イベント数",
+        "activeEvents": "アクティブなイベント",
+        "upcomingEvents": "今後のイベント",
+        "currentlyRunning": "現在実行中",
+        "scheduledEvents": "スケジュール済みイベント",
+        
+        // Filter Section
+        "filterReleases": "リリースフィルター",
+        "resetFilters": "フィルターをリセット",
+        "advancedFilters": "詳細フィルター",
+        "allStatus": "すべてのステータス",
+        "allCategories": "すべてのカテゴリ",
+        "allProviders": "すべてのプロバイダー",
+        "eventDate": "イベント日付",
+        "sortBy": "並び替え",
+        "order": "順序",
+        "ascending": "昇順",
+        "descending": "降順",
+        
+        // Events Section
+        "eventLibrary": "イベントライブラリ",
+        "refresh": "更新",
+        "addEvent": "イベントを追加",
+        "noEventsFound": "イベントが見つかりません",
+        "noEventsMessage": "条件に一致するイベントはありません。フィルターを調整するか、新しいイベントを追加してください。",
+        "addFirstEvent": "最初のイベントを追加",
+        
+        // Modal Titles
+        "addNewEvent": "新しいイベントを追加",
+        "editEvent": "イベントを編集",
+        "eventDetails": "イベント詳細",
+        
+        // Form Labels
+        "eventTitle": "イベントタイトル",
+        "eventTitlePlaceholder": "イベントタイトルを入力",
+        "eventCategory": "カテゴリー",
+        "selectCategory": "カテゴリーを選択",
+        "eventProvider": "プロバイダー",
+        "selectProvider": "プロバイダーを選択",
+        "eventStatus": "ステータス",
+        "startDate": "開始日",
+        "endDate": "終了日",
+        "description": "説明",
+        "descriptionPlaceholder": "イベントの説明を入力",
+        "eventImage": "イベント画像",
+        "imageUploadText": "クリックしてアップロードまたはドラッグ＆ドロップ",
+        "imageUploadHint": "JPG、PNG、GIF、WebP、SVG（すべての画像形式をサポート）",
+        
+        // Status Options
+        "statusActive": "アクティブ",
+        "statusUpcoming": "近日開催",
+        "statusCompleted": "完了",
+        "statusInactive": "非アクティブ",
+        
+        // Category Options
+        "categoryTournament": "トーナメント",
+        "categoryPromotion": "プロモーション",
+        "categoryCompetition": "コンペティション",
+        "categoryGiveaway": "ギブアウェイ",
+        "categorySpecial": "特別イベント",
+        
+        // Buttons
+        "saveEvent": "イベントを保存",
+        "updateEvent": "イベントを更新",
+        "cancel": "キャンセル",
+        "delete": "削除",
+        "edit": "編集",
+        "viewDetails": "詳細を表示",
+        "close": "閉じる",
+        "viewFullSize": "フルサイズで表示",
+        "download": "ダウンロード",
+        
+        // Event Details
+        "category": "カテゴリー",
+        "provider": "プロバイダー",
+        "status": "ステータス",
+        "startDateLabel": "開始日",
+        "endDateLabel": "終了日",
+        "additionalInfo": "追加情報",
+        "created": "作成日",
+        "lastUpdated": "最終更新日",
+        
+        // Notifications
+        "eventAdded": "イベントが正常に追加されました！",
+        "eventUpdated": "イベントが正常に更新されました！",
+        "eventDeleted": "イベントが正常に削除されました！",
+        "eventsRefreshed": "イベントリストが更新されました",
+        "fillRequiredFields": "必須フィールドをすべて入力してください",
+        "endDateAfterStart": "終了日は開始日より後である必要があります",
+        "confirmDelete": "このイベントを削除してもよろしいですか？",
+        
+        // Time Status
+        "expired": "期限切れ",
+        "endingSoon": "まもなく終了",
+        "active": "アクティブ",
+        "upcoming": "近日開催",
+        "eventEnded": "イベントは終了しました",
+        "eventEndingSoon": "イベントはまもなく終了します",
+        "eventActive": "イベントは進行中です",
+        "eventUpcoming": "イベントは近日開催です"
+    },
+    
+    zh: {
+        // Header
+        "pageTitle": "活动提供商",
+        "searchPlaceholder": "搜索活动...",
+        
+        // Stats Cards
+        "totalEvents": "总活动数",
+        "activeEvents": "活跃活动",
+        "upcomingEvents": "即将到来活动",
+        "currentlyRunning": "当前运行中",
+        "scheduledEvents": "已安排活动",
+        
+        // Filter Section
+        "filterReleases": "筛选发布",
+        "resetFilters": "重置筛选",
+        "advancedFilters": "高级筛选",
+        "allStatus": "所有状态",
+        "allCategories": "所有类别",
+        "allProviders": "所有提供商",
+        "eventDate": "活动日期",
+        "sortBy": "排序方式",
+        "order": "顺序",
+        "ascending": "升序",
+        "descending": "降序",
+        
+        // Events Section
+        "eventLibrary": "活动库",
+        "refresh": "刷新",
+        "addEvent": "添加活动",
+        "noEventsFound": "未找到活动",
+        "noEventsMessage": "没有符合您条件的活动。请调整筛选条件或添加新活动。",
+        "addFirstEvent": "添加您的第一个活动",
+        
+        // Modal Titles
+        "addNewEvent": "添加新活动",
+        "editEvent": "编辑活动",
+        "eventDetails": "活动详情",
+        
+        // Form Labels
+        "eventTitle": "活动标题",
+        "eventTitlePlaceholder": "输入活动标题",
+        "eventCategory": "类别",
+        "selectCategory": "选择类别",
+        "eventProvider": "提供商",
+        "selectProvider": "选择提供商",
+        "eventStatus": "状态",
+        "startDate": "开始日期",
+        "endDate": "结束日期",
+        "description": "描述",
+        "descriptionPlaceholder": "输入活动描述",
+        "eventImage": "活动图片",
+        "imageUploadText": "点击上传或拖放",
+        "imageUploadHint": "JPG、PNG、GIF、WebP、SVG（支持所有图片格式）",
+        
+        // Status Options
+        "statusActive": "活跃",
+        "statusUpcoming": "即将到来",
+        "statusCompleted": "已完成",
+        "statusInactive": "非活跃",
+        
+        // Category Options
+        "categoryTournament": "锦标赛",
+        "categoryPromotion": "促销",
+        "categoryCompetition": "竞赛",
+        "categoryGiveaway": "赠品",
+        "categorySpecial": "特别活动",
+        
+        // Buttons
+        "saveEvent": "保存活动",
+        "updateEvent": "更新活动",
+        "cancel": "取消",
+        "delete": "删除",
+        "edit": "编辑",
+        "viewDetails": "查看详情",
+        "close": "关闭",
+        "viewFullSize": "查看完整尺寸",
+        "download": "下载",
+        
+        // Event Details
+        "category": "类别",
+        "provider": "提供商",
+        "status": "状态",
+        "startDateLabel": "开始日期",
+        "endDateLabel": "结束日期",
+        "additionalInfo": "附加信息",
+        "created": "创建时间",
+        "lastUpdated": "最后更新",
+        
+        // Notifications
+        "eventAdded": "活动添加成功！",
+        "eventUpdated": "活动更新成功！",
+        "eventDeleted": "活动删除成功！",
+        "eventsRefreshed": "活动列表已刷新",
+        "fillRequiredFields": "请填写所有必填字段",
+        "endDateAfterStart": "结束日期必须在开始日期之后",
+        "confirmDelete": "您确定要删除此活动吗？",
+        
+        // Time Status
+        "expired": "已过期",
+        "endingSoon": "即将结束",
+        "active": "活跃",
+        "upcoming": "即将到来",
+        "eventEnded": "活动已结束",
+        "eventEndingSoon": "活动即将结束",
+        "eventActive": "活动正在进行中",
+        "eventUpcoming": "活动即将开始"
+    }
+};
+
+// ========== TRANSLATION FUNCTIONS ==========
+
+// Fungsi untuk menerapkan terjemahan ke halaman event providers
+function applyEventProviderTranslations(language) {
+    const lang = eventProviderTranslations[language] || eventProviderTranslations['id'];
+    
+    if (!lang) return;
+
+    console.log("Applying event provider translations for:", language);
+
+    // Terjemahkan elemen utama
+    const elements = {
+        'pageTitle': '.header h1',
+        'searchPlaceholder': '#eventsSearch',
+        'totalEvents': '.stat-card:nth-child(1) .stat-title',
+        'activeEvents': '.stat-card:nth-child(2) .stat-title',
+        'upcomingEvents': '.stat-card:nth-child(3) .stat-title',
+        'currentlyRunning': '.stat-card:nth-child(2) .stat-content p',
+        'scheduledEvents': '.stat-card:nth-child(3) .stat-content p',
+        'filterReleases': '.filter-title',
+        'eventLibrary': '.section-title',
+        'noEventsFound': '#noEvents h3',
+        'noEventsMessage': '#noEvents p',
+        'addFirstEvent': '#addFirstEvent'
+    };
+
+    Object.keys(elements).forEach(key => {
+        const element = document.querySelector(elements[key]);
+        if (element && lang[key]) {
+            if (key === 'searchPlaceholder') {
+                element.placeholder = lang[key];
+            } else if (key === 'addFirstEvent') {
+                // Handle button with icon
+                const icon = element.querySelector('i');
+                if (icon) {
+                    element.innerHTML = icon.outerHTML + ' ' + lang[key];
+                } else {
+                    element.textContent = lang[key];
+                }
+            } else {
+                // Handle elements with icons
+                const iconMatch = element.innerHTML.match(/(<i[^>]*><\/i>)/);
+                if (iconMatch) {
+                    element.innerHTML = iconMatch[0] + ' ' + lang[key];
+                } else {
+                    element.textContent = lang[key];
+                }
+            }
+        }
+    });
+
+    // Update modal dan form
+    updateEventProviderModalTranslations(language);
+    
+    // Update tombol aksi
+    updateEventProviderButtonsTranslations(language);
+    
+    // Update filter options
+    updateEventProviderFilterTranslations(language);
+    
+    // Update notifications
+    updateEventProviderNotificationMessages(language);
+}
+
+// Update terjemahan modal dan form
+function updateEventProviderModalTranslations(language) {
+    const lang = eventProviderTranslations[language] || eventProviderTranslations['id'];
+    
+    // Modal titles
+    const addModalTitle = document.querySelector('#addEventModal .modal-title');
+    const editModalTitle = document.querySelector('#editEventModal .modal-title');
+    const detailsModalTitle = document.querySelector('#eventDetailsModal .modal-title');
+    
+    if (addModalTitle) {
+        addModalTitle.innerHTML = `<i class="fas fa-plus"></i> ${lang.addNewEvent}`;
+    }
+    if (editModalTitle) {
+        const currentText = editModalTitle.textContent;
+        if (currentText.includes('Edit') || currentText.includes('編集') || currentText.includes('编辑')) {
+            editModalTitle.innerHTML = `<i class="fas fa-edit"></i> ${lang.editEvent}`;
+        }
+    }
+    if (detailsModalTitle) {
+        detailsModalTitle.innerHTML = `<i class="fas fa-info-circle"></i> ${lang.eventDetails}`;
+    }
+    
+    // Form labels dan placeholders
+    const formElements = {
+        'eventTitle': '#eventTitle',
+        'eventTitlePlaceholder': '#eventTitle',
+        'eventCategory': 'label[for="eventCategory"]',
+        'eventProvider': 'label[for="eventProvider"]',
+        'eventStatus': 'label[for="eventStatus"]',
+        'startDate': 'label[for="eventStartDate"]',
+        'endDate': 'label[for="eventEndDate"]',
+        'description': 'label[for="eventDescription"]',
+        'descriptionPlaceholder': '#eventDescription',
+        'eventImage': 'label[for="eventImage"]'
+    };
+    
+    Object.keys(formElements).forEach(key => {
+        const element = document.querySelector(formElements[key]);
+        if (element && lang[key]) {
+            if (key.includes('Placeholder')) {
+                element.placeholder = lang[key];
+            } else {
+                element.textContent = lang[key];
+            }
+        }
+    });
+    
+    // Category options
+    const categorySelect = document.getElementById('eventCategory');
+    if (categorySelect) {
+        const options = categorySelect.querySelectorAll('option');
+        if (options.length >= 6) {
+            if (lang.selectCategory) options[0].text = lang.selectCategory;
+            if (lang.categoryTournament) options[1].text = lang.categoryTournament;
+            if (lang.categoryPromotion) options[2].text = lang.categoryPromotion;
+            if (lang.categoryCompetition) options[3].text = lang.categoryCompetition;
+            if (lang.categoryGiveaway) options[4].text = lang.categoryGiveaway;
+            if (lang.categorySpecial) options[5].text = lang.categorySpecial;
+        }
+    }
+    
+    // Status options
+    const statusSelect = document.getElementById('eventStatus');
+    if (statusSelect) {
+        const options = statusSelect.querySelectorAll('option');
+        if (options.length >= 4) {
+            if (lang.statusActive) options[0].text = lang.statusActive;
+            if (lang.statusUpcoming) options[1].text = lang.statusUpcoming;
+            if (lang.statusCompleted) options[2].text = lang.statusCompleted;
+            if (lang.statusInactive) options[3].text = lang.statusInactive;
+        }
+    }
+    
+    // Modal buttons
+    const cancelAddBtn = document.getElementById('cancelAddEvent');
+    const saveBtn = document.getElementById('saveEvent');
+    const cancelEditBtn = document.getElementById('cancelEditEvent');
+    const updateBtn = document.getElementById('updateEvent');
+    const deleteBtn = document.getElementById('deleteEvent');
+    const closeDetailsBtn = document.getElementById('closeDetails');
+    const editFromDetailsBtn = document.getElementById('editFromDetails');
+    
+    if (cancelAddBtn && lang.cancel) cancelAddBtn.textContent = lang.cancel;
+    if (saveBtn && lang.saveEvent) saveBtn.textContent = lang.saveEvent;
+    if (cancelEditBtn && lang.cancel) cancelEditBtn.textContent = lang.cancel;
+    if (updateBtn && lang.updateEvent) updateBtn.textContent = lang.updateEvent;
+    if (deleteBtn && lang.delete) deleteBtn.textContent = lang.delete;
+    if (closeDetailsBtn && lang.close) closeDetailsBtn.textContent = lang.close;
+    if (editFromDetailsBtn && lang.edit) editFromDetailsBtn.textContent = lang.edit;
+    
+    // Image upload text
+    const imageUpload = document.getElementById('imageUpload');
+    if (imageUpload) {
+        const paragraphs = imageUpload.querySelectorAll('p');
+        if (paragraphs.length >= 2) {
+            if (lang.imageUploadText) paragraphs[0].textContent = lang.imageUploadText;
+            if (lang.imageUploadHint) paragraphs[1].textContent = lang.imageUploadHint;
+        }
+    }
+}
+
+// Update terjemahan tombol aksi
+function updateEventProviderButtonsTranslations(language) {
+    const lang = eventProviderTranslations[language] || eventProviderTranslations['id'];
+    
+    // Refresh button
+    const refreshBtn = document.getElementById('refreshEvents');
+    if (refreshBtn && lang.refresh) {
+        const icon = refreshBtn.querySelector('i');
+        refreshBtn.innerHTML = icon.outerHTML + ' ' + lang.refresh;
+    }
+    
+    // Add event button
+    const addEventBtn = document.getElementById('addEventBtn');
+    if (addEventBtn && lang.addEvent) {
+        const icon = addEventBtn.querySelector('i');
+        addEventBtn.innerHTML = icon.outerHTML + ' ' + lang.addEvent;
+    }
+    
+    // Reset filters button
+    const resetFiltersBtn = document.getElementById('resetFilters');
+    if (resetFiltersBtn && lang.resetFilters) {
+        const icon = resetFiltersBtn.querySelector('i');
+        resetFiltersBtn.innerHTML = icon.outerHTML + ' ' + lang.resetFilters;
+    }
+    
+    // Advanced filters button
+    const advancedFiltersBtn = document.getElementById('toggleAdvancedFilters');
+    if (advancedFiltersBtn && lang.advancedFilters) {
+        const icon = advancedFiltersBtn.querySelector('i');
+        advancedFiltersBtn.innerHTML = icon.outerHTML + ' ' + lang.advancedFilters;
+    }
+    
+    // Update action buttons in event cards
+    document.querySelectorAll('.edit-event').forEach(btn => {
+        if (btn && lang.edit) {
+            const icon = btn.querySelector('i');
+            btn.innerHTML = icon.outerHTML + ' ' + lang.edit;
+        }
+    });
+    
+    document.querySelectorAll('.view-event').forEach(btn => {
+        if (btn && lang.viewDetails) {
+            const icon = btn.querySelector('i');
+            btn.innerHTML = icon.outerHTML + ' ' + lang.viewDetails;
+        }
+    });
+    
+    document.querySelectorAll('.delete-event').forEach(btn => {
+        if (btn && lang.delete) {
+            const icon = btn.querySelector('i');
+            btn.innerHTML = icon.outerHTML + ' ' + lang.delete;
+        }
+    });
+}
+
+// Update terjemahan filter options
+function updateEventProviderFilterTranslations(language) {
+    const lang = eventProviderTranslations[language] || eventProviderTranslations['id'];
+    
+    // Status filter
+    const statusFilter = document.getElementById('statusFilter');
+    if (statusFilter) {
+        const options = statusFilter.querySelectorAll('option');
+        if (options.length >= 5) {
+            if (lang.allStatus) options[0].text = lang.allStatus;
+            if (lang.statusActive) options[1].text = lang.statusActive;
+            if (lang.statusUpcoming) options[2].text = lang.statusUpcoming;
+            if (lang.statusCompleted) options[3].text = lang.statusCompleted;
+            if (lang.statusInactive) options[4].text = lang.statusInactive;
+        }
+    }
+    
+    // Category filter
+    const categoryFilter = document.getElementById('categoryFilter');
+    if (categoryFilter) {
+        const options = categoryFilter.querySelectorAll('option');
+        if (options.length >= 6) {
+            if (lang.allCategories) options[0].text = lang.allCategories;
+            if (lang.categoryTournament) options[1].text = lang.categoryTournament;
+            if (lang.categoryPromotion) options[2].text = lang.categoryPromotion;
+            if (lang.categoryCompetition) options[3].text = lang.categoryCompetition;
+            if (lang.categoryGiveaway) options[4].text = lang.categoryGiveaway;
+            if (lang.categorySpecial) options[5].text = lang.categorySpecial;
+        }
+    }
+    
+    // Provider filter (hanya label "All Providers")
+    const providerFilter = document.getElementById('providerFilter');
+    if (providerFilter) {
+        const options = providerFilter.querySelectorAll('option');
+        if (options.length > 0 && lang.allProviders) {
+            options[0].text = lang.allProviders;
+        }
+    }
+    
+    // Sort by filter
+    const sortByFilter = document.getElementById('sortBy');
+    if (sortByFilter) {
+        const options = sortByFilter.querySelectorAll('option');
+        if (options.length >= 3) {
+            if (lang.sortBy) {
+                // Update labels
+                if (options[0]) options[0].text = lang.sortBy === 'Urutkan Berdasarkan' ? 'Nama' : 'Name';
+                if (options[1]) options[1].text = lang.sortBy === 'Urutkan Berdasarkan' ? 'Tanggal Mulai' : 'Start Date';
+                if (options[2]) options[2].text = lang.sortBy === 'Urutkan Berdasarkan' ? 'Peserta' : 'Participants';
+            }
+        }
+    }
+    
+    // Sort order filter
+    const sortOrderFilter = document.getElementById('sortOrder');
+    if (sortOrderFilter) {
+        const options = sortOrderFilter.querySelectorAll('option');
+        if (options.length >= 2) {
+            if (lang.ascending) options[0].text = lang.ascending;
+            if (lang.descending) options[1].text = lang.descending;
+        }
+    }
+    
+    // Filter labels
+    const filterLabels = {
+        'statusFilter': 'label[for="statusFilter"]',
+        'categoryFilter': 'label[for="categoryFilter"]',
+        'providerFilter': 'label[for="providerFilter"]',
+        'eventDate': 'label[for="dateFrom"]',
+        'sortBy': 'label[for="sortBy"]',
+        'order': 'label[for="sortOrder"]'
+    };
+    
+    Object.keys(filterLabels).forEach(key => {
+        const label = document.querySelector(filterLabels[key]);
+        if (label && lang[key]) {
+            label.textContent = lang[key];
+        }
+    });
+}
+
+// Update terjemahan notifikasi
+function updateEventProviderNotificationMessages(language) {
+    const lang = eventProviderTranslations[language] || eventProviderTranslations['id'];
+    
+    // Simpan referensi ke fungsi showNotification asli
+    const originalShowNotification = window.showNotification;
+    
+    // Override fungsi showNotification untuk menerjemahkan pesan tertentu
+    window.showNotification = function(message, type = 'info') {
+        let translatedMessage = message;
+        
+        // Terjemahkan pesan-pesan umum
+        if (message.includes('Event added successfully') || message.includes('Event berhasil ditambahkan')) {
+            translatedMessage = lang.eventAdded;
+        } else if (message.includes('Event updated successfully') || message.includes('Event berhasil diperbarui')) {
+            translatedMessage = lang.eventUpdated;
+        } else if (message.includes('Event deleted successfully') || message.includes('Event berhasil dihapus')) {
+            translatedMessage = lang.eventDeleted;
+        } else if (message.includes('Events list refreshed') || message.includes('Daftar event telah diperbarui')) {
+            translatedMessage = lang.eventsRefreshed;
+        } else if (message.includes('Please fill in all required fields') || message.includes('Harap isi semua field yang wajib diisi')) {
+            translatedMessage = lang.fillRequiredFields;
+        } else if (message.includes('End date must be after start date') || message.includes('Tanggal berakhir harus setelah tanggal mulai')) {
+            translatedMessage = lang.endDateAfterStart;
+        } else if (message.includes('Error loading events') || message.includes('Error setting up data connection')) {
+            // Biarkan pesan error asli untuk debugging
+            translatedMessage = message;
+        }
+        
+        // Panggil fungsi asli dengan pesan yang sudah diterjemahkan
+        originalShowNotification(translatedMessage, type);
+    };
+}
+
+// Update terjemahan konfirmasi
+function updateEventProviderConfirmationMessages(language) {
+    const lang = eventProviderTranslations[language] || eventProviderTranslations['id'];
+    
+    // Override confirm messages
+    const originalConfirm = window.confirm;
+    
+    window.confirm = function(message) {
+        let translatedMessage = message;
+        
+        if (message.includes('Are you sure you want to delete this event') || message.includes('Apakah Anda yakin ingin menghapus event ini')) {
+            translatedMessage = lang.confirmDelete;
+        }
+        
+        return originalConfirm(translatedMessage);
+    };
+}
+
+// Update terjemahan event details
+function updateEventProviderDetailsTranslations(language) {
+    const lang = eventProviderTranslations[language] || eventProviderTranslations['id'];
+    
+    // Override fungsi viewEvent untuk detail view
+    const originalViewEvent = window.viewEvent;
+    
+    if (originalViewEvent) {
+        window.viewEvent = function(eventId) {
+            // Panggil fungsi asli terlebih dahulu
+            originalViewEvent(eventId);
+            
+            // Kemudian terjemahkan elemen-elemen detail
+            setTimeout(() => {
+                const detailsContainer = document.getElementById('eventDetailsContainer');
+                if (!detailsContainer) return;
+                
+                // Terjemahkan labels di detail view
+                const detailElements = detailsContainer.querySelectorAll('strong');
+                detailElements.forEach(element => {
+                    const text = element.textContent.trim();
+                    if (text.includes('Category:') && lang.category) {
+                        element.textContent = lang.category + ':';
+                    } else if (text.includes('Provider:') && lang.provider) {
+                        element.textContent = lang.provider + ':';
+                    } else if (text.includes('Status:') && lang.status) {
+                        element.textContent = lang.status + ':';
+                    } else if (text.includes('Start Date:') && lang.startDateLabel) {
+                        element.textContent = lang.startDateLabel + ':';
+                    } else if (text.includes('End Date:') && lang.endDateLabel) {
+                        element.textContent = lang.endDateLabel + ':';
+                    } else if (text.includes('Description:') && lang.description) {
+                        element.textContent = lang.description + ':';
+                    } else if (text.includes('Additional Information:') && lang.additionalInfo) {
+                        element.textContent = lang.additionalInfo + ':';
+                    } else if (text.includes('Created:') && lang.created) {
+                        element.textContent = lang.created + ':';
+                    } else if (text.includes('Last Updated:') && lang.lastUpdated) {
+                        element.textContent = lang.lastUpdated + ':';
+                    }
+                });
+                
+                // Terjemahkan tombol di detail view
+                const viewFullSizeBtn = detailsContainer.querySelector('button[onclick*="openEventImageFullscreen"]');
+                const downloadBtn = detailsContainer.querySelector('button[onclick*="downloadEventImage"]');
+                
+                if (viewFullSizeBtn && lang.viewFullSize) {
+                    const icon = viewFullSizeBtn.querySelector('i');
+                    viewFullSizeBtn.innerHTML = icon.outerHTML + ' ' + lang.viewFullSize;
+                }
+                
+                if (downloadBtn && lang.download) {
+                    const icon = downloadBtn.querySelector('i');
+                    downloadBtn.innerHTML = icon.outerHTML + ' ' + lang.download;
+                }
+            }, 100);
+        };
+    }
+}
+
+// ========== LANGUAGE INITIALIZATION ==========
+
+// Fungsi inisialisasi bahasa untuk event providers
+function initializeEventProviderLanguage() {
+    const savedLanguage = localStorage.getItem('language') || 'id';
+    console.log("Initializing event provider with language:", savedLanguage);
+    
+    // Terapkan terjemahan
+    applyEventProviderTranslations(savedLanguage);
+    updateEventProviderNotificationMessages(savedLanguage);
+    updateEventProviderConfirmationMessages(savedLanguage);
+    updateEventProviderDetailsTranslations(savedLanguage);
+    
+    // Setup listener untuk perubahan bahasa
+    window.addEventListener('languageChanged', function(event) {
+        console.log("Language changed in event provider to:", event.detail.language);
+        applyEventProviderTranslations(event.detail.language);
+        updateEventProviderNotificationMessages(event.detail.language);
+        updateEventProviderConfirmationMessages(event.detail.language);
+        updateEventProviderDetailsTranslations(event.detail.language);
+    });
+}
+
+// Panggil inisialisasi saat DOM ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Tunggu sebentar untuk memastikan semua element sudah terload
+    setTimeout(() => {
+        initializeEventProviderLanguage();
+    }, 100);
+});
+
+// Juga panggil saat halaman sepenuhnya loaded
+window.addEventListener('load', function() {
+    initializeEventProviderLanguage();
+});
 </script>
 </body>
 </html>

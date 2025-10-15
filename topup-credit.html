@@ -258,6 +258,7 @@
 }
 
 /* Lebar kolom yang presisi */
+/* Lebar kolom yang presisi */
 .history-table th:nth-child(1),
 .history-table td:nth-child(1) {
     width: 160px;
@@ -267,41 +268,39 @@
 
 .history-table th:nth-child(2),
 .history-table td:nth-child(2) {
+    width: 150px;
+    min-width: 150px;
+    white-space: nowrap;
+}
+
+.history-table th:nth-child(3),
+.history-table td:nth-child(3) {
     width: 200px;
     min-width: 200px;
     white-space: nowrap;
 }
 
 /* Kolom angka - rata kanan dengan font yang konsisten */
-.history-table th:nth-child(3),
-.history-table td:nth-child(3),
 .history-table th:nth-child(4),
 .history-table td:nth-child(4),
 .history-table th:nth-child(5),
-.history-table td:nth-child(5) {
+.history-table td:nth-child(5),
+.history-table th:nth-child(6),
+.history-table td:nth-child(6) {
     width: 150px;
     min-width: 150px;
     text-align: right;
-    font-family: 'Poppins', sans-serif; /* Tetap gunakan Poppins */
+    font-family: 'Poppins', sans-serif;
     font-weight: var(--font-semibold);
-    letter-spacing: 0.5px; /* Tambahkan untuk alignment yang lebih baik */
+    font-variant-numeric: tabular-nums;
 }
 
-/* Atau jika ingin lebih presisi dengan angka, gunakan: */
-.history-table th:nth-child(3),
-.history-table td:nth-child(3),
-.history-table th:nth-child(4),
-.history-table td:nth-child(4),
-.history-table th:nth-child(5),
-.history-table td:nth-child(5) {
+/* Kolom aksi */
+.history-table th:nth-child(7),
+.history-table td:nth-child(7) {
     width: 150px;
     min-width: 150px;
-    text-align: right;
-    font-family: 'Poppins', monospace; /* Fallback ke monospace jika perlu */
-    font-weight: var(--font-semibold);
-    font-variant-numeric: tabular-nums; /* Fitur CSS modern untuk alignment angka */
-    -webkit-font-feature-settings: "tnum";
-    font-feature-settings: "tnum";
+    text-align: center;
 }
 
 /* Container untuk tombol aksi */
@@ -660,13 +659,28 @@
 }
 
 /* DENGAN: */
-body.user-mode .history-table th:nth-child(6),
-body.user-mode .history-table td:nth-child(6) {
+/* SEMBUNYIKAN KOLOM AKSI UNTUK USER BIASA */
+body.user-mode .history-table th:nth-child(7),
+body.user-mode .history-table td:nth-child(7) {
     display: none;
 }
 
-body.admin-mode .history-table th:nth-child(6),
-body.admin-mode .history-table td:nth-child(6) {
+body.admin-mode .history-table th:nth-child(7),
+body.admin-mode .history-table td:nth-child(7) {
+    display: table-cell;
+    width: 150px;
+    min-width: 150px;
+    text-align: center;
+}
+
+/* Untuk masteragent history - kolom aksi juga di child ke-7 */
+body.user-mode .masteragent-history-table th:nth-child(7),
+body.user-mode .masteragent-history-table td:nth-child(7) {
+    display: none;
+}
+
+body.admin-mode .masteragent-history-table th:nth-child(7),
+body.admin-mode .masteragent-history-table td:nth-child(7) {
     display: table-cell;
     width: 150px;
     min-width: 150px;
@@ -760,14 +774,15 @@ body.admin-mode .history-table td:nth-child(6) {
         
         <div class="history-table-container">
             <table class="history-table">
-                <thead>
+<thead>
     <tr>
         <th>Tanggal</th>
+        <th>User</th> <!-- KOLOM BARU -->
         <th>Brand</th>
         <th>Jumlah Top Up</th>
         <th>Credit Sebelum</th>
         <th>Credit Sesudah</th>
-        <th class="action-column">Aksi</th> <!-- TAMBAHKAN INI -->
+        <th class="action-column">Aksi</th>
     </tr>
 </thead>
                 <tbody id="historyTableBody">
@@ -827,39 +842,41 @@ body.admin-mode .history-table td:nth-child(6) {
     </div>
 
     <!-- Masteragent History Section -->
-    <div class="history-section fade-in" style="animation-delay: 0.3s;">
-        <div class="section-header">
-            <h2 class="section-title"><i class="fas fa-history"></i> Riwayat Top Up Masteragent</h2>
-            <div class="section-actions">
-                <button class="btn btn-outline" id="refreshMasteragentHistory">
-                    <i class="fas fa-sync-alt"></i> Muat Ulang
-                </button>
-            </div>
-        </div>
-        
-        <div class="history-table-container">
-            <table class="history-table">
-<thead>
-    <tr>
-        <th>Tanggal</th>
-        <th>Kategori</th>
-        <th>Jumlah Top Up</th>
-        <th>Credit Sebelum</th>
-        <th>Credit Sesudah</th>
-        <th class="action-column">Aksi</th> <!-- TAMBAHKAN INI -->
-    </tr>
-</thead>
-                <tbody id="masteragentHistoryTableBody">
-                    <!-- Data history masteragent akan dimuat di sini -->
-                </tbody>
-            </table>
-        </div>
-        <div id="noMasteragentHistory" class="empty-state" style="display: none;">
-            <i class="fas fa-history"></i>
-            <h3>Tidak Ada Riwayat</h3>
-            <p>Belum ada riwayat top up masteragent untuk ditampilkan.</p>
+    <!-- Masteragent History Section -->
+<div class="history-section fade-in" style="animation-delay: 0.3s;">
+    <div class="section-header">
+        <h2 class="section-title"><i class="fas fa-history"></i> Riwayat Top Up Masteragent</h2>
+        <div class="section-actions">
+            <button class="btn btn-outline" id="refreshMasteragentHistory">
+                <i class="fas fa-sync-alt"></i> Muat Ulang
+            </button>
         </div>
     </div>
+    
+    <div class="history-table-container">
+        <table class="history-table masteragent-history-table">
+            <thead>
+                <tr>
+                    <th>Tanggal</th>
+                    <th>User</th> <!-- ✅ TAMBAHKAN INI -->
+                    <th>Kategori</th>
+                    <th>Jumlah Top Up</th>
+                    <th>Credit Sebelum</th>
+                    <th>Credit Sesudah</th>
+                    <th class="action-column">Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="masteragentHistoryTableBody">
+                <!-- Data history masteragent akan dimuat di sini -->
+            </tbody>
+        </table>
+    </div>
+    <div id="noMasteragentHistory" class="empty-state" style="display: none;">
+        <i class="fas fa-history"></i>
+        <h3>Tidak Ada Riwayat</h3>
+        <p>Belum ada riwayat top up masteragent untuk ditampilkan.</p>
+    </div>
+</div>
 </div>
 
 <!-- SATU PAGINATION CONTROLS UNTUK SEMUA -->
@@ -1024,58 +1041,53 @@ body.admin-mode .history-table td:nth-child(6) {
 
     // Fungsi untuk memeriksa dan setup super admin
     async function checkAndSetupSuperAdmin() {
-        try {
-            const currentUser = firebase.auth().currentUser;
-            if (!currentUser) {
-                console.log('No user logged in');
-                setupAdminUI(false);
-                return false;
-            }
-            
-            console.log('🔄 Checking admin role for user:', currentUser.uid, currentUser.email);
-            
-            const userDoc = await db.collection('users').doc(currentUser.uid).get();
-            
-            if (userDoc.exists) {
-                const userData = userDoc.data();
-                console.log('📊 User data from Firestore:', userData);
-                
-                // Check role dengan berbagai kemungkinan field
-                const isAdmin = userData.role === 'super_admin' || 
-                               userData.isSuperAdmin === true ||
-                               userData.isAdmin === true ||
-                               (userData.email && userData.email.includes('admin')) ||
-                               userData.email === 'superadmin@gachaengine.com';
-                
-                console.log('✅ Final admin determination:', isAdmin);
-                
-                if (isAdmin) {
-                    setupAdminUI(true);
-                    isSuperAdminUser = true;
-                    return true;
-                }
-            }
-            
-            // Jika tidak ada dokumen user, buat dokumen default
-            console.log('📝 Creating default user document');
-            await db.collection('users').doc(currentUser.uid).set({
-                email: currentUser.email,
-                name: currentUser.displayName || 'User',
-                role: 'user',
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            }, { merge: true });
-            
-            setupAdminUI(false);
-            isSuperAdminUser = false;
-            return false;
-            
-        } catch (error) {
-            console.error('❌ Error checking super admin:', error);
-            setupAdminUI(false);
-            isSuperAdminUser = false;
+    try {
+        const currentUser = firebase.auth().currentUser;
+        if (!currentUser) {
+            console.log('No user logged in');
+            // Pastikan tombol disembunyikan jika tidak ada user
+            hideAdminButtonsOnInit();
             return false;
         }
+        
+        console.log('🔄 Checking admin role for user:', currentUser.uid, currentUser.email);
+        
+        const db = firebase.firestore();
+        const userDoc = await db.collection('users').doc(currentUser.uid).get();
+        
+        if (userDoc.exists) {
+            const userData = userDoc.data();
+            console.log('📊 User data from Firestore:', userData);
+            
+            // Check role dengan berbagai kemungkinan field
+            const isAdmin = userData.role === 'super_admin' || 
+                          userData.isSuperAdmin === true ||
+                          userData.isAdmin === true ||
+                          (userData.email && userData.email.includes('admin')) ||
+                          userData.email === 'superadmin@gachaengine.com';
+            
+            console.log('✅ Final admin determination:', isAdmin);
+            
+            if (isAdmin) {
+                setupAdminUI(true);
+                isSuperAdminUser = true;
+                return true;
+            }
+        }
+        
+        // Jika bukan admin, setup UI user biasa
+        setupAdminUI(false);
+        isSuperAdminUser = false;
+        return false;
+        
+    } catch (error) {
+        console.error('❌ Error checking super admin:', error);
+        // Jika error, asumsikan bukan admin
+        setupAdminUI(false);
+        isSuperAdminUser = false;
+        return false;
     }
+}
 
     // Fungsi untuk setup UI admin
     function setupAdminUI(isAdmin) {
@@ -1118,7 +1130,76 @@ body.admin-mode .history-table td:nth-child(6) {
     }
 
     // ========== FUNGSI UTILITAS ==========
-
+// Fungsi untuk mendapatkan data user yang sedang login
+// Fungsi untuk mendapatkan data user yang sedang login - VERSI DIPERBAIKI
+async function getCurrentUserData() {
+    try {
+        const user = firebase.auth().currentUser;
+        if (!user) {
+            console.warn('No user logged in');
+            return { 
+                name: 'Unknown User', 
+                email: 'Unknown',
+                uid: 'unknown'
+            };
+        }
+        
+        console.log('🔍 Getting user data for:', user.uid, user.email);
+        
+        // Cek di Firestore untuk data user lengkap
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        
+        if (userDoc.exists) {
+            const userData = userDoc.data();
+            console.log('📋 User data from Firestore:', userData);
+            
+            // Prioritaskan nama dalam urutan: displayName -> name -> email
+            const userName = userData.displayName || 
+                           userData.name || 
+                           user.displayName || 
+                           user.email.split('@')[0] || // Ambil bagian sebelum @
+                           user.email;
+            
+            return {
+                name: userName,
+                email: userData.email || user.email,
+                uid: user.uid
+            };
+        }
+        
+        console.log('📝 No user document in Firestore, using auth data');
+        
+        // Fallback ke data dari auth dengan formatting yang lebih baik
+        const fallbackName = user.displayName || 
+                           user.email.split('@')[0] || // Format: john.doe@gmail.com -> john.doe
+                           user.email;
+        
+        return {
+            name: fallbackName,
+            email: user.email,
+            uid: user.uid
+        };
+        
+    } catch (error) {
+        console.error('❌ Error getting user data:', error);
+        
+        // Fallback yang lebih aman
+        const user = firebase.auth().currentUser;
+        if (user) {
+            return {
+                name: user.email.split('@')[0] || user.email,
+                email: user.email,
+                uid: user.uid
+            };
+        }
+        
+        return {
+            name: 'Unknown User',
+            email: 'Unknown',
+            uid: 'unknown'
+        };
+    }
+}
     // Format angka dengan pemisah ribuan
     function formatNumber(num) {
         if (isNaN(num) || num === null || num === undefined) {
@@ -1384,26 +1465,27 @@ body.admin-mode .history-table td:nth-child(6) {
             const paginatedData = dataToDisplay.slice(startIndex, endIndex);
             
             historyTableBody.innerHTML = paginatedData.map(history => `
-                <tr>
-                    <td>${history.date || 'N/A'}</td>
-                    <td>${history.brand || 'N/A'}</td>
-                    <td>${formatNumber(history.amount)}</td>
-                    <td>${formatNumber(history.before)}</td>
-                    <td>${formatNumber(history.after)}</td>
-                    <td>
-                        ${isSuperAdminUser ? `
-                        <div class="action-buttons">
-                            <button class="btn btn-sm btn-outline edit-history-btn" data-id="${history.id}" data-type="regular">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button class="btn btn-sm btn-danger delete-history-btn" data-id="${history.id}" data-type="regular">
-                                <i class="fas fa-trash"></i> Hapus
-                            </button>
-                        </div>
-                        ` : ''}
-                    </td>
-                </tr>
-            `).join('');
+    <tr>
+        <td>${history.date || 'N/A'}</td>
+        <td>${history.user || 'Unknown User'}</td> <!-- ✅ TAMPILKAN USER -->
+        <td>${history.brand || 'N/A'}</td>
+        <td>${formatNumber(history.amount)}</td>
+        <td>${formatNumber(history.before)}</td>
+        <td>${formatNumber(history.after)}</td>
+        <td>
+            ${isSuperAdminUser ? `
+            <div class="action-buttons">
+                <button class="btn btn-sm btn-outline edit-history-btn" data-id="${history.id}" data-type="regular">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="btn btn-sm btn-danger delete-history-btn" data-id="${history.id}" data-type="regular">
+                    <i class="fas fa-trash"></i> Hapus
+                </button>
+            </div>
+            ` : ''}
+        </td>
+    </tr>
+`).join('');
             
             // Setup event listeners untuk tombol aksi
             setupHistoryActionListeners();
@@ -1449,26 +1531,27 @@ body.admin-mode .history-table td:nth-child(6) {
             const paginatedData = dataToDisplay.slice(startIndex, endIndex);
             
             historyTableBody.innerHTML = paginatedData.map(history => `
-                <tr>
-                    <td>${history.date || 'N/A'}</td>
-                    <td>${history.category || 'N/A'}</td>
-                    <td>${formatNumber(history.amount)}</td>
-                    <td>${formatNumber(history.before)}</td>
-                    <td>${formatNumber(history.after)}</td>
-                    <td>
-                        ${isSuperAdminUser ? `
-                        <div class="action-buttons">
-                            <button class="btn btn-sm btn-outline edit-history-btn" data-id="${history.id}" data-type="masteragent">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button class="btn btn-sm btn-danger delete-history-btn" data-id="${history.id}" data-type="masteragent">
-                                <i class="fas fa-trash"></i> Hapus
-                            </button>
-                        </div>
-                        ` : ''}
-                    </td>
-                </tr>
-            `).join('');
+    <tr>
+        <td>${history.date || 'N/A'}</td>
+        <td>${history.user || 'Unknown User'}</td> <!-- ✅ TAMPILKAN USER -->
+        <td>${history.category || 'N/A'}</td>
+        <td>${formatNumber(history.amount)}</td>
+        <td>${formatNumber(history.before)}</td>
+        <td>${formatNumber(history.after)}</td>
+        <td>
+            ${isSuperAdminUser ? `
+            <div class="action-buttons">
+                <button class="btn btn-sm btn-outline edit-history-btn" data-id="${history.id}" data-type="masteragent">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="btn btn-sm btn-danger delete-history-btn" data-id="${history.id}" data-type="masteragent">
+                    <i class="fas fa-trash"></i> Hapus
+                </button>
+            </div>
+            ` : ''}
+        </td>
+    </tr>
+`).join('');
             
             // Setup event listeners untuk tombol aksi
             setupHistoryActionListeners();
@@ -1927,13 +2010,26 @@ async function getOldHistoryAmount(historyId, historyType) {
                    parseInt(input.value.replace(/[^\d]/g, '')) || 0;
         };
         
-        const updatedData = {
-            date: document.getElementById('edit-history-date').value,
-            amount: getRawValue('edit-history-amount'),
-            before: getRawValue('edit-history-before'),
-            after: getRawValue('edit-history-after'),
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        };
+// ✅ KODE BARU (BENAR):
+// Dapatkan data history item yang akan diupdate
+const historyData = historyType === 'regular' ? topupHistory : masteragentHistory;
+const historyItem = historyData.find(item => item.id === historyId);
+
+if (!historyItem) {
+    showToast('Data riwayat tidak ditemukan', 'error');
+    return;
+}
+
+const updatedData = {
+    date: document.getElementById('edit-history-date').value,
+    user: historyItem.user, // ✅ historyItem sekarang terdefinisi
+    userEmail: historyItem.userEmail,
+    userId: historyItem.userId,
+    amount: getRawValue('edit-history-amount'),
+    before: getRawValue('edit-history-before'),
+    after: getRawValue('edit-history-after'),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+};
         
         // Validasi data
         if (!updatedData.date || !updatedData.amount || !updatedData.before || !updatedData.after) {
@@ -2265,14 +2361,22 @@ async function revertCreditFromHistory(historyData, historyType) {
                     await db.collection('creditData').doc('brands').set(creditData);
                     
                     // Tambahkan ke history masteragent
-                    const historyEntry = {
-                        date: new Date().toLocaleString('id-ID'),
-                        category: category,
-                        amount: credit,
-                        before: currentCredit,
-                        after: currentCredit + credit,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    };
+                    // Dapatkan data user yang sedang login
+const userData = await getCurrentUserData();
+
+// Tambahkan ke history
+// ✅ KODE BARU (BENAR):
+const historyEntry = {
+    date: new Date().toLocaleString('id-ID'),
+    user: userData.name,
+    userEmail: userData.email,
+    userId: userData.uid,
+    category: category, // ✅ BENAR - untuk masteragent
+    amount: credit, // ✅ BENAR - variable yang benar
+    before: currentCredit,
+    after: currentCredit + credit, // ✅ BENAR - masteragent credit BERTAMBAH
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+};
                     
                     // Simpan ke Firestore
                     await db.collection('masteragentHistory').add(historyEntry);
@@ -2318,14 +2422,22 @@ async function revertCreditFromHistory(historyData, historyType) {
                     await db.collection('creditData').doc('brands').set(creditData);
                     
                     // Tambahkan ke history
-                    const historyEntry = {
-                        date: new Date().toLocaleString('id-ID'),
-                        brand: brand,
-                        amount: amount,
-                        before: currentCredit,
-                        after: currentCredit - amount,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    };
+                    // Dapatkan data user yang sedang login
+const userData = await getCurrentUserData();
+
+// Tambahkan ke history masteragent
+// ✅ KODE BARU (BENAR):
+const historyEntry = {
+    date: new Date().toLocaleString('id-ID'),
+    user: userData.name,
+    userEmail: userData.email,
+    userId: userData.uid,
+    brand: brand, // ✅ BENAR - untuk regular topup
+    amount: amount, // ✅ BENAR - variable yang benar
+    before: currentCredit,
+    after: currentCredit - amount, // ✅ BENAR - regular credit BERKURANG
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+};
                     
                     // Simpan ke Firestore
                     await db.collection('topupHistory').add(historyEntry);
@@ -2441,6 +2553,1033 @@ async function revertCreditFromHistory(historyData, historyType) {
         console.log('🔓 Super admin forced enabled for topup');
         showToast('Super Admin mode diaktifkan secara manual', 'info');
     };
+    // ========== TRANSLATIONS FOR TOPUP CREDIT ==========
+const topupCreditTranslations = {
+    id: {
+        // Header
+        "pageTitle": "Top Up Credit",
+        "searchPlaceholder": "Cari...",
+        
+        // Credit Statistics
+        "dGamingCredit": "D-GAMING Credit",
+        "gachaCredit": "GACHA Credit", 
+        "bremCredit": "BREM Credit",
+        "cbwlCredit": "CBWL Credit",
+        "engine89Credit": "89ENGINE Credit",
+        "luxionCredit": "LUXION Credit",
+        "availableCredit": "Available Credit",
+        
+        // Tabs
+        "regularTab": "Form Top Up Credit Agent",
+        "masteragentTab": "Form Top Up Credit Masteragent",
+        
+        // Regular Top Up Form
+        "regularFormTitle": "Form Top Up Credit Agent",
+        "selectBrand": "Select Brand",
+        "currentCredit": "Credit Saat Ini",
+        "topupAmount": "Jumlah Top Up",
+        "topupAmountPlaceholder": "Masukkan jumlah top up",
+        "newCredit": "Credit Setelah Top Up",
+        "resetButton": "Reset",
+        "processTopup": "Proses Top Up",
+        "insufficientCredit": "Credit tidak mencukupi!",
+        
+        // Masteragent Top Up Form
+        "masteragentFormTitle": "Form Top Up Credit Masteragent",
+        "selectCategory": "Select Category",
+        "masteragentCurrentCredit": "Credit Saat Ini",
+        "masteragentTopupAmount": "Jumlah Top Up",
+        "masteragentTopupAmountPlaceholder": "Masukkan jumlah top up",
+        "masteragentNewCredit": "Credit Setelah Top Up",
+        
+        // History Sections
+        "regularHistoryTitle": "Riwayat Top Up",
+        "masteragentHistoryTitle": "Riwayat Top Up Masteragent",
+        "refreshButton": "Muat Ulang",
+        "noHistory": "Tidak Ada Riwayat",
+        "noHistoryMessage": "Belum ada riwayat top up untuk ditampilkan.",
+        "noMasteragentHistoryMessage": "Belum ada riwayat top up masteragent untuk ditampilkan.",
+        
+        // Table Headers
+        "date": "Tanggal",
+        "user": "User",
+        "brand": "Brand",
+        "category": "Kategori",
+        "topupAmountCol": "Jumlah Top Up",
+        "creditBefore": "Credit Sebelum",
+        "creditAfter": "Credit Sesudah",
+        "actions": "Aksi",
+        
+        // Action Buttons
+        "edit": "Edit",
+        "delete": "Hapus",
+        
+        // Pagination
+        "pageInfo": "Halaman {current} dari {total} (Total: {count} data)",
+        "noData": "Tidak ada data",
+        "previous": "Previous",
+        "next": "Next",
+        
+        // Modal Titles
+        "editCredit": "Edit Credit",
+        "editHistory": "Edit Riwayat",
+        
+        // Modal Buttons
+        "cancel": "Batal",
+        "saveChanges": "Simpan Perubahan",
+        "saveCreditChanges": "Simpan Perubahan Credit",
+        "saveHistoryChanges": "Simpan Perubahan Riwayat",
+        
+        // Form Labels
+        "creditAmount": "Credit",
+        "amount": "Jumlah",
+        "before": "Sebelum",
+        "after": "Sesudah",
+        
+        // Input Hints
+        "inputHint": "Format: 1000000 (tanpa titik)",
+        
+        // Notifications
+        "topupSuccess": "Top up berhasil! {amount} credit dikurangi dari {brand}",
+        "masteragentTopupSuccess": "Top up masteragent berhasil! {amount} credit ditambahkan ke kategori {category}",
+        "creditUpdated": "Nominal credit berhasil diperbarui!",
+        "historyUpdated": "Riwayat berhasil diperbarui",
+        "historyDeleted": "Riwayat berhasil dihapus",
+        "refreshSuccess": "Riwayat diperbarui",
+        "masteragentRefreshSuccess": "Riwayat masteragent diperbarui",
+        "noChanges": "Tidak ada perubahan yang dilakukan",
+        "allFieldsRequired": "Semua field harus diisi dengan benar",
+        "invalidCategory": "Kategori tidak valid",
+        "insufficientCreditError": "Credit tidak mencukupi untuk melakukan top up",
+        "invalidData": "Data tidak valid",
+        "historyNotFound": "Data riwayat tidak ditemukan",
+        "saveError": "Gagal menyimpan data ke server",
+        "updateError": "Gagal memperbarui riwayat",
+        "deleteError": "Gagal menghapus riwayat",
+        "adminOnly": "Hanya Super Admin yang dapat mengedit credit",
+        "historyAdminOnly": "Hanya Super Admin yang dapat mengedit riwayat",
+        "deleteAdminOnly": "Hanya Super Admin yang dapat menghapus riwayat",
+        
+        // Confirmation Messages
+        "confirmDelete": "Apakah Anda yakin ingin menghapus riwayat ini?",
+        "confirmReset": "Apakah Anda yakin ingin mereset form?",
+        
+        // User Roles
+        "superAdmin": "Super Administrator",
+        "customerSupport": "Customer Service Support",
+        "localStorageMode": "Mode Local Storage"
+    },
+    
+    en: {
+        // Header
+        "pageTitle": "Top Up Credit",
+        "searchPlaceholder": "Search...",
+        
+        // Credit Statistics
+        "dGamingCredit": "D-GAMING Credit",
+        "gachaCredit": "GACHA Credit",
+        "bremCredit": "BREM Credit",
+        "cbwlCredit": "CBWL Credit",
+        "engine89Credit": "89ENGINE Credit",
+        "luxionCredit": "LUXION Credit",
+        "availableCredit": "Available Credit",
+        
+        // Tabs
+        "regularTab": "Agent Credit Top Up Form",
+        "masteragentTab": "Masteragent Credit Top Up Form",
+        
+        // Regular Top Up Form
+        "regularFormTitle": "Agent Credit Top Up Form",
+        "selectBrand": "Select Brand",
+        "currentCredit": "Current Credit",
+        "topupAmount": "Top Up Amount",
+        "topupAmountPlaceholder": "Enter top up amount",
+        "newCredit": "Credit After Top Up",
+        "resetButton": "Reset",
+        "processTopup": "Process Top Up",
+        "insufficientCredit": "Insufficient credit!",
+        
+        // Masteragent Top Up Form
+        "masteragentFormTitle": "Masteragent Credit Top Up Form",
+        "selectCategory": "Select Category",
+        "masteragentCurrentCredit": "Current Credit",
+        "masteragentTopupAmount": "Top Up Amount",
+        "masteragentTopupAmountPlaceholder": "Enter top up amount",
+        "masteragentNewCredit": "Credit After Top Up",
+        
+        // History Sections
+        "regularHistoryTitle": "Top Up History",
+        "masteragentHistoryTitle": "Masteragent Top Up History",
+        "refreshButton": "Refresh",
+        "noHistory": "No History",
+        "noHistoryMessage": "No top up history to display.",
+        "noMasteragentHistoryMessage": "No masteragent top up history to display.",
+        
+        // Table Headers
+        "date": "Date",
+        "user": "User",
+        "brand": "Brand",
+        "category": "Category",
+        "topupAmountCol": "Top Up Amount",
+        "creditBefore": "Credit Before",
+        "creditAfter": "Credit After",
+        "actions": "Actions",
+        
+        // Action Buttons
+        "edit": "Edit",
+        "delete": "Delete",
+        
+        // Pagination
+        "pageInfo": "Page {current} of {total} (Total: {count} items)",
+        "noData": "No data",
+        "previous": "Previous",
+        "next": "Next",
+        
+        // Modal Titles
+        "editCredit": "Edit Credit",
+        "editHistory": "Edit History",
+        
+        // Modal Buttons
+        "cancel": "Cancel",
+        "saveChanges": "Save Changes",
+        "saveCreditChanges": "Save Credit Changes",
+        "saveHistoryChanges": "Save History Changes",
+        
+        // Form Labels
+        "creditAmount": "Credit",
+        "amount": "Amount",
+        "before": "Before",
+        "after": "After",
+        
+        // Input Hints
+        "inputHint": "Format: 1000000 (no separators)",
+        
+        // Notifications
+        "topupSuccess": "Top up successful! {amount} credit deducted from {brand}",
+        "masteragentTopupSuccess": "Masteragent top up successful! {amount} credit added to {category} category",
+        "creditUpdated": "Credit amounts updated successfully!",
+        "historyUpdated": "History updated successfully",
+        "historyDeleted": "History deleted successfully",
+        "refreshSuccess": "History refreshed",
+        "masteragentRefreshSuccess": "Masteragent history refreshed",
+        "noChanges": "No changes made",
+        "allFieldsRequired": "All fields must be filled correctly",
+        "invalidCategory": "Invalid category",
+        "insufficientCreditError": "Insufficient credit to process top up",
+        "invalidData": "Invalid data",
+        "historyNotFound": "History data not found",
+        "saveError": "Failed to save data to server",
+        "updateError": "Failed to update history",
+        "deleteError": "Failed to delete history",
+        "adminOnly": "Only Super Admin can edit credit",
+        "historyAdminOnly": "Only Super Admin can edit history",
+        "deleteAdminOnly": "Only Super Admin can delete history",
+        
+        // Confirmation Messages
+        "confirmDelete": "Are you sure you want to delete this history?",
+        "confirmReset": "Are you sure you want to reset the form?",
+        
+        // User Roles
+        "superAdmin": "Super Administrator",
+        "customerSupport": "Customer Service Support",
+        "localStorageMode": "Local Storage Mode"
+    },
+    
+    ja: {
+        // Header
+        "pageTitle": "クレジットチャージ",
+        "searchPlaceholder": "検索...",
+        
+        // Credit Statistics
+        "dGamingCredit": "D-GAMING クレジット",
+        "gachaCredit": "GACHA クレジット",
+        "bremCredit": "BREM クレジット",
+        "cbwlCredit": "CBWL クレジット",
+        "engine89Credit": "89ENGINE クレジット",
+        "luxionCredit": "LUXION クレジット",
+        "availableCredit": "利用可能クレジット",
+        
+        // Tabs
+        "regularTab": "エージェントチャージフォーム",
+        "masteragentTab": "マスターエージェントチャージフォーム",
+        
+        // Regular Top Up Form
+        "regularFormTitle": "エージェントクレジットチャージフォーム",
+        "selectBrand": "ブランドを選択",
+        "currentCredit": "現在のクレジット",
+        "topupAmount": "チャージ金額",
+        "topupAmountPlaceholder": "チャージ金額を入力",
+        "newCredit": "チャージ後のクレジット",
+        "resetButton": "リセット",
+        "processTopup": "チャージ実行",
+        "insufficientCredit": "クレジットが不足しています！",
+        
+        // Masteragent Top Up Form
+        "masteragentFormTitle": "マスターエージェントチャージフォーム",
+        "selectCategory": "カテゴリを選択",
+        "masteragentCurrentCredit": "現在のクレジット",
+        "masteragentTopupAmount": "チャージ金額",
+        "masteragentTopupAmountPlaceholder": "チャージ金額を入力",
+        "masteragentNewCredit": "チャージ後のクレジット",
+        
+        // History Sections
+        "regularHistoryTitle": "チャージ履歴",
+        "masteragentHistoryTitle": "マスターエージェントチャージ履歴",
+        "refreshButton": "更新",
+        "noHistory": "履歴がありません",
+        "noHistoryMessage": "表示するチャージ履歴がありません。",
+        "noMasteragentHistoryMessage": "表示するマスターエージェントチャージ履歴がありません。",
+        
+        // Table Headers
+        "date": "日付",
+        "user": "ユーザー",
+        "brand": "ブランド",
+        "category": "カテゴリ",
+        "topupAmountCol": "チャージ金額",
+        "creditBefore": "チャージ前クレジット",
+        "creditAfter": "チャージ後クレジット",
+        "actions": "操作",
+        
+        // Action Buttons
+        "edit": "編集",
+        "delete": "削除",
+        
+        // Pagination
+        "pageInfo": "{current}/{total}ページ (合計: {count}件)",
+        "noData": "データがありません",
+        "previous": "前へ",
+        "next": "次へ",
+        
+        // Modal Titles
+        "editCredit": "クレジット編集",
+        "editHistory": "履歴編集",
+        
+        // Modal Buttons
+        "cancel": "キャンセル",
+        "saveChanges": "変更を保存",
+        "saveCreditChanges": "クレジット変更を保存",
+        "saveHistoryChanges": "履歴変更を保存",
+        
+        // Form Labels
+        "creditAmount": "クレジット",
+        "amount": "金額",
+        "before": "前",
+        "after": "後",
+        
+        // Input Hints
+        "inputHint": "形式: 1000000 (区切り文字なし)",
+        
+        // Notifications
+        "topupSuccess": "チャージ成功！ {brand} から {amount} クレジットを差し引きました",
+        "masteragentTopupSuccess": "マスターエージェントチャージ成功！ {category} カテゴリに {amount} クレジットを追加しました",
+        "creditUpdated": "クレジット額が正常に更新されました！",
+        "historyUpdated": "履歴が正常に更新されました",
+        "historyDeleted": "履歴が正常に削除されました",
+        "refreshSuccess": "履歴を更新しました",
+        "masteragentRefreshSuccess": "マスターエージェント履歴を更新しました",
+        "noChanges": "変更はありません",
+        "allFieldsRequired": "すべてのフィールドを正しく入力してください",
+        "invalidCategory": "無効なカテゴリです",
+        "insufficientCreditError": "チャージ処理に十分なクレジットがありません",
+        "invalidData": "無効なデータです",
+        "historyNotFound": "履歴データが見つかりません",
+        "saveError": "サーバーへのデータ保存に失敗しました",
+        "updateError": "履歴の更新に失敗しました",
+        "deleteError": "履歴の削除に失敗しました",
+        "adminOnly": "クレジット編集はスーパー管理者のみ可能です",
+        "historyAdminOnly": "履歴編集はスーパー管理者のみ可能です",
+        "deleteAdminOnly": "履歴削除はスーパー管理者のみ可能です",
+        
+        // Confirmation Messages
+        "confirmDelete": "この履歴を削除してもよろしいですか？",
+        "confirmReset": "フォームをリセットしてもよろしいですか？",
+        
+        // User Roles
+        "superAdmin": "スーパー管理者",
+        "customerSupport": "カスタマーサービスサポート",
+        "localStorageMode": "ローカルストレージモード"
+    },
+    
+    zh: {
+        // Header
+        "pageTitle": "充值信用额",
+        "searchPlaceholder": "搜索...",
+        
+        // Credit Statistics
+        "dGamingCredit": "D-GAMING 信用额",
+        "gachaCredit": "GACHA 信用额",
+        "bremCredit": "BREM 信用额",
+        "cbwlCredit": "CBWL 信用额",
+        "engine89Credit": "89ENGINE 信用额",
+        "luxionCredit": "LUXION 信用额",
+        "availableCredit": "可用信用额",
+        
+        // Tabs
+        "regularTab": "代理充值表单",
+        "masteragentTab": "总代理充值表单",
+        
+        // Regular Top Up Form
+        "regularFormTitle": "代理信用额充值表单",
+        "selectBrand": "选择品牌",
+        "currentCredit": "当前信用额",
+        "topupAmount": "充值金额",
+        "topupAmountPlaceholder": "输入充值金额",
+        "newCredit": "充值后信用额",
+        "resetButton": "重置",
+        "processTopup": "处理充值",
+        "insufficientCredit": "信用额不足！",
+        
+        // Masteragent Top Up Form
+        "masteragentFormTitle": "总代理信用额充值表单",
+        "selectCategory": "选择类别",
+        "masteragentCurrentCredit": "当前信用额",
+        "masteragentTopupAmount": "充值金额",
+        "masteragentTopupAmountPlaceholder": "输入充值金额",
+        "masteragentNewCredit": "充值后信用额",
+        
+        // History Sections
+        "regularHistoryTitle": "充值历史",
+        "masteragentHistoryTitle": "总代理充值历史",
+        "refreshButton": "刷新",
+        "noHistory": "无历史记录",
+        "noHistoryMessage": "暂无充值历史记录。",
+        "noMasteragentHistoryMessage": "暂无总代理充值历史记录。",
+        
+        // Table Headers
+        "date": "日期",
+        "user": "用户",
+        "brand": "品牌",
+        "category": "类别",
+        "topupAmountCol": "充值金额",
+        "creditBefore": "充值前信用额",
+        "creditAfter": "充值后信用额",
+        "actions": "操作",
+        
+        // Action Buttons
+        "edit": "编辑",
+        "delete": "删除",
+        
+        // Pagination
+        "pageInfo": "第 {current} 页，共 {total} 页 (总计: {count} 条数据)",
+        "noData": "无数据",
+        "previous": "上一页",
+        "next": "下一页",
+        
+        // Modal Titles
+        "editCredit": "编辑信用额",
+        "editHistory": "编辑历史记录",
+        
+        // Modal Buttons
+        "cancel": "取消",
+        "saveChanges": "保存更改",
+        "saveCreditChanges": "保存信用额更改",
+        "saveHistoryChanges": "保存历史记录更改",
+        
+        // Form Labels
+        "creditAmount": "信用额",
+        "amount": "金额",
+        "before": "之前",
+        "after": "之后",
+        
+        // Input Hints
+        "inputHint": "格式: 1000000 (无分隔符)",
+        
+        // Notifications
+        "topupSuccess": "充值成功！从 {brand} 扣除 {amount} 信用额",
+        "masteragentTopupSuccess": "总代理充值成功！向 {category} 类别添加 {amount} 信用额",
+        "creditUpdated": "信用额已成功更新！",
+        "historyUpdated": "历史记录已成功更新",
+        "historyDeleted": "历史记录已成功删除",
+        "refreshSuccess": "历史记录已刷新",
+        "masteragentRefreshSuccess": "总代理历史记录已刷新",
+        "noChanges": "未进行任何更改",
+        "allFieldsRequired": "所有字段必须正确填写",
+        "invalidCategory": "无效类别",
+        "insufficientCreditError": "信用额不足以处理充值",
+        "invalidData": "无效数据",
+        "historyNotFound": "未找到历史记录数据",
+        "saveError": "保存数据到服务器失败",
+        "updateError": "更新历史记录失败",
+        "deleteError": "删除历史记录失败",
+        "adminOnly": "只有超级管理员可以编辑信用额",
+        "historyAdminOnly": "只有超级管理员可以编辑历史记录",
+        "deleteAdminOnly": "只有超级管理员可以删除历史记录",
+        
+        // Confirmation Messages
+        "confirmDelete": "您确定要删除此历史记录吗？",
+        "confirmReset": "您确定要重置表单吗？",
+        
+        // User Roles
+        "superAdmin": "超级管理员",
+        "customerSupport": "客户服务支持",
+        "localStorageMode": "本地存储模式"
+    }
+};
+
+// ========== TRANSLATION FUNCTIONS ==========
+
+// Fungsi untuk menerapkan terjemahan ke halaman topup credit
+function applyTopupCreditTranslations(language) {
+    const lang = topupCreditTranslations[language] || topupCreditTranslations['id'];
+    
+    if (!lang) return;
+
+    console.log("Applying topup credit translations for:", language);
+
+    // Terjemahkan elemen utama
+    const elements = {
+        'pageTitle': '.header h1',
+        'searchPlaceholder': '#dashboardSearch',
+        'regularTab': '.tab[data-tab="regular"]',
+        'masteragentTab': '.tab[data-tab="masteragent"]',
+        'regularFormTitle': '#regularTab .section-title',
+        'masteragentFormTitle': '#masteragentTab .masteragent-section .section-title',
+        'regularHistoryTitle': '#regularTab .history-section .section-title',
+        'masteragentHistoryTitle': '#masteragentTab .history-section .section-title',
+        'refreshButton': '#refreshHistory',
+        'masteragentRefreshButton': '#refreshMasteragentHistory',
+        'noHistory': '#noHistory h3, #noMasteragentHistory h3',
+        'noHistoryMessage': '#noHistory p',
+        'noMasteragentHistoryMessage': '#noMasteragentHistory p'
+    };
+
+    Object.keys(elements).forEach(key => {
+        const element = document.querySelector(elements[key]);
+        if (element && lang[key]) {
+            if (key === 'searchPlaceholder') {
+                element.placeholder = lang[key];
+            } else if (key.includes('Button')) {
+                // Handle buttons with icons
+                const icon = element.querySelector('i');
+                if (icon) {
+                    element.innerHTML = icon.outerHTML + ' ' + lang[key];
+                } else {
+                    element.textContent = lang[key];
+                }
+            } else {
+                // Handle elements with icons
+                const iconMatch = element.innerHTML.match(/(<i[^>]*><\/i>)/);
+                if (iconMatch) {
+                    element.innerHTML = iconMatch[0] + ' ' + lang[key];
+                } else {
+                    element.textContent = lang[key];
+                }
+            }
+        }
+    });
+
+    // Update form labels dan placeholders
+    updateTopupCreditFormTranslations(language);
+    
+    // Update tabel headers
+    updateTopupCreditTableTranslations(language);
+    
+    // Update modal dan tombol
+    updateTopupCreditModalTranslations(language);
+    
+    // Update stat cards
+    updateTopupCreditStatsTranslations(language);
+    
+    // Update user role display
+    updateTopupCreditUserRoleTranslations(language);
+}
+
+// Update terjemahan form
+function updateTopupCreditFormTranslations(language) {
+    const lang = topupCreditTranslations[language] || topupCreditTranslations['id'];
+    
+    // Regular form labels
+    const regularLabels = {
+        'brandSelect': 'label[for="brandSelect"]',
+        'currentCredit': 'label[for="currentCredit"]',
+        'topupAmount': 'label[for="topupAmount"]',
+        'newCredit': 'label[for="newCredit"]'
+    };
+    
+    Object.keys(regularLabels).forEach(key => {
+        const element = document.querySelector(regularLabels[key]);
+        if (element && lang[key]) {
+            element.textContent = lang[key];
+        }
+    });
+    
+    // Regular form placeholders
+    const topupAmountInput = document.getElementById('topupAmount');
+    if (topupAmountInput && lang.topupAmountPlaceholder) {
+        topupAmountInput.placeholder = lang.topupAmountPlaceholder;
+    }
+    
+    // Masteragent form labels
+    const masteragentLabels = {
+        'masteragentCategory': 'label[for="masteragentCategory"]',
+        'masteragentCurrentCredit': 'label[for="masteragentCurrentCredit"]',
+        'masteragentTopupAmount': 'label[for="masteragentCredit"]',
+        'masteragentNewCredit': 'label[for="masteragentNewCredit"]'
+    };
+    
+    Object.keys(masteragentLabels).forEach(key => {
+        const element = document.querySelector(masteragentLabels[key]);
+        if (element && lang[key]) {
+            element.textContent = lang[key];
+        }
+    });
+    
+    // Masteragent form placeholders
+    const masteragentTopupInput = document.getElementById('masteragentCredit');
+    if (masteragentTopupInput && lang.masteragentTopupAmountPlaceholder) {
+        masteragentTopupInput.placeholder = lang.masteragentTopupAmountPlaceholder;
+    }
+    
+    // Form buttons
+    const resetButtons = document.querySelectorAll('.form-actions .btn-outline');
+    const submitButtons = document.querySelectorAll('.form-actions .btn-primary');
+    
+    resetButtons.forEach(btn => {
+        if (lang.resetButton) {
+            btn.textContent = lang.resetButton;
+        }
+    });
+    
+    submitButtons.forEach(btn => {
+        if (lang.processTopup) {
+            btn.textContent = lang.processTopup;
+        }
+    });
+    
+    // Dropdown options
+    const brandSelect = document.getElementById('brandSelect');
+    if (brandSelect && lang.selectBrand) {
+        const firstOption = brandSelect.querySelector('option[value=""]');
+        if (firstOption) {
+            firstOption.textContent = lang.selectBrand;
+        }
+    }
+    
+    const categorySelect = document.getElementById('masteragentCategory');
+    if (categorySelect && lang.selectCategory) {
+        const firstOption = categorySelect.querySelector('option[value=""]');
+        if (firstOption) {
+            firstOption.textContent = lang.selectCategory;
+        }
+    }
+}
+
+// Update terjemahan tabel
+function updateTopupCreditTableTranslations(language) {
+    const lang = topupCreditTranslations[language] || topupCreditTranslations['id'];
+    
+    // Update regular history table headers
+    const regularTableHeaders = document.querySelectorAll('.history-table:not(.masteragent-history-table) th');
+    if (regularTableHeaders.length >= 7) {
+        if (lang.date) regularTableHeaders[0].textContent = lang.date;
+        if (lang.user) regularTableHeaders[1].textContent = lang.user;
+        if (lang.brand) regularTableHeaders[2].textContent = lang.brand;
+        if (lang.topupAmountCol) regularTableHeaders[3].textContent = lang.topupAmountCol;
+        if (lang.creditBefore) regularTableHeaders[4].textContent = lang.creditBefore;
+        if (lang.creditAfter) regularTableHeaders[5].textContent = lang.creditAfter;
+        if (lang.actions) regularTableHeaders[6].textContent = lang.actions;
+    }
+    
+    // Update masteragent history table headers
+    const masteragentTableHeaders = document.querySelectorAll('.masteragent-history-table th');
+    if (masteragentTableHeaders.length >= 7) {
+        if (lang.date) masteragentTableHeaders[0].textContent = lang.date;
+        if (lang.user) masteragentTableHeaders[1].textContent = lang.user;
+        if (lang.category) masteragentTableHeaders[2].textContent = lang.category;
+        if (lang.topupAmountCol) masteragentTableHeaders[3].textContent = lang.topupAmountCol;
+        if (lang.creditBefore) masteragentTableHeaders[4].textContent = lang.creditBefore;
+        if (lang.creditAfter) masteragentTableHeaders[5].textContent = lang.creditAfter;
+        if (lang.actions) masteragentTableHeaders[6].textContent = lang.actions;
+    }
+    
+    // Update action buttons in tables
+    document.querySelectorAll('.edit-history-btn').forEach(btn => {
+        if (btn && lang.edit) {
+            const icon = btn.querySelector('i');
+            if (icon) {
+                btn.innerHTML = icon.outerHTML + ' ' + lang.edit;
+            }
+        }
+    });
+    
+    document.querySelectorAll('.delete-history-btn').forEach(btn => {
+        if (btn && lang.delete) {
+            const icon = btn.querySelector('i');
+            if (icon) {
+                btn.innerHTML = icon.outerHTML + ' ' + lang.delete;
+            }
+        }
+    });
+}
+
+// Update terjemahan modal
+function updateTopupCreditModalTranslations(language) {
+    const lang = topupCreditTranslations[language] || topupCreditTranslations['id'];
+    
+    // Edit credit modal
+    const editCreditModalTitle = document.querySelector('#editCreditModal .modal-title');
+    if (editCreditModalTitle && lang.editCredit) {
+        const icon = editCreditModalTitle.querySelector('i');
+        if (icon) {
+            editCreditModalTitle.innerHTML = icon.outerHTML + ' ' + lang.editCredit;
+        } else {
+            editCreditModalTitle.textContent = lang.editCredit;
+        }
+    }
+    
+    // Edit history modal
+    const editHistoryModalTitle = document.querySelector('#editHistoryModal .modal-title');
+    if (editHistoryModalTitle && lang.editHistory) {
+        const icon = editHistoryModalTitle.querySelector('i');
+        if (icon) {
+            editHistoryModalTitle.innerHTML = icon.outerHTML + ' ' + lang.editHistory;
+        } else {
+            editHistoryModalTitle.textContent = lang.editHistory;
+        }
+    }
+    
+    // Modal buttons
+    const cancelButtons = document.querySelectorAll('.modal-footer .btn-outline');
+    const saveButtons = document.querySelectorAll('.modal-footer .btn-primary');
+    
+    cancelButtons.forEach(btn => {
+        if (lang.cancel) {
+            btn.textContent = lang.cancel;
+        }
+    });
+    
+    saveButtons.forEach(btn => {
+        if (btn.id === 'saveCreditChanges' && lang.saveCreditChanges) {
+            btn.textContent = lang.saveCreditChanges;
+        } else if (btn.id === 'saveHistoryChanges' && lang.saveHistoryChanges) {
+            btn.textContent = lang.saveHistoryChanges;
+        } else if (lang.saveChanges) {
+            btn.textContent = lang.saveChanges;
+        }
+    });
+    
+    // Edit history form labels
+    const editHistoryContainer = document.getElementById('editHistoryContainer');
+    if (editHistoryContainer) {
+        const labels = editHistoryContainer.querySelectorAll('label');
+        labels.forEach(label => {
+            const forAttr = label.getAttribute('for');
+            if (forAttr) {
+                if (forAttr.includes('date') && lang.date) {
+                    label.textContent = lang.date;
+                } else if (forAttr.includes('brand') && lang.brand) {
+                    label.textContent = lang.brand;
+                } else if (forAttr.includes('category') && lang.category) {
+                    label.textContent = lang.category;
+                } else if (forAttr.includes('amount') && lang.amount) {
+                    label.textContent = lang.amount;
+                } else if (forAttr.includes('before') && lang.before) {
+                    label.textContent = lang.before;
+                } else if (forAttr.includes('after') && lang.after) {
+                    label.textContent = lang.after;
+                }
+            }
+        });
+        
+        // Update input hints
+        const hints = editHistoryContainer.querySelectorAll('.input-hint');
+        hints.forEach(hint => {
+            if (lang.inputHint) {
+                hint.textContent = lang.inputHint;
+            }
+        });
+    }
+}
+
+// Update terjemahan stat cards
+function updateTopupCreditStatsTranslations(language) {
+    const lang = topupCreditTranslations[language] || topupCreditTranslations['id'];
+    
+    const statCards = document.querySelectorAll('.credit-stat-card');
+    statCards.forEach(card => {
+        const title = card.querySelector('.stat-title');
+        const description = card.querySelector('.stat-description');
+        
+        if (title && description) {
+            const titleText = title.textContent.trim();
+            
+            if (titleText.includes('D-GAMING') && lang.dGamingCredit) {
+                title.textContent = lang.dGamingCredit;
+            } else if (titleText.includes('GACHA') && lang.gachaCredit) {
+                title.textContent = lang.gachaCredit;
+            } else if (titleText.includes('BREM') && lang.bremCredit) {
+                title.textContent = lang.bremCredit;
+            } else if (titleText.includes('CBWL') && lang.cbwlCredit) {
+                title.textContent = lang.cbwlCredit;
+            } else if (titleText.includes('89ENGINE') && lang.engine89Credit) {
+                title.textContent = lang.engine89Credit;
+            } else if (titleText.includes('LUXION') && lang.luxionCredit) {
+                title.textContent = lang.luxionCredit;
+            }
+            
+            if (description && lang.availableCredit) {
+                description.textContent = lang.availableCredit;
+            }
+        }
+    });
+}
+
+// Update terjemahan peran pengguna
+function updateTopupCreditUserRoleTranslations(language) {
+    const lang = topupCreditTranslations[language] || topupCreditTranslations['id'];
+    
+    const userRoleElement = document.querySelector('.user-info p');
+    if (userRoleElement) {
+        const currentText = userRoleElement.textContent;
+        if (currentText.includes('Customer Service Support') && lang.customerSupport) {
+            userRoleElement.textContent = lang.customerSupport;
+        } else if (currentText.includes('Super Administrator') && lang.superAdmin) {
+            userRoleElement.textContent = lang.superAdmin;
+        } else if (currentText.includes('Local Storage Mode') && lang.localStorageMode) {
+            userRoleElement.textContent = lang.localStorageMode;
+        }
+    }
+}
+
+// ========== NOTIFICATION TRANSLATIONS ==========
+
+// Fungsi untuk update notifikasi
+function updateTopupCreditNotificationMessages(language) {
+    const lang = topupCreditTranslations[language] || topupCreditTranslations['id'];
+    
+    // Simpan referensi ke fungsi showToast asli
+    const originalShowToast = window.showToast;
+    
+    // Override fungsi showToast untuk menerjemahkan pesan tertentu
+    window.showToast = function(message, type = 'success') {
+        let translatedMessage = message;
+        
+        // Terjemahkan pesan-pesan umum
+        if (message.includes('Top up berhasil!') || message.includes('Top up successful!')) {
+            // Extract amount and brand from message
+            const amountMatch = message.match(/(\d+(?:\.\d+)?)\s*credit/);
+            const brandMatch = message.match(/from\s+([^!]+)/) || message.match(/dari\s+([^!]+)/);
+            
+            if (amountMatch && brandMatch) {
+                const amount = amountMatch[1];
+                const brand = brandMatch[1].trim();
+                translatedMessage = lang.topupSuccess
+                    .replace('{amount}', formatNumber(parseInt(amount)))
+                    .replace('{brand}', brand);
+            }
+        } else if (message.includes('Top up masteragent berhasil!') || message.includes('Masteragent top up successful!')) {
+            const amountMatch = message.match(/(\d+(?:\.\d+)?)\s*credit/);
+            const categoryMatch = message.match(/kategori\s+([^!]+)/) || message.match(/category\s+([^!]+)/);
+            
+            if (amountMatch && categoryMatch) {
+                const amount = amountMatch[1];
+                const category = categoryMatch[1].trim();
+                translatedMessage = lang.masteragentTopupSuccess
+                    .replace('{amount}', formatNumber(parseInt(amount)))
+                    .replace('{category}', category);
+            }
+        } else if (message.includes('Nominal credit berhasil diperbarui') || message.includes('Credit amounts updated successfully')) {
+            translatedMessage = lang.creditUpdated;
+        } else if (message.includes('Riwayat berhasil diperbarui') || message.includes('History updated successfully')) {
+            translatedMessage = lang.historyUpdated;
+        } else if (message.includes('Riwayat berhasil dihapus') || message.includes('History deleted successfully')) {
+            translatedMessage = lang.historyDeleted;
+        } else if (message.includes('Riwayat diperbarui') || message.includes('History refreshed')) {
+            translatedMessage = lang.refreshSuccess;
+        } else if (message.includes('Riwayat masteragent diperbarui') || message.includes('Masteragent history refreshed')) {
+            translatedMessage = lang.masteragentRefreshSuccess;
+        } else if (message.includes('Tidak ada perubahan') || message.includes('No changes made')) {
+            translatedMessage = lang.noChanges;
+        } else if (message.includes('Semua field harus diisi') || message.includes('All fields must be filled')) {
+            translatedMessage = lang.allFieldsRequired;
+        } else if (message.includes('Kategori tidak valid') || message.includes('Invalid category')) {
+            translatedMessage = lang.invalidCategory;
+        } else if (message.includes('Credit tidak mencukupi') || message.includes('Insufficient credit')) {
+            translatedMessage = lang.insufficientCreditError;
+        } else if (message.includes('Data tidak valid') || message.includes('Invalid data')) {
+            translatedMessage = lang.invalidData;
+        } else if (message.includes('Data riwayat tidak ditemukan') || message.includes('History data not found')) {
+            translatedMessage = lang.historyNotFound;
+        } else if (message.includes('Gagal menyimpan data') || message.includes('Failed to save data')) {
+            translatedMessage = lang.saveError;
+        } else if (message.includes('Gagal memperbarui riwayat') || message.includes('Failed to update history')) {
+            translatedMessage = lang.updateError;
+        } else if (message.includes('Gagal menghapus riwayat') || message.includes('Failed to delete history')) {
+            translatedMessage = lang.deleteError;
+        } else if (message.includes('Hanya Super Admin') || message.includes('Only Super Admin')) {
+            if (message.includes('credit') || message.includes('edit credit')) {
+                translatedMessage = lang.adminOnly;
+            } else if (message.includes('riwayat') || message.includes('history')) {
+                translatedMessage = lang.historyAdminOnly;
+            } else if (message.includes('hapus') || message.includes('delete')) {
+                translatedMessage = lang.deleteAdminOnly;
+            }
+        }
+        
+        // Panggil fungsi asli dengan pesan yang sudah diterjemahkan
+        originalShowToast(translatedMessage, type);
+    };
+}
+
+// ========== CONFIRMATION MESSAGES TRANSLATION ==========
+
+// Fungsi untuk update pesan konfirmasi
+function updateTopupCreditConfirmationMessages(language) {
+    const lang = topupCreditTranslations[language] || topupCreditTranslations['id'];
+    
+    // Override confirm messages
+    const originalConfirm = window.confirm;
+    
+    window.confirm = function(message) {
+        let translatedMessage = message;
+        
+        if (message.includes('Apakah Anda yakin ingin menghapus riwayat ini') || 
+            message.includes('Are you sure you want to delete this history')) {
+            translatedMessage = lang.confirmDelete;
+        } else if (message.includes('Apakah Anda yakin ingin mereset form') || 
+                   message.includes('Are you sure you want to reset the form')) {
+            translatedMessage = lang.confirmReset;
+        }
+        
+        return originalConfirm(translatedMessage);
+    };
+}
+
+// ========== PAGINATION TRANSLATION ==========
+
+// Fungsi untuk update pagination
+function updateTopupCreditPaginationTranslations(language) {
+    const lang = topupCreditTranslations[language] || topupCreditTranslations['id'];
+    
+    // Override fungsi updatePaginationUI
+    const originalUpdatePaginationUI = window.updatePaginationUI;
+    
+    window.updatePaginationUI = function() {
+        // Panggil fungsi asli terlebih dahulu
+        if (typeof originalUpdatePaginationUI === 'function') {
+            originalUpdatePaginationUI();
+        }
+        
+        // Update teks pagination
+        const pageInfo = document.getElementById('pageInfo');
+        const prevButton = document.getElementById('prevPage');
+        const nextButton = document.getElementById('nextPage');
+        
+        if (pageInfo && lang.pageInfo) {
+            const currentText = pageInfo.textContent;
+            const matches = currentText.match(/(\d+).*?(\d+).*?(\d+)/);
+            
+            if (matches) {
+                const currentPage = matches[1];
+                const totalPages = matches[2];
+                const totalItems = matches[3];
+                
+                const translatedText = lang.pageInfo
+                    .replace('{current}', currentPage)
+                    .replace('{total}', totalPages)
+                    .replace('{count}', totalItems);
+                
+                pageInfo.textContent = translatedText;
+            } else if (currentText.includes('Tidak ada data') || currentText.includes('No data')) {
+                pageInfo.textContent = lang.noData;
+            }
+        }
+        
+        if (prevButton && lang.previous) {
+            const icon = prevButton.querySelector('i');
+            if (icon) {
+                prevButton.innerHTML = icon.outerHTML + ' ' + lang.previous;
+            }
+        }
+        
+        if (nextButton && lang.next) {
+            const icon = nextButton.querySelector('i');
+            if (icon) {
+                nextButton.innerHTML = lang.next + ' ' + icon.outerHTML;
+            }
+        }
+    };
+}
+
+// ========== FORM VALIDATION MESSAGES ==========
+
+// Fungsi untuk update pesan validasi form
+function updateTopupCreditFormValidationMessages(language) {
+    const lang = topupCreditTranslations[language] || topupCreditTranslations['id'];
+    
+    // Update pesan error untuk input new credit
+    const newCreditInput = document.getElementById('newCredit');
+    if (newCreditInput) {
+        newCreditInput.dataset.insufficientMessage = lang.insufficientCredit;
+    }
+}
+
+// ========== LANGUAGE INITIALIZATION ==========
+
+// Fungsi inisialisasi bahasa untuk topup credit
+function initializeTopupCreditLanguage() {
+    const savedLanguage = localStorage.getItem('language') || 'id';
+    console.log("Initializing topup credit with language:", savedLanguage);
+    
+    // Terapkan terjemahan
+    applyTopupCreditTranslations(savedLanguage);
+    updateTopupCreditNotificationMessages(savedLanguage);
+    updateTopupCreditConfirmationMessages(savedLanguage);
+    updateTopupCreditPaginationTranslations(savedLanguage);
+    updateTopupCreditFormValidationMessages(savedLanguage);
+    
+    // Setup listener untuk perubahan bahasa
+    window.addEventListener('languageChanged', function(event) {
+        console.log("Language changed in topup credit to:", event.detail.language);
+        applyTopupCreditTranslations(event.detail.language);
+        updateTopupCreditNotificationMessages(event.detail.language);
+        updateTopupCreditConfirmationMessages(event.detail.language);
+        updateTopupCreditPaginationTranslations(event.detail.language);
+        updateTopupCreditFormValidationMessages(event.detail.language);
+        
+        // Refresh UI components
+        if (typeof updateCreditStats === 'function') {
+            updateCreditStats();
+        }
+        if (typeof updateHistoryTable === 'function') {
+            updateHistoryTable();
+        }
+        if (typeof updateMasteragentHistoryTable === 'function') {
+            updateMasteragentHistoryTable();
+        }
+    });
+}
+
+// ========== INTEGRATION WITH EXISTING CODE ==========
+
+// Fungsi untuk mengintegrasikan dengan kode yang sudah ada
+function integrateTopupCreditWithLanguageSupport() {
+    // Inisialisasi bahasa
+    initializeTopupCreditLanguage();
+    
+    // Pastikan fungsi formatNumber tersedia untuk terjemahan
+    if (typeof formatNumber === 'undefined') {
+        window.formatNumber = function(num) {
+            if (isNaN(num) || num === null || num === undefined) {
+                return '0';
+            }
+            return new Intl.NumberFormat('id-ID').format(num);
+        };
+    }
+}
+
+// Panggil inisialisasi saat DOM ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Tunggu sebentar untuk memastikan semua element sudah terload
+    setTimeout(() => {
+        integrateTopupCreditWithLanguageSupport();
+    }, 100);
+});
+
+// Juga panggil saat halaman sepenuhnya loaded
+window.addEventListener('load', function() {
+    integrateTopupCreditWithLanguageSupport();
+});
 </script>
 </body>
 </html>

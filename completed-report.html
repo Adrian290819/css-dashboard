@@ -561,6 +561,396 @@
                 gap: var(--space-sm);
             }
         }
+        /* Style untuk tombol admin */
+.btn-icon.reopen {
+    background: var(--warning-light);
+    color: var(--warning);
+}
+
+.btn-icon.delete {
+    background: var(--danger-light);
+    color: var(--danger);
+}
+
+.btn-icon.reopen:hover {
+    background: var(--warning);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-icon.delete:hover {
+    background: var(--danger);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Style untuk tombol konfirmasi */
+.btn-warning {
+    background: linear-gradient(135deg, var(--warning) 0%, #d97706 100%);
+    color: white;
+}
+
+.btn-warning:hover {
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, var(--danger) 0%, #a41623 100%);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #a41623 0%, #850a15 100%);
+    transform: translateY(-2px);
+}
+/* ========== PERBAIKAN TASK DETAILS MODAL ========== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    backdrop-filter: blur(5px);
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal {
+    background: var(--card-bg);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-header {
+    padding: 24px 30px 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--primary-gradient);
+    border-radius: 20px 20px 0 0;
+    color: white;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.modal-title i {
+    font-size: 1.3rem;
+}
+
+.modal-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: var(--transition-smooth);
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+.modal-body {
+    padding: 30px;
+}
+
+.modal-footer {
+    padding: 20px 30px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    background: var(--bg-secondary);
+    border-radius: 0 0 20px 20px;
+}
+
+/* ========== PERBAIKAN FORM LAYOUT ========== */
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+@media (max-width: 640px) {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-label i {
+    color: var(--primary);
+    font-size: 0.9rem;
+}
+
+.form-input-static {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-size: 1rem;
+    color: var(--text-primary);
+    line-height: 1.5;
+    min-height: 54px;
+    display: flex;
+    align-items: center;
+    transition: var(--transition-smooth);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.form-input-static:hover {
+    border-color: var(--primary-light);
+    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.1);
+}
+
+/* ========== CARD STYLING UNTUK DETAIL SECTIONS ========== */
+.detail-section {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition-smooth);
+}
+
+.detail-section:hover {
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-2px);
+}
+
+.detail-section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.detail-section-title i {
+    color: var(--primary);
+    background: rgba(67, 97, 238, 0.1);
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ========== TIME TRACKING STYLING ========== */
+.time-tracking {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.time-track-item {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: var(--transition-smooth);
+}
+
+.time-track-item:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+}
+
+.time-track-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.time-track-value {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.time-track-value.positive {
+    color: var(--success);
+}
+
+.time-track-value.negative {
+    color: var(--warning);
+}
+
+/* ========== STATUS BADGES ========== */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge.completed {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.status-badge.pending {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.status-badge.high-priority {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* ========== TEXT CONTENT STYLING ========== */
+.text-content {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    line-height: 1.6;
+    color: var(--text-primary);
+    max-height: 200px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+}
+
+.text-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.text-content::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 3px;
+}
+
+.text-content::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.text-content::-webkit-scrollbar-thumb:hover {
+    background: var(--text-tertiary);
+}
+
+/* ========== RESPONSIVE IMPROVEMENTS ========== */
+@media (max-width: 768px) {
+    .modal {
+        margin: 10px;
+        max-height: calc(100vh - 20px);
+    }
+    
+    .modal-header {
+        padding: 20px 24px 16px;
+    }
+    
+    .modal-body {
+        padding: 24px;
+    }
+    
+    .modal-footer {
+        padding: 16px 24px;
+        flex-direction: column;
+    }
+    
+    .modal-footer .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .time-tracking {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .modal-title {
+        font-size: 1.3rem;
+    }
+    
+    .detail-section {
+        padding: 20px;
+    }
+}
     </style>
 </head>
 <body>
@@ -590,52 +980,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="maintenance-stats">
-            <div class="maintenance-stat-card fade-in" style="animation-delay: 0.1s;">
-                <div class="stat-header">
-                    <h3 class="stat-title">Total Completed</h3>
-                     <div class="stat-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                </div>
-                <div class="stat-value" id="totalCompleted">0</div>
-                <div class="stat-description">Tasks completed to date</div>
-            </div>
-            
-            <div class="maintenance-stat-card fade-in" style="animation-delay: 0.2s;">
-                <div class="stat-header">
-                    <h3 class="stat-title">Completed This Week</h3>
-                     <div class="stat-icon">
-                        <i class="fas fa-calendar-week"></i>
-                    </div>
-                </div>
-                <div class="stat-value" id="completedThisWeek">0</div>
-                <div class="stat-description">Tasks completed this week</div>
-            </div>
-            
-            <div class="maintenance-stat-card fade-in" style="animation-delay: 0.3s;">
-                <div class="stat-header">
-                    <h3 class="stat-title">Completed This Month</h3>
-                     <div class="stat-icon">
-                        <i class="fas fa-calendar-alt"></i>
-                    </div>
-                </div>
-                <div class="stat-value" id="completedThisMonth">0</div>
-                <div class="stat-description">Tasks completed this month</div>
-            </div>
-            
-            <div class="maintenance-stat-card fade-in" style="animation-delay: 0.4s;">
-    <div class="stat-header">
-        <h3 class="stat-title">Average Completion Time</h3>
-        <div class="stat-icon">
-            <i class="fas fa-clock"></i>
-        </div>
-    </div>
-    <div class="stat-value" id="averageCompletionTime">N/A</div>
-    <div class="stat-description">Average days to complete</div>
-</div>
         </div>
         
         <!-- Chart Section -->
@@ -782,90 +1126,103 @@
 
     <!-- View Details Modal -->
     <div class="modal-overlay" id="viewModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 class="modal-title">Task Details</h3>
-                <button class="modal-close" id="closeViewModal">&times;</button>
-            </div>
-            <div class="modal-body">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="fas fa-clipboard-list"></i> Task Details</h3>
+            <button class="modal-close" id="closeViewModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <!-- Basic Information Section -->
+            <div class="detail-section">
+                <h4 class="detail-section-title"><i class="fas fa-info-circle"></i> Basic Information</h4>
+                
                 <div class="form-group">
-                    <label class="form-label">Title</label>
+                    <label class="form-label"><i class="fas fa-heading"></i> Title</label>
                     <p id="viewTitle" class="form-input-static"></p>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Category</label>
-                    <p id="viewCategory" class="form-input-static"></p>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Priority</label>
-                        <p id="viewPriority" class="form-input-static"></p>
+                        <label class="form-label"><i class="fas fa-tag"></i> Category</label>
+                        <p id="viewCategory" class="form-input-static"></p>
                     </div>
                 </div>
+            </div>
+            
+            <!-- Timeline Section -->
+            <div class="detail-section">
+                <h4 class="detail-section-title"><i class="fas fa-calendar-alt"></i> Timeline</h4>
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Due Date</label>
-                        <p id="viewDueDate" class="form-input-static"></p>
+                        <label class="form-label"><i class="fas fa-calendar-plus"></i> Created Date</label>
+                        <p id="viewCreatedDate" class="form-input-static"></p>
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Completed Date</label>
+                        <label class="form-label"><i class="fas fa-calendar-check"></i> Completed Date</label>
                         <p id="viewCompletedDate" class="form-input-static"></p>
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Created Date</label>
-                        <p id="viewCreatedDate" class="form-input-static"></p>
+                        <label class="form-label"><i class="fas fa-clock"></i> Due Date</label>
+                        <p id="viewDueDate" class="form-input-static"></p>
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Assigned To</label>
+                        <label class="form-label"><i class="fas fa-user-check"></i> Assigned To</label>
                         <p id="viewAssignedTo" class="form-input-static"></p>
                     </div>
                 </div>
+            </div>
+            
+            <!-- Description & Notes Section -->
+            <div class="detail-section">
+                <h4 class="detail-section-title"><i class="fas fa-file-alt"></i> Description & Notes</h4>
                 
                 <div class="form-group">
-                    <label class="form-label">Description</label>
-                    <p id="viewDescription" class="form-input-static"></p>
+                    <label class="form-label"><i class="fas fa-align-left"></i> Description</label>
+                    <div id="viewDescription" class="text-content"></div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Notes</label>
-                    <p id="viewNotes" class="form-input-static"></p>
+                    <label class="form-label"><i class="fas fa-sticky-note"></i> Notes</label>
+                    <div id="viewNotes" class="text-content"></div>
                 </div>
+            </div>
+            
+            <!-- Time Tracking Section -->
+            <div class="detail-section">
+                <h4 class="detail-section-title"><i class="fas fa-stopwatch"></i> Time Tracking</h4>
                 
-                <div class="form-group">
-                    <label class="form-label">Time Tracking</label>
-                    <div class="time-tracking">
-                        <div class="time-track-item">
-                            <span class="time-track-label">Estimated Time:</span>
-                            <span class="time-track-value" id="viewEstimatedTime">N/A</span>
-                        </div>
-                        <div class="time-track-item">
-                            <span class="time-track-label">Actual Time:</span>
-                            <span class="time-track-value" id="viewActualTime">N/A</span>
-                        </div>
-                        <div class="time-track-item">
-                            <span class="time-track-label">Efficiency:</span>
-                            <span class="time-track-value" id="viewEfficiency">N/A</span>
-                        </div>
+                <div class="time-tracking">
+                    <div class="time-track-item">
+                        <span class="time-track-label">Estimated Time</span>
+                        <span class="time-track-value" id="viewEstimatedTime">N/A</span>
+                    </div>
+                    <div class="time-track-item">
+                        <span class="time-track-label">Actual Time</span>
+                        <span class="time-track-value" id="viewActualTime">N/A</span>
+                    </div>
+                    <div class="time-track-item">
+                        <span class="time-track-label">Efficiency</span>
+                        <span class="time-track-value" id="viewEfficiency">N/A</span>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline" id="closeViewBtn">Close</button>
-                <button class="btn btn-primary" id="exportTaskBtn">
-                    <i class="fas fa-file-export"></i> Export Task Details
-                </button>
-            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" id="closeViewBtn">
+                <i class="fas fa-times"></i> Close
+            </button>
+            <button class="btn btn-primary" id="exportTaskBtn">
+                <i class="fas fa-file-export"></i> Export Task Details
+            </button>
         </div>
     </div>
-
+</div>
     <!-- Confirmation Modal -->
     <div class="modal-overlay" id="confirmModal">
         <div class="modal">
@@ -891,712 +1248,629 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
     // Konfigurasi Firebase
-   const firebaseConfig = {
-        apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
-        authDomain: "dashboard-css.firebaseapp.com",
-        databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "dashboard-css",
-        storageBucket: "dashboard-css.appspot.com",
-        messagingSenderId: "771131792881",
-        appId: "1:771131792881:web:ad634424225bd7de847850",
-        measurementId: "G-3CYBC5B101"
-    };
+   // Konfigurasi Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
+    authDomain: "dashboard-css.firebaseapp.com",
+    databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "dashboard-css",
+    storageBucket: "dashboard-css.appspot.com",
+    messagingSenderId: "771131792881",
+    appId: "1:771131792881:web:ad634424225bd7de847850",
+    measurementId: "G-3CYBC5B101"
+};
 
-    // Inisialisasi Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
+// Inisialisasi Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
 
-    // Deklarasi variabel global untuk solved maintenance
-    let solvedMaintenance = [];
-    let unsubscribeSolved = null;
-    let currentMaintenanceId = null;
-    let currentPage = 1;
-    const maintenancePerPage = 10;
+// Deklarasi variabel global untuk solved maintenance
+let solvedMaintenance = [];
+let unsubscribeSolved = null;
+let currentMaintenanceId = null;
+let currentPage = 1;
+const maintenancePerPage = 10;
+
+// Variabel untuk chart
+let trendsChart, categoryChart, monthlyChart;
+
+function setupSolvedMaintenanceListener() {
+    if (unsubscribeSolved) {
+        unsubscribeSolved();
+    }
     
-    // Variabel untuk chart
-    let trendsChart, categoryChart, monthlyChart;
+    console.log("Connecting to solvedMaintenance collection...");
+    
+    const maintenanceRef = db.collection('solvedMaintenance');
 
-    function setupSolvedMaintenanceListener() {
-        if (unsubscribeSolved) {
-            unsubscribeSolved();
-        }
-        
-        console.log("Connecting to solvedMaintenance collection...");
-        
-        const maintenanceRef = db.collection('solvedMaintenance');
-
-        unsubscribeSolved = maintenanceRef
-            .orderBy('dateCompleted', 'desc')
-            .onSnapshot(snapshot => {
-                console.log("Received", snapshot.size, "documents from solvedMaintenance");
-                solvedMaintenance = [];
+    unsubscribeSolved = maintenanceRef
+        .orderBy('dateCompleted', 'desc')
+        .onSnapshot(snapshot => {
+            console.log("Received", snapshot.size, "documents from solvedMaintenance");
+            solvedMaintenance = [];
+            
+            snapshot.forEach(doc => {
+                const maintenance = doc.data();
+                maintenance.id = doc.id;
                 
-                snapshot.forEach(doc => {
-                    const maintenance = doc.data();
-                    maintenance.id = doc.id;
-                    
-                    console.log("Document data:", maintenance);
-                    
-                    solvedMaintenance.push(maintenance);
-                });
-
-                console.log("Total maintenance:", solvedMaintenance.length);
-                updateSolvedMaintenanceUI();
-                updateStatistics();
-                updateCharts();
-
-            }, error => {
-                console.error("Error fetching solved maintenance:", error);
-                showToast("Error loading solved maintenance", "error");
+                console.log("Document data:", maintenance);
+                
+                solvedMaintenance.push(maintenance);
             });
-    }
 
-    function updateStatistics() {
-        console.log("Updating statistics with", solvedMaintenance.length, "items");
-        
-        const now = new Date();
-        const startOfWeek = getStartOfWeek(now);
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        
-        let totalCompleted = 0;
-        let completedThisWeek = 0;
-        let completedThisMonth = 0;
-        let totalCompletionTime = 0;
-        let itemsWithCompletionTime = 0;
+            console.log("Total maintenance:", solvedMaintenance.length);
+            updateSolvedMaintenanceUI();
+            updateCharts();
 
-        solvedMaintenance.forEach(maintenance => {
-            console.log("Processing maintenance:", maintenance.id, maintenance);
-            
-            // Hitung semua item di solvedMaintenance sebagai completed
-            totalCompleted++;
-            
-            // Periksa dateCompleted
-            if (maintenance.dateCompleted) {
-                const completedDate = convertToDate(maintenance.dateCompleted);
-                console.log("Completed date:", completedDate);
-                
-                // Hitung completed this week
-                if (completedDate >= startOfWeek) {
-                    completedThisWeek++;
-                }
-                
-                // Hitung completed this month
-                if (completedDate >= startOfMonth) {
-                    completedThisMonth++;
-                }
-                
-                // Hitung waktu penyelesaian jika ada dateCreated
-                if (maintenance.dateCreated) {
-                    const createdDate = convertToDate(maintenance.dateCreated);
-                    const completionTime = (completedDate - createdDate) / (1000 * 60 * 60 * 24); // dalam hari
-                    totalCompletionTime += completionTime;
-                    itemsWithCompletionTime++;
-                    console.log("Completion time:", completionTime, "days");
-                }
-            }
+        }, error => {
+            console.error("Error fetching solved maintenance:", error);
+            showToast("Error loading solved maintenance", "error");
         });
+}
 
-        // Hitung rata-rata waktu penyelesaian
-        const averageCompletionTime = itemsWithCompletionTime > 0 
-            ? (totalCompletionTime / itemsWithCompletionTime).toFixed(1) 
-            : 0;
-
-        console.log("Final stats - Total:", totalCompleted, "Week:", completedThisWeek, 
-                    "Month:", completedThisMonth, "Avg Time:", averageCompletionTime);
-
-        // Update UI dengan animasi
-        animateValue(document.getElementById("totalCompleted"), 0, totalCompleted, 1000);
-        animateValue(document.getElementById("completedThisWeek"), 0, completedThisWeek, 1000);
-        animateValue(document.getElementById("completedThisMonth"), 0, completedThisMonth, 1000);
-        document.getElementById("averageCompletionTime").textContent = 
-            averageCompletionTime > 0 ? averageCompletionTime + " days" : "N/A";
-    }
-
-    function animateValue(element, start, end, duration) {
-        let startTimestamp = null;
-        const step = (timestamp) => {
-            if (!startTimestamp) startTimestamp = timestamp;
-            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-            const value = Math.floor(progress * (end - start) + start);
-            element.textContent = value;
-            if (progress < 1) {
-                window.requestAnimationFrame(step);
-            }
-        };
-        window.requestAnimationFrame(step);
-    }
-
-    function getStartOfWeek(date) {
-        const d = new Date(date);
-        const day = d.getDay(); // 0 (Minggu) sampai 6 (Sabtu)
-        const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Adjust untuk mulai Senin
-        return new Date(d.setDate(diff));
-    }
-
-    function convertToDate(timestamp) {
-        console.log("Converting timestamp:", timestamp);
-        
-        if (!timestamp) {
-            console.log("No timestamp provided");
-            return new Date();
-        }
-        
-        if (typeof timestamp.toDate === 'function') {
-            return timestamp.toDate();
-        } else if (typeof timestamp === 'string') {
-            // Coba parsing berbagai format tanggal
-            const parsedDate = new Date(timestamp);
-            if (!isNaN(parsedDate.getTime())) {
-                return parsedDate;
-            }
-        } else if (timestamp && typeof timestamp === 'object' && timestamp.seconds) {
-            return new Date(timestamp.seconds * 1000);
-        }
-        
-        console.log("Could not convert timestamp, using current date");
+function convertToDate(timestamp) {
+    console.log("Converting timestamp:", timestamp);
+    
+    if (!timestamp) {
+        console.log("No timestamp provided");
         return new Date();
     }
-
-    function updateSolvedMaintenanceUI() {
-        const tableBody = document.getElementById('completedTableBody');
-        const tasksCount = document.getElementById('tasksCount');
-        const noTasks = document.getElementById('noTasks');
-        const pagination = document.getElementById('pagination');
-        
-        console.log("Updating UI with", solvedMaintenance.length, "maintenance tasks");
-        
-        if (solvedMaintenance.length === 0) {
-            tableBody.innerHTML = `
-                <tr>
-                    <td colspan="8" class="empty-state">
-                        <i class="fas fa-database"></i>
-                        <h3>No Completed Maintenance Found</h3>
-                        <p>There are no completed maintenance tasks in the database yet.</p>
-                    </td>
-                </tr>
-            `;
-            noTasks.style.display = 'block';
-            pagination.style.display = 'none';
-            tasksCount.textContent = '0 tasks';
-            return;
+    
+    if (typeof timestamp.toDate === 'function') {
+        return timestamp.toDate();
+    } else if (typeof timestamp === 'string') {
+        // Coba parsing berbagai format tanggal
+        const parsedDate = new Date(timestamp);
+        if (!isNaN(parsedDate.getTime())) {
+            return parsedDate;
         }
-        
-        noTasks.style.display = 'none';
-        pagination.style.display = 'flex';
-        
-        const filteredMaintenance = filterMaintenance(solvedMaintenance);
-        
-        tasksCount.textContent = `${filteredMaintenance.length} tasks`;
-        
-        // Pagination
-        const totalPages = Math.ceil(filteredMaintenance.length / maintenancePerPage);
-        document.getElementById('currentPage').textContent = currentPage;
-        document.getElementById('totalPages').textContent = totalPages;
-        
-        // Enable/disable pagination buttons
-        document.getElementById('prevPage').disabled = currentPage === 1;
-        document.getElementById('nextPage').disabled = currentPage === totalPages || totalPages === 0;
-        
-        // Calculate start and end index for current page
-        const startIndex = (currentPage - 1) * maintenancePerPage;
-        const endIndex = Math.min(startIndex + maintenancePerPage, filteredMaintenance.length);
-        const currentPageMaintenance = filteredMaintenance.slice(startIndex, endIndex);
-        
-        // Clear table
-        tableBody.innerHTML = '';
-        
-        if (currentPageMaintenance.length === 0) {
-            const emptyRow = document.createElement('tr');
-            emptyRow.innerHTML = `
-                <td colspan="8" style="text-align: center; padding: 40px 20px;">
-                    <i class="fas fa-inbox" style="font-size: 3rem; color: var(--text-tertiary); margin-bottom: 15px; display: block;"></i>
-                    <h3 style="color: var(--text-secondary; margin-bottom: 10px;">No completed maintenance found</h3>
-                    <p style="color: var(--text-tertiary);">Try adjusting your filters or check back later.</p>
-                </td>
-            `;
-            tableBody.appendChild(emptyRow);
-            return;
-        }
-        
-        currentPageMaintenance.forEach(maintenance => {
-            const row = document.createElement('tr');
-            
-            // Format dates - menggunakan field yang sesuai dengan solvedMaintenance
-            const createdDate = maintenance.dateCreated ? formatDate(convertToDate(maintenance.dateCreated)) : 'N/A';
-            const completedDate = maintenance.dateCompleted ? formatDate(convertToDate(maintenance.dateCompleted)) : 'N/A';
-            
-            // Calculate completion time
-            let completionTime = 'N/A';
-            if (maintenance.dateCreated && maintenance.dateCompleted) {
-                const created = convertToDate(maintenance.dateCreated);
-                const completed = convertToDate(maintenance.dateCompleted);
-                const diffDays = Math.floor((completed - created) / (1000 * 60 * 60 * 24));
-                const diffHours = Math.floor(((completed - created) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                completionTime = `${diffDays}d ${diffHours}h`;
-            }
-            
-            row.innerHTML = `
-                <td>${maintenance.id}</td>
-                <td>${maintenance.title || 'N/A'}</td>
-                <td>${maintenance.category || 'N/A'}</td>
-                <td>${completedDate}</td>
-                <td>${completionTime}</td>
-                <td>${maintenance.assignedTo || 'N/A'}</td>
-                <td>
-                    <div class="action-buttons">
-                        <button class="btn-icon view" data-id="${maintenance.id}" title="View Details">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                </td>
-            `;
-            
-            tableBody.appendChild(row);
-        });
-        
-        // Add event listeners to view buttons
-        document.querySelectorAll('.btn-icon.view').forEach(button => {
-            button.addEventListener('click', function() {
-                const maintenanceId = this.getAttribute('data-id');
-                showMaintenanceDetails(maintenanceId);
-            });
-        });
+    } else if (timestamp && typeof timestamp === 'object' && timestamp.seconds) {
+        return new Date(timestamp.seconds * 1000);
     }
     
-    function filterMaintenance(maintenance) {
-        const categoryFilter = document.getElementById('categoryFilter').value;
-        const timeFilter = document.getElementById('timeFilter').value;
-        const sortFilter = document.getElementById('sortFilter').value;
+    console.log("Could not convert timestamp, using current date");
+    return new Date();
+}
+
+function updateSolvedMaintenanceUI() {
+    const tableBody = document.getElementById('completedTableBody');
+    const tasksCount = document.getElementById('tasksCount');
+    const noTasks = document.getElementById('noTasks');
+    const pagination = document.getElementById('pagination');
+    
+    console.log("Updating UI with", solvedMaintenance.length, "maintenance tasks");
+    
+    if (solvedMaintenance.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="8" class="empty-state">
+                    <i class="fas fa-database"></i>
+                    <h3>No Completed Maintenance Found</h3>
+                    <p>There are no completed maintenance tasks in the database yet.</p>
+                </td>
+            </tr>
+        `;
+        noTasks.style.display = 'block';
+        pagination.style.display = 'none';
+        tasksCount.textContent = '0 tasks';
+        return;
+    }
+    
+    noTasks.style.display = 'none';
+    pagination.style.display = 'flex';
+    
+    const filteredMaintenance = filterMaintenance(solvedMaintenance);
+    
+    tasksCount.textContent = `${filteredMaintenance.length} tasks`;
+    
+    // Pagination
+    const totalPages = Math.ceil(filteredMaintenance.length / maintenancePerPage);
+    document.getElementById('currentPage').textContent = currentPage;
+    document.getElementById('totalPages').textContent = totalPages;
+    
+    // Enable/disable pagination buttons
+    document.getElementById('prevPage').disabled = currentPage === 1;
+    document.getElementById('nextPage').disabled = currentPage === totalPages || totalPages === 0;
+    
+    // Calculate start and end index for current page
+    const startIndex = (currentPage - 1) * maintenancePerPage;
+    const endIndex = Math.min(startIndex + maintenancePerPage, filteredMaintenance.length);
+    const currentPageMaintenance = filteredMaintenance.slice(startIndex, endIndex);
+    
+    // Clear table
+    tableBody.innerHTML = '';
+    
+    if (currentPageMaintenance.length === 0) {
+        const emptyRow = document.createElement('tr');
+        emptyRow.innerHTML = `
+            <td colspan="8" style="text-align: center; padding: 40px 20px;">
+                <i class="fas fa-inbox" style="font-size: 3rem; color: var(--text-tertiary); margin-bottom: 15px; display: block;"></i>
+                <h3 style="color: var(--text-secondary; margin-bottom: 10px;">No completed maintenance found</h3>
+                <p style="color: var(--text-tertiary);">Try adjusting your filters or check back later.</p>
+            </td>
+        `;
+        tableBody.appendChild(emptyRow);
+        return;
+    }
+    
+    currentPageMaintenance.forEach(maintenance => {
+        const row = document.createElement('tr');
         
-        let filtered = maintenance.filter(item => {
-            // Filter by category
-            if (categoryFilter !== 'all' && item.category !== categoryFilter) {
-                return false;
+        // Format dates - menggunakan field yang sesuai dengan solvedMaintenance
+        const createdDate = maintenance.dateCreated ? formatDate(convertToDate(maintenance.dateCreated)) : 'N/A';
+        const completedDate = maintenance.dateCompleted ? formatDate(convertToDate(maintenance.dateCompleted)) : 'N/A';
+        
+        // Calculate completion time
+        let completionTime = 'N/A';
+        if (maintenance.dateCreated && maintenance.dateCompleted) {
+            const created = convertToDate(maintenance.dateCreated);
+            const completed = convertToDate(maintenance.dateCompleted);
+            const diffDays = Math.floor((completed - created) / (1000 * 60 * 60 * 24));
+            const diffHours = Math.floor(((completed - created) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            completionTime = `${diffDays}d ${diffHours}h`;
+        }
+        
+        row.innerHTML = `
+            <td>${maintenance.id}</td>
+            <td>${maintenance.title || 'N/A'}</td>
+            <td>${maintenance.category || 'N/A'}</td>
+            <td>${completedDate}</td>
+            <td>${completionTime}</td>
+            <td>${maintenance.assignedTo || 'N/A'}</td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn-icon view" data-id="${maintenance.id}" title="View Details">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+        
+        tableBody.appendChild(row);
+    });
+    
+    // Add event listeners to view buttons
+    document.querySelectorAll('.btn-icon.view').forEach(button => {
+        button.addEventListener('click', function() {
+            const maintenanceId = this.getAttribute('data-id');
+            showMaintenanceDetails(maintenanceId);
+        });
+    });
+}
+
+function filterMaintenance(maintenance) {
+    const categoryFilter = document.getElementById('categoryFilter').value;
+    const timeFilter = document.getElementById('timeFilter').value;
+    const sortFilter = document.getElementById('sortFilter').value;
+    
+    let filtered = maintenance.filter(item => {
+        // Filter by category
+        if (categoryFilter !== 'all' && item.category !== categoryFilter) {
+            return false;
+        }
+        
+        // Filter by time
+        if (timeFilter !== 'all' && item.dateCompleted) {
+            const completedDate = convertToDate(item.dateCompleted);
+            const now = new Date();
+            
+            switch(timeFilter) {
+                case 'today':
+                    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                    if (completedDate < today) return false;
+                    break;
+                case 'week':
+                    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    if (completedDate < weekAgo) return false;
+                    break;
+                case 'month':
+                    const monthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+                    if (completedDate < monthAgo) return false;
+                    break;
+                case 'quarter':
+                    const quarterAgo = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
+                    if (completedDate < quarterAgo) return false;
+                    break;
             }
-            
-            
-            // Filter by time
-            if (timeFilter !== 'all' && item.dateCompleted) {
-                const completedDate = convertToDate(item.dateCompleted);
-                const now = new Date();
-                
-                switch(timeFilter) {
-                    case 'today':
-                        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                        if (completedDate < today) return false;
-                        break;
-                    case 'week':
-                        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-                        if (completedDate < weekAgo) return false;
-                        break;
-                    case 'month':
-                        const monthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
-                        if (completedDate < monthAgo) return false;
-                        break;
-                    case 'quarter':
-                        const quarterAgo = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
-                        if (completedDate < quarterAgo) return false;
-                        break;
+        }
+        
+        return true;
+    });
+    
+    // Sort the results
+    switch(sortFilter) {
+        case 'newest':
+            filtered.sort((a, b) => {
+                const dateA = convertToDate(a.dateCompleted);
+                const dateB = convertToDate(b.dateCompleted);
+                return dateB - dateA;
+            });
+            break;
+        case 'oldest':
+            filtered.sort((a, b) => {
+                const dateA = convertToDate(a.dateCompleted);
+                const dateB = convertToDate(b.dateCompleted);
+                return dateA - dateB;
+            });
+            break;
+        case 'category':
+            filtered.sort((a, b) => {
+                return (a.category || '').localeCompare(b.category || '');
+            });
+            break;
+    }
+    
+    return filtered;
+}
+
+function initCharts() {
+    // Inisialisasi Completion Trends Chart (Bar Chart)
+    const trendsCtx = document.getElementById('completionTrendsChart').getContext('2d');
+    trendsChart = new Chart(trendsCtx, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Tasks Completed',
+                data: [],
+                backgroundColor: 'rgba(67, 97, 238, 0.2)',
+                borderColor: 'rgba(67, 97, 238, 1)',
+                borderWidth: 2,
+                tension: 0.3,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    titleFont: {
+                        size: 14,
+                        family: "'Poppins', sans-serif"
+                    },
+                    bodyFont: {
+                        size: 13,
+                        family: "'Poppins', sans-serif"
+                    },
+                    padding: 10,
+                    cornerRadius: 8
                 }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+
+    // Inisialisasi Tasks by Category Chart (Doughnut Chart)
+    const categoryCtx = document.getElementById('categoryPieChart').getContext('2d');
+    categoryChart = new Chart(categoryCtx, {
+        type: 'doughnut',
+        data: {
+            labels: [],
+            datasets: [{
+                data: [],
+                backgroundColor: [
+                    'rgba(67, 97, 238, 0.7)',
+                    'rgba(76, 201, 240, 0.7)',
+                    'rgba(247, 37, 133, 0.7)',
+                    'rgba(58, 12, 163, 0.7)',
+                    'rgba(114, 9, 183, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(67, 97, 238, 1)',
+                    'rgba(76, 201, 240, 1)',
+                    'rgba(247, 37, 133, 1)',
+                    'rgba(58, 12, 163, 1)',
+                    'rgba(114, 9, 183, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: {
+                            family: "'Poppins', sans-serif",
+                            size: 12
+                        },
+                        padding: 20
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    titleFont: {
+                        size: 14,
+                        family: "'Poppins', sans-serif"
+                    },
+                    bodyFont: {
+                        size: 13,
+                        family: "'Poppins', sans-serif"
+                    },
+                    padding: 10,
+                    cornerRadius: 8
+                }
+            }
+        }
+    });
+
+    // Inisialisasi Monthly Completion Rate Chart (Line Chart)
+    const monthlyCtx = document.getElementById('monthlyTrendChart').getContext('2d');
+    monthlyChart = new Chart(monthlyCtx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Completed Tasks',
+                data: [],
+                backgroundColor: 'rgba(67, 97, 238, 0.2)',
+                borderColor: 'rgba(67, 97, 238, 1)',
+                borderWidth: 2,
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    titleFont: {
+                        size: 14,
+                        family: "'Poppins', sans-serif"
+                    },
+                    bodyFont: {
+                        size: 13,
+                        family: "'Poppins', sans-serif"
+                    },
+                    padding: 10,
+                    cornerRadius: 8
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+}
+
+function updateCharts() {
+    updateCompletionTrendsChart();
+    updateTasksByCategoryChart();
+    updateMonthlyTrendChart();
+}
+
+function updateCompletionTrendsChart() {
+    const timeRange = document.getElementById('trendsTimeRange').value;
+    let daysToShow = 7;
+    
+    if (timeRange === 'Last 30 Days') daysToShow = 30;
+    if (timeRange === 'Last 90 Days') daysToShow = 90;
+    
+    const now = new Date();
+    const labels = [];
+    const data = [];
+    
+    for (let i = daysToShow - 1; i >= 0; i--) {
+        const date = new Date(now);
+        date.setDate(date.getDate() - i);
+        const dateString = date.toLocaleDateString('en-US', {month: 'short', day: 'numeric'});
+        labels.push(dateString);
+        data.push(0);
+    }
+    
+    solvedMaintenance.forEach(maintenance => {
+        if (maintenance.dateCompleted) {
+            const completedDate = convertToDate(maintenance.dateCompleted);
+            const completedDateString = completedDate.toLocaleDateString('en-US', {month: 'short', day: 'numeric'});
+            
+            const index = labels.indexOf(completedDateString);
+            if (index !== -1) {
+                data[index]++;
+            }
+        }
+    });
+    
+    if (trendsChart) {
+        trendsChart.data.labels = labels;
+        trendsChart.data.datasets[0].data = data;
+        trendsChart.update();
+    }
+}
+
+function updateTasksByCategoryChart() {
+    const timeRange = document.getElementById('categoryTimeRange').value;
+    const now = new Date();
+    
+    let filteredMaintenance = solvedMaintenance;
+    
+    if (timeRange !== 'All Time') {
+        filteredMaintenance = solvedMaintenance.filter(maintenance => {
+            if (!maintenance.dateCompleted) return false;
+            
+            const completedDate = convertToDate(maintenance.dateCompleted);
+            
+            if (timeRange === 'This Week') {
+                const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                return completedDate >= weekAgo;
+            } else if (timeRange === 'This Month') {
+                return completedDate.getMonth() === now.getMonth() && 
+                       completedDate.getFullYear() === now.getFullYear();
             }
             
             return true;
         });
-        
-        // Sort the results
-        switch(sortFilter) {
-            case 'newest':
-                filtered.sort((a, b) => {
-                    const dateA = convertToDate(a.dateCompleted);
-                    const dateB = convertToDate(b.dateCompleted);
-                    return dateB - dateA;
-                });
-                break;
-            case 'oldest':
-                filtered.sort((a, b) => {
-                    const dateA = convertToDate(a.dateCompleted);
-                    const dateB = convertToDate(b.dateCompleted);
-                    return dateA - dateB;
-                });
-                break;
-            case 'category':
-                filtered.sort((a, b) => {
-                    return (a.category || '').localeCompare(b.category || '');
-                });
-                break;
-        }
-        
-        return filtered;
-    }
-
-    function initCharts() {
-        // Inisialisasi Completion Trends Chart (Bar Chart)
-        const trendsCtx = document.getElementById('completionTrendsChart').getContext('2d');
-        trendsChart = new Chart(trendsCtx, {
-            type: 'bar',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Tasks Completed',
-                    data: [],
-                    backgroundColor: 'rgba(67, 97, 238, 0.2)',
-                    borderColor: 'rgba(67, 97, 238, 1)',
-                    borderWidth: 2,
-                    tension: 0.3,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                        titleFont: {
-                            size: 14,
-                            family: "'Poppins', sans-serif"
-                        },
-                        bodyFont: {
-                            size: 13,
-                            family: "'Poppins', sans-serif"
-                        },
-                        padding: 10,
-                        cornerRadius: 8
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
-                }
-            }
-        });
-
-        // Inisialisasi Tasks by Category Chart (Doughnut Chart)
-        const categoryCtx = document.getElementById('categoryPieChart').getContext('2d');
-        categoryChart = new Chart(categoryCtx, {
-            type: 'doughnut',
-            data: {
-                labels: [],
-                datasets: [{
-                    data: [],
-                    backgroundColor: [
-                        'rgba(67, 97, 238, 0.7)',
-                        'rgba(76, 201, 240, 0.7)',
-                        'rgba(247, 37, 133, 0.7)',
-                        'rgba(58, 12, 163, 0.7)',
-                        'rgba(114, 9, 183, 0.7)'
-                    ],
-                    borderColor: [
-                        'rgba(67, 97, 238, 1)',
-                        'rgba(76, 201, 240, 1)',
-                        'rgba(247, 37, 133, 1)',
-                        'rgba(58, 12, 163, 1)',
-                        'rgba(114, 9, 183, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            font: {
-                                family: "'Poppins', sans-serif",
-                                size: 12
-                            },
-                            padding: 20
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                        titleFont: {
-                            size: 14,
-                            family: "'Poppins', sans-serif"
-                        },
-                        bodyFont: {
-                            size: 13,
-                            family: "'Poppins', sans-serif"
-                        },
-                        padding: 10,
-                        cornerRadius: 8
-                    }
-                }
-            }
-        });
-
-        // Inisialisasi Monthly Completion Rate Chart (Line Chart)
-        const monthlyCtx = document.getElementById('monthlyTrendChart').getContext('2d');
-        monthlyChart = new Chart(monthlyCtx, {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Completed Tasks',
-                    data: [],
-                    backgroundColor: 'rgba(67, 97, 238, 0.2)',
-                    borderColor: 'rgba(67, 97, 238, 1)',
-                    borderWidth: 2,
-                    tension: 0.4,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                        titleFont: {
-                            size: 14,
-                            family: "'Poppins', sans-serif"
-                        },
-                        bodyFont: {
-                            size: 13,
-                            family: "'Poppins', sans-serif"
-                        },
-                        padding: 10,
-                        cornerRadius: 8
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
-                }
-            }
-        });
     }
     
-    function updateCharts() {
-        updateCompletionTrendsChart();
-        updateTasksByCategoryChart();
-        updateMonthlyTrendChart();
-    }
+    const categoryCounts = {};
+    filteredMaintenance.forEach(maintenance => {
+        const category = maintenance.category || 'Uncategorized';
+        categoryCounts[category] = (categoryCounts[category] || 0) + 1;
+    });
     
-    function updateCompletionTrendsChart() {
-        const timeRange = document.getElementById('trendsTimeRange').value;
-        let daysToShow = 7;
-        
-        if (timeRange === 'Last 30 Days') daysToShow = 30;
-        if (timeRange === 'Last 90 Days') daysToShow = 90;
-        
-        const now = new Date();
-        const labels = [];
-        const data = [];
-        
-        for (let i = daysToShow - 1; i >= 0; i--) {
-            const date = new Date(now);
-            date.setDate(date.getDate() - i);
-            const dateString = date.toLocaleDateString('en-US', {month: 'short', day: 'numeric'});
-            labels.push(dateString);
-            data.push(0);
-        }
-        
-        solvedMaintenance.forEach(maintenance => {
-            if (maintenance.dateCompleted) {
-                const completedDate = convertToDate(maintenance.dateCompleted);
-                const completedDateString = completedDate.toLocaleDateString('en-US', {month: 'short', day: 'numeric'});
-                
-                const index = labels.indexOf(completedDateString);
-                if (index !== -1) {
-                    data[index]++;
-                }
-            }
-        });
-        
-        if (trendsChart) {
-            trendsChart.data.labels = labels;
-            trendsChart.data.datasets[0].data = data;
-            trendsChart.update();
-        }
+    const labels = Object.keys(categoryCounts);
+    const data = Object.values(categoryCounts);
+    
+    if (categoryChart) {
+        categoryChart.data.labels = labels;
+        categoryChart.data.datasets[0].data = data;
+        categoryChart.update();
     }
+}
 
-    function updateTasksByCategoryChart() {
-        const timeRange = document.getElementById('categoryTimeRange').value;
-        const now = new Date();
-        
-        let filteredMaintenance = solvedMaintenance;
-        
-        if (timeRange !== 'All Time') {
-            filteredMaintenance = solvedMaintenance.filter(maintenance => {
-                if (!maintenance.dateCompleted) return false;
-                
-                const completedDate = convertToDate(maintenance.dateCompleted);
-                
-                if (timeRange === 'This Week') {
-                    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-                    return completedDate >= weekAgo;
-                } else if (timeRange === 'This Month') {
-                    return completedDate.getMonth() === now.getMonth() && 
-                           completedDate.getFullYear() === now.getFullYear();
-                }
-                
-                return true;
-            });
-        }
-        
-        const categoryCounts = {};
-        filteredMaintenance.forEach(maintenance => {
-            const category = maintenance.category || 'Uncategorized';
-            categoryCounts[category] = (categoryCounts[category] || 0) + 1;
-        });
-        
-        const labels = Object.keys(categoryCounts);
-        const data = Object.values(categoryCounts);
-        
-        if (categoryChart) {
-            categoryChart.data.labels = labels;
-            categoryChart.data.datasets[0].data = data;
-            categoryChart.update();
-        }
-    }
-
-    function updateMonthlyTrendChart() {
-        const timeRange = document.getElementById('monthlyTimeRange').value;
-        let monthsToShow = 6;
-        
-        if (timeRange === 'Last 12 Months') monthsToShow = 12;
-        if (timeRange === 'All Time') {
-            // Hitung semua bulan yang ada dalam data
-            const monthsSet = new Set();
-            solvedMaintenance.forEach(maintenance => {
-                if (maintenance.dateCompleted) {
-                    const completedDate = convertToDate(maintenance.dateCompleted);
-                    const monthYear = completedDate.toLocaleDateString('en-US', {year: 'numeric', month: 'short'});
-                    monthsSet.add(monthYear);
-                }
-            });
-            monthsToShow = Math.min(monthsSet.size, 24); // Maksimal 24 bulan
-        }
-        
-        const now = new Date();
-        const labels = [];
-        const data = [];
-        
-        for (let i = monthsToShow - 1; i >= 0; i--) {
-            const date = new Date(now);
-            date.setMonth(date.getMonth() - i);
-            const monthYear = date.toLocaleDateString('en-US', {year: 'numeric', month: 'short'});
-            labels.push(monthYear);
-            data.push(0);
-        }
-        
+function updateMonthlyTrendChart() {
+    const timeRange = document.getElementById('monthlyTimeRange').value;
+    let monthsToShow = 6;
+    
+    if (timeRange === 'Last 12 Months') monthsToShow = 12;
+    if (timeRange === 'All Time') {
+        // Hitung semua bulan yang ada dalam data
+        const monthsSet = new Set();
         solvedMaintenance.forEach(maintenance => {
             if (maintenance.dateCompleted) {
                 const completedDate = convertToDate(maintenance.dateCompleted);
                 const monthYear = completedDate.toLocaleDateString('en-US', {year: 'numeric', month: 'short'});
-                
-                const index = labels.indexOf(monthYear);
-                if (index !== -1) {
-                    data[index]++;
-                }
+                monthsSet.add(monthYear);
             }
         });
-        
-        if (monthlyChart) {
-            monthlyChart.data.labels = labels;
-            monthlyChart.data.datasets[0].data = data;
-            monthlyChart.update();
-        }
+        monthsToShow = Math.min(monthsSet.size, 24); // Maksimal 24 bulan
     }
-
-    function showMaintenanceDetails(maintenanceId) {
-        const maintenance = solvedMaintenance.find(m => m.id === maintenanceId);
-        
-        if (!maintenance) {
-            showToast("Maintenance details not found", "error");
-            return;
-        }
-        
-        // Populate modal with maintenance data
-        document.getElementById('viewTitle').textContent = maintenance.title || 'N/A';
-        document.getElementById('viewCategory').textContent = maintenance.category || 'N/A';
-        
-        // Format dates
-        const createdDate = maintenance.dateCreated ? formatDate(convertToDate(maintenance.dateCreated)) : 'N/A';
-        const dueDate = maintenance.dueDate ? formatDate(convertToDate(maintenance.dueDate)) : 'N/A';
-        const completedDate = maintenance.dateCompleted ? formatDate(convertToDate(maintenance.dateCompleted)) : 'N/A';
-        
-        document.getElementById('viewCreatedDate').textContent = createdDate;
-        document.getElementById('viewDueDate').textContent = dueDate;
-        document.getElementById('viewCompletedDate').textContent = completedDate;
-        
-        document.getElementById('viewAssignedTo').textContent = maintenance.assignedTo || 'N/A';
-        document.getElementById('viewDescription').textContent = maintenance.description || 'N/A';
-        document.getElementById('viewNotes').textContent = maintenance.notes || 'N/A';
-        
-        // Calculate and display time tracking
-        const estimatedTime = maintenance.estimatedTime || 'N/A';
-        const actualTime = maintenance.actualTime || 'N/A';
-        
-        document.getElementById('viewEstimatedTime').textContent = estimatedTime;
-        document.getElementById('viewActualTime').textContent = actualTime;
-        
-        // Calculate efficiency if both times are available
-        let efficiency = 'N/A';
-        if (estimatedTime !== 'N/A' && actualTime !== 'N/A') {
-            const estimatedHours = parseTimeToHours(estimatedTime);
-            const actualHours = parseTimeToHours(actualTime);
+    
+    const now = new Date();
+    const labels = [];
+    const data = [];
+    
+    for (let i = monthsToShow - 1; i >= 0; i--) {
+        const date = new Date(now);
+        date.setMonth(date.getMonth() - i);
+        const monthYear = date.toLocaleDateString('en-US', {year: 'numeric', month: 'short'});
+        labels.push(monthYear);
+        data.push(0);
+    }
+    
+    solvedMaintenance.forEach(maintenance => {
+        if (maintenance.dateCompleted) {
+            const completedDate = convertToDate(maintenance.dateCompleted);
+            const monthYear = completedDate.toLocaleDateString('en-US', {year: 'numeric', month: 'short'});
             
-            if (estimatedHours > 0) {
-                const efficiencyPercent = ((estimatedHours - actualHours) / estimatedHours) * 100;
-                efficiency = `${efficiencyPercent.toFixed(1)}% ${efficiencyPercent >= 0 ? 'faster' : 'slower'}`;
+            const index = labels.indexOf(monthYear);
+            if (index !== -1) {
+                data[index]++;
             }
         }
-        
-        document.getElementById('viewEfficiency').textContent = efficiency;
-        
-        // Show the modal
-        document.getElementById('viewModal').classList.add('active');
+    });
+    
+    if (monthlyChart) {
+        monthlyChart.data.labels = labels;
+        monthlyChart.data.datasets[0].data = data;
+        monthlyChart.update();
+    }
+}
+
+function showMaintenanceDetails(maintenanceId) {
+    const maintenance = solvedMaintenance.find(m => m.id === maintenanceId);
+    
+    if (!maintenance) {
+        showToast("Maintenance details not found", "error");
+        return;
     }
     
-    function parseTimeToHours(timeString) {
-        // Parse time strings like "2h 30m" or "3h" or "45m"
-        const hoursMatch = timeString.match(/(\d+)\s*h/);
-        const minutesMatch = timeString.match(/(\d+)\s*m/);
+    // Populate modal with maintenance data
+    document.getElementById('viewTitle').textContent = maintenance.title || 'N/A';
+    document.getElementById('viewCategory').textContent = maintenance.category || 'N/A';
+    
+    // Format dates
+    const createdDate = maintenance.dateCreated ? formatDate(convertToDate(maintenance.dateCreated)) : 'N/A';
+    const dueDate = maintenance.dueDate ? formatDate(convertToDate(maintenance.dueDate)) : 'N/A';
+    const completedDate = maintenance.dateCompleted ? formatDate(convertToDate(maintenance.dateCompleted)) : 'N/A';
+    
+    document.getElementById('viewCreatedDate').textContent = createdDate;
+    document.getElementById('viewDueDate').textContent = dueDate;
+    document.getElementById('viewCompletedDate').textContent = completedDate;
+    
+    document.getElementById('viewAssignedTo').textContent = maintenance.assignedTo || 'N/A';
+    document.getElementById('viewDescription').textContent = maintenance.description || 'N/A';
+    document.getElementById('viewNotes').textContent = maintenance.notes || 'N/A';
+    
+    // Calculate and display time tracking
+    const estimatedTime = maintenance.estimatedTime || 'N/A';
+    const actualTime = maintenance.actualTime || 'N/A';
+    
+    document.getElementById('viewEstimatedTime').textContent = estimatedTime;
+    document.getElementById('viewActualTime').textContent = actualTime;
+    
+    // Calculate efficiency if both times are available
+    let efficiency = 'N/A';
+    if (estimatedTime !== 'N/A' && actualTime !== 'N/A') {
+        const estimatedHours = parseTimeToHours(estimatedTime);
+        const actualHours = parseTimeToHours(actualTime);
         
-        const hours = hoursMatch ? parseInt(hoursMatch[1]) : 0;
-        const minutes = minutesMatch ? parseInt(minutesMatch[1]) : 0;
-        
-        return hours + (minutes / 60);
+        if (estimatedHours > 0) {
+            const efficiencyPercent = ((estimatedHours - actualHours) / estimatedHours) * 100;
+            efficiency = `${efficiencyPercent.toFixed(1)}% ${efficiencyPercent >= 0 ? 'faster' : 'slower'}`;
+        }
     }
     
-    function formatDate(date) {
-        return date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-        });
-    }
+    document.getElementById('viewEfficiency').textContent = efficiency;
     
-    function showToast(message, type = 'info') {
+    // Show the modal
+    document.getElementById('viewModal').classList.add('active');
+}
+
+function parseTimeToHours(timeString) {
+    // Parse time strings like "2h 30m" or "3h" or "45m"
+    const hoursMatch = timeString.match(/(\d+)\s*h/);
+    const minutesMatch = timeString.match(/(\d+)\s*m/);
+    
+    const hours = hoursMatch ? parseInt(hoursMatch[1]) : 0;
+    const minutes = minutesMatch ? parseInt(minutesMatch[1]) : 0;
+    
+    return hours + (minutes / 60);
+}
+
+function formatDate(date) {
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+}
+
+function showToast(message, type = 'info') {
     // Jika message adalah key translation, gunakan getTranslation
     const displayMessage = getTranslation(message) || message;
     
@@ -1626,8 +1900,369 @@
         }, 300);
     }, 3000);
 }
+// ========== SUPER ADMIN FEATURES ==========
 
-    // Initialize the page
+// Fungsi untuk mendapatkan role user saat ini
+async function getCurrentUserRole() {
+    try {
+        const currentUser = auth.currentUser;
+        if (!currentUser) return null;
+        
+        const userDoc = await db.collection('users').doc(currentUser.uid).get();
+        if (userDoc.exists) {
+            const userData = userDoc.data();
+            return userData.role || 'user';
+        }
+        return 'user';
+    } catch (error) {
+        console.error('Error getting user role:', error);
+        return 'user';
+    }
+}
+
+// Fungsi untuk mengecek apakah user adalah super admin
+async function isSuperAdmin() {
+    const role = await getCurrentUserRole();
+    return role === 'super_admin';
+}
+
+// Fungsi untuk menambahkan tombol aksi super admin
+async function addSuperAdminActions() {
+    const isAdmin = await isSuperAdmin();
+    
+    if (!isAdmin) {
+        console.log("User is not super admin, hiding admin actions");
+        return;
+    }
+    
+    console.log("User is super admin, adding admin actions");
+    
+    // Update semua row yang sudah ada
+    document.querySelectorAll('#completedTableBody tr').forEach(row => {
+        const maintenanceId = row.cells[0].textContent;
+        const actionCell = row.cells[6];
+        
+        // Cek apakah tombol admin sudah ada
+        if (!actionCell.querySelector('.btn-icon.reopen') && !actionCell.querySelector('.btn-icon.delete')) {
+            const adminButtons = `
+                <button class="btn-icon reopen" data-id="${maintenanceId}" title="Reopen Task">
+                    <i class="fas fa-undo"></i>
+                </button>
+                <button class="btn-icon delete" data-id="${maintenanceId}" title="Delete Task">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            
+            const actionButtons = actionCell.querySelector('.action-buttons');
+            if (actionButtons) {
+                actionButtons.innerHTML += adminButtons;
+            }
+        }
+    });
+    
+    // Tambahkan event listeners untuk tombol admin
+    document.querySelectorAll('.btn-icon.reopen').forEach(button => {
+        button.addEventListener('click', function() {
+            const maintenanceId = this.getAttribute('data-id');
+            showReopenConfirmation(maintenanceId);
+        });
+    });
+    
+    document.querySelectorAll('.btn-icon.delete').forEach(button => {
+        button.addEventListener('click', function() {
+            const maintenanceId = this.getAttribute('data-id');
+            showDeleteConfirmation(maintenanceId);
+        });
+    });
+}
+
+// Fungsi untuk menampilkan konfirmasi reopen
+function showReopenConfirmation(maintenanceId) {
+    const maintenance = solvedMaintenance.find(m => m.id === maintenanceId);
+    
+    if (!maintenance) {
+        showToast("Maintenance task not found", "error");
+        return;
+    }
+    
+    currentMaintenanceId = maintenanceId;
+    
+    // Update modal konfirmasi
+    document.getElementById('confirmModalTitle').textContent = "Confirm Reopen";
+    document.getElementById('confirmModalMessage').textContent = 
+        `Are you sure you want to reopen task "${maintenance.title}"? This will move it back to pending maintenance.`;
+    
+    // Update tombol konfirmasi
+    const confirmBtn = document.getElementById('confirmActionBtn');
+    confirmBtn.textContent = "Yes, Reopen Task";
+    confirmBtn.className = "btn btn-warning";
+    
+    // Setup event listener untuk tombol konfirmasi
+    confirmBtn.onclick = async function() {
+        const isAdmin = await isSuperAdmin();
+        if (!isAdmin) {
+            showToast("Access denied: Only super admin can reopen tasks", "error");
+            document.getElementById('confirmModal').classList.remove('active');
+            return;
+        }
+        
+        reopenMaintenanceTask(maintenanceId);
+        document.getElementById('confirmModal').classList.remove('active');
+    };
+    
+    // Tampilkan modal
+    document.getElementById('confirmModal').classList.add('active');
+}
+
+// Fungsi untuk menampilkan konfirmasi hapus
+function showDeleteConfirmation(maintenanceId) {
+    const maintenance = solvedMaintenance.find(m => m.id === maintenanceId);
+    
+    if (!maintenance) {
+        showToast("Maintenance task not found", "error");
+        return;
+    }
+    
+    currentMaintenanceId = maintenanceId;
+    
+    // Update modal konfirmasi
+    document.getElementById('confirmModalTitle').textContent = "Confirm Delete";
+    document.getElementById('confirmModalMessage').textContent = 
+        `Are you sure you want to permanently delete task "${maintenance.title}"? This action cannot be undone.`;
+    
+    // Update tombol konfirmasi
+    const confirmBtn = document.getElementById('confirmActionBtn');
+    confirmBtn.textContent = "Yes, Delete Task";
+    confirmBtn.className = "btn btn-danger";
+    
+    // Setup event listener untuk tombol konfirmasi
+    confirmBtn.onclick = async function() {
+        const isAdmin = await isSuperAdmin();
+        if (!isAdmin) {
+            showToast("Access denied: Only super admin can delete tasks", "error");
+            document.getElementById('confirmModal').classList.remove('active');
+            return;
+        }
+        
+        deleteMaintenanceTask(maintenanceId);
+        document.getElementById('confirmModal').classList.remove('active');
+    };
+    
+    // Tampilkan modal
+    document.getElementById('confirmModal').classList.add('active');
+}
+
+// Fungsi untuk reopen maintenance task
+// Fungsi untuk reopen maintenance task - DIPERBAIKI
+async function reopenMaintenanceTask(maintenanceId) {
+    const isAdmin = await isSuperAdmin();
+    if (!isAdmin) {
+        showToast("Access denied: Only super admin can reopen tasks", "error");
+        return;
+    }
+    
+    const solvedMaintenanceRef = db.collection('solvedMaintenance').doc(maintenanceId);
+    const pendingMaintenanceRef = db.collection('maintenanceReports').doc(maintenanceId); // Pastikan collection-nya maintenanceReports
+
+    try {
+        // Ambil data dari solvedMaintenance
+        const solvedDoc = await solvedMaintenanceRef.get();
+        
+        if (!solvedDoc.exists) {
+            showToast("Maintenance task not found", "error");
+            return;
+        }
+
+        const maintenanceData = solvedDoc.data();
+        
+        // Konversi field yang diperlukan untuk maintenanceReports
+        const pendingData = {
+            title: maintenanceData.title || '',
+            category: maintenanceData.category || 'server',
+            status: 'pending', // Reset status ke pending
+            assignedTo: maintenanceData.assignedTo || 'Nama Masing-masing',
+            description: maintenanceData.description || '',
+            notes: maintenanceData.notes || '',
+            dateCreated: maintenanceData.dateCreated || new Date(),
+            dateUpdated: new Date()
+        };
+        
+        // Handle dates - konversi dari solvedMaintenance ke maintenanceReports
+        if (maintenanceData.dateCreated) {
+            pendingData.startDate = maintenanceData.dateCreated;
+            // Set end date ke 1 hari setelah start date sebagai default
+            const startDate = convertToDate(maintenanceData.dateCreated);
+            const endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + 1);
+            pendingData.endDate = endDate.toISOString().slice(0, 16);
+        }
+        
+        if (maintenanceData.dateCompleted) {
+            // Gunakan dateCompleted sebagai dueDate jika ada
+            pendingData.dueDate = maintenanceData.dateCompleted;
+        } else {
+            // Default due date
+            const defaultDueDate = new Date();
+            defaultDueDate.setDate(defaultDueDate.getDate() + 7);
+            pendingData.dueDate = defaultDueDate.toISOString().slice(0, 16);
+        }
+        
+        // Pindahkan ke maintenanceReports collection dengan status pending
+        await pendingMaintenanceRef.set(pendingData);
+
+        // Hapus dari solvedMaintenance
+        await solvedMaintenanceRef.delete();
+        
+        showToast("Task reopened successfully", "success");
+        
+        // Refresh data
+        setupSolvedMaintenanceListener();
+        
+    } catch (error) {
+        console.error("Error reopening maintenance task:", error);
+        showToast("Error reopening task: " + error.message, "error");
+    }
+}
+
+// Update fungsi updateSolvedMaintenanceUI untuk menambahkan tombol admin
+async function updateSolvedMaintenanceUI() {
+    const tableBody = document.getElementById('completedTableBody');
+    const tasksCount = document.getElementById('tasksCount');
+    const noTasks = document.getElementById('noTasks');
+    const pagination = document.getElementById('pagination');
+    
+    console.log("Updating UI with", solvedMaintenance.length, "maintenance tasks");
+    
+    if (solvedMaintenance.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="8" class="empty-state">
+                    <i class="fas fa-database"></i>
+                    <h3>No Completed Maintenance Found</h3>
+                    <p>There are no completed maintenance tasks in the database yet.</p>
+                </td>
+            </tr>
+        `;
+        noTasks.style.display = 'block';
+        pagination.style.display = 'none';
+        tasksCount.textContent = '0 tasks';
+        return;
+    }
+    
+    noTasks.style.display = 'none';
+    pagination.style.display = 'flex';
+    
+    const filteredMaintenance = filterMaintenance(solvedMaintenance);
+    
+    tasksCount.textContent = `${filteredMaintenance.length} tasks`;
+    
+    // Pagination
+    const totalPages = Math.ceil(filteredMaintenance.length / maintenancePerPage);
+    document.getElementById('currentPage').textContent = currentPage;
+    document.getElementById('totalPages').textContent = totalPages;
+    
+    // Enable/disable pagination buttons
+    document.getElementById('prevPage').disabled = currentPage === 1;
+    document.getElementById('nextPage').disabled = currentPage === totalPages || totalPages === 0;
+    
+    // Calculate start and end index for current page
+    const startIndex = (currentPage - 1) * maintenancePerPage;
+    const endIndex = Math.min(startIndex + maintenancePerPage, filteredMaintenance.length);
+    const currentPageMaintenance = filteredMaintenance.slice(startIndex, endIndex);
+    
+    // Clear table
+    tableBody.innerHTML = '';
+    
+    if (currentPageMaintenance.length === 0) {
+        const emptyRow = document.createElement('tr');
+        emptyRow.innerHTML = `
+            <td colspan="8" style="text-align: center; padding: 40px 20px;">
+                <i class="fas fa-inbox" style="font-size: 3rem; color: var(--text-tertiary); margin-bottom: 15px; display: block;"></i>
+                <h3 style="color: var(--text-secondary; margin-bottom: 10px;">No completed maintenance found</h3>
+                <p style="color: var(--text-tertiary);">Try adjusting your filters or check back later.</p>
+            </td>
+        `;
+        tableBody.appendChild(emptyRow);
+        return;
+    }
+    
+    // Cek role user
+    const isAdmin = await isSuperAdmin();
+    
+    currentPageMaintenance.forEach(maintenance => {
+        const row = document.createElement('tr');
+        
+        // Format dates - menggunakan field yang sesuai dengan solvedMaintenance
+        const createdDate = maintenance.dateCreated ? formatDate(convertToDate(maintenance.dateCreated)) : 'N/A';
+        const completedDate = maintenance.dateCompleted ? formatDate(convertToDate(maintenance.dateCompleted)) : 'N/A';
+        
+        // Calculate completion time
+        let completionTime = 'N/A';
+        if (maintenance.dateCreated && maintenance.dateCompleted) {
+            const created = convertToDate(maintenance.dateCreated);
+            const completed = convertToDate(maintenance.dateCompleted);
+            const diffDays = Math.floor((completed - created) / (1000 * 60 * 60 * 24));
+            const diffHours = Math.floor(((completed - created) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            completionTime = `${diffDays}d ${diffHours}h`;
+        }
+        
+        // Tombol aksi untuk super admin
+        const adminButtons = isAdmin ? `
+            <button class="btn-icon reopen" data-id="${maintenance.id}" title="Reopen Task">
+                <i class="fas fa-undo"></i>
+            </button>
+            <button class="btn-icon delete" data-id="${maintenance.id}" title="Delete Task">
+                <i class="fas fa-trash"></i>
+            </button>
+        ` : '';
+        
+        row.innerHTML = `
+            <td>${maintenance.id}</td>
+            <td>${maintenance.title || 'N/A'}</td>
+            <td>${maintenance.category || 'N/A'}</td>
+            <td>${completedDate}</td>
+            <td>${completionTime}</td>
+            <td>${maintenance.assignedTo || 'N/A'}</td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn-icon view" data-id="${maintenance.id}" title="View Details">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    ${adminButtons}
+                </div>
+            </td>
+        `;
+        
+        tableBody.appendChild(row);
+    });
+    
+    // Add event listeners to all buttons
+    document.querySelectorAll('.btn-icon.view').forEach(button => {
+        button.addEventListener('click', function() {
+            const maintenanceId = this.getAttribute('data-id');
+            showMaintenanceDetails(maintenanceId);
+        });
+    });
+    
+    // Hanya tambahkan event listeners untuk admin jika user adalah super admin
+    if (isAdmin) {
+        document.querySelectorAll('.btn-icon.reopen').forEach(button => {
+            button.addEventListener('click', function() {
+                const maintenanceId = this.getAttribute('data-id');
+                showReopenConfirmation(maintenanceId);
+            });
+        });
+        
+        document.querySelectorAll('.btn-icon.delete').forEach(button => {
+            button.addEventListener('click', function() {
+                const maintenanceId = this.getAttribute('data-id');
+                showDeleteConfirmation(maintenanceId);
+            });
+        });
+    }
+}
+// Initialize the page
+// Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM loaded, setting up listener...");
     loadSidebar();
@@ -1637,84 +2272,95 @@ document.addEventListener('DOMContentLoaded', function() {
     // Setup language functionality
     loadLanguageSettings();
     setupLanguageListener();
-        
-        // Set up event listeners for filters 
-        document.getElementById('categoryFilter').addEventListener('change', function() {
-            currentPage = 1;
-            updateSolvedMaintenanceUI();
-        });
-        
-        document.getElementById('timeFilter').addEventListener('change', function() {
-            currentPage = 1;
-            updateSolvedMaintenanceUI();
-        });
-        
-        document.getElementById('sortFilter').addEventListener('change', function() {
-            currentPage = 1;
-            updateSolvedMaintenanceUI();
-        });
-        
-        // Set up chart time range filters
-        document.getElementById('trendsTimeRange').addEventListener('change', updateCharts);
-        document.getElementById('categoryTimeRange').addEventListener('change', updateCharts);
-        document.getElementById('monthlyTimeRange').addEventListener('change', updateCharts);
-        
-        // Set up pagination
-        document.getElementById('prevPage').addEventListener('click', function() {
-            if (currentPage > 1) {
-                currentPage--;
-                updateSolvedMaintenanceUI();
-            }
-        });
-        
-        document.getElementById('nextPage').addEventListener('click', function() {
-            const totalPages = Math.ceil(filterMaintenance(solvedMaintenance).length / maintenancePerPage);
-            if (currentPage < totalPages) {
-                currentPage++;
-                updateSolvedMaintenanceUI();
-            }
-        });
-        
-        // Set up modal close buttons
-        document.getElementById('closeViewModal').addEventListener('click', function() {
-            document.getElementById('viewModal').classList.remove('active');
-        });
-        
-        document.getElementById('closeViewBtn').addEventListener('click', function() {
-            document.getElementById('viewModal').classList.remove('active');
-        });
-        
-        document.getElementById('closeConfirmModal').addEventListener('click', function() {
-            document.getElementById('confirmModal').classList.remove('active');
-        });
-        
-        document.getElementById('cancelConfirmBtn').addEventListener('click', function() {
-            document.getElementById('confirmModal').classList.remove('active');
-        });
-        
-        // Close modals when clicking outside
-        window.addEventListener('click', function(event) {
-            if (event.target === document.getElementById('viewModal')) {
-                document.getElementById('viewModal').classList.remove('active');
-            }
-            if (event.target === document.getElementById('confirmModal')) {
-                document.getElementById('confirmModal').classList.remove('active');
-            }
-        });
-        
-        // Set up export and print buttons
-        document.getElementById('refreshBtn').addEventListener('click', function() {
-            showToast("Refreshing data...", "info");
-            setupSolvedMaintenanceListener();
-        });
-        
-        // Set up search functionality
-        document.getElementById('completedSearch').addEventListener('input', function() {
-            currentPage = 1;
-            updateSolvedMaintenanceUI();
-        });
+    
+    // Set up event listeners untuk filters
+    document.getElementById('categoryFilter').addEventListener('change', function() {
+        currentPage = 1;
+        updateSolvedMaintenanceUI();
     });
-    // ========== MULTI-LANGUAGE SUPPORT ==========
+    
+    document.getElementById('timeFilter').addEventListener('change', function() {
+        currentPage = 1;
+        updateSolvedMaintenanceUI();
+    });
+    
+    document.getElementById('sortFilter').addEventListener('change', function() {
+        currentPage = 1;
+        updateSolvedMaintenanceUI();
+    });
+    
+    // Set up chart time range filters
+    document.getElementById('trendsTimeRange').addEventListener('change', updateCharts);
+    document.getElementById('categoryTimeRange').addEventListener('change', updateCharts);
+    document.getElementById('monthlyTimeRange').addEventListener('change', updateCharts);
+    
+    // Set up pagination
+    document.getElementById('prevPage').addEventListener('click', function() {
+        if (currentPage > 1) {
+            currentPage--;
+            updateSolvedMaintenanceUI();
+        }
+    });
+    
+    document.getElementById('nextPage').addEventListener('click', function() {
+        const totalPages = Math.ceil(filterMaintenance(solvedMaintenance).length / maintenancePerPage);
+        if (currentPage < totalPages) {
+            currentPage++;
+            updateSolvedMaintenanceUI();
+        }
+    });
+    
+    // Set up modal close buttons
+    document.getElementById('closeViewModal').addEventListener('click', function() {
+        document.getElementById('viewModal').classList.remove('active');
+    });
+    
+    document.getElementById('closeViewBtn').addEventListener('click', function() {
+        document.getElementById('viewModal').classList.remove('active');
+    });
+    
+    document.getElementById('closeConfirmModal').addEventListener('click', function() {
+        document.getElementById('confirmModal').classList.remove('active');
+    });
+    
+    document.getElementById('cancelConfirmBtn').addEventListener('click', function() {
+        document.getElementById('confirmModal').classList.remove('active');
+    });
+    
+    // Close modals when clicking outside
+    window.addEventListener('click', function(event) {
+        if (event.target === document.getElementById('viewModal')) {
+            document.getElementById('viewModal').classList.remove('active');
+        }
+        if (event.target === document.getElementById('confirmModal')) {
+            document.getElementById('confirmModal').classList.remove('active');
+        }
+    });
+    
+    // Set up export and print buttons
+    document.getElementById('refreshBtn').addEventListener('click', function() {
+        showToast("Refreshing data...", "info");
+        setupSolvedMaintenanceListener();
+    });
+    
+    // Set up search functionality
+    document.getElementById('completedSearch').addEventListener('input', function() {
+        currentPage = 1;
+        updateSolvedMaintenanceUI();
+    });
+    
+    // Check admin status dan setup tombol admin
+    setTimeout(async () => {
+        const isAdmin = await isSuperAdmin();
+        console.log("Admin status checked:", isAdmin);
+        if (isAdmin) {
+            console.log("Setting up admin features...");
+            addSuperAdminActions();
+        }
+    }, 2000);
+});
+
+// ========== MULTI-LANGUAGE SUPPORT ==========
 let currentLanguage = localStorage.getItem('language') || 'id';
 
 // Fungsi untuk menerapkan terjemahan
@@ -1739,19 +2385,6 @@ function applyTranslations(language) {
         if (searchInput) {
             searchInput.placeholder = lang.searchPlaceholder || 'Search completed tasks...';
         }
-        
-        // Statistic Cards
-        const statTitles = document.querySelectorAll('.stat-title');
-        if (statTitles[0]) statTitles[0].textContent = lang.totalCompleted || 'Total Completed';
-        if (statTitles[1]) statTitles[1].textContent = lang.completedThisWeek || 'Completed This Week';
-        if (statTitles[2]) statTitles[2].textContent = lang.completedThisMonth || 'Completed This Month';
-        if (statTitles[3]) statTitles[3].textContent = lang.averageCompletionTime || 'Average Completion Time';
-        
-        const statDescriptions = document.querySelectorAll('.stat-description');
-        if (statDescriptions[0]) statDescriptions[0].textContent = lang.tasksCompletedToDate || 'Tasks completed to date';
-        if (statDescriptions[1]) statDescriptions[1].textContent = lang.tasksCompletedThisWeek || 'Tasks completed this week';
-        if (statDescriptions[2]) statDescriptions[2].textContent = lang.tasksCompletedThisMonth || 'Tasks completed this month';
-        if (statDescriptions[3]) statDescriptions[3].textContent = lang.averageDaysToComplete || 'Average days to complete';
         
         // Chart Titles
         const chartTitles = document.querySelectorAll('.chart-title');
@@ -1859,7 +2492,7 @@ function applyTranslations(language) {
         const modalLabels = document.querySelectorAll('#viewModal .form-label');
         if (modalLabels[0]) modalLabels[0].textContent = lang.title || 'Title';
         if (modalLabels[1]) modalLabels[1].textContent = lang.category || 'Category';
-        if (modalLabels[2]) modalLabels[2].textContent = lang.priority || 'Priority';
+
         if (modalLabels[3]) modalLabels[3].textContent = lang.dueDate || 'Due Date';
         if (modalLabels[4]) modalLabels[4].textContent = lang.completedDate || 'Completed Date';
         if (modalLabels[5]) modalLabels[5].textContent = lang.createdDate || 'Created Date';
@@ -1960,6 +2593,7 @@ function setupLanguageListener() {
         }
     }, 1000);
 }
+
 </script>
 </body>
 </html>

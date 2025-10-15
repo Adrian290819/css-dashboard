@@ -205,7 +205,7 @@
     background-color: var(--hover-color);
 }
 
-.time-input {
+.time-input, .name-input {
     width: 100%;
     padding: var(--space-xs) var(--space-sm);
     border: 1px solid var(--border-color);
@@ -216,7 +216,7 @@
     transition: border-color var(--transition-fast);
 }
 
-.time-input:focus {
+.time-input:focus, .name-input:focus {
     outline: none;
     border-color: var(--primary);
 }
@@ -244,7 +244,7 @@
     display: none !important;
 }
 
-.save-btn {
+.save-btn, .add-btn {
     padding: var(--space-md) var(--space-lg);
     background: var(--primary);
     color: white;
@@ -259,8 +259,34 @@
     transition: background-color var(--transition-fast);
 }
 
-.save-btn:hover {
+.save-btn:hover, .add-btn:hover {
     background: var(--primary-dark);
+}
+
+.add-btn {
+    background: var(--success);
+}
+
+.add-btn:hover {
+    background: var(--success-dark);
+}
+
+.delete-btn {
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--danger);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color var(--transition-fast);
+}
+
+.delete-btn:hover {
+    background: var(--danger-dark);
 }
 
 /* ========== SUPER ADMIN STYLES ========== */
@@ -271,12 +297,17 @@ body.user-mode .shift-actions {
 }
 
 body.user-mode .time-input,
-body.user-mode .shift-dropdown {
+body.user-mode .shift-dropdown,
+body.user-mode .name-input {
     background-color: var(--bg-secondary);
     border-color: var(--border-color);
     color: var(--text-secondary);
     cursor: not-allowed;
     pointer-events: none;
+}
+
+body.user-mode .delete-btn {
+    display: none !important;
 }
 
 /* Mode untuk admin - tampilkan tombol simpan dan aktifkan input */
@@ -286,7 +317,8 @@ body.admin-mode .shift-actions {
 }
 
 body.admin-mode .time-input,
-body.admin-mode .shift-dropdown {
+body.admin-mode .shift-dropdown,
+body.admin-mode .name-input {
     background-color: var(--input-bg);
     border-color: var(--border-color);
     color: var(--text-primary);
@@ -488,7 +520,7 @@ body.admin-mode .shift-dropdown {
                 <div class="user-profile">
                     <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
                     <div class="user-info">
-                        <h4 id="userName">Adrian Abdul Arif</h4>
+                        <h4 id="userName">Nama Masing Masing</h4>
                         <p id="userRole">Customer Service Support</p>
                     </div>
                 </div>
@@ -520,6 +552,7 @@ body.admin-mode .shift-dropdown {
                             <th>Time 13-31</th>
                             <th>Shift</th>
                             <th>Change Shift</th>
+                            <th class="admin-only">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="shiftTableBody">
@@ -529,6 +562,10 @@ body.admin-mode .shift-dropdown {
             </div>
 
             <div class="shift-actions">
+                <button class="add-btn" id="addEmployeeBtn">
+                    <i class="fas fa-plus"></i>
+                    Tambah Karyawan
+                </button>
                 <button class="save-btn" id="saveChangesBtn">
                     <i class="fas fa-save"></i>
                     Simpan Perubahan
@@ -567,20 +604,15 @@ body.admin-mode .shift-dropdown {
 
         // ========== VARIABEL GLOBAL ==========
         let shiftData = [];
+        let employees = [];
         let isSuperAdminUser = false;
         let unsubscribeShiftData = null;
+        let unsubscribeEmployees = null;
 
         // Data bulan
         let currentMonth = parseInt(localStorage.getItem('currentMonth')) || new Date().getMonth();
         const months = ['JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'];
         const currentYear = new Date().getFullYear();
-
-        // Data karyawan contoh
-        const employees = [
-            { id: 1, name: "ADRIAN ABDUL ARIF" },
-            { id: 2, name: "ARIS SETIAWAN" },
-            { id: 3, name: "DANEL" },
-        ];
 
         // Elemen DOM
         const shiftTableBody = document.getElementById('shiftTableBody');
@@ -588,6 +620,7 @@ body.admin-mode .shift-dropdown {
         const prevMonthBtn = document.getElementById('prevMonth');
         const nextMonthBtn = document.getElementById('nextMonth');
         const saveChangesBtn = document.getElementById('saveChangesBtn');
+        const addEmployeeBtn = document.getElementById('addEmployeeBtn');
         const employeeSearch = document.getElementById('employeeSearch');
         const notificationContainer = document.getElementById('notificationContainer');
         const userNameElement = document.getElementById('userName');
@@ -612,6 +645,13 @@ body.admin-mode .shift-dropdown {
                 if (userDoc.exists) {
                     const userData = userDoc.data();
                     console.log('📊 User data from Firestore:', userData);
+                    
+                    // Update profil juga di sini
+                    const displayName = userData.name || userData.displayName || userData.email || 'User';
+                    const role = userData.role || 'Customer Service Support';
+                    
+                    userNameElement.textContent = displayName;
+                    userRoleElement.textContent = role;
                     
                     // Check role dengan berbagai kemungkinan field
                     const isAdmin = userData.role === 'super_admin' || 
@@ -656,6 +696,11 @@ body.admin-mode .shift-dropdown {
                 saveChangesBtn.style.cursor = 'pointer';
                 saveChangesBtn.style.backgroundColor = 'var(--primary)';
                 
+                // Aktifkan tombol add
+                addEmployeeBtn.disabled = false;
+                addEmployeeBtn.style.cursor = 'pointer';
+                addEmployeeBtn.style.backgroundColor = 'var(--success)';
+                
                 isSuperAdminUser = true;
                 console.log('Admin UI setup completed - Edit enabled');
             } else {
@@ -667,12 +712,49 @@ body.admin-mode .shift-dropdown {
                 saveChangesBtn.style.cursor = 'not-allowed';
                 saveChangesBtn.style.backgroundColor = 'var(--text-tertiary)';
                 
+                // Nonaktifkan tombol add untuk user biasa
+                addEmployeeBtn.disabled = true;
+                addEmployeeBtn.style.cursor = 'not-allowed';
+                addEmployeeBtn.style.backgroundColor = 'var(--text-tertiary)';
+                
                 isSuperAdminUser = false;
                 console.log('Regular user UI setup completed - Edit disabled');
             }
         }
 
         // ========== FUNGSI FIRESTORE ==========
+
+        // Setup Firestore listener untuk data karyawan
+        function setupEmployeesListener() {
+            console.log("Setting up Firestore listeners for employees...");
+            
+            if (unsubscribeEmployees) {
+                unsubscribeEmployees();
+            }
+            
+            unsubscribeEmployees = db.collection('employees')
+                .orderBy('id')
+                .onSnapshot((snapshot) => {
+                    employees = [];
+                    snapshot.forEach((doc) => {
+                        const employee = doc.data();
+                        employee.docId = doc.id;
+                        employees.push(employee);
+                    });
+                    console.log("Employees loaded from Firestore:", employees.length, "items");
+                    renderShiftTable();
+                }, (error) => {
+                    console.error("Error loading employees:", error);
+                    showNotification("Error loading employees data", "error");
+                    
+                    // Fallback ke localStorage
+                    const localData = localStorage.getItem('employees');
+                    if (localData) {
+                        employees = JSON.parse(localData);
+                        renderShiftTable();
+                    }
+                });
+        }
 
         // Setup Firestore listener untuk data shift
         function setupFirestoreListeners() {
@@ -706,6 +788,68 @@ body.admin-mode .shift-dropdown {
                 });
         }
 
+        // Simpan data karyawan ke Firestore
+        async function saveEmployeesData() {
+            if (!isSuperAdminUser) {
+                showNotification('Hanya Super Admin yang dapat menyimpan perubahan', 'error');
+                return;
+            }
+
+            try {
+                // Kumpulkan semua perubahan
+                const changes = [];
+                const nameInputs = document.querySelectorAll('.name-input');
+                
+                nameInputs.forEach(input => {
+                    const employeeId = parseInt(input.dataset.employee);
+                    const value = input.value;
+                    
+                    // Cari data yang sesuai
+                    const dataIndex = employees.findIndex(item => 
+                        item.id === employeeId
+                    );
+                    
+                    if (dataIndex !== -1) {
+                        // Update data yang sudah ada
+                        employees[dataIndex].name = value;
+                        changes.push({
+                            id: employees[dataIndex].docId,
+                            data: employees[dataIndex]
+                        });
+                    }
+                });
+
+                // Simpan ke Firestore
+                const batch = db.batch();
+                const employeesCollection = db.collection('employees');
+                
+                for (const change of changes) {
+                    if (change.id) {
+                        // Update existing document
+                        const docRef = employeesCollection.doc(change.id);
+                        batch.update(docRef, { name: change.data.name });
+                    }
+                }
+                
+                await batch.commit();
+                
+                // Tampilkan status koneksi
+                showConnectionStatus();
+                
+            } catch (error) {
+                console.error("Error saving employees data:", error);
+                showNotification("Gagal menyimpan perubahan nama ke server", "error");
+                
+                // Fallback ke localStorage
+                try {
+                    localStorage.setItem('employees', JSON.stringify(employees));
+                    showNotification('Perubahan nama disimpan (offline mode)', 'info');
+                } catch (fallbackError) {
+                    console.error("Fallback also failed:", fallbackError);
+                }
+            }
+        }
+
         // Simpan data shift ke Firestore
         async function saveShiftData() {
             if (!isSuperAdminUser) {
@@ -714,7 +858,10 @@ body.admin-mode .shift-dropdown {
             }
 
             try {
-                // Kumpulkan semua perubahan
+                // Simpan perubahan nama terlebih dahulu
+                await saveEmployeesData();
+                
+                // Kumpulkan semua perubahan shift
                 const changes = [];
                 const inputs = document.querySelectorAll('.time-input, .shift-dropdown');
                 
@@ -767,8 +914,6 @@ body.admin-mode .shift-dropdown {
                 
                 await batch.commit();
                 
-                showNotification('Perubahan jadwal shift berhasil disimpan', 'success');
-                
                 // Tampilkan status koneksi
                 showConnectionStatus();
                 
@@ -783,6 +928,106 @@ body.admin-mode .shift-dropdown {
                 } catch (fallbackError) {
                     console.error("Fallback also failed:", fallbackError);
                 }
+            }
+        }
+
+        // Tambah karyawan baru
+        async function addNewEmployee() {
+            if (!isSuperAdminUser) {
+                showNotification('Hanya Super Admin yang dapat menambah karyawan', 'error');
+                return;
+            }
+
+            try {
+                // Cari ID tertinggi untuk menentukan ID berikutnya
+                let maxId = 0;
+                if (employees.length > 0) {
+                    maxId = Math.max(...employees.map(emp => emp.id));
+                }
+                
+                const newEmployeeId = maxId + 1;
+                const newEmployeeName = `Karyawan Baru ${newEmployeeId}`;
+                
+                // Tambah ke koleksi employees
+                const newEmployee = {
+                    id: newEmployeeId,
+                    name: newEmployeeName,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                await db.collection('employees').add(newEmployee);
+                
+                // Buat data shift default untuk karyawan baru untuk semua bulan
+                const defaultShiftData = [];
+                for (let i = 0; i < 12; i++) {
+                    defaultShiftData.push({
+                        employeeId: newEmployeeId,
+                        month: i,
+                        dayOff: "06 & 22",
+                        time1: "20:00 - 07:00",
+                        shift1: "NIGHT",
+                        time2: "20:00 - 07:00",
+                        shift2: "NIGHT",
+                        changeShift: "-",
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+                
+                // Simpan data shift default
+                const batch = db.batch();
+                defaultShiftData.forEach(data => {
+                    const docRef = db.collection('shiftData').doc();
+                    batch.set(docRef, data);
+                });
+                
+                await batch.commit();
+                
+                showNotification(`Karyawan baru "${newEmployeeName}" berhasil ditambahkan`, 'success');
+                
+            } catch (error) {
+                console.error("Error adding new employee:", error);
+                showNotification("Gagal menambah karyawan baru", "error");
+            }
+        }
+
+        // Hapus karyawan
+        async function deleteEmployee(employeeId) {
+            if (!isSuperAdminUser) {
+                showNotification('Hanya Super Admin yang dapat menghapus karyawan', 'error');
+                return;
+            }
+
+            if (!confirm('Apakah Anda yakin ingin menghapus karyawan ini?')) {
+                return;
+            }
+
+            try {
+                // Cari dokumen karyawan
+                const employeeDoc = employees.find(emp => emp.id === employeeId);
+                if (!employeeDoc) {
+                    showNotification('Data karyawan tidak ditemukan', 'error');
+                    return;
+                }
+
+                // Hapus dari koleksi employees
+                await db.collection('employees').doc(employeeDoc.docId).delete();
+                
+                // Hapus semua data shift terkait karyawan ini
+                const shiftQuery = db.collection('shiftData').where('employeeId', '==', employeeId);
+                const shiftSnapshot = await shiftQuery.get();
+                
+                const batch = db.batch();
+                shiftSnapshot.forEach(doc => {
+                    batch.delete(doc.ref);
+                });
+                
+                await batch.commit();
+                
+                showNotification('Karyawan berhasil dihapus', 'success');
+                
+            } catch (error) {
+                console.error("Error deleting employee:", error);
+                showNotification("Gagal menghapus karyawan", "error");
             }
         }
 
@@ -865,7 +1110,11 @@ body.admin-mode .shift-dropdown {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${index + 1}</td>
-                    <td>${employee.name}</td>
+                    <td>
+                        <input type="text" class="name-input" value="${employee.name || ''}" 
+                               data-employee="${employee.id}" 
+                               ${!isSuperAdminUser ? 'readonly' : ''}>
+                    </td>
                     <td>
                         <input type="text" class="time-input" value="${employeeData.dayOff || ''}" 
                                data-field="dayOff" data-employee="${employee.id}" 
@@ -900,53 +1149,62 @@ body.admin-mode .shift-dropdown {
                                data-field="changeShift" data-employee="${employee.id}"
                                ${!isSuperAdminUser ? 'readonly' : ''}>
                     </td>
+                    <td class="admin-only">
+                        ${isSuperAdminUser ? `<button class="delete-btn" data-employee="${employee.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>` : ''}
+                    </td>
                 `;
                 
                 shiftTableBody.appendChild(row);
             });
             
-            // Tambahkan event listeners untuk input fields (hanya untuk admin)
+            // Tambahkan event listener untuk tombol delete
             if (isSuperAdminUser) {
-                document.querySelectorAll('.time-input, .shift-dropdown').forEach(input => {
-                    input.addEventListener('change', handleInputChange);
+                const deleteButtons = document.querySelectorAll('.delete-btn');
+                deleteButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const employeeId = parseInt(this.dataset.employee);
+                        deleteEmployee(employeeId);
+                    });
                 });
             }
         }
 
-        // Handle perubahan input
-        function handleInputChange(e) {
-            if (!isSuperAdminUser) return;
-            
-            const field = e.target.dataset.field;
-            const employeeId = parseInt(e.target.dataset.employee);
-            const value = e.target.value;
-            
-            // Cari data yang sesuai
-            const dataIndex = shiftData.findIndex(item => 
-                item.employeeId === employeeId && item.month === currentMonth
-            );
-            
-            if (dataIndex !== -1) {
-                shiftData[dataIndex][field] = value;
-            } else {
-                // Buat data baru jika tidak ditemukan
-                shiftData.push({
-                    employeeId: employeeId,
-                    month: currentMonth,
-                    [field]: value
-                });
-            }
-        }
+        // ========== EVENT LISTENERS ==========
 
-        // Fungsi untuk mencari karyawan
-        function searchEmployee() {
-            const searchTerm = employeeSearch.value.toLowerCase();
+        // Event listener untuk navigasi bulan
+        prevMonthBtn.addEventListener('click', function() {
+            currentMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+            localStorage.setItem('currentMonth', currentMonth);
+            renderShiftTable();
+        });
+
+        nextMonthBtn.addEventListener('click', function() {
+            currentMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+            localStorage.setItem('currentMonth', currentMonth);
+            renderShiftTable();
+        });
+
+        // Event listener untuk menyimpan perubahan
+        saveChangesBtn.addEventListener('click', function() {
+            saveShiftData();
+        });
+
+        // Event listener untuk menambah karyawan
+        addEmployeeBtn.addEventListener('click', function() {
+            addNewEmployee();
+        });
+
+        // Event listener untuk pencarian
+        employeeSearch.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
             const rows = shiftTableBody.querySelectorAll('tr');
             
             rows.forEach(row => {
-                const nameCell = row.querySelector('td:nth-child(2)');
+                const nameCell = row.querySelector('.name-input');
                 if (nameCell) {
-                    const name = nameCell.textContent.toLowerCase();
+                    const name = nameCell.value.toLowerCase();
                     if (name.includes(searchTerm)) {
                         row.style.display = '';
                     } else {
@@ -954,158 +1212,70 @@ body.admin-mode .shift-dropdown {
                     }
                 }
             });
-        }
-
-        // ========== FUNGSI INISIALISASI ==========
-
-        // Inisialisasi data default jika belum ada
-        async function initializeDefaultData() {
-            try {
-                // Cek apakah sudah ada data di Firestore
-                const snapshot = await db.collection('shiftData').limit(1).get();
-                
-                if (snapshot.empty) {
-                    console.log("No shift data found, creating default data...");
-                    
-                    // Buat data default untuk semua karyawan dan bulan
-                    const defaultData = [];
-                    employees.forEach(employee => {
-                        for (let i = 0; i < 12; i++) {
-                            defaultData.push({
-                                employeeId: employee.id,
-                                month: i,
-                                dayOff: "06 & 22",
-                                time1: "20:00 - 07:00",
-                                shift1: "NIGHT",
-                                time2: "20:00 - 07:00",
-                                shift2: "NIGHT",
-                                changeShift: "-",
-                                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                            });
-                        }
-                    });
-                    
-                    // Simpan ke Firestore menggunakan batch
-                    const batch = db.batch();
-                    defaultData.forEach(data => {
-                        const docRef = db.collection('shiftData').doc();
-                        batch.set(docRef, data);
-                    });
-                    
-                    await batch.commit();
-                    console.log("Default shift data created successfully");
-                }
-            } catch (error) {
-                console.error("Error initializing default data:", error);
-            }
-        }
-
-        // Update user profile info
-        async function updateUserProfile() {
-            try {
-                const user = firebase.auth().currentUser;
-                if (user) {
-                    const userDoc = await db.collection('users').doc(user.uid).get();
-                    if (userDoc.exists) {
-                        const userData = userDoc.data();
-                        userNameElement.textContent = userData.displayName || userData.name || user.email;
-                        userRoleElement.textContent = userData.role || 'Customer Service Support';
-                    }
-                }
-            } catch (error) {
-                console.error('Error updating user profile:', error);
-            }
-        }
-
-        // ========== EVENT LISTENERS ==========
-
-        // Setup event listeners
-        function setupEventListeners() {
-            prevMonthBtn.addEventListener('click', () => {
-                if (currentMonth > 0) {
-                    currentMonth--;
-                    localStorage.setItem('currentMonth', currentMonth.toString());
-                    renderShiftTable();
-                }
-            });
-
-            nextMonthBtn.addEventListener('click', () => {
-                if (currentMonth < 11) {
-                    currentMonth++;
-                    localStorage.setItem('currentMonth', currentMonth.toString());
-                    renderShiftTable();
-                }
-            });
-
-            saveChangesBtn.addEventListener('click', saveShiftData);
-            employeeSearch.addEventListener('input', searchEmployee);
-        }
+        });
 
         // ========== INISIALISASI APLIKASI ==========
 
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Initializing Shift Schedule Dashboard...');
+        // Fungsi inisialisasi aplikasi
+        async function initializeApp() {
+            console.log("Initializing shift schedule app...");
             
-            // Setup authentication state observer
-            firebase.auth().onAuthStateChanged(async (user) => {
-                if (user) {
-                    console.log('✅ User is signed in:', user.email);
+            try {
+                // Setup auth state observer
+                firebase.auth().onAuthStateChanged(async (user) => {
+                    console.log("Auth state changed:", user);
                     
-                    // Check super admin status
-                    await checkAndSetupSuperAdmin();
-                    
-                    // Update user profile
-                    await updateUserProfile();
-                    
-                    // Setup Firestore listeners
-                    setupFirestoreListeners();
-                    
-                    // Initialize default data if needed
-                    await initializeDefaultData();
-                    
-                } else {
-                    console.log('❌ No user signed in');
-                    
-                    // Clear listeners
-                    if (unsubscribeShiftData) unsubscribeShiftData();
-                    
-                    // Load data from localStorage sebagai fallback
-                    const localData = localStorage.getItem('shiftData');
-                    if (localData) {
-                        shiftData = JSON.parse(localData);
-                        renderShiftTable();
+                    if (user) {
+                        // User is signed in
+                        await checkAndSetupSuperAdmin();
+                        setupEmployeesListener();
+                        setupFirestoreListeners();
+                    } else {
+                        // User is signed out
+                        console.log("User signed out");
+                        setupAdminUI(false);
+                        
+                        // Redirect to login page
+                        window.location.href = 'login.html';
                     }
-                    
-                    // Setup UI untuk user tidak login
-                    setupAdminUI(false);
-                }
-            });
-            
-            // Setup event listeners
-            setupEventListeners();
-            
-            console.log('✅ Shift Schedule Dashboard initialized successfully');
+                });
+                
+                // Setup UI event listeners
+                setupUIEventListeners();
+                
+                console.log("Shift schedule app initialized successfully");
+                
+            } catch (error) {
+                console.error("Error initializing app:", error);
+                showNotification("Error initializing application", "error");
+            }
+        }
+
+        // Setup UI event listeners
+        function setupUIEventListeners() {
+            // Event listener untuk toggle sidebar
+            const menuToggle = document.querySelector('.menu-toggle');
+            if (menuToggle) {
+                menuToggle.addEventListener('click', function() {
+                    document.body.classList.toggle('sidebar-collapsed');
+                });
+            }
+        }
+
+        // Jalankan inisialisasi aplikasi
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
         });
 
-        // ========== FUNGSI DEBUG ==========
-
-        // Fungsi debug untuk testing
-        window.debugShift = function() {
-            console.log('=== DEBUG SHIFT SCHEDULE ===');
-            console.log('Current User:', firebase.auth().currentUser);
-            console.log('Is Super Admin:', isSuperAdminUser);
-            console.log('Current Month:', currentMonth, months[currentMonth]);
-            console.log('Shift Data:', shiftData);
-            console.log('Employees:', employees);
-        };
-
-        // Force enable super admin untuk testing
-        window.forceSuperAdminShift = function() {
-            isSuperAdminUser = true;
-            setupAdminUI(true);
-            console.log('🔓 Super admin forced enabled for shift');
-            showNotification('Super Admin mode diaktifkan secara manual', 'info');
-        };
+        // Cleanup listeners saat halaman ditutup
+        window.addEventListener('beforeunload', function() {
+            if (unsubscribeShiftData) {
+                unsubscribeShiftData();
+            }
+            if (unsubscribeEmployees) {
+                unsubscribeEmployees();
+            }
+        });
     </script>
 </body>
 </html>

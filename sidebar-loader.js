@@ -2,234 +2,298 @@
 class SidebarLoader {
     constructor() {
         this.sidebarContainer = document.getElementById('sidebar-container');
-        this.sidebarHTML = `
-           <!-- Overlay untuk mobile -->
-            <div class="sidebar-overlay"></div>
-            <!-- Menu Super Admin (akan ditampilkan hanya untuk super admin) -->
-<div class="super-admin-only" style="display: none;">
-    <div class="menu-section">
-        <h3>Super Admin</h3>
-        <a href="#" class="menu-item" onclick="openUserManagement()">
-            <i class="fas fa-crown"></i>
-            <span>User Management</span>
-        </a>
-        <a href="#" class="menu-item" onclick="openSystemSettings()">
-            <i class="fas fa-cog"></i>
-            <span>System Settings</span>
-        </a>
-    </div>
-</div>
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <div class="sidebar-header">
-                    <div class="logo-container">
-                        <img src="https://iili.io/KfDh0EN.png" alt="Logo" class="logo-image" />
-                        <h2 class="logo-text">CSS Dashboard</h2>
-                    </div>
-                </div>
+        this.translations = {
+            id: {
+                // Header
+                "dashboardTitle": "CSS Dashboard",
                 
-                <div class="sidebar-menu">
-                    <div class="menu-item" data-page="summary-dashboard.html">
-                        <div class="menu-icon">
-                            <i class="fas fa-tachometer-alt"></i>
-                        </div>
-                        <span class="menu-text">Dashboard Overview</span>
-                    </div>
-                    
-                    <div class="menu-category">Reports</div>
-                    <div class="menu-item has-submenu">
-                        <div class="menu-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <span class="menu-text">Reports</span>
-                        <div class="submenu-indicator">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                    <div class="submenu">
-                        <div class="menu-item" data-page="pending-reports.html">
-                            <div class="menu-icon">
-                                <i class="fas fa-file-alt"></i>
-                            </div>
-                            <span class="menu-text">Pending Reports</span>
-                        </div>
-                        <div class="menu-item" data-page="solved-report.html">
-                            <div class="menu-icon">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                            <span class="menu-text">Solved Reports</span>
-                        </div>
-                    </div>
-                    
-                    <div class="menu-category">Maintenance</div>
-                    <div class="menu-item has-submenu">
-                        <div class="menu-icon">
-                            <i class="fas fa-tools"></i>
-                        </div>
-                        <span class="menu-text">Maintenance</span>
-                        <div class="submenu-indicator">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                    <div class="submenu">
-                        <div class="menu-item" data-page="maintenance.html">
-                            <div class="menu-icon">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <span class="menu-text">Pending</span>
-                        </div>
-                        <div class="menu-item" data-page="completed-report.html">
-                            <div class="menu-icon">
-                                <i class="fas fa-check-double"></i>
-                            </div>
-                            <span class="menu-text">Completed</span>
-                        </div>
-                    </div>
-
-                    <div class="menu-item has-submenu">
-                        <div class="menu-icon">
-                            <i class="fas fa-rocket"></i>
-                        </div>
-                        <span class="menu-text">Releases</span>
-                        <div class="submenu-indicator">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                    <div class="submenu">
-                        <div class="menu-item" data-page="releases-newfeature.html">
-                            <div class="menu-icon">
-                                <i class="fas fa-cog"></i>
-                            </div>
-                            <span class="menu-text">New Features</span>
-                        </div>
-                        <div class="menu-item" data-page="releases-newgame.html">
-                            <div class="menu-icon">
-                                <i class="fas fa-gamepad"></i>
-                            </div>
-                            <span class="menu-text">New Games</span>
-                        </div>
-                    </div>
-                    
-                    <div class="menu-category">Performance</div>
-                    <div class="menu-item has-submenu">
-                        <div class="menu-icon">
-                            <i class="fas fa-trophy"></i>
-                        </div>
-                        <span class="menu-text">KPI Points</span>
-                        <div class="submenu-indicator">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                    <div class="submenu">
-                        <div class="menu-item" data-page="kpi-css.html">
-                            <div class="menu-icon">
-                                <i class="fas fa-cogs"></i>
-                            </div>
-                            <span class="menu-text">KPI CSS</span>
-                        </div>
-                        <div class="menu-item" data-page="ide-saran.html">
-                            <div class="menu-icon">
-                                <i class="fas fa-lightbulb"></i>
-                            </div>
-                            <span class="menu-text">Ideas & Suggestions</span>
-                        </div>
-                        <div class="menu-item" data-page="research.html">
-                            <div class="menu-icon">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <span class="menu-text">Research</span>
-                        </div>
-                        <div class="menu-item" data-page="chat-response.html">
-                            <div class="menu-icon">
-                                <i class="fas fa-comments"></i>
-                            </div>
-                            <span class="menu-text">Chat Response</span>
-                        </div>
-                    </div>
-                    
-                    <div class="menu-category">Daily</div>
-                    <div class="menu-item has-submenu">
-                        <div class="menu-icon">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <span class="menu-text">Daily Routine</span>
-                        <div class="submenu-indicator">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                    <div class="submenu">
-                        <div class="menu-item" data-page="daily-tasks.html">
-                            <div class="menu-icon">
-                                <i class="fas fa-tasks"></i>
-                            </div>
-                            <span class="menu-text">Daily Tasks</span>
-                        </div>
-                        <div class="menu-item" data-page="task-history.html">
-                            <div class="menu-icon">
-                                <i class="fas fa-clipboard-list"></i>
-                            </div>
-                            <span class="menu-text">Task History</span>
-                        </div>
-                    </div>
-
-                        <div class="menu-item" data-page="topup-credit.html">
-                        <div class="menu-icon">
-                            <i class="fas fa-coins"></i>
-                        </div>
-                        <span class="menu-text">Top Up Credit</span>
-                    </div>  
-
-<div class="menu-item" data-page="eventprovider.html">
-    <div class="menu-icon">
-        <i class="fas fa-trophy"></i>
-    </div>
-    <span class="menu-text">Event Provider</span>
-</div>
-
-<div class="menu-item" data-page="weekly-meeting.html">
-    <div class="menu-icon">
-        <i class="fas fa-users"></i>
-    </div>
-    <span class="menu-text">Weekly Meetings</span>
-</div>
-
-<!-- Phishing Alerts pindah ke atas -->
-<div class="menu-item" data-page="phishing.html">
-    <div class="menu-icon">
-        <i class="fas fa-shield-alt"></i>
-    </div>
-    <span class="menu-text">Phishing Alerts</span>
-</div>
-
-<!-- Tambahan: Jadwal Shift (sesudah Phishing Alerts) -->
-<div class="menu-item" data-page="jadwalshift.html">
-    <div class="menu-icon">
-        <i class="fas fa-calendar-alt"></i>
-    </div>
-    <span class="menu-text">Jadwal Shift</span>
-</div>
-
-<!-- Setting pindah ke bawah -->
-<div class="menu-item" data-page="pengaturan.html">
-    <div class="menu-icon">
-        <i class="fas fa-cog"></i>
-    </div>
-    <span class="menu-text">Setting</span>
-</div>
-
-<div class="menu-item logout-btn" data-page="index.html">
-    <div class="menu-icon">
-        <i class="fas fa-sign-out-alt"></i>
-    </div>
-    <span class="menu-text">Logout</span>
-</div>
-
-
-                </div>
-            </div>
-        `;
+                // Menu Categories
+                "reports": "Laporan",
+                "maintenance": "Pemeliharaan",
+                "performance": "Kinerja",
+                "daily": "Harian",
+                
+                // Menu Items
+                "dashboardOverview": "Dashboard Overview",
+                "reportsMenu": "Laporan",
+                "pendingReports": "Laporan Tertunda",
+                "solvedReports": "Laporan Selesai",
+                "maintenanceMenu": "Pemeliharaan",
+                "pendingMaintenance": "Tertunda",
+                "completedMaintenance": "Selesai",
+                "releases": "Rilis",
+                "newFeatures": "Fitur Baru",
+                "newGames": "Game Baru",
+                "kpiPoints": "Poin KPI",
+                "kpiCss": "KPI CSS",
+                "ideasSuggestions": "Ide & Saran",
+                "research": "Riset",
+                "chatResponse": "Respon Chat",
+                "dailyRoutine": "Rutinitas Harian",
+                "dailyTasks": "Tugas Harian",
+                "taskHistory": "Riwayat Tugas",
+                "topUpCredit": "Top Up Kredit",
+                "eventProvider": "Penyedia Event",
+                "weeklyMeetings": "Rapat Mingguan",
+                "phishingAlerts": "Peringatan Phishing",
+                "shiftSchedule": "Jadwal Shift",
+                "settings": "Pengaturan",
+                "logout": "Keluar",
+                
+                // Super Admin
+                "superAdmin": "Super Admin",
+                "userManagement": "Manajemen Pengguna",
+                "systemSettings": "Pengaturan Sistem",
+                
+                // Theme
+                "darkMode": "Mode Gelap",
+                "lightMode": "Mode Terang"
+            },
+            
+            en: {
+                // Header
+                "dashboardTitle": "CSS Dashboard",
+                
+                // Menu Categories
+                "reports": "Reports",
+                "maintenance": "Maintenance",
+                "performance": "Performance",
+                "daily": "Daily",
+                
+                // Menu Items
+                "dashboardOverview": "Dashboard Overview",
+                "reportsMenu": "Reports",
+                "pendingReports": "Pending Reports",
+                "solvedReports": "Solved Reports",
+                "maintenanceMenu": "Maintenance",
+                "pendingMaintenance": "Pending",
+                "completedMaintenance": "Completed",
+                "releases": "Releases",
+                "newFeatures": "New Features",
+                "newGames": "New Games",
+                "kpiPoints": "KPI Points",
+                "kpiCss": "KPI CSS",
+                "ideasSuggestions": "Ideas & Suggestions",
+                "research": "Research",
+                "chatResponse": "Chat Response",
+                "dailyRoutine": "Daily Routine",
+                "dailyTasks": "Daily Tasks",
+                "taskHistory": "Task History",
+                "topUpCredit": "Top Up Credit",
+                "eventProvider": "Event Provider",
+                "weeklyMeetings": "Weekly Meetings",
+                "phishingAlerts": "Phishing Alerts",
+                "shiftSchedule": "Shift Schedule",
+                "settings": "Settings",
+                "logout": "Logout",
+                
+                // Super Admin
+                "superAdmin": "Super Admin",
+                "userManagement": "User Management",
+                "systemSettings": "System Settings",
+                
+                // Theme
+                "darkMode": "Dark Mode",
+                "lightMode": "Light Mode"
+            },
+            
+            ja: {
+                // Header
+                "dashboardTitle": "CSS ダッシュボード",
+                
+                // Menu Categories
+                "reports": "レポート",
+                "maintenance": "メンテナンス",
+                "performance": "パフォーマンス",
+                "daily": "日次",
+                
+                // Menu Items
+                "dashboardOverview": "ダッシュボード概要",
+                "reportsMenu": "レポート",
+                "pendingReports": "保留中のレポート",
+                "solvedReports": "解決済みレポート",
+                "maintenanceMenu": "メンテナンス",
+                "pendingMaintenance": "保留中",
+                "completedMaintenance": "完了",
+                "releases": "リリース",
+                "newFeatures": "新機能",
+                "newGames": "新ゲーム",
+                "kpiPoints": "KPIポイント",
+                "kpiCss": "KPI CSS",
+                "ideasSuggestions": "アイデアと提案",
+                "research": "リサーチ",
+                "chatResponse": "チャット応答",
+                "dailyRoutine": "日次ルーチン",
+                "dailyTasks": "日次タスク",
+                "taskHistory": "タスク履歴",
+                "topUpCredit": "クレジットチャージ",
+                "eventProvider": "イベントプロバイダー",
+                "weeklyMeetings": "週次会議",
+                "phishingAlerts": "フィッシング警告",
+                "shiftSchedule": "シフトスケジュール",
+                "settings": "設定",
+                "logout": "ログアウト",
+                
+                // Super Admin
+                "superAdmin": "スーパー管理者",
+                "userManagement": "ユーザー管理",
+                "systemSettings": "システム設定",
+                
+                // Theme
+                "darkMode": "ダークモード",
+                "lightMode": "ライトモード"
+            },
+            
+            zh: {
+                // Header
+                "dashboardTitle": "CSS 仪表板",
+                
+                // Menu Categories
+                "reports": "报告",
+                "maintenance": "维护",
+                "performance": "性能",
+                "daily": "日常",
+                
+                // Menu Items
+                "dashboardOverview": "仪表板概览",
+                "reportsMenu": "报告",
+                "pendingReports": "待处理报告",
+                "solvedReports": "已解决报告",
+                "maintenanceMenu": "维护",
+                "pendingMaintenance": "待处理",
+                "completedMaintenance": "已完成",
+                "releases": "发布",
+                "newFeatures": "新功能",
+                "newGames": "新游戏",
+                "kpiPoints": "KPI 积分",
+                "kpiCss": "KPI CSS",
+                "ideasSuggestions": "想法与建议",
+                "research": "研究",
+                "chatResponse": "聊天回复",
+                "dailyRoutine": "日常例行",
+                "dailyTasks": "日常任务",
+                "taskHistory": "任务历史",
+                "topUpCredit": "充值积分",
+                "eventProvider": "活动提供商",
+                "weeklyMeetings": "周会",
+                "phishingAlerts": "网络钓鱼警报",
+                "shiftSchedule": "轮班安排",
+                "settings": "设置",
+                "logout": "退出登录",
+                
+                // Super Admin
+                "superAdmin": "超级管理员",
+                "userManagement": "用户管理",
+                "systemSettings": "系统设置",
+                
+                // Theme
+                "darkMode": "深色模式",
+                "lightMode": "浅色模式"
+            }
+        };
         
+        this.currentLanguage = localStorage.getItem('language') || 'id';
         this.injectStyles();
+    }
+
+    getTranslation(key) {
+        return this.translations[this.currentLanguage]?.[key] || this.translations['id'][key] || key;
+    }
+
+    applyTranslations() {
+        const lang = this.translations[this.currentLanguage];
+        
+        if (!lang) return;
+
+        // Update dashboard title
+        const logoText = document.querySelector('.logo-text');
+        if (logoText) {
+            logoText.textContent = lang.dashboardTitle;
+        }
+
+        // Update menu categories
+        const categories = document.querySelectorAll('.menu-category');
+        categories.forEach((category, index) => {
+            switch(index) {
+                case 0: // Reports
+                    category.textContent = lang.reports;
+                    break;
+                case 1: // Maintenance
+                    category.textContent = lang.maintenance;
+                    break;
+                case 2: // Performance
+                    category.textContent = lang.performance;
+                    break;
+                case 3: // Daily
+                    category.textContent = lang.daily;
+                    break;
+            }
+        });
+
+        // Update menu items
+        const menuItems = {
+            '.menu-item[data-page="summary-dashboard.html"] .menu-text': lang.dashboardOverview,
+            '.has-submenu:nth-child(2) .menu-text': lang.reportsMenu,
+            '.menu-item[data-page="pending-reports.html"] .menu-text': lang.pendingReports,
+            '.menu-item[data-page="solved-report.html"] .menu-text': lang.solvedReports,
+            '.has-submenu:nth-child(4) .menu-text': lang.maintenanceMenu,
+            '.menu-item[data-page="maintenance.html"] .menu-text': lang.pendingMaintenance,
+            '.menu-item[data-page="completed-report.html"] .menu-text': lang.completedMaintenance,
+            '.has-submenu:nth-child(6) .menu-text': lang.releases,
+            '.menu-item[data-page="releases-newfeature.html"] .menu-text': lang.newFeatures,
+            '.menu-item[data-page="releases-newgame.html"] .menu-text': lang.newGames,
+            '.has-submenu:nth-child(8) .menu-text': lang.kpiPoints,
+            '.menu-item[data-page="kpi-css.html"] .menu-text': lang.kpiCss,
+            '.menu-item[data-page="ide-saran.html"] .menu-text': lang.ideasSuggestions,
+            '.menu-item[data-page="research.html"] .menu-text': lang.research,
+            '.menu-item[data-page="chat-response.html"] .menu-text': lang.chatResponse,
+            '.has-submenu:nth-child(10) .menu-text': lang.dailyRoutine,
+            '.menu-item[data-page="daily-tasks.html"] .menu-text': lang.dailyTasks,
+            '.menu-item[data-page="task-history.html"] .menu-text': lang.taskHistory,
+            '.menu-item[data-page="topup-credit.html"] .menu-text': lang.topUpCredit,
+            '.menu-item[data-page="eventprovider.html"] .menu-text': lang.eventProvider,
+            '.menu-item[data-page="weekly-meeting.html"] .menu-text': lang.weeklyMeetings,
+            '.menu-item[data-page="phishing.html"] .menu-text': lang.phishingAlerts,
+            '.menu-item[data-page="jadwalshift.html"] .menu-text': lang.shiftSchedule,
+            '.menu-item[data-page="pengaturan.html"] .menu-text': lang.settings,
+            '.logout-btn .menu-text': lang.logout
+        };
+
+        Object.keys(menuItems).forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element && menuItems[selector]) {
+                element.textContent = menuItems[selector];
+            }
+        });
+
+        // Update super admin section
+        const superAdminSection = document.querySelector('.super-admin-only');
+        if (superAdminSection) {
+            const superAdminTitle = superAdminSection.querySelector('h3');
+            const userManagement = superAdminSection.querySelector('.menu-item:nth-child(2) span');
+            const systemSettings = superAdminSection.querySelector('.menu-item:nth-child(3) span');
+            
+            if (superAdminTitle) superAdminTitle.textContent = lang.superAdmin;
+            if (userManagement) userManagement.textContent = lang.userManagement;
+            if (systemSettings) systemSettings.textContent = lang.systemSettings;
+        }
+
+        // Update theme toggle
+        this.updateThemeText();
+    }
+
+    updateThemeText() {
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) {
+            const themeText = themeToggle.querySelector('.menu-text');
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            
+            if (themeText) {
+                themeText.textContent = currentTheme === 'dark' ? 
+                    this.getTranslation('lightMode') : 
+                    this.getTranslation('darkMode');
+            }
+        }
     }
 
     injectStyles() {
@@ -502,6 +566,22 @@ class SidebarLoader {
                 margin-right: 10px;
             }
 
+            /* Super Admin Section */
+            .super-admin-only {
+                border-top: 2px solid var(--primary-color);
+                margin-top: 10px;
+                padding-top: 10px;
+            }
+
+            .super-admin-only .menu-section h3 {
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                color: var(--primary-color);
+                margin: 15px 15px 8px;
+                font-weight: 600;
+            }
+
             /* Tampilkan menu toggle hanya di mobile */
             @media (max-width: 768px) {
                 .menu-toggle {
@@ -525,19 +605,246 @@ class SidebarLoader {
         document.head.appendChild(style);
     }
 
+    generateSidebarHTML() {
+        const lang = this.translations[this.currentLanguage];
+        
+        return `
+            <!-- Overlay untuk mobile -->
+            <div class="sidebar-overlay"></div>
+            
+            <!-- Menu Super Admin -->
+            <div class="super-admin-only" style="display: none;">
+                <div class="menu-section">
+                    <h3>${lang.superAdmin}</h3>
+                    <a href="#" class="menu-item" onclick="openUserManagement()">
+                        <i class="fas fa-crown"></i>
+                        <span>${lang.userManagement}</span>
+                    </a>
+                    <a href="#" class="menu-item" onclick="openSystemSettings()">
+                        <i class="fas fa-cog"></i>
+                        <span>${lang.systemSettings}</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <div class="logo-container">
+                        <img src="https://iili.io/KfDh0EN.png" alt="Logo" class="logo-image" />
+                        <h2 class="logo-text">${lang.dashboardTitle}</h2>
+                    </div>
+                </div>
+                
+                <div class="sidebar-menu">
+                    <div class="menu-item" data-page="summary-dashboard.html">
+                        <div class="menu-icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <span class="menu-text">${lang.dashboardOverview}</span>
+                    </div>
+                    
+                    <div class="menu-category">${lang.reports}</div>
+                    <div class="menu-item has-submenu">
+                        <div class="menu-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <span class="menu-text">${lang.reportsMenu}</span>
+                        <div class="submenu-indicator">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    <div class="submenu">
+                        <div class="menu-item" data-page="pending-reports.html">
+                            <div class="menu-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <span class="menu-text">${lang.pendingReports}</span>
+                        </div>
+                        <div class="menu-item" data-page="solved-report.html">
+                            <div class="menu-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <span class="menu-text">${lang.solvedReports}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-category">${lang.maintenance}</div>
+                    <div class="menu-item has-submenu">
+                        <div class="menu-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <span class="menu-text">${lang.maintenanceMenu}</span>
+                        <div class="submenu-indicator">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    <div class="submenu">
+                        <div class="menu-item" data-page="maintenance.html">
+                            <div class="menu-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <span class="menu-text">${lang.pendingMaintenance}</span>
+                        </div>
+                        <div class="menu-item" data-page="completed-report.html">
+                            <div class="menu-icon">
+                                <i class="fas fa-check-double"></i>
+                            </div>
+                            <span class="menu-text">${lang.completedMaintenance}</span>
+                        </div>
+                    </div>
+
+                    <div class="menu-item has-submenu">
+                        <div class="menu-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <span class="menu-text">${lang.releases}</span>
+                        <div class="submenu-indicator">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    <div class="submenu">
+                        <div class="menu-item" data-page="releases-newfeature.html">
+                            <div class="menu-icon">
+                                <i class="fas fa-cog"></i>
+                            </div>
+                            <span class="menu-text">${lang.newFeatures}</span>
+                        </div>
+                        <div class="menu-item" data-page="releases-newgame.html">
+                            <div class="menu-icon">
+                                <i class="fas fa-gamepad"></i>
+                            </div>
+                            <span class="menu-text">${lang.newGames}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-category">${lang.performance}</div>
+                    <div class="menu-item has-submenu">
+                        <div class="menu-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <span class="menu-text">${lang.kpiPoints}</span>
+                        <div class="submenu-indicator">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    <div class="submenu">
+                        <div class="menu-item" data-page="kpi-css.html">
+                            <div class="menu-icon">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <span class="menu-text">${lang.kpiCss}</span>
+                        </div>
+                        <div class="menu-item" data-page="ide-saran.html">
+                            <div class="menu-icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <span class="menu-text">${lang.ideasSuggestions}</span>
+                        </div>
+                        <div class="menu-item" data-page="research.html">
+                            <div class="menu-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <span class="menu-text">${lang.research}</span>
+                        </div>
+                        <div class="menu-item" data-page="chat-response.html">
+                            <div class="menu-icon">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <span class="menu-text">${lang.chatResponse}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-category">${lang.daily}</div>
+                    <div class="menu-item has-submenu">
+                        <div class="menu-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <span class="menu-text">${lang.dailyRoutine}</span>
+                        <div class="submenu-indicator">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    <div class="submenu">
+                        <div class="menu-item" data-page="daily-tasks.html">
+                            <div class="menu-icon">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <span class="menu-text">${lang.dailyTasks}</span>
+                        </div>
+                        <div class="menu-item" data-page="task-history.html">
+                            <div class="menu-icon">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <span class="menu-text">${lang.taskHistory}</span>
+                        </div>
+                    </div>
+
+                    <div class="menu-item" data-page="topup-credit.html">
+                        <div class="menu-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <span class="menu-text">${lang.topUpCredit}</span>
+                    </div>  
+
+                    <div class="menu-item" data-page="eventprovider.html">
+                        <div class="menu-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <span class="menu-text">${lang.eventProvider}</span>
+                    </div>
+
+                    <div class="menu-item" data-page="weekly-meeting.html">
+                        <div class="menu-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <span class="menu-text">${lang.weeklyMeetings}</span>
+                    </div>
+
+                    <div class="menu-item" data-page="phishing.html">
+                        <div class="menu-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <span class="menu-text">${lang.phishingAlerts}</span>
+                    </div>
+
+                    <div class="menu-item" data-page="jadwalshift.html">
+                        <div class="menu-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <span class="menu-text">${lang.shiftSchedule}</span>
+                    </div>
+
+                    <div class="menu-item" data-page="pengaturan.html">
+                        <div class="menu-icon">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <span class="menu-text">${lang.settings}</span>
+                    </div>
+
+                    <div class="menu-item logout-btn" data-page="index.html">
+                        <div class="menu-icon">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </div>
+                        <span class="menu-text">${lang.logout}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
     load() {
         if (this.sidebarContainer) {
-            this.sidebarContainer.innerHTML = this.sidebarHTML;
-            this.createMenuToggle(); // Membuat tombol toggle
+            this.sidebarContainer.innerHTML = this.generateSidebarHTML();
+            this.createMenuToggle();
             this.initializeSidebarFunctionality();
             this.restoreSidebarState();
             this.setActiveMenuItem();
-            this.loadTheme(); // Load theme yang disimpan
+            this.loadTheme();
         }
     }
 
     createMenuToggle() {
-        // Cek apakah tombol toggle sudah ada
         if (!document.querySelector('.menu-toggle')) {
             const menuToggle = document.createElement('button');
             menuToggle.className = 'menu-toggle';
@@ -620,7 +927,7 @@ class SidebarLoader {
         menuItems.forEach(item => {
             item.addEventListener('click', () => {
                 const pageUrl = item.getAttribute('data-page');
-                if (pageUrl === 'login.html') {
+                if (pageUrl === 'index.html') {
                     localStorage.removeItem('isLoggedIn');
                     localStorage.removeItem('sidebarState');
                     localStorage.removeItem('theme');
@@ -636,30 +943,51 @@ class SidebarLoader {
         if (themeToggle) {
             themeToggle.addEventListener('click', () => this.toggleTheme());
         }
+
+        // Setup language change listener
+        this.setupLanguageListener();
+    }
+
+    setupLanguageListener() {
+        window.addEventListener('languageChanged', (event) => {
+            this.currentLanguage = event.detail.language;
+            this.reloadSidebar();
+        });
+    }
+
+    reloadSidebar() {
+        this.load();
     }
 
     toggleTheme() {
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
         const newTheme = currentTheme === 'light' ? 'dark' : 'light';
         
-        // Terapkan theme baru
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
         
-        // Update icon dan teks
         this.updateThemeIcon(newTheme);
+        this.updateThemeText();
     }
 
     updateThemeIcon(theme) {
         const themeIcon = document.querySelector('#themeToggle .menu-icon i');
-        const themeText = document.querySelector('#themeToggle .menu-text');
-        
         if (themeIcon) {
             themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
         }
-        
-        if (themeText) {
-            themeText.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+    }
+
+    updateThemeText() {
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) {
+            const themeText = themeToggle.querySelector('.menu-text');
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            
+            if (themeText) {
+                themeText.textContent = currentTheme === 'dark' ? 
+                    this.getTranslation('lightMode') : 
+                    this.getTranslation('darkMode');
+            }
         }
     }
 
@@ -667,6 +995,7 @@ class SidebarLoader {
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
         this.updateThemeIcon(savedTheme);
+        this.updateThemeText();
     }
 
     setActiveMenuItem() {
@@ -725,9 +1054,36 @@ function loadSidebar() {
     sidebarLoader.load();
 }
 
-// Inisialisasi otomatis saat DOM siap
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadSidebar);
-} else {
+// Fungsi untuk mengubah bahasa
+function changeLanguage(language) {
+    localStorage.setItem('language', language);
+    const sidebarLoader = new SidebarLoader();
+    sidebarLoader.currentLanguage = language;
+    sidebarLoader.reloadSidebar();
+    
+    // Dispatch event untuk memberi tahu komponen lain tentang perubahan bahasa
+    window.dispatchEvent(new CustomEvent('languageChanged', { 
+        detail: { language: language } 
+    }));
+}
+
+// Fungsi untuk Super Admin
+function openUserManagement() {
+    alert('User Management akan dibuka di sini');
+    // Implementasi untuk membuka modal atau halaman user management
+}
+
+function openSystemSettings() {
+    alert('System Settings akan dibuka di sini');
+    // Implementasi untuk membuka modal atau halaman system settings
+}
+
+// Load sidebar saat DOM siap
+document.addEventListener('DOMContentLoaded', function() {
     loadSidebar();
+});
+
+// Export untuk penggunaan modul
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { SidebarLoader, loadSidebar, changeLanguage };
 }

@@ -502,6 +502,88 @@ body.admin-mode .name-input {
         padding: var(--space-sm);
     }
 }
+/* ========== PERBAIKAN TOMBOL TAMBAH KARYAWAN ========== */
+.add-btn {
+    padding: 12px 20px;
+    background: #10b981 !important; /* Hijau cerah */
+    color: white !important;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
+    min-width: 160px;
+    justify-content: center;
+}
+
+.add-btn:hover {
+    background: #059669 !important; /* Hijau lebih gelap */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(16, 185, 129, 0.4);
+}
+
+.add-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+}
+
+.add-btn i {
+    color: white !important;
+    font-size: 14px;
+}
+
+/* Pastikan container tombol terlihat */
+.shift-actions {
+    display: flex !important;
+    gap: 12px;
+    margin-top: 20px;
+    padding: 0 20px;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Mode admin - pastikan tombol aktif */
+body.admin-mode .add-btn {
+    background: #10b981 !important;
+    color: white !important;
+    cursor: pointer;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+body.admin-mode .add-btn:hover {
+    background: #059669 !important;
+}
+
+/* Mode user - nonaktifkan tombol */
+body.user-mode .add-btn {
+    background: #9ca3af !important;
+    color: #6b7280 !important;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+body.user-mode .add-btn:hover {
+    background: #9ca3af !important;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Animasi untuk tombol yang muncul */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
     </style>
 </head>
 <body>

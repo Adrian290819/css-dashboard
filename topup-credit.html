@@ -1132,6 +1132,7 @@ body.admin-mode .masteragent-history-table td:nth-child(7) {
     // ========== FUNGSI UTILITAS ==========
 // Fungsi untuk mendapatkan data user yang sedang login
 // Fungsi untuk mendapatkan data user yang sedang login - VERSI DIPERBAIKI
+// Fungsi untuk mendapatkan data user yang sedang login - VERSI DIPERBAIKI
 async function getCurrentUserData() {
     try {
         const user = firebase.auth().currentUser;
@@ -1153,12 +1154,11 @@ async function getCurrentUserData() {
             const userData = userDoc.data();
             console.log('📋 User data from Firestore:', userData);
             
-            // Prioritaskan nama dalam urutan: displayName -> name -> email
-            const userName = userData.displayName || 
-                           userData.name || 
+            // PRIORITASKAN NAMA DARI FIRESTORE (bukan dari email)
+            const userName = userData.name || 
+                           userData.displayName || 
                            user.displayName || 
-                           user.email.split('@')[0] || // Ambil bagian sebelum @
-                           user.email;
+                           'Unknown User';
             
             return {
                 name: userName,
@@ -1169,13 +1169,9 @@ async function getCurrentUserData() {
         
         console.log('📝 No user document in Firestore, using auth data');
         
-        // Fallback ke data dari auth dengan formatting yang lebih baik
-        const fallbackName = user.displayName || 
-                           user.email.split('@')[0] || // Format: john.doe@gmail.com -> john.doe
-                           user.email;
-        
+        // Fallback ke data dari auth
         return {
-            name: fallbackName,
+            name: user.displayName || 'Unknown User',
             email: user.email,
             uid: user.uid
         };
@@ -1187,7 +1183,7 @@ async function getCurrentUserData() {
         const user = firebase.auth().currentUser;
         if (user) {
             return {
-                name: user.email.split('@')[0] || user.email,
+                name: user.displayName || 'Unknown User',
                 email: user.email,
                 uid: user.uid
             };
@@ -2022,7 +2018,7 @@ if (!historyItem) {
 
 const updatedData = {
     date: document.getElementById('edit-history-date').value,
-    user: historyItem.user, // ✅ historyItem sekarang terdefinisi
+    user: historyItem.user, // ✅ PERTAHANKAN NAMA USER YANG SUDAH ADA
     userEmail: historyItem.userEmail,
     userId: historyItem.userId,
     amount: getRawValue('edit-history-amount'),
@@ -2341,124 +2337,118 @@ async function revertCreditFromHistory(historyData, historyType) {
         
         // Event listener untuk form submissions
         document.getElementById('masteragentForm')?.addEventListener('submit', async function(e) {
-            e.preventDefault();
+    e.preventDefault();
+    
+    const category = document.getElementById('masteragentCategory').value;
+    const credit = parseInt(document.getElementById('masteragentCredit').value);
+    
+    if (!category || isNaN(credit) || credit <= 0) {
+        showToast('Semua field harus diisi dengan benar', 'error');
+        return;
+    }
+    
+    // Tambahkan credit ke kategori yang dipilih
+    if (creditData[category]) {
+        const currentCredit = creditData[category].credit;
+        creditData[category].credit += credit;
+        
+        try {
+            // Simpan ke Firestore
+            await db.collection('creditData').doc('brands').set(creditData);
             
-            const category = document.getElementById('masteragentCategory').value;
-            const credit = parseInt(document.getElementById('masteragentCredit').value);
+            // Tambahkan ke history masteragent - GUNAKAN FUNGSI YANG SUDAH DIPERBAIKI
+            const userData = await getCurrentUserData();
             
-            if (!category || isNaN(credit) || credit <= 0) {
-                showToast('Semua field harus diisi dengan benar', 'error');
-                return;
-            }
+            const historyEntry = {
+                date: new Date().toLocaleString('id-ID'),
+                user: userData.name, // ✅ INI AKAN MENGAMBIL NAMA DARI FIRESTORE
+                userEmail: userData.email,
+                userId: userData.uid,
+                category: category,
+                amount: credit,
+                before: currentCredit,
+                after: currentCredit + credit,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
             
-            // Tambahkan credit ke kategori yang dipilih
-            if (creditData[category]) {
-                const currentCredit = creditData[category].credit;
-                creditData[category].credit += credit;
-                
-                try {
-                    // Simpan ke Firestore
-                    await db.collection('creditData').doc('brands').set(creditData);
-                    
-                    // Tambahkan ke history masteragent
-                    // Dapatkan data user yang sedang login
-const userData = await getCurrentUserData();
-
-// Tambahkan ke history
-// ✅ KODE BARU (BENAR):
-const historyEntry = {
-    date: new Date().toLocaleString('id-ID'),
-    user: userData.name,
-    userEmail: userData.email,
-    userId: userData.uid,
-    category: category, // ✅ BENAR - untuk masteragent
-    amount: credit, // ✅ BENAR - variable yang benar
-    before: currentCredit,
-    after: currentCredit + credit, // ✅ BENAR - masteragent credit BERTAMBAH
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-};
-                    
-                    // Simpan ke Firestore
-                    await db.collection('masteragentHistory').add(historyEntry);
-                    
-                    // Update UI
-                    updateCreditStats();
-                    
-                    // Reset form
-                    this.reset();
-                    document.getElementById('masteragentCurrentCredit').value = '';
-                    document.getElementById('masteragentNewCredit').value = '';
-                    
-                    showToast(`Top up masteragent berhasil! ${formatNumber(credit)} credit ditambahkan ke kategori ${category}`);
-                } catch (error) {
-                    console.error("Error saving masteragent topup:", error);
-                    showToast("Gagal menyimpan data ke server", "error");
-                }
-            } else {
-                showToast('Kategori tidak valid', 'error');
-            }
-        });
+            // Simpan ke Firestore
+            await db.collection('masteragentHistory').add(historyEntry);
+            
+            // Update UI
+            updateCreditStats();
+            
+            // Reset form
+            this.reset();
+            document.getElementById('masteragentCurrentCredit').value = '';
+            document.getElementById('masteragentNewCredit').value = '';
+            
+            showToast(`Top up masteragent berhasil! ${formatNumber(credit)} credit ditambahkan ke kategori ${category}`);
+        } catch (error) {
+            console.error("Error saving masteragent topup:", error);
+            showToast("Gagal menyimpan data ke server", "error");
+        }
+    } else {
+        showToast('Kategori tidak valid', 'error');
+    }
+});
         
         document.getElementById('topupForm')?.addEventListener('submit', async function(e) {
-            e.preventDefault();
+    e.preventDefault();
+    
+    const brandSelect = document.getElementById('brandSelect');
+    const brand = brandSelect.value;
+    const category = brandSelect.options[brandSelect.selectedIndex]?.dataset.category;
+    const amount = parseInt(document.getElementById('topupAmount').value);
+    
+    if (!brand || !category || isNaN(amount) || amount <= 0) {
+        showToast('Semua field harus diisi dengan benar', 'error');
+        return;
+    }
+    
+    // Kurangi credit dari kategori yang dipilih
+    if (creditData[category].credit >= amount) {
+        const currentCredit = creditData[category].credit;
+        creditData[category].credit -= amount;
+        
+        try {
+            // Simpan ke Firestore
+            await db.collection('creditData').doc('brands').set(creditData);
             
-            const brandSelect = document.getElementById('brandSelect');
-            const brand = brandSelect.value;
-            const category = brandSelect.options[brandSelect.selectedIndex]?.dataset.category;
-            const amount = parseInt(document.getElementById('topupAmount').value);
+            // Tambahkan ke history - GUNAKAN FUNGSI YANG SUDAH DIPERBAIKI
+            const userData = await getCurrentUserData();
             
-            if (!brand || !category || isNaN(amount) || amount <= 0) {
-                showToast('Semua field harus diisi dengan benar', 'error');
-                return;
-            }
+            const historyEntry = {
+                date: new Date().toLocaleString('id-ID'),
+                user: userData.name, // ✅ INI AKAN MENGAMBIL NAMA DARI FIRESTORE
+                userEmail: userData.email,
+                userId: userData.uid,
+                brand: brand,
+                amount: amount,
+                before: currentCredit,
+                after: currentCredit - amount,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
             
-            // Kurangi credit dari kategori yang dipilih
-            if (creditData[category].credit >= amount) {
-                const currentCredit = creditData[category].credit;
-                creditData[category].credit -= amount;
-                
-                try {
-                    // Simpan ke Firestore
-                    await db.collection('creditData').doc('brands').set(creditData);
-                    
-                    // Tambahkan ke history
-                    // Dapatkan data user yang sedang login
-const userData = await getCurrentUserData();
-
-// Tambahkan ke history masteragent
-// ✅ KODE BARU (BENAR):
-const historyEntry = {
-    date: new Date().toLocaleString('id-ID'),
-    user: userData.name,
-    userEmail: userData.email,
-    userId: userData.uid,
-    brand: brand, // ✅ BENAR - untuk regular topup
-    amount: amount, // ✅ BENAR - variable yang benar
-    before: currentCredit,
-    after: currentCredit - amount, // ✅ BENAR - regular credit BERKURANG
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-};
-                    
-                    // Simpan ke Firestore
-                    await db.collection('topupHistory').add(historyEntry);
-                    
-                    // Update UI
-                    updateCreditStats();
-                    
-                    // Reset form
-                    this.reset();
-                    document.getElementById('currentCredit').value = '';
-                    document.getElementById('newCredit').value = '';
-                    
-                    showToast(`Top up berhasil! ${formatNumber(amount)} credit dikurangi dari ${brand}`);
-                } catch (error) {
-                    console.error("Error saving topup:", error);
-                    showToast("Gagal menyimpan data ke server", "error");
-                }
-            } else {
-                showToast('Credit tidak mencukupi untuk melakukan top up', 'error');
-            }
-        });
+            // Simpan ke Firestore
+            await db.collection('topupHistory').add(historyEntry);
+            
+            // Update UI
+            updateCreditStats();
+            
+            // Reset form
+            this.reset();
+            document.getElementById('currentCredit').value = '';
+            document.getElementById('newCredit').value = '';
+            
+            showToast(`Top up berhasil! ${formatNumber(amount)} credit dikurangi dari ${brand}`);
+        } catch (error) {
+            console.error("Error saving topup:", error);
+            showToast("Gagal menyimpan data ke server", "error");
+        }
+    } else {
+        showToast('Credit tidak mencukupi untuk melakukan top up', 'error');
+    }
+});
         
         // Event listener untuk pencarian
         document.getElementById('dashboardSearch')?.addEventListener('input', function() {

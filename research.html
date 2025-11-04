@@ -1898,7 +1898,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         showNotification('Silakan login untuk mengakses research dashboard', 'error');
         
         setTimeout(() => {
-            window.location.href = 'login.html';
+            window.location.href = 'index.html';
         }, 3000);
     }
 });
@@ -1927,7 +1927,7 @@ auth.onAuthStateChanged(async user => {
         showNotification('Anda telah logout', 'info');
         
         setTimeout(() => {
-            window.location.href = 'login.html';
+            window.location.href = 'index.html';
         }, 2000);
     }
 });

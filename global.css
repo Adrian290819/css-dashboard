@@ -4374,3 +4374,40 @@ body, html {
         align-items: center;
     }
 }     
+/* User Profile Visual Enhancement */
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 8px 16px;
+    border-radius: 12px;
+    background: rgba(67, 97, 238, 0.05);
+    border: 1px solid rgba(67, 97, 238, 0.1);
+    transition: all var(--transition-fast);
+}
+
+.user-profile:hover {
+    background: rgba(67, 97, 238, 0.1);
+    transform: translateY(-2px);
+}
+
+.profile-img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(67, 97, 238, 0.2);
+}
+
+.user-info h4 {
+    font-weight: var(--font-semibold);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.user-info p {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    margin: 0;
+}

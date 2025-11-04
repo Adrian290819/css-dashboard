@@ -47,7 +47,10 @@ class SidebarLoader {
                 
                 // Theme
                 "darkMode": "Mode Gelap",
-                "lightMode": "Mode Terang"
+                "lightMode": "Mode Terang",
+                
+                // New Menu Item
+                "staffAccount": "Akun Staff"
             },
             
             en: {
@@ -94,7 +97,10 @@ class SidebarLoader {
                 
                 // Theme
                 "darkMode": "Dark Mode",
-                "lightMode": "Light Mode"
+                "lightMode": "Light Mode",
+                
+                // New Menu Item
+                "staffAccount": "Staff Account"
             },
             
             ja: {
@@ -141,7 +147,10 @@ class SidebarLoader {
                 
                 // Theme
                 "darkMode": "ダークモード",
-                "lightMode": "ライトモード"
+                "lightMode": "ライトモード",
+                
+                // New Menu Item
+                "staffAccount": "スタッフアカウント"
             },
             
             zh: {
@@ -188,12 +197,78 @@ class SidebarLoader {
                 
                 // Theme
                 "darkMode": "深色模式",
-                "lightMode": "浅色模式"
+                "lightMode": "浅色模式",
+                
+                // New Menu Item
+                "staffAccount": "员工账户"
             }
         };
         
         this.currentLanguage = localStorage.getItem('language') || 'id';
+        this.currentUserRole = 'user'; // Default value
+        this.currentUserId = null;
+        this.userData = null;
+        
         this.injectStyles();
+    }
+
+    // Method untuk mendapatkan current user ID dari Firebase Auth
+    getCurrentUserId() {
+        return new Promise((resolve, reject) => {
+            const auth = firebase.auth();
+            const unsubscribe = auth.onAuthStateChanged(user => {
+                unsubscribe();
+                if (user) {
+                    resolve(user.uid);
+                } else {
+                    reject(new Error('User not authenticated'));
+                }
+            }, reject);
+        });
+    }
+
+    // Method untuk mendapatkan user data dari Firestore
+    async getUserDataFromFirebase(userId) {
+        try {
+            const db = firebase.firestore();
+            const userDoc = await db.collection('users').doc(userId).get();
+            
+            if (userDoc.exists) {
+                return userDoc.data();
+            } else {
+                throw new Error('User document not found');
+            }
+        } catch (error) {
+            console.error('Error getting user data from Firebase:', error);
+            throw error;
+        }
+    }
+
+    // Method untuk initialize user data
+    async initializeUserData() {
+        try {
+            // Dapatkan user ID dari Firebase Auth
+            this.currentUserId = await this.getCurrentUserId();
+            
+            // Dapatkan user data dari Firestore
+            this.userData = await this.getUserDataFromFirebase(this.currentUserId);
+            
+            // Set current user role dari Firestore
+            this.currentUserRole = this.userData.role || 'user';
+            
+            console.log('User data loaded from Firebase:', {
+                userId: this.currentUserId,
+                role: this.currentUserRole,
+                userData: this.userData
+            });
+            
+            return this.userData;
+        } catch (error) {
+            console.error('Error initializing user data:', error);
+            // Fallback ke default role
+            this.currentUserRole = 'user';
+            return null;
+        }
     }
 
     getTranslation(key) {
@@ -250,6 +325,7 @@ class SidebarLoader {
             '.has-submenu:nth-child(10) .menu-text': lang.dailyRoutine,
             '.menu-item[data-page="daily-tasks.html"] .menu-text': lang.dailyTasks,
             '.menu-item[data-page="task-history.html"] .menu-text': lang.taskHistory,
+            '.menu-item[data-page="staff-account.html"] .menu-text': lang.staffAccount,
             '.menu-item[data-page="topup-credit.html"] .menu-text': lang.topUpCredit,
             '.menu-item[data-page="eventprovider.html"] .menu-text': lang.eventProvider,
             '.menu-item[data-page="weekly-meeting.html"] .menu-text': lang.weeklyMeetings,
@@ -297,6 +373,7 @@ class SidebarLoader {
     }
 
     injectStyles() {
+        // ... (CSS styles tetap sama seperti sebelumnya)
         const style = document.createElement('style');
         style.textContent = `
             /* Variabel CSS */
@@ -598,6 +675,7 @@ class SidebarLoader {
                 
                 .sidebar-overlay.active {
                     display: block;
+                    
                 }
             }
         `;
@@ -607,25 +685,14 @@ class SidebarLoader {
 
     generateSidebarHTML() {
         const lang = this.translations[this.currentLanguage];
+        const isSuperAdmin = this.currentUserRole === 'super_admin';
+        
+        console.log('Generating sidebar with role:', this.currentUserRole);
+        console.log('Is Super Admin:', isSuperAdmin);
         
         return `
             <!-- Overlay untuk mobile -->
             <div class="sidebar-overlay"></div>
-            
-            <!-- Menu Super Admin -->
-            <div class="super-admin-only" style="display: none;">
-                <div class="menu-section">
-                    <h3>${lang.superAdmin}</h3>
-                    <a href="#" class="menu-item" onclick="openUserManagement()">
-                        <i class="fas fa-crown"></i>
-                        <span>${lang.userManagement}</span>
-                    </a>
-                    <a href="#" class="menu-item" onclick="openSystemSettings()">
-                        <i class="fas fa-cog"></i>
-                        <span>${lang.systemSettings}</span>
-                    </a>
-                </div>
-            </div>
             
             <!-- Sidebar -->
             <div class="sidebar">
@@ -780,6 +847,16 @@ class SidebarLoader {
                         </div>
                     </div>
 
+                    <!-- New Staff Account Menu Item - Hanya untuk Super Admin -->
+                    ${isSuperAdmin ? `
+                    <div class="menu-item" data-page="staff-account.html">
+                        <div class="menu-icon">
+                            <i class="fas fa-user-friends"></i>
+                        </div>
+                        <span class="menu-text">${lang.staffAccount}</span>
+                    </div>
+                    ` : ''}
+
                     <div class="menu-item" data-page="topup-credit.html">
                         <div class="menu-icon">
                             <i class="fas fa-coins"></i>
@@ -829,18 +906,35 @@ class SidebarLoader {
                         <span class="menu-text">${lang.logout}</span>
                     </div>
                 </div>
-            </div>
+
+
         `;
     }
 
-    load() {
+    async load() {
         if (this.sidebarContainer) {
-            this.sidebarContainer.innerHTML = this.generateSidebarHTML();
-            this.createMenuToggle();
-            this.initializeSidebarFunctionality();
-            this.restoreSidebarState();
-            this.setActiveMenuItem();
-            this.loadTheme();
+            try {
+                // Tunggu sampai user data di-load dari Firebase
+                await this.initializeUserData();
+                
+                this.sidebarContainer.innerHTML = this.generateSidebarHTML();
+                this.createMenuToggle();
+                this.initializeSidebarFunctionality();
+                this.restoreSidebarState();
+                this.setActiveMenuItem();
+                this.loadTheme();
+                
+                console.log('Sidebar loaded successfully with role:', this.currentUserRole);
+            } catch (error) {
+                console.error('Error loading sidebar:', error);
+                // Fallback: load dengan role default
+                this.sidebarContainer.innerHTML = this.generateSidebarHTML();
+                this.createMenuToggle();
+                this.initializeSidebarFunctionality();
+                this.restoreSidebarState();
+                this.setActiveMenuItem();
+                this.loadTheme();
+            }
         }
     }
 
@@ -928,9 +1022,12 @@ class SidebarLoader {
             item.addEventListener('click', () => {
                 const pageUrl = item.getAttribute('data-page');
                 if (pageUrl === 'index.html') {
+                    // Logout - clear semua data
                     localStorage.removeItem('isLoggedIn');
                     localStorage.removeItem('sidebarState');
                     localStorage.removeItem('theme');
+                    localStorage.removeItem('language');
+                    // Firebase logout akan dilakukan di halaman login
                 } else {
                     this.saveSidebarState();
                 }
@@ -955,7 +1052,9 @@ class SidebarLoader {
         });
     }
 
-    reloadSidebar() {
+    async reloadSidebar() {
+        // Refresh user data dari Firebase sebelum reload
+        await this.initializeUserData();
         this.load();
     }
 
@@ -1037,53 +1136,40 @@ class SidebarLoader {
         const sidebarState = JSON.parse(localStorage.getItem('sidebarState') || '[]');
         document.querySelectorAll('.has-submenu').forEach((item, index) => {
             const submenu = item.nextElementSibling;
-            if (sidebarState.includes(index)) {
+            if (sidebarState.includes(index) && submenu) {
+                submenu.classList.add('active');
+                submenu.style.maxHeight = '500px';
                 item.classList.add('active');
-                if (submenu) {
-                    submenu.classList.add('active');
-                    submenu.style.maxHeight = '500px';
-                }
             }
         });
     }
+
+    // Method untuk mengecek apakah user adalah super admin
+    isSuperAdmin() {
+        return this.currentUserRole === 'super_admin';
+    }
+
+    // Method untuk mendapatkan user data
+    getUserData() {
+        return this.userData;
+    }
 }
 
-// Fungsi global untuk memuat sidebar
-function loadSidebar() {
+// Fungsi global untuk mengecek apakah user adalah super admin
+function isSuperAdmin() {
+    const sidebarLoader = window.sidebarLoader;
+    return sidebarLoader ? sidebarLoader.isSuperAdmin() : false;
+}
+
+// Fungsi global untuk mendapatkan user data
+function getUserData() {
+    const sidebarLoader = window.sidebarLoader;
+    return sidebarLoader ? sidebarLoader.getUserData() : null;
+}
+
+// Initialize sidebar loader
+document.addEventListener('DOMContentLoaded', async function() {
     const sidebarLoader = new SidebarLoader();
-    sidebarLoader.load();
-}
-
-// Fungsi untuk mengubah bahasa
-function changeLanguage(language) {
-    localStorage.setItem('language', language);
-    const sidebarLoader = new SidebarLoader();
-    sidebarLoader.currentLanguage = language;
-    sidebarLoader.reloadSidebar();
-    
-    // Dispatch event untuk memberi tahu komponen lain tentang perubahan bahasa
-    window.dispatchEvent(new CustomEvent('languageChanged', { 
-        detail: { language: language } 
-    }));
-}
-
-// Fungsi untuk Super Admin
-function openUserManagement() {
-    alert('User Management akan dibuka di sini');
-    // Implementasi untuk membuka modal atau halaman user management
-}
-
-function openSystemSettings() {
-    alert('System Settings akan dibuka di sini');
-    // Implementasi untuk membuka modal atau halaman system settings
-}
-
-// Load sidebar saat DOM siap
-document.addEventListener('DOMContentLoaded', function() {
-    loadSidebar();
+    window.sidebarLoader = sidebarLoader; // Simpan instance ke global scope
+    await sidebarLoader.load();
 });
-
-// Export untuk penggunaan modul
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { SidebarLoader, loadSidebar, changeLanguage };
-}

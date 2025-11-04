@@ -1705,94 +1705,100 @@
 
     <script>
     // Konfigurasi Firebase
-    const firebaseConfig = {
-        apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
-        authDomain: "dashboard-css.firebaseapp.com",
-        databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "dashboard-css",
-        storageBucket: "dashboard-css.appspot.com",
-        messagingSenderId: "771131792881",
-        appId: "1:771131792881:web:ad634424225bd7de847850",
-        measurementId: "G-3CYBC5B101"
-    };
+    // Konfigurasi Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
+    authDomain: "dashboard-css.firebaseapp.com",
+    databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "dashboard-css",
+    storageBucket: "dashboard-css.appspot.com",
+    messagingSenderId: "771131792881",
+    appId: "1:771131792881:web:ad634424225bd7de847850",
+    measurementId: "G-3CYBC5B101"
+};
 
-    // Inisialisasi Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
+// Inisialisasi Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
 
-    // Deklarasi variabel global untuk solved reports
-    let solvedReports = [];
-    let unsubscribeSolved = null;
-    let currentReportId = null;
-    let currentPage = 1;
-    const reportsPerPage = 10;
+// Deklarasi variabel global untuk solved reports
+let solvedReports = [];
+let unsubscribeSolved = null;
+let currentReportId = null;
+let currentPage = 1;
+const reportsPerPage = 10;
 
-    function setupSolvedReportsListener() {
-        if (unsubscribeSolved) {
-            unsubscribeSolved();
-        }
-        
-        const reportsRef = db.collection('solvedReports');
+function setupSolvedReportsListener() {
+    if (unsubscribeSolved) {
+        unsubscribeSolved();
+    }
+    
+    const reportsRef = db.collection('solvedReports');
 
-        unsubscribeSolved = reportsRef
-            .orderBy('dateSolved', 'desc')
-            .onSnapshot(snapshot => {
-                solvedReports = [];
-                snapshot.forEach(doc => {
-                    const report = doc.data();
-                    report.id = doc.id;
-                    
-                    // Pastikan data yang diperlukan ada
-                    if (report.dateCreated && report.dateSolved && report.status) {
-                        solvedReports.push(report);
-                    } else {
-                        console.warn("Invalid report data:", report);
-                    }
-                });
-
-                updateSolvedReportsUI();
-                updateStatistics();
-
-
-            }, error => {
-                console.error("Error fetching solved reports:", error);
-                showToast("Error loading solved reports", "error");
+    unsubscribeSolved = reportsRef
+        .orderBy('dateSolved', 'desc')
+        .onSnapshot(snapshot => {
+            solvedReports = [];
+            snapshot.forEach(doc => {
+                const report = doc.data();
+                report.id = doc.id;
+                
+                // Pastikan data yang diperlukan ada
+                if (report.dateCreated && report.dateSolved && report.status) {
+                    solvedReports.push(report);
+                } else {
+                    console.warn("Invalid report data:", report);
+                }
             });
-    }
 
-    function updateStatistics() {
-        const now = new Date();
-        const completedReports = solvedReports.filter(report => report.status === "completed");
-        const completed = completedReports.length;
+            console.log(`Loaded ${solvedReports.length} solved reports from Firestore`);
+            
+            // Perbarui UI dengan data terbaru
+            updateSolvedReportsUI();
+            updateStatistics();
+            updateCategoryFilter();
 
-        let thisWeek = 0;
-        let thisMonth = 0;
-        let totalResolutionTime = 0;
-
-        completedReports.forEach(report => {
-            // Konversi Firestore timestamp ke JS Date
-            const created = report.dateCreated.toDate ? report.dateCreated.toDate() : new Date(report.dateCreated);
-            const solved = report.dateSolved.toDate ? report.dateSolved.toDate() : new Date(report.dateSolved);
-
-            const resolutionTime = solved - created;
-            totalResolutionTime += resolutionTime;
-
-            const daysAgo = (now - solved) / (1000 * 60 * 60 * 24);
-            if (daysAgo <= 7) thisWeek++;
-            if (now.getMonth() === solved.getMonth() &&
-                now.getFullYear() === solved.getFullYear()) {
-                thisMonth++;
-            }
+        }, error => {
+            console.error("Error fetching solved reports:", error);
+            showToast("Error loading solved reports", "error");
         });
-    }
+}
 
-   async function updateSolvedReportsUI() {
+function updateStatistics() {
+    const now = new Date();
+    const completedReports = solvedReports.filter(report => report.status === "completed");
+    const completed = completedReports.length;
+
+    let thisWeek = 0;
+    let thisMonth = 0;
+    let totalResolutionTime = 0;
+
+    completedReports.forEach(report => {
+        // Konversi Firestore timestamp ke JS Date
+        const created = report.dateCreated.toDate ? report.dateCreated.toDate() : new Date(report.dateCreated);
+        const solved = report.dateSolved.toDate ? report.dateSolved.toDate() : new Date(report.dateSolved);
+
+        const resolutionTime = solved - created;
+        totalResolutionTime += resolutionTime;
+
+        const daysAgo = (now - solved) / (1000 * 60 * 60 * 24);
+        if (daysAgo <= 7) thisWeek++;
+        if (now.getMonth() === solved.getMonth() &&
+            now.getFullYear() === solved.getFullYear()) {
+            thisMonth++;
+        }
+    });
+}
+
+async function updateSolvedReportsUI() {
     const tableBody = document.getElementById('solvedReportsTableBody');
     const reportsCount = document.getElementById('reportsCount');
     
     // Cek role user
     const isAdmin = await isSuperAdmin();
+    
+    console.log(`Total solved reports: ${solvedReports.length}`);
     
     if (solvedReports.length === 0) {
         tableBody.innerHTML = `
@@ -1804,11 +1810,22 @@
                 </td>
             </tr>
         `;
+        reportsCount.textContent = '0';
         return;
     }
     
     const filteredReports = filterReports(solvedReports);
+    
+    // Update counter dengan jumlah yang sudah difilter
     reportsCount.textContent = filteredReports.length;
+    console.log(`Filtered reports count: ${filteredReports.length}`);
+    
+    // Reset ke halaman 1 saat filter berubah
+    const previousFilteredCount = window.previousFilteredCount || 0;
+    if (filteredReports.length !== previousFilteredCount) {
+        currentPage = 1;
+    }
+    window.previousFilteredCount = filteredReports.length;
     
     // Pagination
     const totalPages = Math.ceil(filteredReports.length / reportsPerPage);
@@ -1829,7 +1846,7 @@
         emptyRow.innerHTML = `
             <td colspan="10" style="text-align: center; padding: 40px 20px;">
                 <i class="fas fa-inbox" style="font-size: 3rem; color: var(--text-tertiary); margin-bottom: 15px; display: block;"></i>
-                <h3 style="color: var(--text-secondary; margin-bottom: 10px;">No solved reports found</h3>
+                <h3 style="color: var(--text-secondary); margin-bottom: 10px;">No solved reports found</h3>
                 <p style="color: var(--text-tertiary);">Try adjusting your filters or check back later.</p>
             </td>
         `;
@@ -1894,6 +1911,7 @@
         });
     }
 }
+
 // Fungsi untuk menampilkan konfirmasi hapus
 function showDeleteConfirmation(reportId) {
     const report = solvedReports.find(r => r.id === reportId);
@@ -1975,47 +1993,72 @@ async function deleteReport(reportId) {
         showToast("Error deleting report", "error");
     }
 }
-    
-    function filterReports(reports) {
-        const brandFilter = document.getElementById('brandFilter').value;
-        const statusFilter = document.getElementById('statusFilter').value;
-        const startDate = document.getElementById('startDate').value;
-        const endDate = document.getElementById('endDate').value;
-        
-        return reports.filter(report => {
-            // Filter by brand
-            if (brandFilter && report.brand !== brandFilter) {
-                return false;
-            }
-            
-            // Filter by status
-            if (statusFilter && report.status !== statusFilter) {
-                return false;
-            }
-            
 
-            
-            // Filter by date range - gunakan dateSolved yang sesuai dengan Firestore
-            if (startDate && report.dateSolved) {
-                const solvedDate = report.dateSolved.toDate().toISOString().split('T')[0];
-                if (solvedDate < startDate) {
-                    return false;
-                }
+function filterReports(reports) {
+    const brandFilter = document.getElementById('brandFilter').value;
+    const statusFilter = document.getElementById('statusFilter').value;
+    const categoryFilter = document.getElementById('categoryFilter') ? document.getElementById('categoryFilter').value : '';
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const searchInput = document.getElementById('dashboardSearch');
+    const searchTerm = searchInput ? searchInput.value.trim().toLowerCase() : '';
+    
+    let filtered = reports.filter(report => {
+        // Filter by brand
+        if (brandFilter && report.brand !== brandFilter) {
+            return false;
+        }
+        
+        // Filter by status
+        if (statusFilter && report.status !== statusFilter) {
+            return false;
+        }
+        
+        // Filter by category
+        if (categoryFilter && report.category !== categoryFilter) {
+            return false;
+        }
+        
+        // Filter by date range - gunakan dateSolved
+        if (startDate && report.dateSolved) {
+            const solvedDate = report.dateSolved.toDate().toISOString().split('T')[0];
+            if (solvedDate < startDate) {
+                return false;
             }
-            
-            if (endDate && report.dateSolved) {
-                const solvedDate = report.dateSolved.toDate().toISOString().split('T')[0];
-                if (solvedDate > endDate) {
-                    return false;
-                }
+        }
+        
+        if (endDate && report.dateSolved) {
+            const solvedDate = report.dateSolved.toDate().toISOString().split('T')[0];
+            if (solvedDate > endDate) {
+                return false;
             }
-            
-            return true;
+        }
+        
+        return true;
+    });
+    
+    // Apply search filter jika ada
+    if (searchTerm) {
+        filtered = filtered.filter(report => {
+            return (
+                (report.id && report.id.toLowerCase().includes(searchTerm)) ||
+                (report.brand && report.brand.toLowerCase().includes(searchTerm)) ||
+                (report.userId && report.userId.toLowerCase().includes(searchTerm)) ||
+                (report.reportedBy && report.reportedBy.toLowerCase().includes(searchTerm)) ||
+                (report.title && report.title.toLowerCase().includes(searchTerm)) ||
+                (report.category && report.category.toLowerCase().includes(searchTerm)) ||
+                (report.description && report.description.toLowerCase().includes(searchTerm)) ||
+                (report.resolution && report.resolution.toLowerCase().includes(searchTerm)) ||
+                (report.status && report.status.toLowerCase().includes(searchTerm))
+            );
         });
     }
     
+    console.log(`Filtered from ${reports.length} to ${filtered.length} reports`);
+    return filtered;
+}
 
-    function updateBrandChart() {
+function updateBrandChart() {
     const chartContainer = document.getElementById('brandChart');
     chartContainer.innerHTML = '';
     chartContainer.className = 'enhanced-bar-chart';
@@ -2300,16 +2343,9 @@ function animatePieChart() {
             segment.style.opacity = '1';
         }, index * 100);
     });
+}
 
-        
-        // Add center text
-        const center = document.createElement('div');
-        center.className = 'pie-center';
-        center.textContent = `${total}`;
-        chartContainer.appendChild(center);
-    }
-    
-    async function showReportDetails(reportId) {
+async function showReportDetails(reportId) {
     const report = solvedReports.find(r => r.id === reportId);
     
     if (!report) {
@@ -2437,7 +2473,8 @@ async function updateModalFooter() {
         });
     }
 }
-    async function reopenReport(reportId) {
+
+async function reopenReport(reportId) {
     // Cek apakah user adalah super admin
     const isAdmin = await isSuperAdmin();
     if (!isAdmin) {
@@ -2479,409 +2516,81 @@ async function updateModalFooter() {
         }
     });
 }
-    function showToast(message, type = "info") {
-        // Create toast element if it doesn't exist
-        let toast = document.getElementById('toastNotification');
-        if (!toast) {
-            toast = document.createElement('div');
-            toast.id = 'toastNotification';
-            toast.className = 'toast-notification';
-            toast.innerHTML = `
-                <div class="toast-content">
-                    <span id="toastMessage"></span>
-                </div>
-            `;
-            document.body.appendChild(toast);
-        }
-        
-        const toastMessage = document.getElementById('toastMessage');
-        
-        toastMessage.textContent = message;
-        toast.className = `toast-notification ${type}`;
-        toast.style.display = 'block';
-        toast.style.animation = 'toast-in 0.5s ease forwards';
-        
-        // Show toast
-        setTimeout(() => {
-            toast.style.animation = 'toast-out 0.4s ease forwards';
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 400);
-        }, 3000);
-    }
-    
-    function formatDate(date) {
-        return date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-        });
-    }
-    
-    function formatDateTime(date) {
-        return date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    }
-    
-    function convertToCSV(reports) {
-        const headers = ['ID', 'Brand', 'User', 'Title', 'Category', 'Reported Date', 'Solved Date', 'Status'];
-        
-        const rows = reports.map(report => [
-            report.id,
-            report.brand || '',
-            report.userId || report.reportedBy || '',
-            report.title || '',
-            report.category || '',
-            report.dateCreated ? formatDate(report.dateCreated.toDate()) : '',
-            report.dateCreated ? formatDate(report.dateSolved.toDate()) : '',
-            report.status || ''
-        ]);
-        
-        return [headers, ...rows].map(row => row.join(',')).join('\n');
-    }
-    
-    function downloadCSV(content, filename) {
-        const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = filename;
-        link.click();
-    }
-    
-    // Event listeners
-document.addEventListener('DOMContentLoaded', function() {
-    auth.onAuthStateChanged(async (user) => {
-        if (user) {
-            console.log("User logged in:", user.uid);
-            
-            // Cek role user
-            const role = await getCurrentUserRole();
-            console.log("User role:", role);
-            
-            setupSolvedReportsListener();
-            
-            // Test koneksi Firebase
-            db.collection('solvedReports').limit(1).get()
-                .then(snapshot => {
-                    console.log("Firebase connection test successful:", snapshot.size, "documents found");
-                })
-                .catch(error => {
-                    console.error("Firebase connection error:", error);
-                    showToast("Cannot connect to database", "error");
-                });
-            
-            // Filter event listeners
-            document.getElementById('brandFilter').addEventListener('change', updateSolvedReportsUI);
-            document.getElementById('statusFilter').addEventListener('change', updateSolvedReportsUI);
-            document.getElementById('startDate').addEventListener('change', updateSolvedReportsUI);
-            document.getElementById('endDate').addEventListener('change', updateSolvedReportsUI);
-            document.getElementById('resetFilters').addEventListener('click', function() {
-                document.getElementById('brandFilter').value = '';
-                document.getElementById('statusFilter').value = '';
-                document.getElementById('startDate').value = '';
-                document.getElementById('endDate').value = '';
-                updateSolvedReportsUI();
-            });
-            
-            // Pagination event listeners
-            document.getElementById('prevPage').addEventListener('click', function() {
-                if (currentPage > 1) {
-                    currentPage--;
-                    updateSolvedReportsUI();
-                }
-            });
-            
-            document.getElementById('nextPage').addEventListener('click', function() {
-                const filteredReports = filterReports(solvedReports);
-                const totalPages = Math.ceil(filteredReports.length / reportsPerPage);
-                
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    updateSolvedReportsUI();
-                }
-            });
-            
-            // Modal event listeners - HANYA UNTUK CLOSE
-            document.getElementById('closeDetailsModal').addEventListener('click', function() {
-                document.getElementById('reportDetailsModal').classList.remove('active');
-            });
-            
-            // Event listeners untuk reopen modal (akan ditambahkan secara dinamis)
-            document.getElementById('closeReopenModal').addEventListener('click', function() {
-                document.getElementById('reopenConfirmModal').classList.remove('active');
-            });
-            
-            document.getElementById('cancelReopenBtn').addEventListener('click', function() {
-                document.getElementById('reopenConfirmModal').classList.remove('active');
-            });
-            
-            document.getElementById('confirmReopenBtn').addEventListener('click', async function() {
-                // Cek role sebelum membuka report
-                const isAdmin = await isSuperAdmin();
-                if (!isAdmin) {
-                    showToast("Access denied: Only super admin can reopen reports", "error");
-                    document.getElementById('reopenConfirmModal').classList.remove('active');
-                    return;
-                }
-                reopenReport(currentReportId);
-            });
-            
-            // Export button event listener
-            const exportButton = document.getElementById('exportButton');
-            if (exportButton) {
-                exportButton.addEventListener('click', function() {
-                    const filteredReports = filterReports(solvedReports);
-                    const csvContent = convertToCSV(filteredReports);
-                    downloadCSV(csvContent, 'solved-reports.csv');
-                });
-            }
-            
-            // Chart filter event listeners
-            const chartTimeRange = document.getElementById('chartTimeRange');
-            const resolutionTimeRange = document.getElementById('resolutionTimeRange');
-            
-            if (chartTimeRange) {
-                chartTimeRange.addEventListener('change', updateBrandChart);
-            }
-            
-            if (resolutionTimeRange) {
-                resolutionTimeRange.addEventListener('change', updateResolutionTimeChart);
-            }
-        } else {
-            // Pengguna belum login, redirect ke halaman login
-            console.log("User not logged in, redirecting...");
-            window.location.href = "login.html";
-        }
-    });
-});
-// Tambahkan security check di fungsi yang membutuhkan akses super admin
-async function withAdminCheck(action, errorMessage = "Access denied: Only super admin can perform this action") {
-    const isAdmin = await isSuperAdmin();
-    if (!isAdmin) {
-        showToast(errorMessage, "error");
-        return false;
-    }
-    return true;
-}
 
-// Contoh penggunaan:
-async function someAdminFunction() {
-    if (!await withAdminCheck()) return;
-    // Lanjutkan dengan fungsi admin
-}
-    function setupSearchFunctionality() {
-    const searchInput = document.getElementById('dashboardSearch');
-    
-    // Debounce function untuk membatasi frekuensi pencarian
-    function debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    }
-    
-    // Fungsi pencarian
-    function handleSearch() {
-        updateSolvedReportsUI();
-    }
-    
-    // Menambahkan event listener dengan debounce
-    searchInput.addEventListener('input', debounce(handleSearch, 300));
-    
-    // Memperbarui fungsi filterReports untuk memasukkan pencarian
-    const originalFilterReports = window.filterReports;
-    
-    window.filterReports = function(reports) {
-        let filteredReports = originalFilterReports(reports);
-        
-        // Terapkan filter pencarian
-        const searchTerm = searchInput.value.trim().toLowerCase();
-        if (searchTerm) {
-            filteredReports = filteredReports.filter(report => {
-                // Cari di berbagai field yang relevan
-                return (
-                    (report.id && report.id.toLowerCase().includes(searchTerm)) ||
-                    (report.brand && report.brand.toLowerCase().includes(searchTerm)) ||
-                    (report.userId && report.userId.toLowerCase().includes(searchTerm)) ||
-                    (report.reportedBy && report.reportedBy.toLowerCase().includes(searchTerm)) ||
-                    (report.title && report.title.toLowerCase().includes(searchTerm)) ||
-                    (report.category && report.category.toLowerCase().includes(searchTerm)) ||
-                    (report.description && report.description.toLowerCase().includes(searchTerm)) ||
-                    (report.resolution && report.resolution.toLowerCase().includes(searchTerm)) ||
-                    (report.status && report.status.toLowerCase().includes(searchTerm))
-                );
-            });
-        }
-        
-        return filteredReports;
-    };
-}
-
-// Panggil fungsi setup setelah DOM selesai dimuat
-document.addEventListener('DOMContentLoaded', function() {
-    // ... kode yang sudah ada ...
-    
-    // Tambahkan setup fungsi search
-    setupSearchFunctionality();
-    
-    // ... kode yang sudah ada ...
-});
-// Fungsi untuk memperbarui filter kategori berdasarkan status solved
-function updateCategoryFilter() {
-    const categoryFilter = document.getElementById('categoryFilter');
-    
-    // Hapus opsi kategori yang ada (kecuali opsi "All Categories")
-    while (categoryFilter.children.length > 1) {
-        categoryFilter.removeChild(categoryFilter.lastChild);
-    }
-    
-    // Dapatkan semua kategori unik dari laporan yang solved
-    const uniqueCategories = [...new Set(solvedReports.map(report => report.category))].filter(category => category);
-    
-    // Tambahkan opsi kategori ke dropdown
-    uniqueCategories.forEach(category => {
-        const option = document.createElement('option');
-        option.value = category;
-        option.textContent = category;
-        categoryFilter.appendChild(option);
-    });
-}
-
-// Fungsi untuk memfilter laporan berdasarkan kategori
-function filterReports(reports) {
-    const brandFilter = document.getElementById('brandFilter').value;
-    const statusFilter = document.getElementById('statusFilter').value;
-    const categoryFilter = document.getElementById('categoryFilter').value;
-    const startDate = document.getElementById('startDate').value;
-    const endDate = document.getElementById('endDate').value;
-    
-    return reports.filter(report => {
-        // Filter by brand
-        if (brandFilter && report.brand !== brandFilter) {
-            return false;
-        }
-        
-        // Filter by status
-        if (statusFilter && report.status !== statusFilter) {
-            return false;
-        }
-        
-        // Filter by category - TAMBAHAN BARU
-        if (categoryFilter && report.category !== categoryFilter) {
-            return false;
-        }
-        
-        // Filter by date range - gunakan dateSolved yang sesuai dengan Firestore
-        if (startDate && report.dateSolved) {
-            const solvedDate = report.dateSolved.toDate().toISOString().split('T')[0];
-            if (solvedDate < startDate) {
-                return false;
-            }
-        }
-        
-        if (endDate && report.dateSolved) {
-            const solvedDate = report.dateSolved.toDate().toISOString().split('T')[0];
-            if (solvedDate > endDate) {
-                return false;
-            }
-        }
-        
-        return true;
-    });
-}
-
-// Perbarui fungsi setupSolvedReportsListener untuk menambahkan update kategori
-function setupSolvedReportsListener() {
-    if (unsubscribeSolved) {
-        unsubscribeSolved();
-    }
-    
-    const reportsRef = db.collection('solvedReports');
-
-    unsubscribeSolved = reportsRef
-        .orderBy('dateSolved', 'desc')
-        .onSnapshot(snapshot => {
-            solvedReports = [];
-            snapshot.forEach(doc => {
-                const report = doc.data();
-                report.id = doc.id;
-                
-                // Pastikan data yang diperlukan ada
-                if (report.dateCreated && report.dateSolved && report.status) {
-                    solvedReports.push(report);
-                } else {
-                    console.warn("Invalid report data:", report);
-                }
-            });
-
-            updateSolvedReportsUI();
-            updateStatistics();
-            updateCategoryFilter(); // TAMBAHAN: Perbarui filter kategori
-
-        }, error => {
-            console.error("Error fetching solved reports:", error);
-            showToast("Error loading solved reports", "error");
-        });
-}
-
-// Tambahkan HTML untuk filter kategori di dalam Filter Panel
-// Tambahkan kode ini di dalam div.filter-grid, setelah filter status
-document.addEventListener('DOMContentLoaded', function() {
-    // Tunggu sampai DOM sepenuhnya dimuat
-    setTimeout(() => {
-        const filterGrid = document.querySelector('.filter-grid');
-        
-        // Buat elemen filter kategori
-        const categoryFilterGroup = document.createElement('div');
-        categoryFilterGroup.className = 'filter-group';
-        categoryFilterGroup.innerHTML = `
-            <label class="filter-label">Category</label>
-            <select class="filter-select" id="categoryFilter">
-                <option value="">All Categories</option>
-                <!-- Opsi kategori akan diisi oleh JavaScript -->
-            </select>
+function showToast(message, type = "info") {
+    // Create toast element if it doesn't exist
+    let toast = document.getElementById('toastNotification');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toastNotification';
+        toast.className = 'toast-notification';
+        toast.innerHTML = `
+            <div class="toast-content">
+                <span id="toastMessage"></span>
+            </div>
         `;
-        
-        // Sisipkan filter kategori setelah filter status
-        const statusFilterGroup = document.querySelector('.filter-group:nth-child(2)');
-        if (statusFilterGroup) {
-            statusFilterGroup.parentNode.insertBefore(categoryFilterGroup, statusFilterGroup.nextSibling);
-        } else {
-            // Jika tidak menemukan filter status, tambahkan di akhir
-            filterGrid.appendChild(categoryFilterGroup);
-        }
-        
-        // Tambahkan event listener untuk filter kategori
-        const categoryFilter = document.getElementById('categoryFilter');
-        if (categoryFilter) {
-            categoryFilter.addEventListener('change', updateSolvedReportsUI);
-        }
-        
-        // Perbarui reset filter untuk menyertakan kategori
-        const resetButton = document.getElementById('resetFilters');
-        if (resetButton) {
-            const originalReset = resetButton.onclick;
-            resetButton.onclick = function() {
-                document.getElementById('brandFilter').value = '';
-                document.getElementById('statusFilter').value = '';
-                document.getElementById('categoryFilter').value = ''; // TAMBAHAN
-                document.getElementById('startDate').value = '';
-                document.getElementById('endDate').value = '';
-                updateSolvedReportsUI();
-            };
-        }
-    }, 100);
-});
+        document.body.appendChild(toast);
+    }
+    
+    const toastMessage = document.getElementById('toastMessage');
+    
+    toastMessage.textContent = message;
+    toast.className = `toast-notification ${type}`;
+    toast.style.display = 'block';
+    toast.style.animation = 'toast-in 0.5s ease forwards';
+    
+    // Show toast
+    setTimeout(() => {
+        toast.style.animation = 'toast-out 0.4s ease forwards';
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 400);
+    }, 3000);
+}
+
+function formatDate(date) {
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+}
+
+function formatDateTime(date) {
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+function convertToCSV(reports) {
+    const headers = ['ID', 'Brand', 'User', 'Title', 'Category', 'Reported Date', 'Solved Date', 'Status'];
+    
+    const rows = reports.map(report => [
+        report.id,
+        report.brand || '',
+        report.userId || report.reportedBy || '',
+        report.title || '',
+        report.category || '',
+        report.dateCreated ? formatDate(report.dateCreated.toDate()) : '',
+        report.dateCreated ? formatDate(report.dateSolved.toDate()) : '',
+        report.status || ''
+    ]);
+    
+    return [headers, ...rows].map(row => row.join(',')).join('\n');
+}
+
+function downloadCSV(content, filename) {
+    const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+}
+
 // Fungsi untuk mendapatkan nama user berdasarkan userId
 async function getUserName(userId) {
     try {
@@ -2919,6 +2628,7 @@ async function getCachedUserName(userId) {
     userCache.set(userId, userName);
     return userName;
 }
+
 // Fungsi untuk mendapatkan role user saat ini
 async function getCurrentUserRole() {
     try {
@@ -2942,6 +2652,7 @@ async function isSuperAdmin() {
     const role = await getCurrentUserRole();
     return role === 'super_admin';
 }
+
 // Tambahkan fungsi ini sebelum getUserName
 async function getProfileFromFirestore() {
     try {
@@ -2959,302 +2670,85 @@ async function getProfileFromFirestore() {
     }
 }
 
-// Fungsi untuk mendapatkan nama user berdasarkan userId
-async function getUserName(userId) {
-    try {
-        // Jika userId adalah ID dari current user, ambil dari profil
-        const currentUser = auth.currentUser;
-        if (currentUser && userId === currentUser.uid) {
-            const profile = await getProfileFromFirestore();
-            return profile ? profile.name : 'Unknown User';
-        }
-        
-        // Jika userId berbeda, coba ambil dari Firestore
-        const userDoc = await db.collection('users').doc(userId).get();
-        if (userDoc.exists) {
-            const userData = userDoc.data();
-            return userData.name || 'Unknown User';
-        }
-        
-        return 'Unknown User';
-    } catch (error) {
-        console.error('Error getting user name:', error);
-        return 'Unknown User';
-    }
-}
-// Fungsi untuk mendapatkan terjemahan
-function getTranslation(key, language = null) {
-    const lang = language || localStorage.getItem('preferredLanguage') || 'en';
-    const translation = translations[lang]?.[key];
-    return translation || key;
-}
-
-// Function to set language
-function setLanguage(language) {
-    localStorage.setItem('preferredLanguage', language);
-    applyTranslations(language);
-}
-
-// Function to apply translations to the page
-function applyTranslations(language = 'en') {
-    try {
-        const lang = translations[language] || translations['en'];
-        
-        if (!lang) {
-            console.error('Translations not found for language:', language);
-            return;
-        }
-
-        console.log('Applying translations for solved reports:', language);
-
-        // Header
-        const headerTitle = document.querySelector('.header h1');
-        if (headerTitle) {
-            headerTitle.innerHTML = `<i class="fas fa-check-circle"></i> ${lang.solvedReports || 'Solved Reports'}`;
-        }
-
-        // Search placeholder
-        const searchInput = document.getElementById('dashboardSearch');
-        if (searchInput) {
-            searchInput.placeholder = lang.searchPlaceholder || 'Search solved reports...';
-        }
-
-        // Filter Panel
-        const filterTitle = document.querySelector('.filter-title');
-        if (filterTitle) {
-            filterTitle.textContent = lang.filterTitle || 'Filter Solved Reports';
-        }
-
-        const resetFilters = document.getElementById('resetFilters');
-        if (resetFilters) {
-            resetFilters.innerHTML = `<i class="fas fa-sync-alt"></i> ${lang.resetFilters || 'Reset Filters'}`;
-        }
-
-        // Filter Labels
-        const filterLabels = document.querySelectorAll('.filter-label');
-        filterLabels.forEach((label, index) => {
-            switch(index) {
-                case 0:
-                    label.textContent = lang.brandLabel || 'Brand';
-                    break;
-                case 1:
-                    label.textContent = lang.statusLabel || 'Status';
-                    break;
-                case 2:
-                    label.textContent = lang.dateRangeLabel || 'Date Range';
-                    break;
-            }
-        });
-
-        // Filter Options
-        const brandFilter = document.getElementById('brandFilter');
-        if (brandFilter && brandFilter.firstElementChild) {
-            brandFilter.firstElementChild.textContent = lang.allBrands || 'All Brands';
-        }
-
-        const statusFilter = document.getElementById('statusFilter');
-        if (statusFilter) {
-            const options = statusFilter.getElementsByTagName('option');
-            if (options[0]) options[0].textContent = lang.allStatuses || 'All Statuses';
-            if (options[1]) options[1].textContent = lang.completed || 'Completed';
-            if (options[2]) options[2].textContent = lang.reopened || 'Reopened';
-        }
-
-        // Section Title
-        const sectionTitle = document.querySelector('.section-title');
-        if (sectionTitle) {
-            const badge = sectionTitle.querySelector('.badge');
-            sectionTitle.innerHTML = `<i class="fas fa-list-check"></i> ${lang.solvedReports || 'Solved Reports'}`;
-            if (badge) {
-                sectionTitle.appendChild(badge);
-            }
-        }
-
-        // Table Headers
-        const tableHeaders = document.querySelectorAll('.maintenance-table th');
-        if (tableHeaders.length >= 9) {
-            tableHeaders[0].textContent = lang.reportId || 'Report ID';
-            tableHeaders[1].textContent = lang.brand || 'Brand';
-            tableHeaders[2].textContent = lang.reportedBy || 'Reported By';
-            tableHeaders[3].textContent = lang.title || 'Title';
-            tableHeaders[4].textContent = lang.category || 'Category';
-            tableHeaders[5].textContent = lang.reportedAt || 'Reported At';
-            tableHeaders[6].textContent = lang.resolvedAt || 'Resolved At';
-            tableHeaders[7].textContent = lang.status || 'Status';
-            tableHeaders[8].textContent = lang.actions || 'Actions';
-        }
-
-        // Pagination
-        const prevBtn = document.getElementById('prevPage');
-        const nextBtn = document.getElementById('nextPage');
-        const pageInfo = document.getElementById('pageInfo');
-        
-        if (prevBtn) {
-            prevBtn.innerHTML = `<i class="fas fa-chevron-left"></i> ${lang.previous || 'Previous'}`;
-        }
-        if (nextBtn) {
-            nextBtn.innerHTML = `${lang.next || 'Next'} <i class="fas fa-chevron-right'></i>`;
-        }
-        if (pageInfo) {
-            const currentPage = window.currentPage || 1;
-            const totalPages = window.totalPages || 1;
-            pageInfo.textContent = `${lang.page || 'Page'} ${currentPage} ${lang.of || 'of'} ${totalPages}`;
-        }
-
-        // Empty States
-        updateEmptyStates(language);
-
-        // Update modal translations
-        updateModalTranslations(language);
-
-        // Update action button titles
-        updateActionButtons(language);
-
-    } catch (error) {
-        console.error('Error applying translations:', error);
-    }
-}
-
-// Function to update empty states
-function updateEmptyStates(language) {
-    const lang = translations[language] || translations['en'];
-    const emptyStates = document.querySelectorAll('.empty-state');
+// Fungsi untuk memperbarui filter kategori berdasarkan status solved
+function updateCategoryFilter() {
+    const categoryFilter = document.getElementById('categoryFilter');
+    if (!categoryFilter) return;
     
-    emptyStates.forEach(emptyState => {
-        const title = emptyState.querySelector('h3');
-        const message = emptyState.querySelector('p');
-        
-        if (title && title.textContent.includes('No Solved Reports Found')) {
-            title.textContent = lang.noReportsFound || 'No Solved Reports Found';
-        }
-        if (message && message.textContent.includes('There are no completed reports')) {
-            message.textContent = lang.noReportsDescription || 'There are no completed reports in the database yet.';
-        }
+    // Hapus opsi kategori yang ada (kecuali opsi "All Categories")
+    while (categoryFilter.children.length > 1) {
+        categoryFilter.removeChild(categoryFilter.lastChild);
+    }
+    
+    // Dapatkan semua kategori unik dari laporan yang solved
+    const uniqueCategories = [...new Set(solvedReports.map(report => report.category))].filter(category => category);
+    
+    // Tambahkan opsi kategori ke dropdown
+    uniqueCategories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        categoryFilter.appendChild(option);
     });
 }
 
-// Function to update modal translations
-function updateModalTranslations(language) {
-    const lang = translations[language] || translations['en'];
-    
-    // Report Details Modal
-    const reportDetailsModal = document.getElementById('reportDetailsModal');
-    if (reportDetailsModal) {
-        const modalTitle = reportDetailsModal.querySelector('.modal-title');
-        if (modalTitle) {
-            modalTitle.innerHTML = `<i class="fas fa-file-alt"></i> ${lang.reportDetails || 'Report Details'}`;
-        }
-        
-        const closeBtn = document.getElementById('closeDetailsBtn');
-        if (closeBtn) {
-            closeBtn.textContent = lang.close || 'Close';
-        }
-        
-        const reopenBtn = document.getElementById('reopenReportBtn');
-        if (reopenBtn) {
-            reopenBtn.innerHTML = `<i class="fas fa-undo"></i> ${lang.reopenReport || 'Reopen Report'}`;
-        }
-    }
-    
-    // Reopen Confirmation Modal
-    const reopenModal = document.getElementById('reopenConfirmModal');
-    if (reopenModal) {
-        const modalTitle = reopenModal.querySelector('.modal-title');
-        if (modalTitle) {
-            modalTitle.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${lang.confirmReopen || 'Confirm Reopen'}`;
-        }
-        
-        const confirmMessage = document.getElementById('reopenConfirmMessage');
-        if (confirmMessage) {
-            confirmMessage.textContent = lang.reopenConfirmMessage || 'Are you sure you want to reopen this report? This will move it back to pending reports.';
-        }
-        
-        const cancelBtn = document.getElementById('cancelReopenBtn');
-        if (cancelBtn) {
-            cancelBtn.textContent = lang.cancel || 'Cancel';
-        }
-        
-        const confirmBtn = document.getElementById('confirmReopenBtn');
-        if (confirmBtn) {
-            confirmBtn.textContent = lang.yesReopen || 'Yes, Reopen Report';
-        }
-    }
+// Debounce function untuk search
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
 }
 
-// Function to update action buttons
-function updateActionButtons(language) {
-    const lang = translations[language] || translations['en'];
-    const viewButtons = document.querySelectorAll('.btn-icon.view');
-    const deleteButtons = document.querySelectorAll('.btn-icon.delete');
+// Tambahkan fungsi untuk memastikan UI update saat filter berubah
+function setupFilterListeners() {
+    const filterElements = [
+        'brandFilter', 
+        'statusFilter', 
+        'categoryFilter', 
+        'startDate', 
+        'endDate'
+    ];
     
-    viewButtons.forEach(button => {
-        button.title = lang.viewDetails || 'View Details';
-    });
-    
-    deleteButtons.forEach(button => {
-        button.title = lang.deleteReport || 'Delete Report';
-    });
-}
-
-// Function to setup language switcher
-function setupLanguageSwitcher() {
-    // Check if language switcher already exists
-    let languageSwitcher = document.getElementById('languageSwitcher');
-    
-    if (!languageSwitcher) {
-        // Create language switcher
-        languageSwitcher = document.createElement('div');
-        languageSwitcher.id = 'languageSwitcher';
-        languageSwitcher.className = 'language-switcher';
-        languageSwitcher.innerHTML = `
-            <select id="languageSelect">
-                <option value="en">English</option>
-                <option value="id">Bahasa Indonesia</option>
-                <option value="ja">日本語</option>
-            </select>
-        `;
-        
-        // Add to header actions
-        const headerActions = document.querySelector('.header-actions');
-        if (headerActions) {
-            headerActions.insertBefore(languageSwitcher, headerActions.firstChild);
+    filterElements.forEach(filterId => {
+        const element = document.getElementById(filterId);
+        if (element) {
+            element.addEventListener('change', function() {
+                console.log(`Filter changed: ${filterId} = ${this.value}`);
+                updateSolvedReportsUI();
+            });
         }
+    });
+    
+    // Search functionality
+    const searchInput = document.getElementById('dashboardSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', debounce(function() {
+            console.log(`Search term: ${this.value}`);
+            updateSolvedReportsUI();
+        }, 300));
     }
     
-    // Set current language
-    const languageSelect = document.getElementById('languageSelect');
-    if (languageSelect) {
-        const currentLanguage = localStorage.getItem('preferredLanguage') || 'en';
-        languageSelect.value = currentLanguage;
-        
-        // Add event listener
-        languageSelect.addEventListener('change', function() {
-            setLanguage(this.value);
-            showToast(`Language changed to ${this.options[this.selectedIndex].text}`, 'success');
+    // Reset filters
+    const resetButton = document.getElementById('resetFilters');
+    if (resetButton) {
+        resetButton.addEventListener('click', function() {
+            filterElements.forEach(filterId => {
+                const element = document.getElementById(filterId);
+                if (element) element.value = '';
+            });
+            if (searchInput) searchInput.value = '';
+            console.log('Filters reset');
+            updateSolvedReportsUI();
         });
     }
 }
 
-// Function to listen for language changes
-function setupLanguageListener() {
-    // Check for language changes every second
-    setInterval(() => {
-        const currentLanguage = localStorage.getItem('preferredLanguage') || 'en';
-        if (window.currentLanguage !== currentLanguage) {
-            window.currentLanguage = currentLanguage;
-            applyTranslations(currentLanguage);
-            console.log('Language changed to:', currentLanguage);
-        }
-    }, 1000);
-    
-    // Also check when page gains focus
-    window.addEventListener('focus', () => {
-        const language = localStorage.getItem('preferredLanguage') || 'en';
-        applyTranslations(language);
-    });
-}
-
-// Initialize translations when DOM is loaded
 // Event listeners
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM loaded, initializing solved reports...");
@@ -3273,6 +2767,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("User role:", role);
             
             setupSolvedReportsListener();
+            setupFilterListeners(); // Setup filter listeners
             
             // Test koneksi Firebase
             db.collection('solvedReports').limit(1).get()
@@ -3283,19 +2778,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.error("Firebase connection error:", error);
                     showToast("Cannot connect to database", "error");
                 });
-            
-            // Filter event listeners
-            document.getElementById('brandFilter').addEventListener('change', updateSolvedReportsUI);
-            document.getElementById('statusFilter').addEventListener('change', updateSolvedReportsUI);
-            document.getElementById('startDate').addEventListener('change', updateSolvedReportsUI);
-            document.getElementById('endDate').addEventListener('change', updateSolvedReportsUI);
-            document.getElementById('resetFilters').addEventListener('click', function() {
-                document.getElementById('brandFilter').value = '';
-                document.getElementById('statusFilter').value = '';
-                document.getElementById('startDate').value = '';
-                document.getElementById('endDate').value = '';
-                updateSolvedReportsUI();
-            });
             
             // Pagination event listeners
             document.getElementById('prevPage').addEventListener('click', function() {
@@ -3339,210 +2821,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 reopenReport(currentReportId);
             });
             
-            // Setup search functionality
-            setupSearchFunctionality();
-            
         } else {
             // Pengguna belum login, redirect ke halaman login
             console.log("User not logged in, redirecting...");
-            window.location.href = "login.html";
+            window.location.href = "index.html";
         }
     });
 });
 
-// Update the showToast function to use translations
-function showToast(message, type = "info") {
-    // Use translation if available
-    const translatedMessage = getTranslation(message) || message;
-    
-    // Create toast element if it doesn't exist
-    let toast = document.getElementById('toastNotification');
-    if (!toast) {
-        toast = document.createElement('div');
-        toast.id = 'toastNotification';
-        toast.className = 'toast-notification';
-        toast.innerHTML = `
-            <div class="toast-content">
-                <span id="toastMessage"></span>
-            </div>
-        `;
-        document.body.appendChild(toast);
+// Tambahkan security check di fungsi yang membutuhkan akses super admin
+async function withAdminCheck(action, errorMessage = "Access denied: Only super admin can perform this action") {
+    const isAdmin = await isSuperAdmin();
+    if (!isAdmin) {
+        showToast(errorMessage, "error");
+        return false;
     }
-    
-    const toastMessage = document.getElementById('toastMessage');
-    
-    toastMessage.textContent = translatedMessage;
-    toast.className = `toast-notification ${type}`;
-    toast.style.display = 'block';
-    toast.style.animation = 'toast-in 0.5s ease forwards';
-    
-    // Show toast
-    setTimeout(() => {
-        toast.style.animation = 'toast-out 0.4s ease forwards';
-        setTimeout(() => {
-            toast.style.display = 'none';
-        }, 400);
-    }, 3000);
+    return true;
 }
 
-// Update modal content with translations
-async function showReportDetails(reportId) {
-    const report = solvedReports.find(r => r.id === reportId);
-    
-    if (!report) {
-        showToast("reportNotFound", "error");
-        return;
-    }
-    
-    currentReportId = reportId;
-    
-    const modalContent = document.getElementById('reportDetailsContent');
-    const currentLanguage = localStorage.getItem('preferredLanguage') || 'en';
-    const lang = translations[currentLanguage] || translations['en'];
-    
-    // Format dates
-    const reportedDate = report.dateCreated ? formatDateTime(report.dateCreated.toDate()) : 'N/A';
-    const resolvedDate = report.dateSolved ? formatDateTime(report.dateSolved.toDate()) : 'N/A';
-    
-    // Get user names
-    const reportedBy = await getCachedUserName(report.userId);
-    const completedBy = await getCachedUserName(report.completedBy);
-    
-    // Calculate resolution time
-    let resolutionTime = 'N/A';
-    if (report.dateCreated && report.dateSolved) {
-        const reportedTime = report.dateCreated.toDate();
-        const solvedTime = report.dateSolved.toDate();
-        const diffHours = Math.abs(solvedTime - reportedTime) / 36e5;
-        resolutionTime = `${Math.round(diffHours)} ${lang.hours || 'hours'}`;
-    }
-    
-    modalContent.innerHTML = `
-        <div class="report-details">
-            <div class="report-detail-item">
-                <span class="report-detail-label">${lang.reportId || 'Report ID'}</span>
-                <span class="report-detail-value">${report.id}</span>
-            </div>
-            <div class="report-detail-item">
-                <span class="report-detail-label">${lang.brand || 'Brand'}</span>
-                <span class="report-detail-value">${report.brand || 'N/A'}</span>
-            </div>
-            <div class="report-detail-item">
-                <span class="report-detail-label">${lang.reportedBy || 'Reported By'}</span>
-                <span class="report-detail-value">${reportedBy}</span>
-            </div>
-            <div class="report-detail-item">
-                <span class="report-detail-label">${lang.title || 'Title'}</span>
-                <span class="report-detail-value">${report.title || lang.noTitle || 'No Title'}</span>
-            </div>
-            <div class="report-detail-item">
-                <span class="report-detail-label">${lang.category || 'Category'}</span>
-                <span class="report-detail-value">${report.category || 'N/A'}</span>
-            </div>
-            <div class="report-detail-item">
-                <span class="report-detail-label">${lang.status || 'Status'}</span>
-                <span class="report-detail-value status-badge status-${report.status}">${report.status}</span>
-            </div>
-            <div class="report-detail-item">
-                <span class="report-detail-label">${lang.reportedAt || 'Reported At'}</span>
-                <span class="report-detail-value">${reportedDate}</span>
-            </div>
-            <div class="report-detail-item">
-                <span class="report-detail-label">${lang.resolvedAt || 'Solved At'}</span>
-                <span class="report-detail-value">${resolvedDate}</span>
-            </div>
-        </div>
-        
-        <div class="status-info-grid">
-            <div class="status-info-item">
-                <div class="status-info-label">${lang.resolutionTime || 'Resolution Time'}</div>
-                <div class="status-info-value">${resolutionTime}</div>
-            </div>
-            <div class="status-info-item">
-                <div class="status-info-label">${lang.completedBy || 'Completed By'}</div>
-                <div class="status-info-value">${completedBy}</div>
-            </div>
-        </div>
-        
-        <div class="report-description">
-            <h4>${lang.issueDescription || 'Issue Description'}</h4>
-            <div>${report.description || lang.noDescription || 'No description provided'}</div>
-        </div>
-        
-        <div class="report-resolution">
-            <h4>${lang.resolutionNotes || 'Resolution Notes'}</h4>
-            <div>${report.resolution || lang.noResolution || 'No resolution notes provided'}</div>
-        </div>
-    `;
-    
-    // Update modal footer berdasarkan role user
-    await updateModalFooter();
-    
-    // Tampilkan modal
-    document.getElementById('reportDetailsModal').classList.add('active');
-}
-
-// Update delete confirmation with translations
-function showDeleteConfirmation(reportId) {
-    const report = solvedReports.find(r => r.id === reportId);
-    const currentLanguage = localStorage.getItem('preferredLanguage') || 'en';
-    const lang = translations[currentLanguage] || translations['en'];
-    
-    if (!report) {
-        showToast("reportNotFound", "error");
-        return;
-    }
-    
-    // Buat modal konfirmasi hapus
-    const confirmModal = document.createElement('div');
-    confirmModal.className = 'modal-overlay active';
-    confirmModal.innerHTML = `
-        <div class="modal confirm-modal">
-            <div class="modal-header">
-                <h2 class="modal-title"><i class="fas fa-trash"></i> ${lang.deleteReportTitle || 'Delete Report'}</h2>
-                <button class="modal-close" id="closeDeleteModal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="confirm-icon">
-                    <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
-                </div>
-                <p class="confirm-message">
-                    ${lang.deleteConfirmMessage || 'Are you sure you want to delete report'} <strong>${reportId}</strong>?<br>
-                    ${lang.deleteCannotUndone || 'This action cannot be undone.'}
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" id="cancelDeleteBtn">${lang.cancel || 'Cancel'}</button>
-                <button class="btn btn-danger" id="confirmDeleteBtn">
-                    <i class="fas fa-trash"></i> ${lang.confirmDelete || 'Delete Report'}
-                </button>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(confirmModal);
-    
-    // Event listeners untuk modal hapus
-    document.getElementById('closeDeleteModal').addEventListener('click', () => {
-        document.body.removeChild(confirmModal);
-    });
-    
-    document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
-        document.body.removeChild(confirmModal);
-    });
-    
-    document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
-        deleteReport(reportId);
-        document.body.removeChild(confirmModal);
-    });
-    
-    // Close modal ketika klik di luar
-    confirmModal.addEventListener('click', (e) => {
-        if (e.target === confirmModal) {
-            document.body.removeChild(confirmModal);
-        }
-    });
-}
 // Fungsi untuk mendapatkan terjemahan
 function getTranslation(key, language = null) {
     const lang = language || localStorage.getItem('language') || 'id';

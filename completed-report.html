@@ -15,6 +15,10 @@
             /* ========== VARIABEL CSS YANG DIPERLUKAN ========== */
          :root {
             --primary: #4361ee;
+             --info-light: rgba(59, 130, 246, 0.1);
+    --warning-light: rgba(245, 158, 11, 0.1);
+    --danger-light: rgba(239, 68, 68, 0.1);
+    --purple: #8b5cf6;
             --primary-dark: #3a0ca3;
             --primary-light: #4895ef;
             --secondary: #7209b7;
@@ -562,9 +566,15 @@
             }
         }
         /* Style untuk tombol admin */
+/* ========== PERBAIKAN STYLE UNTUK ADMIN BUTTONS ========== */
 .btn-icon.reopen {
     background: var(--warning-light);
     color: var(--warning);
+}
+
+.btn-icon.edit {
+    background: var(--info-light);
+    color: var(--info);
 }
 
 .btn-icon.delete {
@@ -574,6 +584,12 @@
 
 .btn-icon.reopen:hover {
     background: var(--warning);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-icon.edit:hover {
+    background: var(--info);
     color: white;
     transform: translateY(-2px);
 }
@@ -951,6 +967,7 @@
         padding: 20px;
     }
 }
+
     </style>
 </head>
 <body>
@@ -1273,7 +1290,9 @@ let currentPage = 1;
 const maintenancePerPage = 10;
 
 // Variabel untuk chart
+// ========== CHART MANAGEMENT ==========
 let trendsChart, categoryChart, monthlyChart;
+let chartsInitialized = false;
 
 function setupSolvedMaintenanceListener() {
     if (unsubscribeSolved) {
@@ -1285,8 +1304,8 @@ function setupSolvedMaintenanceListener() {
     const maintenanceRef = db.collection('solvedMaintenance');
 
     unsubscribeSolved = maintenanceRef
-        .orderBy('dateCompleted', 'desc')
-        .onSnapshot(snapshot => {
+    .orderBy('dateCompleted', 'desc')
+    .onSnapshot(snapshot => {
             console.log("Received", snapshot.size, "documents from solvedMaintenance");
             solvedMaintenance = [];
             
@@ -1301,12 +1320,11 @@ function setupSolvedMaintenanceListener() {
 
             console.log("Total maintenance:", solvedMaintenance.length);
             updateSolvedMaintenanceUI();
-            updateCharts();
-
-        }, error => {
-            console.error("Error fetching solved maintenance:", error);
-            showToast("Error loading solved maintenance", "error");
-        });
+        updateCharts();
+    }, error => {
+        console.error("Error fetching solved maintenance:", error);
+        showToast("Error loading solved maintenance", "error");
+    });
 }
 
 function convertToDate(timestamp) {
@@ -1906,13 +1924,18 @@ function showToast(message, type = 'info') {
 async function getCurrentUserRole() {
     try {
         const currentUser = auth.currentUser;
-        if (!currentUser) return null;
+        if (!currentUser) {
+            console.log("No user logged in");
+            return 'user';
+        }
         
         const userDoc = await db.collection('users').doc(currentUser.uid).get();
         if (userDoc.exists) {
             const userData = userDoc.data();
+            console.log("User role from Firestore:", userData.role);
             return userData.role || 'user';
         }
+        console.log("User document not found in Firestore");
         return 'user';
     } catch (error) {
         console.error('Error getting user role:', error);
@@ -1922,18 +1945,41 @@ async function getCurrentUserRole() {
 
 // Fungsi untuk mengecek apakah user adalah super admin
 async function isSuperAdmin() {
-    const role = await getCurrentUserRole();
-    return role === 'super_admin';
-}
+    return new Promise(async (resolve) => {
+        try {
+            // Tunggu hingga user terautentikasi
+            await new Promise(resolve => {
+                const unsubscribe = auth.onAuthStateChanged(user => {
+                    unsubscribe();
+                    resolve(user);
+                });
+            });
 
-// Fungsi untuk menambahkan tombol aksi super admin
-async function addSuperAdminActions() {
-    const isAdmin = await isSuperAdmin();
-    
-    if (!isAdmin) {
-        console.log("User is not super admin, hiding admin actions");
-        return;
-    }
+            const currentUser = auth.currentUser;
+            if (!currentUser) {
+                console.log("❌ No user logged in");
+                resolve(false);
+                return;
+            }
+            
+            console.log("✅ User logged in:", currentUser.email);
+            
+            const userDoc = await db.collection('users').doc(currentUser.uid).get();
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                console.log("📋 User role from Firestore:", userData.role);
+                console.log("👑 Is super_admin:", userData.role === 'super_admin');
+                resolve(userData.role === 'super_admin');
+            } else {
+                console.log("❌ User document not found in Firestore");
+                resolve(false);
+            }
+        } catch (error) {
+            console.error('❌ Error getting user role:', error);
+            resolve(false);
+        }
+    });
+}
     
     console.log("User is super admin, adding admin actions");
     
@@ -1974,7 +2020,7 @@ async function addSuperAdminActions() {
             showDeleteConfirmation(maintenanceId);
         });
     });
-}
+
 
 // Fungsi untuk menampilkan konfirmasi reopen
 function showReopenConfirmation(maintenanceId) {
@@ -2131,7 +2177,7 @@ async function updateSolvedMaintenanceUI() {
     const noTasks = document.getElementById('noTasks');
     const pagination = document.getElementById('pagination');
     
-    console.log("Updating UI with", solvedMaintenance.length, "maintenance tasks");
+    console.log("🔄 Updating UI with", solvedMaintenance.length, "maintenance tasks");
     
     if (solvedMaintenance.length === 0) {
         tableBody.innerHTML = `
@@ -2178,7 +2224,7 @@ async function updateSolvedMaintenanceUI() {
         emptyRow.innerHTML = `
             <td colspan="8" style="text-align: center; padding: 40px 20px;">
                 <i class="fas fa-inbox" style="font-size: 3rem; color: var(--text-tertiary); margin-bottom: 15px; display: block;"></i>
-                <h3 style="color: var(--text-secondary; margin-bottom: 10px;">No completed maintenance found</h3>
+                <h3 style="color: var(--text-secondary); margin-bottom: 10px;">No completed maintenance found</h3>
                 <p style="color: var(--text-tertiary);">Try adjusting your filters or check back later.</p>
             </td>
         `;
@@ -2186,13 +2232,14 @@ async function updateSolvedMaintenanceUI() {
         return;
     }
     
-    // Cek role user
+    // 🔥 PERBAIKAN: Tunggu hingga role check selesai
     const isAdmin = await isSuperAdmin();
+    console.log("🎯 Final isAdmin result:", isAdmin);
     
     currentPageMaintenance.forEach(maintenance => {
         const row = document.createElement('tr');
         
-        // Format dates - menggunakan field yang sesuai dengan solvedMaintenance
+        // Format dates
         const createdDate = maintenance.dateCreated ? formatDate(convertToDate(maintenance.dateCreated)) : 'N/A';
         const completedDate = maintenance.dateCompleted ? formatDate(convertToDate(maintenance.dateCompleted)) : 'N/A';
         
@@ -2201,15 +2248,19 @@ async function updateSolvedMaintenanceUI() {
         if (maintenance.dateCreated && maintenance.dateCompleted) {
             const created = convertToDate(maintenance.dateCreated);
             const completed = convertToDate(maintenance.dateCompleted);
-            const diffDays = Math.floor((completed - created) / (1000 * 60 * 60 * 24));
-            const diffHours = Math.floor(((completed - created) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const diffTime = Math.abs(completed - created);
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            const diffHours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             completionTime = `${diffDays}d ${diffHours}h`;
         }
         
-        // Tombol aksi untuk super admin
+        // 🔥 PERBAIKAN: Tombol admin dengan kondisi yang benar
         const adminButtons = isAdmin ? `
             <button class="btn-icon reopen" data-id="${maintenance.id}" title="Reopen Task">
                 <i class="fas fa-undo"></i>
+            </button>
+            <button class="btn-icon edit" data-id="${maintenance.id}" title="Edit Task">
+                <i class="fas fa-edit"></i>
             </button>
             <button class="btn-icon delete" data-id="${maintenance.id}" title="Delete Task">
                 <i class="fas fa-trash"></i>
@@ -2237,42 +2288,47 @@ async function updateSolvedMaintenanceUI() {
     });
     
     // Add event listeners to all buttons
-    document.querySelectorAll('.btn-icon.view').forEach(button => {
-        button.addEventListener('click', function() {
-            const maintenanceId = this.getAttribute('data-id');
-            showMaintenanceDetails(maintenanceId);
-        });
-    });
-    
-    // Hanya tambahkan event listeners untuk admin jika user adalah super admin
-    if (isAdmin) {
-        document.querySelectorAll('.btn-icon.reopen').forEach(button => {
-            button.addEventListener('click', function() {
-                const maintenanceId = this.getAttribute('data-id');
-                showReopenConfirmation(maintenanceId);
-            });
-        });
-        
-        document.querySelectorAll('.btn-icon.delete').forEach(button => {
-            button.addEventListener('click', function() {
-                const maintenanceId = this.getAttribute('data-id');
-                showDeleteConfirmation(maintenanceId);
-            });
-        });
-    }
+    addEventListenersToButtons(isAdmin);
 }
 // Initialize the page
 // Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM loaded, setting up listener...");
-    loadSidebar();
-    initCharts();
-    setupSolvedMaintenanceListener();
+    console.log("🚀 DOM loaded, setting up listener...");
     
-    // Setup language functionality
-    loadLanguageSettings();
-    setupLanguageListener();
+    // Setup auth state listener pertama
+    auth.onAuthStateChanged(async (user) => {
+        if (user) {
+            console.log("✅ User logged in:", user.email);
+            console.log("🆔 User UID:", user.uid);
+            
+            // Cek role user
+            const role = await getCurrentUserRole();
+            console.log("📋 User role:", role);
+            const isAdmin = await isSuperAdmin();
+            console.log("👑 Is super admin:", isAdmin);
+            
+            // Load data setelah auth selesai
+            loadSidebar();
+            initCharts();
+            setupSolvedMaintenanceListener();
+            
+            // Setup language functionality
+            loadLanguageSettings();
+            setupLanguageListener();
+            
+        } else {
+            console.log("❌ No user logged in, redirecting to login...");
+            // Optional: redirect to login page
+            // window.location.href = 'login.html';
+        }
+    });
     
+    // Setup event listeners lainnya...
+    setupEventListeners();
+});
+
+// Fungsi terpisah untuk event listeners
+function setupEventListeners() {
     // Set up event listeners untuk filters
     document.getElementById('categoryFilter').addEventListener('change', function() {
         currentPage = 1;
@@ -2288,6 +2344,8 @@ document.addEventListener('DOMContentLoaded', function() {
         currentPage = 1;
         updateSolvedMaintenanceUI();
     });
+    
+    // ... event listeners lainnya tetap sama ..
     
     // Set up chart time range filters
     document.getElementById('trendsTimeRange').addEventListener('change', updateCharts);
@@ -2358,7 +2416,7 @@ document.addEventListener('DOMContentLoaded', function() {
             addSuperAdminActions();
         }
     }, 2000);
-});
+};
 
 // ========== MULTI-LANGUAGE SUPPORT ==========
 let currentLanguage = localStorage.getItem('language') || 'id';
@@ -2593,7 +2651,190 @@ function setupLanguageListener() {
         }
     }, 1000);
 }
+function addEventListenersToButtons(isAdmin) {
+    console.log("🔧 Adding event listeners, isAdmin:", isAdmin);
+    
+    // Event listener untuk view button (selalu ada)
+    document.querySelectorAll('.btn-icon.view').forEach(button => {
+        button.addEventListener('click', function() {
+            const maintenanceId = this.getAttribute('data-id');
+            showMaintenanceDetails(maintenanceId);
+        });
+    });
+    
+    // Hanya tambahkan event listeners untuk admin jika benar-benar admin
+    if (isAdmin) {
+        console.log("🔧 Adding event listeners for admin buttons");
+        
+        document.querySelectorAll('.btn-icon.reopen').forEach(button => {
+            button.addEventListener('click', function() {
+                const maintenanceId = this.getAttribute('data-id');
+                showReopenConfirmation(maintenanceId);
+            });
+        });
+        
+        document.querySelectorAll('.btn-icon.edit').forEach(button => {
+            button.addEventListener('click', function() {
+                const maintenanceId = this.getAttribute('data-id');
+                showEditModal(maintenanceId); // Pastikan fungsi ini ada
+            });
+        });
+        
+        document.querySelectorAll('.btn-icon.delete').forEach(button => {
+            button.addEventListener('click', function() {
+                const maintenanceId = this.getAttribute('data-id');
+                showDeleteConfirmation(maintenanceId);
+            });
+        });
+    } else {
+        console.log("🔒 User is not admin, skipping admin button event listeners");
+    }
+}
+// Fungsi untuk menampilkan modal edit - TAMBAHKAN INI
+function showEditModal(maintenanceId) {
+    const maintenance = solvedMaintenance.find(m => m.id === maintenanceId);
+    
+    if (!maintenance) {
+        showToast("Maintenance task not found", "error");
+        return;
+    }
+    
+    // Untuk sekarang, tampilkan pesan bahwa fitur edit sedang dikembangkan
+    showToast("Edit feature is under development", "info");
+    
+    // Atau Anda bisa implementasikan modal edit seperti ini:
+    console.log("Edit maintenance:", maintenanceId);
+    // Implementasi modal edit akan mirip dengan showMaintenanceDetails
+    // tapi dengan form input instead of static text
+}
 
+// Fungsi untuk menghapus task - TAMBAHKAN INI
+async function deleteMaintenanceTask(maintenanceId) {
+    const isAdmin = await isSuperAdmin();
+    if (!isAdmin) {
+        showToast("Access denied: Only super admin can delete tasks", "error");
+        return;
+    }
+    
+    try {
+        await db.collection('solvedMaintenance').doc(maintenanceId).delete();
+        showToast("Task deleted successfully", "success");
+        
+        // Refresh data
+        setupSolvedMaintenanceListener();
+        
+    } catch (error) {
+        console.error("Error deleting maintenance task:", error);
+        showToast("Error deleting task: " + error.message, "error");
+    }
+}
+// ========== FUNGSI YANG DIPERLUKAN ==========
+
+// Fungsi untuk memuat sidebar
+function loadSidebar() {
+    console.log("Loading sidebar...");
+    // Sidebar akan dimuat oleh sidebar-loader.js
+    // Pastikan file sidebar-loader.js ada dan berfungsi
+}
+
+// Fungsi untuk menambahkan fitur super admin
+function addSuperAdminActions() {
+    console.log("🛠️ Adding super admin actions to UI...");
+    
+    // Update UI untuk menampilkan tombol admin
+    updateSolvedMaintenanceUI();
+    
+    // Tambahkan CSS untuk tombol admin jika belum ada
+    addAdminStyles();
+}
+
+// Fungsi untuk menambahkan styles tombol admin
+function addAdminStyles() {
+    if (!document.getElementById('admin-styles')) {
+        const style = document.createElement('style');
+        style.id = 'admin-styles';
+        style.textContent = `
+            .btn-icon.reopen {
+                background: var(--warning-light);
+                color: var(--warning);
+            }
+            .btn-icon.edit {
+                background: var(--info-light);
+                color: var(--info);
+            }
+            .btn-icon.delete {
+                background: var(--danger-light);
+                color: var(--danger);
+            }
+            .btn-icon.reopen:hover {
+                background: var(--warning);
+                color: white;
+            }
+            .btn-icon.edit:hover {
+                background: var(--info);
+                color: white;
+            }
+            .btn-icon.delete:hover {
+                background: var(--danger);
+                color: white;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+// ========== PERBAIKAN INITIALIZATION ==========
+
+// Ganti kode initialization yang ada dengan ini:
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("🚀 DOM loaded, setting up listener...");
+    
+    // Setup auth state listener
+    auth.onAuthStateChanged(async (user) => {
+        if (user) {
+            console.log("✅ User logged in:", user.email);
+            console.log("🆔 User UID:", user.uid);
+            
+            // Load sidebar pertama
+            loadSidebar();
+            
+            // Cek role user
+            const role = await getCurrentUserRole();
+            console.log("📋 User role:", role);
+            const isAdmin = await isSuperAdmin();
+            console.log("👑 Is super admin:", isAdmin);
+            
+            // Setup features lainnya
+            initCharts();
+            setupSolvedMaintenanceListener();
+            
+            // Setup language functionality
+            loadLanguageSettings();
+            setupLanguageListener();
+            
+        } else {
+            console.log("❌ No user logged in");
+            // Tetap load sidebar meski tidak login
+            loadSidebar();
+        }
+    });
+    
+    // Setup event listeners
+    setupEventListeners();
+});
+
+// ========== PERBAIKAN SETUP EVENT LISTENERS ==========
+
+// Di dalam fungsi setupEventListeners(), ganti bagian:
+// Check admin status dan setup tombol admin
+setTimeout(async () => {
+    const isAdmin = await isSuperAdmin();
+    console.log("Admin status checked:", isAdmin);
+    if (isAdmin) {
+        console.log("Setting up admin features...");
+        addSuperAdminActions(); // Sekarang fungsi ini sudah didefinisikan
+    }
+}, 2000);
 </script>
 </body>
 </html>

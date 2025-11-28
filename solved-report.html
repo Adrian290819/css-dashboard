@@ -1515,6 +1515,43 @@
     background-color: #10b981;
     color: white;
 }
+/* User Profile Visual Enhancement */
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 8px 16px;
+    border-radius: 12px;
+    background: rgba(67, 97, 238, 0.05);
+    border: 1px solid rgba(67, 97, 238, 0.1);
+    transition: all var(--transition-fast);
+}
+
+.user-profile:hover {
+    background: rgba(67, 97, 238, 0.1);
+    transform: translateY(-2px);
+}
+
+.profile-img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(67, 97, 238, 0.2);
+}
+
+.user-info h4 {
+    font-weight: var(--font-semibold);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.user-info p {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    margin: 0;
+}
 </style>
 </head>
 <body>
@@ -1563,29 +1600,31 @@
                     <select class="filter-select" id="brandFilter">
                         <option value="">All Brands</option>
                         <option value="CINTAWIN88 (D-GAMING)">CINTAWIN88 (D-GAMING)</option>
-                            <option value="CERIASLOT99 (D-GAMING)">CERIASLOT99 (D-GAMING)</option>
-                            <option value="RAJASCATTER88 (D-GAMING)">RAJASCATTER88 (D-GAMING)</option>
-                            <option value="MAHJONGJP88 (D-GAMING)">MAHJONGJP88 (D-GAMING)</option>
-                            <option value="NAGAHOKI88 (D-GAMING)">NAGAHOKI88 (D-GAMING)</option>
-                            <option value="SPACEMAN88 (D-GAMING)">SPACEMAN88 (D-GAMING)</option>
-                            <option value="RAJAPANEN (D-GAMING)">RAJAPANEN (D-GAMING)</option>
-                            <option value="BROTO88 (D-GAMING)">BROTO88 (D-GAMING)</option>
-                            <option value="MEDUSA88 (GACHA)">MEDUSA88 (GACHA)</option>
-                            <option value="ATHENA168 (GACHA)">ATHENA168 (GACHA)</option>
-                            <option value="ARES GACOR (GACHA)">ARES GACOR (GACHA)</option>
-                            <option value="RAJA MAHJONG (GACHA)">RAJA MAHJONG (GACHA)</option>
-                            <option value="OLYMPUS1000 (GACHA)">OLYMPUS1000 (GACHA)</option>
-                            <option value="CLICKBET (GACHA)">CBWL (GACHA)</option>
-                            <option value="RAJA COVID (GACHA)">RAJA COVID (GACHA)</option>
-                            <option value="BANG GACOR 88 (GACHA)">BANG GACOR 88 (GACHA)</option>
-                            <option value="HACKSAW88 (GACHA)">HACKSAW88 (GACHA)</option>
-                            <option value="GACHA99 (GACHA)">GACHA99 (GACHA)</option>
-                            <option value="UJANGBET (BREM)">UJANGBET (BREM)</option>
-                            <option value="EPISODEBET (BREM)">EPISODEBET (BREM)</option>
-                            <option value="FOKUSBET88 (89ENGINE)">FOKUSBET88 (89ENGINE)</option>
-                            <option value="RAJAKING88 (89ENGINE)">RAJAKING88 (89ENGINE)</option>
-                            <option value="RAJANAGA99 (89ENGINE)">RAJANAGA99 (89ENGINE)</option>
-                            <option value="JOIN999 (LUXION)">JOIN999 (LUXION)</option>
+                                <option value="CERIASLOT99 (D-GAMING)">CERIASLOT99 (D-GAMING)</option>
+                                <option value="RAJASCATTER88 (D-GAMING)">RAJASCATTER88 (D-GAMING)</option>
+                                <option value="MAHJONGJP88 (D-GAMING)">MAHJONGJP88 (D-GAMING)</option>
+                                <option value="NAGAHOKI88 (D-GAMING)">NAGAHOKI88 (D-GAMING)</option>
+                                <option value="SPACEMAN88 (D-GAMING)">SPACEMAN88 (D-GAMING)</option>
+                                <option value="RAJAPANEN (D-GAMING)">RAJAPANEN (D-GAMING)</option>
+                                <option value="BROTO88 (D-GAMING)">BROTO88 (D-GAMING)</option>
+                                <option value="MEDUSA88 (GACHA)">MEDUSA88 (GACHA)</option>
+                                <option value="ATHENA168 (GACHA)">ATHENA168 (GACHA)</option>
+                                <option value="ARES GACOR (GACHA)">ARES GACOR (GACHA)</option>
+                                <option value="RAJA MAHJONG (GACHA)">RAJA MAHJONG (GACHA)</option>
+                                <option value="OLYMPUS1000 (GACHA)">OLYMPUS1000 (GACHA)</option>
+                                <option value="CLICKBET (GACHA)">CBWL (GACHA)</option>
+                                <option value="RAJA COVID (GACHA)">RAJA COVID (GACHA)</option>
+                                <option value="BANG GACOR 88 (GACHA)">BANG GACOR 88 (GACHA)</option>
+                                <option value="HACKSAW88 (GACHA)">HACKSAW88 (GACHA)</option>
+                                <option value="GACHA99 (GACHA)">GACHA99 (GACHA)</option>
+                                <option value="UJANGBET (BREM)">UJANGBET (BREM)</option>
+                                <option value="EPISODEBET (BREM)">EPISODEBET (BREM)</option>
+                                <option value="FOKUSBET88 (89ENGINE)">FOKUSBET88 (89ENGINE)</option>
+                                <option value="RAJAKING88 (89ENGINE)">RAJAKING88 (89ENGINE)</option>
+                                <option value="RAJANAGA99 (89ENGINE)">RAJANAGA99 (89ENGINE)</option>
+                                <option value="JOIN999 (LUXION)">JOIN999 (LUXION)</option>
+                                <option value="KUDAHOKI88 (89ENGINE)">KUDAHOKI88 (89ENGINE)</option>
+                                <option value="MAPAN99 (89ENGINE)">MAPAN99 (89ENGINE)</option>
                     </select>
                 </div>
                 <div class="filter-group">

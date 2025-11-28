@@ -4,16 +4,12 @@ class SidebarLoader {
         this.sidebarContainer = document.getElementById('sidebar-container');
         this.translations = {
             id: {
-                // Header
                 "dashboardTitle": "CSS Dashboard",
-                
-                // Menu Categories
                 "reports": "Laporan",
                 "maintenance": "Pemeliharaan",
                 "performance": "Kinerja",
                 "daily": "Harian",
-                
-                // Menu Items
+                "kpiHistory": "History KPI",
                 "dashboardOverview": "Dashboard Overview",
                 "reportsMenu": "Laporan",
                 "pendingReports": "Laporan Tertunda",
@@ -39,31 +35,21 @@ class SidebarLoader {
                 "shiftSchedule": "Jadwal Shift",
                 "settings": "Pengaturan",
                 "logout": "Keluar",
-                
-                // Super Admin
                 "superAdmin": "Super Admin",
                 "userManagement": "Manajemen Pengguna",
                 "systemSettings": "Pengaturan Sistem",
-                
-                // Theme
                 "darkMode": "Mode Gelap",
                 "lightMode": "Mode Terang",
-                
-                // New Menu Item
                 "staffAccount": "Akun Staff"
             },
             
             en: {
-                // Header
                 "dashboardTitle": "CSS Dashboard",
-                
-                // Menu Categories
                 "reports": "Reports",
                 "maintenance": "Maintenance",
                 "performance": "Performance",
                 "daily": "Daily",
-                
-                // Menu Items
+                "kpiHistory": "KPI History",
                 "dashboardOverview": "Dashboard Overview",
                 "reportsMenu": "Reports",
                 "pendingReports": "Pending Reports",
@@ -89,31 +75,21 @@ class SidebarLoader {
                 "shiftSchedule": "Shift Schedule",
                 "settings": "Settings",
                 "logout": "Logout",
-                
-                // Super Admin
                 "superAdmin": "Super Admin",
                 "userManagement": "User Management",
                 "systemSettings": "System Settings",
-                
-                // Theme
                 "darkMode": "Dark Mode",
                 "lightMode": "Light Mode",
-                
-                // New Menu Item
                 "staffAccount": "Staff Account"
             },
             
             ja: {
-                // Header
                 "dashboardTitle": "CSS ダッシュボード",
-                
-                // Menu Categories
                 "reports": "レポート",
                 "maintenance": "メンテナンス",
                 "performance": "パフォーマンス",
                 "daily": "日次",
-                
-                // Menu Items
+                "kpiHistory": "KPI履歴",
                 "dashboardOverview": "ダッシュボード概要",
                 "reportsMenu": "レポート",
                 "pendingReports": "保留中のレポート",
@@ -139,31 +115,21 @@ class SidebarLoader {
                 "shiftSchedule": "シフトスケジュール",
                 "settings": "設定",
                 "logout": "ログアウト",
-                
-                // Super Admin
                 "superAdmin": "スーパー管理者",
                 "userManagement": "ユーザー管理",
                 "systemSettings": "システム設定",
-                
-                // Theme
                 "darkMode": "ダークモード",
                 "lightMode": "ライトモード",
-                
-                // New Menu Item
                 "staffAccount": "スタッフアカウント"
             },
             
             zh: {
-                // Header
                 "dashboardTitle": "CSS 仪表板",
-                
-                // Menu Categories
                 "reports": "报告",
                 "maintenance": "维护",
                 "performance": "性能",
                 "daily": "日常",
-                
-                // Menu Items
+                "kpiHistory": "KPI历史",
                 "dashboardOverview": "仪表板概览",
                 "reportsMenu": "报告",
                 "pendingReports": "待处理报告",
@@ -189,32 +155,44 @@ class SidebarLoader {
                 "shiftSchedule": "轮班安排",
                 "settings": "设置",
                 "logout": "退出登录",
-                
-                // Super Admin
                 "superAdmin": "超级管理员",
                 "userManagement": "用户管理",
                 "systemSettings": "系统设置",
-                
-                // Theme
                 "darkMode": "深色模式",
                 "lightMode": "浅色模式",
-                
-                // New Menu Item
                 "staffAccount": "员工账户"
             }
         };
         
         this.currentLanguage = localStorage.getItem('language') || 'id';
-        this.currentUserRole = 'user'; // Default value
+        this.currentUserRole = 'user';
         this.currentUserId = null;
         this.userData = null;
+        this.isInitialized = false;
         
-        this.injectStyles();
+        this.debug = localStorage.getItem('debugMode') === 'true';
+        this.eventListeners = [];
+        
+        this.log('SidebarLoader initialized');
     }
 
-    // Method untuk mendapatkan current user ID dari Firebase Auth
-    getCurrentUserId() {
+    log(message, data = null) {
+        if (this.debug) {
+            console.log(`[SidebarLoader] ${message}`, data || '');
+        }
+    }
+
+    error(message, error = null) {
+        console.error(`[SidebarLoader] ${message}`, error || '');
+    }
+
+    async getCurrentUserId() {
         return new Promise((resolve, reject) => {
+            if (typeof firebase === 'undefined') {
+                reject(new Error('Firebase not loaded'));
+                return;
+            }
+
             const auth = firebase.auth();
             const unsubscribe = auth.onAuthStateChanged(user => {
                 unsubscribe();
@@ -227,9 +205,12 @@ class SidebarLoader {
         });
     }
 
-    // Method untuk mendapatkan user data dari Firestore
     async getUserDataFromFirebase(userId) {
         try {
+            if (typeof firebase === 'undefined') {
+                throw new Error('Firebase not loaded');
+            }
+
             const db = firebase.firestore();
             const userDoc = await db.collection('users').doc(userId).get();
             
@@ -239,123 +220,130 @@ class SidebarLoader {
                 throw new Error('User document not found');
             }
         } catch (error) {
-            console.error('Error getting user data from Firebase:', error);
+            this.error('Error getting user data from Firebase:', error);
             throw error;
         }
     }
 
-    // Method untuk initialize user data
     async initializeUserData() {
         try {
+            // Gunakan cached data untuk percepat loading
+            const cachedRole = localStorage.getItem('userRole');
+            const cachedUserId = localStorage.getItem('userId');
+            
+            if (cachedRole && cachedUserId) {
+                this.currentUserRole = cachedRole;
+                this.currentUserId = cachedUserId;
+                this.log('Using cached user data', { role: cachedRole, userId: cachedUserId });
+                return { role: cachedRole, userId: cachedUserId };
+            }
+            
             // Dapatkan user ID dari Firebase Auth
             this.currentUserId = await this.getCurrentUserId();
             
             // Dapatkan user data dari Firestore
             this.userData = await this.getUserDataFromFirebase(this.currentUserId);
             
-            // Set current user role dari Firestore
-            this.currentUserRole = this.userData.role || 'user';
+            // Update role dari Firestore
+            this.currentUserRole = this.userData?.role || 'user';
             
-            console.log('User data loaded from Firebase:', {
+            // Cache data
+            localStorage.setItem('userRole', this.currentUserRole);
+            localStorage.setItem('userId', this.currentUserId);
+            
+            this.log('User data loaded from Firebase', {
                 userId: this.currentUserId,
-                role: this.currentUserRole,
-                userData: this.userData
+                role: this.currentUserRole
             });
             
             return this.userData;
         } catch (error) {
-            console.error('Error initializing user data:', error);
-            // Fallback ke default role
-            this.currentUserRole = 'user';
-            return null;
+            this.error('Error initializing user data:', error);
+            // Fallback ke cached data
+            this.currentUserRole = localStorage.getItem('userRole') || 'user';
+            this.currentUserId = localStorage.getItem('userId') || null;
+            return { role: this.currentUserRole, userId: this.currentUserId };
         }
     }
 
     getTranslation(key) {
-        return this.translations[this.currentLanguage]?.[key] || this.translations['id'][key] || key;
+        const translation = this.translations[this.currentLanguage]?.[key] || 
+                           this.translations['id']?.[key] || 
+                           key;
+        return translation;
     }
 
     applyTranslations() {
         const lang = this.translations[this.currentLanguage];
         
-        if (!lang) return;
-
-        // Update dashboard title
-        const logoText = document.querySelector('.logo-text');
-        if (logoText) {
-            logoText.textContent = lang.dashboardTitle;
+        if (!lang) {
+            this.error('No translations found for language:', this.currentLanguage);
+            return;
         }
 
-        // Update menu categories
-        const categories = document.querySelectorAll('.menu-category');
-        categories.forEach((category, index) => {
-            switch(index) {
-                case 0: // Reports
-                    category.textContent = lang.reports;
-                    break;
-                case 1: // Maintenance
-                    category.textContent = lang.maintenance;
-                    break;
-                case 2: // Performance
-                    category.textContent = lang.performance;
-                    break;
-                case 3: // Daily
-                    category.textContent = lang.daily;
-                    break;
+        try {
+            // Update dashboard title
+            const logoText = document.querySelector('.logo-text');
+            if (logoText) {
+                logoText.textContent = lang.dashboardTitle;
             }
-        });
 
-        // Update menu items
-        const menuItems = {
-            '.menu-item[data-page="summary-dashboard.html"] .menu-text': lang.dashboardOverview,
-            '.has-submenu:nth-child(2) .menu-text': lang.reportsMenu,
-            '.menu-item[data-page="pending-reports.html"] .menu-text': lang.pendingReports,
-            '.menu-item[data-page="solved-report.html"] .menu-text': lang.solvedReports,
-            '.has-submenu:nth-child(4) .menu-text': lang.maintenanceMenu,
-            '.menu-item[data-page="maintenance.html"] .menu-text': lang.pendingMaintenance,
-            '.menu-item[data-page="completed-report.html"] .menu-text': lang.completedMaintenance,
-            '.has-submenu:nth-child(6) .menu-text': lang.releases,
-            '.menu-item[data-page="releases-newfeature.html"] .menu-text': lang.newFeatures,
-            '.menu-item[data-page="releases-newgame.html"] .menu-text': lang.newGames,
-            '.has-submenu:nth-child(8) .menu-text': lang.kpiPoints,
-            '.menu-item[data-page="kpi-css.html"] .menu-text': lang.kpiCss,
-            '.menu-item[data-page="ide-saran.html"] .menu-text': lang.ideasSuggestions,
-            '.menu-item[data-page="research.html"] .menu-text': lang.research,
-            '.menu-item[data-page="chat-response.html"] .menu-text': lang.chatResponse,
-            '.has-submenu:nth-child(10) .menu-text': lang.dailyRoutine,
-            '.menu-item[data-page="daily-tasks.html"] .menu-text': lang.dailyTasks,
-            '.menu-item[data-page="task-history.html"] .menu-text': lang.taskHistory,
-            '.menu-item[data-page="staff-account.html"] .menu-text': lang.staffAccount,
-            '.menu-item[data-page="topup-credit.html"] .menu-text': lang.topUpCredit,
-            '.menu-item[data-page="eventprovider.html"] .menu-text': lang.eventProvider,
-            '.menu-item[data-page="weekly-meeting.html"] .menu-text': lang.weeklyMeetings,
-            '.menu-item[data-page="phishing.html"] .menu-text': lang.phishingAlerts,
-            '.menu-item[data-page="jadwalshift.html"] .menu-text': lang.shiftSchedule,
-            '.menu-item[data-page="pengaturan.html"] .menu-text': lang.settings,
-            '.logout-btn .menu-text': lang.logout
-        };
-
-        Object.keys(menuItems).forEach(selector => {
-            const element = document.querySelector(selector);
-            if (element && menuItems[selector]) {
-                element.textContent = menuItems[selector];
-            }
-        });
-
-        // Update super admin section
-        const superAdminSection = document.querySelector('.super-admin-only');
-        if (superAdminSection) {
-            const superAdminTitle = superAdminSection.querySelector('h3');
-            const userManagement = superAdminSection.querySelector('.menu-item:nth-child(2) span');
-            const systemSettings = superAdminSection.querySelector('.menu-item:nth-child(3) span');
+            // Update menu categories
+            const categories = document.querySelectorAll('.menu-category');
+            const categoryKeys = ['reports', 'maintenance', 'performance', 'daily'];
             
-            if (superAdminTitle) superAdminTitle.textContent = lang.superAdmin;
-            if (userManagement) userManagement.textContent = lang.userManagement;
-            if (systemSettings) systemSettings.textContent = lang.systemSettings;
-        }
+            categories.forEach((category, index) => {
+                if (categoryKeys[index]) {
+                    category.textContent = lang[categoryKeys[index]];
+                }
+            });
 
-        // Update theme toggle
-        this.updateThemeText();
+            // Update menu items
+            const menuSelectors = {
+                '.menu-item[data-page="summary-dashboard.html"] .menu-text': 'dashboardOverview',
+                '.has-submenu:nth-child(2) .menu-text': 'reportsMenu',
+                '.menu-item[data-page="pending-reports.html"] .menu-text': 'pendingReports',
+                '.menu-item[data-page="solved-report.html"] .menu-text': 'solvedReports',
+                '.has-submenu:nth-child(4) .menu-text': 'maintenanceMenu',
+                '.menu-item[data-page="maintenance.html"] .menu-text': 'pendingMaintenance',
+                '.menu-item[data-page="completed-report.html"] .menu-text': 'completedMaintenance',
+                '.has-submenu:nth-child(6) .menu-text': 'releases',
+                '.menu-item[data-page="releases-newfeature.html"] .menu-text': 'newFeatures',
+                '.menu-item[data-page="releases-newgame.html"] .menu-text': 'newGames',
+                '.has-submenu:nth-child(8) .menu-text': 'kpiPoints',
+                '.menu-item[data-page="kpi-css.html"] .menu-text': 'kpiCss',
+                '.menu-item[data-page="kpi-history.html"] .menu-text': 'kpiHistory',
+                '.menu-item[data-page="ide-saran.html"] .menu-text': 'ideasSuggestions',
+                '.menu-item[data-page="research.html"] .menu-text': 'research',
+                '.menu-item[data-page="chat-response.html"] .menu-text': 'chatResponse',
+                '.has-submenu:nth-child(10) .menu-text': 'dailyRoutine',
+                '.menu-item[data-page="daily-tasks.html"] .menu-text': 'dailyTasks',
+                '.menu-item[data-page="task-history.html"] .menu-text': 'taskHistory',
+                '.menu-item[data-page="staff-account.html"] .menu-text': 'staffAccount',
+                '.menu-item[data-page="topup-credit.html"] .menu-text': 'topUpCredit',
+                '.menu-item[data-page="eventprovider.html"] .menu-text': 'eventProvider',
+                '.menu-item[data-page="weekly-meeting.html"] .menu-text': 'weeklyMeetings',
+                '.menu-item[data-page="phishing.html"] .menu-text': 'phishingAlerts',
+                '.menu-item[data-page="jadwalshift.html"] .menu-text': 'shiftSchedule',
+                '.menu-item[data-page="pengaturan.html"] .menu-text': 'settings',
+                '.logout-btn .menu-text': 'logout'
+            };
+
+            Object.keys(menuSelectors).forEach(selector => {
+                const element = document.querySelector(selector);
+                const translationKey = menuSelectors[selector];
+                
+                if (element && lang[translationKey]) {
+                    element.textContent = lang[translationKey];
+                }
+            });
+
+            // Update theme text
+            this.updateThemeText();
+
+        } catch (error) {
+            this.error('Error applying translations:', error);
+        }
     }
 
     updateThemeText() {
@@ -373,10 +361,13 @@ class SidebarLoader {
     }
 
     injectStyles() {
-        // ... (CSS styles tetap sama seperti sebelumnya)
+        if (document.getElementById('sidebar-styles')) {
+            return; // Styles sudah diinject
+        }
+
         const style = document.createElement('style');
+        style.id = 'sidebar-styles';
         style.textContent = `
-            /* Variabel CSS */
             :root {
                 --primary-color: #4361ee;
                 --secondary-color: #3f37c9;
@@ -404,14 +395,6 @@ class SidebarLoader {
                 --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
             }
 
-            /* Terapkan variabel ke elemen body */
-            body {
-                background-color: var(--bg-color);
-                color: var(--text-color);
-                transition: background-color var(--transition-speed), color var(--transition-speed);
-            }
-
-            /* CSS untuk menu toggle */
             .menu-toggle {
                 display: none;
                 position: fixed;
@@ -452,7 +435,6 @@ class SidebarLoader {
                 transform: rotate(-45deg) translate(5px, -5px);
             }
 
-            /* Sidebar Styles */
             .sidebar {
                 position: fixed;
                 top: 0;
@@ -521,6 +503,7 @@ class SidebarLoader {
                 color: var(--text-color);
                 cursor: pointer;
                 transition: background-color var(--transition-speed);
+                text-decoration: none;
             }
 
             .menu-item:hover {
@@ -595,7 +578,6 @@ class SidebarLoader {
                 background-color: rgba(231, 76, 60, 0.1);
             }
 
-            /* Theme Toggle Styles */
             .theme-toggle-container {
                 margin-top: auto;
                 padding: 15px 0;
@@ -619,7 +601,6 @@ class SidebarLoader {
                 background: rgba(0, 0, 0, 0.05);
             }
 
-            /* Overlay untuk menutup sidebar saat diklik di luar */
             .sidebar-overlay {
                 position: fixed;
                 top: 0;
@@ -635,15 +616,6 @@ class SidebarLoader {
                 display: block;
             }
 
-            .logo-image {
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                object-fit: cover;
-                margin-right: 10px;
-            }
-
-            /* Super Admin Section */
             .super-admin-only {
                 border-top: 2px solid var(--primary-color);
                 margin-top: 10px;
@@ -659,7 +631,6 @@ class SidebarLoader {
                 font-weight: 600;
             }
 
-            /* Tampilkan menu toggle hanya di mobile */
             @media (max-width: 768px) {
                 .menu-toggle {
                     display: flex;
@@ -675,8 +646,21 @@ class SidebarLoader {
                 
                 .sidebar-overlay.active {
                     display: block;
-                    
                 }
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                * {
+                    animation-duration: 0.01ms !important;
+                    animation-iteration-count: 1 !important;
+                    transition-duration: 0.01ms !important;
+                }
+            }
+
+            .menu-item:focus-visible,
+            .theme-toggle:focus-visible {
+                outline: 2px solid var(--primary-color);
+                outline-offset: 2px;
             }
         `;
         
@@ -687,14 +671,11 @@ class SidebarLoader {
         const lang = this.translations[this.currentLanguage];
         const isSuperAdmin = this.currentUserRole === 'super_admin';
         
-        console.log('Generating sidebar with role:', this.currentUserRole);
-        console.log('Is Super Admin:', isSuperAdmin);
+        this.log('Generating sidebar with role:', this.currentUserRole);
         
         return `
-            <!-- Overlay untuk mobile -->
             <div class="sidebar-overlay"></div>
             
-            <!-- Sidebar -->
             <div class="sidebar">
                 <div class="sidebar-header">
                     <div class="logo-container">
@@ -802,6 +783,12 @@ class SidebarLoader {
                             </div>
                             <span class="menu-text">${lang.kpiCss}</span>
                         </div>
+                        <div class="menu-item" data-page="kpi-history.html">
+                            <div class="menu-icon">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <span class="menu-text">${lang.kpiHistory}</span>
+                        </div>
                         <div class="menu-item" data-page="ide-saran.html">
                             <div class="menu-icon">
                                 <i class="fas fa-lightbulb"></i>
@@ -847,7 +834,6 @@ class SidebarLoader {
                         </div>
                     </div>
 
-                    <!-- New Staff Account Menu Item - Hanya untuk Super Admin -->
                     ${isSuperAdmin ? `
                     <div class="menu-item" data-page="staff-account.html">
                         <div class="menu-icon">
@@ -899,42 +885,54 @@ class SidebarLoader {
                         <span class="menu-text">${lang.settings}</span>
                     </div>
 
-                    <div class="menu-item logout-btn" data-page="index.html">
+                    <div class="menu-item logout-btn" id="logoutButton">
                         <div class="menu-icon">
                             <i class="fas fa-sign-out-alt"></i>
                         </div>
                         <span class="menu-text">${lang.logout}</span>
                     </div>
                 </div>
-
-
         `;
     }
 
     async load() {
-        if (this.sidebarContainer) {
-            try {
-                // Tunggu sampai user data di-load dari Firebase
-                await this.initializeUserData();
-                
-                this.sidebarContainer.innerHTML = this.generateSidebarHTML();
-                this.createMenuToggle();
-                this.initializeSidebarFunctionality();
-                this.restoreSidebarState();
-                this.setActiveMenuItem();
-                this.loadTheme();
-                
-                console.log('Sidebar loaded successfully with role:', this.currentUserRole);
-            } catch (error) {
-                console.error('Error loading sidebar:', error);
-                // Fallback: load dengan role default
-                this.sidebarContainer.innerHTML = this.generateSidebarHTML();
-                this.createMenuToggle();
-                this.initializeSidebarFunctionality();
-                this.restoreSidebarState();
-                this.setActiveMenuItem();
-                this.loadTheme();
-            }
+        if (!this.sidebarContainer) {
+            this.error('Sidebar container not found');
+            return;
+        }
+
+        try {
+            // Load theme pertama
+            this.loadTheme();
+            
+            // Inject styles
+            this.injectStyles();
+            
+            // Initialize user data
+            await this.initializeUserData();
+            
+            // Render sidebar
+            this.sidebarContainer.innerHTML = this.generateSidebarHTML();
+            
+            // Setup functionality
+            this.createMenuToggle();
+            this.initializeSidebarFunctionality();
+            this.restoreSidebarState();
+            this.setActiveMenuItem();
+            this.applyTranslations();
+            
+            this.isInitialized = true;
+            this.log('Sidebar loaded successfully');
+            
+        } catch (error) {
+            this.error('Error loading sidebar:', error);
+            // Fallback rendering
+            this.sidebarContainer.innerHTML = this.generateSidebarHTML();
+            this.createMenuToggle();
+            this.initializeSidebarFunctionality();
+            this.restoreSidebarState();
+            this.setActiveMenuItem();
+            this.applyTranslations();
         }
     }
 
@@ -942,6 +940,7 @@ class SidebarLoader {
         if (!document.querySelector('.menu-toggle')) {
             const menuToggle = document.createElement('button');
             menuToggle.className = 'menu-toggle';
+            menuToggle.setAttribute('aria-label', 'Toggle menu');
             menuToggle.innerHTML = `
                 <span></span>
                 <span></span>
@@ -952,108 +951,179 @@ class SidebarLoader {
     }
 
     initializeSidebarFunctionality() {
-        // Toggle sidebar functionality
+        this.setupMenuToggle();
+        this.setupSubmenuToggle();
+        this.setupMenuNavigation();
+        this.setupThemeToggle();
+        this.setupLanguageListener();
+        this.setupResizeHandler();
+    }
+
+    setupMenuToggle() {
         const menuToggle = document.querySelector('.menu-toggle');
         const sidebar = document.querySelector('.sidebar');
         const overlay = document.querySelector('.sidebar-overlay');
         
         if (menuToggle && sidebar && overlay) {
-            menuToggle.addEventListener('click', () => {
+            const toggleHandler = () => {
                 sidebar.classList.toggle('active');
                 overlay.classList.toggle('active');
                 menuToggle.classList.toggle('active');
-            });
+            };
             
-            overlay.addEventListener('click', () => {
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-                menuToggle.classList.remove('active');
-            });
+            menuToggle.addEventListener('click', toggleHandler);
+            overlay.addEventListener('click', toggleHandler);
             
-            // Tutup sidebar saat menu item diklik di mobile
-            const menuItems = document.querySelectorAll('.menu-item[data-page]');
-            menuItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    if (window.innerWidth <= 768) {
-                        sidebar.classList.remove('active');
-                        overlay.classList.remove('active');
-                        menuToggle.classList.remove('active');
-                    }
-                });
-            });
+            this.eventListeners.push({ element: menuToggle, type: 'click', handler: toggleHandler });
+            this.eventListeners.push({ element: overlay, type: 'click', handler: toggleHandler });
         }
+    }
 
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768) {
-                const sidebar = document.querySelector('.sidebar');
-                const overlay = document.querySelector('.sidebar-overlay');
-                const menuToggle = document.querySelector('.menu-toggle');
-                if (sidebar) sidebar.classList.remove('active');
-                if (overlay) overlay.classList.remove('active');
-                if (menuToggle) menuToggle.classList.remove('active');
-            }
-        });
-
-        // Submenu toggle
+    setupSubmenuToggle() {
         const hasSubmenuItems = document.querySelectorAll('.has-submenu');
-        hasSubmenuItems.forEach((item, index) => {
-            item.addEventListener('click', (e) => {
+        
+        hasSubmenuItems.forEach((item) => {
+            const handler = (e) => {
                 if (e.target.classList.contains('submenu-toggle')) return;
+                
                 const submenu = item.nextElementSibling;
-                
-                // Toggle submenu
-                if (submenu.classList.contains('active')) {
-                    submenu.classList.remove('active');
-                    submenu.style.maxHeight = '0';
-                } else {
-                    submenu.classList.add('active');
-                    submenu.style.maxHeight = '500px';
-                }
-                
-                item.classList.toggle('active');
-                this.saveSidebarState();
-            });
-        });
-
-        // Menu navigation
-        const menuItems = document.querySelectorAll('.menu-item[data-page]');
-        menuItems.forEach(item => {
-            item.addEventListener('click', () => {
-                const pageUrl = item.getAttribute('data-page');
-                if (pageUrl === 'index.html') {
-                    // Logout - clear semua data
-                    localStorage.removeItem('isLoggedIn');
-                    localStorage.removeItem('sidebarState');
-                    localStorage.removeItem('theme');
-                    localStorage.removeItem('language');
-                    // Firebase logout akan dilakukan di halaman login
-                } else {
+                if (submenu && submenu.classList.contains('submenu')) {
+                    if (submenu.classList.contains('active')) {
+                        submenu.classList.remove('active');
+                        submenu.style.maxHeight = '0';
+                    } else {
+                        submenu.classList.add('active');
+                        submenu.style.maxHeight = '500px';
+                    }
+                    
+                    item.classList.toggle('active');
                     this.saveSidebarState();
                 }
-                window.location.href = pageUrl;
-            });
+            };
+            
+            item.addEventListener('click', handler);
+            this.eventListeners.push({ element: item, type: 'click', handler });
         });
+    }
 
-        // Theme toggle functionality
+    setupMenuNavigation() {
+        const menuItems = document.querySelectorAll('.menu-item[data-page]');
+        const logoutButton = document.getElementById('logoutButton');
+        
+        // Handle regular menu items
+        menuItems.forEach(item => {
+            if (item === logoutButton) return; // Skip logout button
+            
+            const handler = () => {
+                const pageUrl = item.getAttribute('data-page');
+                this.handleMenuNavigation(pageUrl);
+            };
+            
+            item.addEventListener('click', handler);
+            this.eventListeners.push({ element: item, type: 'click', handler });
+        });
+        
+        // Handle logout separately
+        if (logoutButton) {
+            const logoutHandler = () => {
+                this.handleLogout();
+            };
+            
+            logoutButton.addEventListener('click', logoutHandler);
+            this.eventListeners.push({ element: logoutButton, type: 'click', handler: logoutHandler });
+        }
+    }
+
+    handleMenuNavigation(pageUrl) {
+        // Validasi page URL
+        const allowedPages = [
+            'summary-dashboard.html', 'pending-reports.html', 'solved-report.html',
+            'maintenance.html', 'completed-report.html', 'releases-newfeature.html',
+            'releases-newgame.html', 'kpi-css.html', 'kpi-history.html', 'ide-saran.html',
+            'research.html', 'chat-response.html', 'daily-tasks.html', 'task-history.html',
+            'staff-account.html', 'topup-credit.html', 'eventprovider.html', 
+            'weekly-meeting.html', 'phishing.html', 'jadwalshift.html', 'pengaturan.html',
+            'index.html'
+        ];
+        
+        if (!allowedPages.includes(pageUrl)) {
+            this.error('Invalid page navigation attempt:', pageUrl);
+            return;
+        }
+        
+        this.saveSidebarState();
+        
+        // Close mobile sidebar
+        if (window.innerWidth <= 768) {
+            this.closeMobileSidebar();
+        }
+        
+        // Navigate
+        window.location.href = pageUrl;
+    }
+
+    handleLogout() {
+        // Clear sensitive data
+        const sensitiveKeys = ['userRole', 'userId', 'sidebarState', 'theme', 'language'];
+        sensitiveKeys.forEach(key => localStorage.removeItem(key));
+        
+        // Firebase logout jika available
+        if (typeof firebase !== 'undefined' && firebase.auth) {
+            firebase.auth().signOut().catch(error => {
+                this.error('Firebase logout error:', error);
+            });
+        }
+        
+        // Navigate to login page
+        window.location.href = 'index.html';
+    }
+
+    setupThemeToggle() {
         const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
-            themeToggle.addEventListener('click', () => this.toggleTheme());
+            const handler = () => this.toggleTheme();
+            themeToggle.addEventListener('click', handler);
+            this.eventListeners.push({ element: themeToggle, type: 'click', handler });
         }
-
-        // Setup language change listener
-        this.setupLanguageListener();
     }
 
     setupLanguageListener() {
-        window.addEventListener('languageChanged', (event) => {
+        const handler = (event) => {
             this.currentLanguage = event.detail.language;
             this.reloadSidebar();
-        });
+        };
+        
+        window.addEventListener('languageChanged', handler);
+        this.eventListeners.push({ element: window, type: 'languageChanged', handler });
+    }
+
+    setupResizeHandler() {
+        let resizeTimeout;
+        
+        const handler = () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                if (window.innerWidth > 768) {
+                    this.closeMobileSidebar();
+                }
+            }, 250);
+        };
+        
+        window.addEventListener('resize', handler);
+        this.eventListeners.push({ element: window, type: 'resize', handler });
+    }
+
+    closeMobileSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.sidebar-overlay');
+        const menuToggle = document.querySelector('.menu-toggle');
+        
+        if (sidebar) sidebar.classList.remove('active');
+        if (overlay) overlay.classList.remove('active');
+        if (menuToggle) menuToggle.classList.remove('active');
     }
 
     async reloadSidebar() {
-        // Refresh user data dari Firebase sebelum reload
         await this.initializeUserData();
         this.load();
     }
@@ -1076,25 +1146,10 @@ class SidebarLoader {
         }
     }
 
-    updateThemeText() {
-        const themeToggle = document.getElementById('themeToggle');
-        if (themeToggle) {
-            const themeText = themeToggle.querySelector('.menu-text');
-            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-            
-            if (themeText) {
-                themeText.textContent = currentTheme === 'dark' ? 
-                    this.getTranslation('lightMode') : 
-                    this.getTranslation('darkMode');
-            }
-        }
-    }
-
     loadTheme() {
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
         this.updateThemeIcon(savedTheme);
-        this.updateThemeText();
     }
 
     setActiveMenuItem() {
@@ -1133,43 +1188,69 @@ class SidebarLoader {
     }
 
     restoreSidebarState() {
-        const sidebarState = JSON.parse(localStorage.getItem('sidebarState') || '[]');
-        document.querySelectorAll('.has-submenu').forEach((item, index) => {
-            const submenu = item.nextElementSibling;
-            if (sidebarState.includes(index) && submenu) {
-                submenu.classList.add('active');
-                submenu.style.maxHeight = '500px';
-                item.classList.add('active');
-            }
-        });
+        try {
+            const sidebarState = JSON.parse(localStorage.getItem('sidebarState') || '[]');
+            document.querySelectorAll('.has-submenu').forEach((item, index) => {
+                const submenu = item.nextElementSibling;
+                if (sidebarState.includes(index) && submenu) {
+                    submenu.classList.add('active');
+                    submenu.style.maxHeight = '500px';
+                    item.classList.add('active');
+                }
+            });
+        } catch (error) {
+            this.error('Error restoring sidebar state:', error);
+        }
     }
 
-    // Method untuk mengecek apakah user adalah super admin
+    // Cleanup method
+    destroy() {
+        // Remove all event listeners
+        this.eventListeners.forEach(({ element, type, handler }) => {
+            element.removeEventListener(type, handler);
+        });
+        this.eventListeners = [];
+        
+        // Remove global reference
+        window.sidebarLoader = null;
+        
+        this.log('SidebarLoader destroyed');
+    }
+
     isSuperAdmin() {
         return this.currentUserRole === 'super_admin';
     }
 
-    // Method untuk mendapatkan user data
     getUserData() {
         return this.userData;
     }
 }
 
-// Fungsi global untuk mengecek apakah user adalah super admin
+// Global functions
 function isSuperAdmin() {
     const sidebarLoader = window.sidebarLoader;
     return sidebarLoader ? sidebarLoader.isSuperAdmin() : false;
 }
 
-// Fungsi global untuk mendapatkan user data
 function getUserData() {
     const sidebarLoader = window.sidebarLoader;
     return sidebarLoader ? sidebarLoader.getUserData() : null;
 }
 
-// Initialize sidebar loader
+// Initialize with error handling
 document.addEventListener('DOMContentLoaded', async function() {
-    const sidebarLoader = new SidebarLoader();
-    window.sidebarLoader = sidebarLoader; // Simpan instance ke global scope
-    await sidebarLoader.load();
+    try {
+        const sidebarLoader = new SidebarLoader();
+        window.sidebarLoader = sidebarLoader;
+        await sidebarLoader.load();
+    } catch (error) {
+        console.error('Failed to initialize SidebarLoader:', error);
+    }
+});
+
+// Handle page unload
+window.addEventListener('beforeunload', () => {
+    if (window.sidebarLoader) {
+        window.sidebarLoader.destroy();
+    }
 });

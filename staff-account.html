@@ -480,56 +480,57 @@
     margin-right: auto;
 }
 
-/* Modal Visual Enhancement */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(4px);
-}
 
-.modal.active {
-    display: flex;
-    animation: modalFadeIn 0.3s ease;
-}
-
+/* Animations */
 @keyframes modalFadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
 
-.modal-content {
-    background: var(--card-bg);
-    border-radius: 20px;
-    padding: var(--space-xl);
-    box-shadow: var(--shadow-lg);
-    border: 1px solid var(--border-color);
-    width: 90%;
-    max-width: 520px;
-    max-height: 90vh;
-    overflow-y: auto;
-    transform: translateY(20px);
-    animation: modalSlideIn 0.3s ease forwards;
-}
-
 @keyframes modalSlideIn {
     from { 
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(-20px) scale(0.95);
     }
     to { 
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
     }
 }
 
+/* Form styling improvements */
+.form-group {
+    margin-bottom: var(--space-lg);
+}
+
+.form-label {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-xs);
+}
+
+.form-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+    transition: all var(--transition-fast);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 2px 12px rgba(67, 97, 238, 0.15);
+}
+
+/* Modal header improvements */
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -547,13 +548,6 @@
     display: flex;
     align-items: center;
     gap: var(--space-sm);
-}
-
-.modal-title i {
-    background: var(--primary-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
 .modal-close {
@@ -576,6 +570,32 @@
     background: var(--hover-color);
     color: var(--text-primary);
     transform: rotate(90deg);
+}
+
+/* Form actions */
+.form-actions {
+    display: flex;
+    gap: var(--space-sm);
+    justify-content: flex-end;
+    margin-top: var(--space-xl);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-color);
+}
+
+/* Responsive modal */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        padding: var(--space-lg);
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .form-actions .btn {
+        width: 100%;
+    }
 }
 
 /* Form Visual Enhancement */
@@ -726,6 +746,60 @@
     to { transform: rotate(360deg); }
 }
 
+/* Staff Detail Modal Styles */
+.staff-detail-view {
+    padding: var(--space-md);
+}
+
+.staff-detail-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.staff-detail-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.staff-detail-info h3 {
+    margin: 0 0 var(--space-xs) 0;
+    font-size: var(--text-lg);
+    color: var(--text-primary);
+}
+
+.staff-detail-info p {
+    margin: 0 0 var(--space-sm) 0;
+    color: var(--text-secondary);
+}
+
+.staff-detail-meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid var(--border-color-light);
+}
+
+.detail-item label {
+    font-weight: var(--font-medium);
+    color: var(--text-primary);
+}
+
+.detail-item span {
+    color: var(--text-secondary);
+}
+
 /* Additional CSS Variables untuk enhancement */
 :root {
     --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -753,6 +827,265 @@
     --transition-fast: 0.2s ease;
     --transition-normal: 0.3s ease;
 }
+
+
+/* Responsive design for detail modal */
+@media (max-width: 768px) {
+    .staff-detail-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .staff-detail-info {
+        text-align: center;
+    }
+    
+    .detail-item {
+        flex-direction: column;
+        gap: var(--space-xs);
+        align-items: flex-start;
+    }
+    
+    .detail-item label {
+        font-weight: var(--font-bold);
+    }
+}
+/* ===== MODAL POSITIONING FIX ===== */
+.modal {
+    display: none !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    z-index: 9999 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 20px !important;
+    box-sizing: border-box !important;
+}
+
+.modal.active {
+    display: flex !important;
+}
+
+.modal-content {
+    background: var(--card-bg) !important;
+    border-radius: 20px !important;
+    padding: var(--space-xl) !important;
+    box-shadow: var(--shadow-lg) !important;
+    border: 1px solid var(--border-color) !important;
+    width: 90% !important;
+    max-width: 500px !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    margin: 0 !important;
+    position: relative !important;
+    animation: modalSlideIn 0.3s ease forwards !important;
+    box-sizing: border-box !important;
+}
+
+/* Animations */
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalSlideIn {
+    from { 
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Modal header improvements */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-title {
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: var(--text-lg);
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+}
+
+.modal-close:hover {
+    background: var(--hover-color);
+    color: var(--text-primary);
+    transform: rotate(90deg);
+}
+
+/* Form styling improvements */
+.form-group {
+    margin-bottom: var(--space-lg);
+}
+
+.form-label {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-xs);
+}
+
+.form-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+    transition: all var(--transition-fast);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 2px 12px rgba(67, 97, 238, 0.15);
+}
+
+/* Form actions */
+.form-actions {
+    display: flex;
+    gap: var(--space-sm);
+    justify-content: flex-end;
+    margin-top: var(--space-xl);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-color);
+}
+
+/* Modal body */
+.modal-body {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: var(--space-md) 0;
+}
+
+/* Responsive modal */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95% !important;
+        padding: var(--space-lg) !important;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .form-actions .btn {
+        width: 100%;
+    }
+}
+
+/* Staff Detail Modal Styles */
+.staff-detail-view {
+    padding: var(--space-md);
+}
+
+.staff-detail-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.staff-detail-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.staff-detail-info h3 {
+    margin: 0 0 var(--space-xs) 0;
+    font-size: var(--text-lg);
+    color: var(--text-primary);
+}
+
+.staff-detail-info p {
+    margin: 0 0 var(--space-sm) 0;
+    color: var(--text-secondary);
+}
+
+.staff-detail-meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid var(--border-color-light);
+}
+
+.detail-item label {
+    font-weight: var(--font-medium);
+    color: var(--text-primary);
+}
+
+.detail-item span {
+    color: var(--text-secondary);
+}
+
+/* Responsive design for detail modal */
+@media (max-width: 768px) {
+    .staff-detail-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .staff-detail-info {
+        text-align: center;
+    }
+    
+    .detail-item {
+        flex-direction: column;
+        gap: var(--space-xs);
+        align-items: flex-start;
+    }
+    
+    .detail-item label {
+        font-weight: var(--font-bold);
+    }
+}
+
     </style>
 </head>
 <body>
@@ -823,41 +1156,41 @@
 
     <!-- Modals -->
     <div class="modal" id="addStaffModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Tambah Staff Baru</h3>
-                <button class="modal-close" onclick="closeModal('addStaffModal')">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <form id="addStaffForm">
-                <div class="form-group">
-                    <label class="form-label" for="staffName">Nama Lengkap</label>
-                    <input type="text" id="staffName" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="staffEmail">Email</label>
-                    <input type="email" id="staffEmail" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="staffRole">Role</label>
-                    <select id="staffRole" class="form-input" required>
-                        <option value="staff">Staff</option>
-                        <option value="admin">Admin</option>
-                        <option value="support">Support</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="staffPassword">Password</label>
-                    <input type="password" id="staffPassword" class="form-input" required minlength="6">
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-outline" onclick="closeModal('addStaffModal')">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                </div>
-            </form>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="fas fa-user-plus"></i> Tambah Staff Baru</h3>
+            <button class="modal-close" onclick="closeModal('addStaffModal')">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
+        <form id="addStaffForm">
+            <div class="form-group">
+                <label class="form-label" for="staffName">Nama Lengkap</label>
+                <input type="text" id="staffName" class="form-input" required placeholder="Masukkan nama lengkap">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="staffEmail">Email</label>
+                <input type="email" id="staffEmail" class="form-input" required placeholder="Masukkan email">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="staffRole">Role</label>
+                <select id="staffRole" class="form-input" required>
+                    <option value="staff">Staff</option>
+                    <option value="admin">Admin</option>
+                    <option value="support">Support</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="staffPassword">Password</label>
+                <input type="password" id="staffPassword" class="form-input" required minlength="6" placeholder="Minimal 6 karakter">
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" onclick="closeModal('addStaffModal')">Batal</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+        </form>
     </div>
+</div>
 
     <div class="modal" id="resetPasswordModal">
         <div class="modal-content">
@@ -907,7 +1240,6 @@
     
     <script src="sidebar-loader.js"></script>
     <script src="user-profile.js"></script>
-    <script src="staff-account.js"></script>
     <script>
 
     // ===== FIREBASE INITIALIZATION =====
@@ -1101,31 +1433,46 @@ const db = window.db;
         }
 
         async loadFromFirebase() {
-            try {
-                const snapshot = await db.collection('users').get();
-                this.staffData = snapshot.docs.map(doc => {
-                    const data = doc.data();
-                    console.log(`Loading user ${doc.id}:`, data);
-                    
-                    // Normalisasi data dari Firestore
-                    return {
-                        id: doc.id,
-                        name: this.getNameFromFirestoreData(data),
-                        email: data.email || '',
-                        role: this.normalizeRole(data.role),
-                        status: this.normalizeStatus(data.status),
-                        avatar: data.image || data.avatar || 'https://iili.io/KfDh0EN.png',
-                        joinDate: data.createdate ? this.formatFirestoreDate(data.createdate) : new Date().toISOString().split('T')[0],
-                        lastLogin: data.lastLogin || null,
-                        firestoreData: data
-                    };
-                });
-                console.log("Loaded staff data from Firebase:", this.staffData.length, "users");
-            } catch (error) {
-                console.error("Error loading from Firebase:", error);
-                throw error;
+    try {
+        const snapshot = await db.collection('users').get();
+        this.staffData = snapshot.docs.map(doc => {
+            const data = doc.data();
+            console.log(`Loading user ${doc.id}:`, data);
+            
+            // Handle lastLogin dengan berbagai kemungkinan format
+            let lastLogin = null;
+            if (data.lastLogin) {
+                if (data.lastLogin.toDate) {
+                    // Jika Firestore Timestamp
+                    lastLogin = data.lastLogin.toDate().toISOString();
+                } else if (typeof data.lastLogin === 'string') {
+                    // Jika sudah string
+                    lastLogin = data.lastLogin;
+                } else if (data.lastLogin.seconds) {
+                    // Jika timestamp dalam seconds
+                    lastLogin = new Date(data.lastLogin.seconds * 1000).toISOString();
+                }
             }
-        }
+            
+            // Normalisasi data dari Firestore
+            return {
+                id: doc.id,
+                name: this.getNameFromFirestoreData(data),
+                email: data.email || '',
+                role: this.normalizeRole(data.role),
+                status: this.normalizeStatus(data.status),
+                avatar: data.image || data.avatar || 'https://iili.io/KfDh0EN.png',
+                joinDate: data.createdate ? this.formatFirestoreDate(data.createdate) : new Date().toISOString().split('T')[0],
+                lastLogin: lastLogin,
+                firestoreData: data
+            };
+        });
+        console.log("Loaded staff data from Firebase:", this.staffData.length, "users");
+    } catch (error) {
+        console.error("Error loading from Firebase:", error);
+        throw error;
+    }
+}
 
         // Format tanggal dari Firestore
         formatFirestoreDate(timestamp) {
@@ -1452,6 +1799,37 @@ const db = window.db;
             }
         }
 
+        // Fungsi untuk memformat last login dengan lebih baik
+formatLastLogin(lastLogin) {
+    if (!lastLogin) return 'Belum pernah login';
+    
+    try {
+        const loginDate = new Date(lastLogin);
+        const now = new Date();
+        const diffTime = Math.abs(now - loginDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (diffDays === 1) {
+            return 'Kemarin ' + loginDate.toLocaleTimeString('id-ID', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+        } else if (diffDays < 7) {
+            return `${diffDays} hari yang lalu`;
+        } else {
+            return loginDate.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+    } catch (error) {
+        console.error("Error formatting last login:", error);
+        return 'Data tidak valid';
+    }
+}
         async deleteStaffFromSystem(staffId) {
             const staff = this.staffData.find(s => s.id === staffId);
             
@@ -1602,76 +1980,86 @@ const db = window.db;
         }
 
         showStaffDetailsModal(staff) {
-            // Buat modal jika belum ada
-            let modal = document.getElementById('staffDetailsModal');
-            if (!modal) {
-                modal = document.createElement('div');
-                modal.id = 'staffDetailsModal';
-                modal.className = 'modal';
-                modal.innerHTML = `
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3 class="modal-title">Detail Staff</h3>
-                            <button class="modal-close" onclick="closeModal('staffDetailsModal')">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <div class="modal-body" id="staffDetailsContent">
-                        </div>
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-primary" onclick="closeModal('staffDetailsModal')">Tutup</button>
-                        </div>
-                    </div>
-                `;
-                document.body.appendChild(modal);
-            }
-            
-            // Isi konten modal
-            const content = document.getElementById('staffDetailsContent');
-            const lastLogin = staff.lastLogin ? 
-                new Date(staff.lastLogin).toLocaleString('id-ID') : 'Belum pernah login';
-                
-            content.innerHTML = `
-                <div class="staff-detail-view">
-                    <div class="staff-detail-header">
-                        <img src="${staff.avatar}" alt="${staff.name}" class="staff-detail-avatar">
-                        <div class="staff-detail-info">
-                            <h3>${staff.name}</h3>
-                            <p>${staff.email}</p>
-                            <span class="staff-status status-${staff.status}">
-                                <i class="fas ${this.getStatusIcon(staff.status)}"></i>
-                                ${this.getStatusText(staff.status)}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="staff-detail-meta">
-                        <div class="detail-item">
-                            <label>Role:</label>
-                            <span>${this.getRoleText(staff.role)}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Status:</label>
-                            <span>${this.getStatusText(staff.status)}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Bergabung:</label>
-                            <span>${this.formatDate(staff.joinDate)}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Terakhir Login:</label>
-                            <span>${lastLogin}</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>ID:</label>
-                            <span>${staff.id}</span>
-                        </div>
-                    </div>
+    // Buat modal jika belum ada
+    let modal = document.getElementById('staffDetailsModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'staffDetailsModal';
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title"><i class="fas fa-user"></i> Detail Staff</h3>
+                    <button class="modal-close" onclick="closeModal('staffDetailsModal')">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
-            `;
-            
-            // Tampilkan modal
-            modal.classList.add('active');
-        }
+                <div class="modal-body" id="staffDetailsContent">
+                    <!-- Content will be filled dynamically -->
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-primary" onclick="closeModal('staffDetailsModal')">Tutup</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        // Add click outside to close
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                this.closeModal('staffDetailsModal');
+            }
+        });
+    }
+    
+    // Isi konten modal
+    const content = document.getElementById('staffDetailsContent');
+    const lastLogin = this.formatLastLogin(staff.lastLogin);
+        
+    content.innerHTML = `
+        <div class="staff-detail-view">
+            <div class="staff-detail-header">
+                <img src="${staff.avatar}" alt="${staff.name}" class="staff-detail-avatar" onerror="this.src='https://iili.io/KfDh0EN.png'">
+                <div class="staff-detail-info">
+                    <h3>${staff.name}</h3>
+                    <p>${staff.email}</p>
+                    <span class="staff-status status-${staff.status}">
+                        <i class="fas ${this.getStatusIcon(staff.status)}"></i>
+                        ${this.getStatusText(staff.status)}
+                    </span>
+                </div>
+            </div>
+            <div class="staff-detail-meta">
+                <div class="detail-item">
+                    <label>Role:</label>
+                    <span>${this.getRoleText(staff.role)}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Status:</label>
+                    <span>${this.getStatusText(staff.status)}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Bergabung:</label>
+                    <span>${this.formatDate(staff.joinDate)}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Terakhir Login:</label>
+                    <span>${lastLogin}</span>
+                </div>
+                <div class="detail-item">
+                    <label>ID:</label>
+                    <span>${staff.id}</span>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Tampilkan modal
+    modal.classList.add('active');
+    
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden';
+}
 
         addDetailModalStyles() {
             if (document.getElementById('staff-detail-styles')) return;

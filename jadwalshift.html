@@ -238,106 +238,6 @@
     border-color: var(--primary);
 }
 
-/* ========== SHIFT ACTIONS ========== */
-/* DEFAULT: Tombol simpan disembunyikan saat load awal */
-.shift-actions {
-    display: none !important;
-}
-
-.save-btn, .add-btn {
-    padding: var(--space-md) var(--space-lg);
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: var(--radius-md);
-    font-size: var(--text-sm);
-    font-weight: var(--font-semibold);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    transition: background-color var(--transition-fast);
-}
-
-.save-btn:hover, .add-btn:hover {
-    background: var(--primary-dark);
-}
-
-.add-btn {
-    background: var(--success);
-}
-
-.add-btn:hover {
-    background: var(--success-dark);
-}
-
-.delete-btn {
-    padding: var(--space-xs) var(--space-sm);
-    background: var(--danger);
-    color: white;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-size: var(--text-xs);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color var(--transition-fast);
-}
-
-.delete-btn:hover {
-    background: var(--danger-dark);
-}
-
-/* ========== SUPER ADMIN STYLES ========== */
-
-/* Mode untuk user biasa - sembunyikan tombol simpan dan nonaktifkan input */
-body.user-mode .shift-actions {
-    display: none !important;
-}
-
-body.user-mode .time-input,
-body.user-mode .shift-dropdown,
-body.user-mode .name-input {
-    background-color: var(--bg-secondary);
-    border-color: var(--border-color);
-    color: var(--text-secondary);
-    cursor: not-allowed;
-    pointer-events: none;
-}
-
-body.user-mode .delete-btn {
-    display: none !important;
-}
-
-/* Mode untuk admin - tampilkan tombol simpan dan aktifkan input */
-body.admin-mode .shift-actions {
-    display: flex !important;
-    animation: fadeIn 0.3s ease-in-out;
-}
-
-body.admin-mode .time-input,
-body.admin-mode .shift-dropdown,
-body.admin-mode .name-input {
-    background-color: var(--input-bg);
-    border-color: var(--border-color);
-    color: var(--text-primary);
-    cursor: text;
-    pointer-events: auto;
-}
-
-/* Animasi untuk tombol yang muncul */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 /* ========== NOTIFICATION ========== */
 .notification-container {
     position: fixed;
@@ -537,44 +437,85 @@ body.admin-mode .name-input {
     font-size: 14px;
 }
 
-/* Pastikan container tombol terlihat */
 .shift-actions {
-    display: flex !important;
+    display: none !important;
     gap: 12px;
     margin-top: 20px;
     padding: 0 20px;
-    animation: fadeIn 0.5s ease-in-out;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-/* Mode admin - pastikan tombol aktif */
-body.admin-mode .add-btn {
+/* Mode untuk super admin - tampilkan tombol */
+body.admin-mode .shift-actions {
+    display: flex !important;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Mode untuk user biasa - sembunyikan tombol */
+body.user-mode .shift-actions {
+    display: none !important;
+}
+
+/* Tombol Tambah Karyawan */
+.add-btn {
+    padding: 12px 20px;
     background: #10b981 !important;
     color: white !important;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
-    opacity: 1 !important;
-    visibility: visible !important;
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
+    min-width: 160px;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(5px);
 }
 
-body.admin-mode .add-btn:hover {
-    background: #059669 !important;
+/* Animasi untuk tombol ketika muncul */
+body.admin-mode .add-btn {
+    opacity: 1;
+    transform: translateY(0);
+    animation: fadeInUp 0.5s ease forwards;
 }
 
-/* Mode user - nonaktifkan tombol */
-body.user-mode .add-btn {
-    background: #9ca3af !important;
-    color: #6b7280 !important;
-    cursor: not-allowed;
-    box-shadow: none;
+/* Tombol Simpan */
+.save-btn {
+    padding: 12px 20px;
+    background: #3b82f6 !important;
+    color: white !important;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+    min-width: 160px;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(5px);
 }
 
-body.user-mode .add-btn:hover {
-    background: #9ca3af !important;
-    transform: none;
-    box-shadow: none;
+body.admin-mode .save-btn {
+    opacity: 1;
+    transform: translateY(0);
+    animation: fadeInUp 0.5s ease 0.2s forwards;
 }
 
-/* Animasi untuk tombol yang muncul */
-@keyframes fadeIn {
+/* Animasi */
+@keyframes fadeInUp {
     from {
         opacity: 0;
         transform: translateY(10px);
@@ -584,6 +525,7 @@ body.user-mode .add-btn:hover {
         transform: translateY(0);
     }
 }
+
     </style>
 </head>
 <body>

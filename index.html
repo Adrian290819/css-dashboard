@@ -712,117 +712,346 @@
     </div>
   </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const themeToggle = document.getElementById('themeToggle');
-        const skyBackground = document.querySelector('.sky-background');
-        
-        // Create stars for dark mode
-        function createStars() {
-            for (let i = 0; i < 100; i++) {
-                const star = document.createElement('div');
-                star.classList.add('star');
-                
-                // Random size
-                const sizes = ['star-small', 'star-medium', 'star-large'];
-                star.classList.add(sizes[Math.floor(Math.random() * sizes.length)]);
-                
-                // Random position
-                star.style.left = `${Math.random() * 100}%`;
-                star.style.top = `${Math.random() * 100}%`;
-                
-                // Random animation delay
-                star.style.animationDelay = `${Math.random() * 3}s`;
-                
-                skyBackground.appendChild(star);
-            }
+  <!-- FIREBASE SDK -->
+  <script type="module">
+    // ========== FIREBASE CONFIGURATION ==========
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import {
+        getAuth,
+        signInWithEmailAndPassword,
+        sendPasswordResetEmail,
+        createUserWithEmailAndPassword
+    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+    import { 
+        getFirestore, 
+        doc, 
+        getDoc 
+    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
+        authDomain: "dashboard-css.firebaseapp.com",
+        databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "dashboard-css",
+        storageBucket: "dashboard-css.appspot.com",
+        messagingSenderId: "771131792881",
+        appId: "1:771131792881:web:ad634424225bd7de847850",
+        measurementId: "G-3CYBC5B101"
+    };
+
+    // Initialize Firebase app and auth
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // ========== DOM ELEMENTS ==========
+    const loginBtn = document.getElementById("loginBtn");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const loginError = document.getElementById("loginError");
+    const loginSuccess = document.getElementById("loginSuccess");
+    const themeToggle = document.getElementById("themeToggle");
+    const forgotPassword = document.getElementById("forgotPassword");
+    const browserInfo = document.getElementById("browserInfo");
+    const skyBackground = document.querySelector('.sky-background');
+
+    // ========== CREATE STARS ==========
+    function createStars() {
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            
+            // Random size
+            const sizes = ['star-small', 'star-medium', 'star-large'];
+            star.classList.add(sizes[Math.floor(Math.random() * sizes.length)]);
+            
+            // Random position
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 100}%`;
+            
+            // Random animation delay
+            star.style.animationDelay = `${Math.random() * 3}s`;
+            
+            skyBackground.appendChild(star);
         }
+    }
+
+    // ========== VALIDASI EMAIL ==========
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    // ========== SHOW ERROR & SUCCESS MESSAGE ==========
+    function showError(message) {
+        loginError.textContent = message;
+        loginError.style.display = "block";
+        loginSuccess.style.display = "none";
+        setTimeout(() => {
+            loginError.style.display = "none";
+        }, 5000);
+    }
+
+    function showSuccess(message) {
+        loginSuccess.textContent = message;
+        loginSuccess.style.display = "block";
+        loginError.style.display = "none";
+        setTimeout(() => {
+            loginSuccess.style.display = "none";
+        }, 3000);
+    }
+
+    // ========== LOGIN FUNCTION ==========
+    async function handleLogin() {
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        if (!email || !password) {
+            showError("Email dan password harus diisi");
+            return;
+        }
+
+        if (!isValidEmail(email)) {
+            showError("Format email tidak valid");
+            return;
+        }
+
+        try {
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+            loginBtn.disabled = true;
+
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            // ✅ CEK STATUS USER DI FIRESTORE
+            try {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                
+                if (!userDoc.exists()) {
+                    showError("Data user tidak ditemukan. Silakan hubungi administrator.");
+                    await auth.signOut();
+                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+                    loginBtn.disabled = false;
+                    return;
+                }
+
+                const userData = userDoc.data();
+                console.log("User status from Firestore:", userData.status);
+
+                // ✅ CEK APAKAH USER SUSPENDED
+                if (userData.status === 'Suspended') {
+                    showError("Akun Anda telah di-suspend. Silakan hubungi administrator.");
+                    await auth.signOut();
+                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+                    loginBtn.disabled = false;
+                    return;
+                }
+
+                // ✅ LOGIN BERHASIL
+                showSuccess("Login berhasil! Mengarahkan...");
+
+                if (document.getElementById("remember").checked) {
+                    localStorage.setItem("rememberEmail", email);
+                } else {
+                    localStorage.removeItem("rememberEmail");
+                }
+
+                // Simpan data user lengkap
+                sessionStorage.setItem("isLoggedIn", "true");
+                sessionStorage.setItem("user", JSON.stringify({
+                    email: user.email,
+                    uid: user.uid,
+                    displayName: userData.name || "Administrator",
+                    role: userData.role || "admin",
+                    status: userData.status || "Active",
+                    avatar: userData.image || userData.avatar || 'https://iili.io/KfDh0EN.png'
+                }));
+
+                // Simpan juga di localStorage
+                localStorage.setItem('currentUser', JSON.stringify({
+                    email: user.email,
+                    uid: user.uid,
+                    displayName: userData.name || "Administrator",
+                    role: userData.role || "admin",
+                    status: userData.status || "Active",
+                    avatar: userData.image || userData.avatar || 'https://iili.io/KfDh0EN.png'
+                }));
+
+                localStorage.setItem('adminName', userData.name || "Administrator");
+                localStorage.setItem('adminRole', userData.role || "admin");
+                localStorage.setItem('adminProfileImage', userData.image || userData.avatar || 'https://iili.io/KfDh0EN.png');
+
+                setTimeout(() => {
+                    window.location.href = "summary-dashboard.html";
+                }, 1500);
+
+            } catch (firestoreError) {
+                console.error("Firestore error:", firestoreError);
+                showError("Gagal memuat data user. Silakan coba lagi.");
+                await auth.signOut();
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+                loginBtn.disabled = false;
+                return;
+            }
+
+        } catch (error) {
+            console.error("Login error:", error);
+            let errorMessage = "Terjadi kesalahan saat login. Silakan coba lagi.";
+
+            if (error.code) {
+                switch (error.code) {
+                    case "auth/user-not-found":
+                    case "auth/wrong-password":
+                        errorMessage = "Email atau password salah. Silakan periksa kembali.";
+                        break;
+                    case "auth/invalid-email":
+                        errorMessage = "Format email tidak valid";
+                        break;
+                    case "auth/user-disabled":
+                        errorMessage = "Akun dinonaktifkan. Silakan hubungi administrator.";
+                        break;
+                    case "auth/too-many-requests":
+                        errorMessage = "Terlalu banyak percobaan gagal. Silakan coba lagi nanti.";
+                        break;
+                    case "auth/network-request-failed":
+                        errorMessage = "Koneksi jaringan bermasalah. Periksa koneksi internet Anda.";
+                        break;
+                    case "auth/operation-not-allowed":
+                        errorMessage = "Login dengan email dan password tidak diizinkan. Silakan hubungi administrator.";
+                        break;
+                    default:
+                        errorMessage = "Tidak dapat mengakses sistem. Silakan coba lagi atau hubungi administrator.";
+                }
+            }
+
+            showError(errorMessage);
+            loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+            loginBtn.disabled = false;
+        }
+    }
+
+    // ========== FORGOT PASSWORD ==========
+    async function handleForgotPassword() {
+        const email = emailInput.value.trim();
+
+        if (!email) {
+            showError("Masukkan email untuk reset password");
+            return;
+        }
+
+        if (!isValidEmail(email)) {
+            showError("Format email tidak valid");
+            return;
+        }
+
+        try {
+            await sendPasswordResetEmail(auth, email);
+            showSuccess("Email reset password telah dikirim. Periksa inbox Anda.");
+        } catch (error) {
+            console.error("Password reset error:", error);
+            let errorMessage = "Terjadi kesalahan saat mengirim email reset password.";
+            if (error.code === "auth/user-not-found") {
+                errorMessage = "Email tidak terdaftar dalam sistem.";
+            }
+            showError(errorMessage);
+        }
+    }
+
+    // ========== THEME TOGGLE ==========
+    function toggleTheme() {
+        const current = document.documentElement.getAttribute("data-theme");
+        const next = current === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", next);
+        localStorage.setItem("theme", next);
         
+        const icon = themeToggle.querySelector("i");
+        if (next === "dark") {
+            icon.className = "fas fa-sun";
+        } else {
+            icon.className = "fas fa-moon";
+        }
+    }
+
+    function applySavedTheme() {
+        const theme = localStorage.getItem("theme") || "light";
+        document.documentElement.setAttribute("data-theme", theme);
+        
+        const icon = themeToggle.querySelector("i");
+        icon.className = theme === "dark" ? "fas fa-sun" : "fas fa-moon";
+    }
+
+    // ========== BROWSER DETECTION ==========
+    function detectBrowser() {
+        const userAgent = navigator.userAgent;
+        let browserName = "Unknown Browser";
+
+        if (userAgent.includes("Firefox")) browserName = "Mozilla Firefox";
+        else if (userAgent.includes("Edg")) browserName = "Microsoft Edge";
+        else if (userAgent.includes("Chrome")) browserName = "Google Chrome";
+        else if (userAgent.includes("Safari")) browserName = "Safari";
+
+        browserInfo.textContent = `Browser: ${browserName}`;
+    }
+
+    // ========== EVENT LISTENERS ==========
+    document.addEventListener("DOMContentLoaded", () => {
+        console.log("DOM Content Loaded");
+
+        // Create stars
         createStars();
         
-        // Theme Toggle
-        function toggleTheme() {
-            const current = document.documentElement.getAttribute("data-theme");
-            const next = current === "dark" ? "light" : "dark";
-            document.documentElement.setAttribute("data-theme", next);
-            localStorage.setItem("theme", next);
-            
-            // Update icon
-            const icon = themeToggle.querySelector("i");
-            if (next === "dark") {
-                icon.className = "fas fa-sun";
-                // Smooth transition for background
-                document.body.style.transition = "background 1s ease";
-            } else {
-                icon.className = "fas fa-moon";
-                document.body.style.transition = "background 1s ease";
-            }
-            
-            console.log(`Theme changed to: ${next}`);
-        }
-
-        function applySavedTheme() {
-            const theme = localStorage.getItem("theme") || "light";
-            document.documentElement.setAttribute("data-theme", theme);
-            
-            // Update icon based on saved theme
-            const icon = themeToggle.querySelector("i");
-            icon.className = theme === "dark" ? "fas fa-sun" : "fas fa-moon";
-            
-            // Apply smooth transition
-            document.body.style.transition = "background 1s ease";
-            
-            console.log(`Applied saved theme: ${theme}`);
-        }
-
-        // Apply saved theme
+        detectBrowser();
         applySavedTheme();
+
+        // Remember email
+        const rememberedEmail = localStorage.getItem("rememberEmail");
+        if (rememberedEmail) {
+            emailInput.value = rememberedEmail;
+            document.getElementById("remember").checked = true;
+        }
+
+        // Event listeners
+        loginBtn.addEventListener("click", handleLogin);
+        themeToggle.addEventListener("click", toggleTheme);
         
-        // Theme toggle event
-        themeToggle.addEventListener('click', function() {
-            toggleTheme();
-            // Add click effect
-            this.style.transform = "scale(0.9)";
-            setTimeout(() => {
-                this.style.transform = "scale(1)";
-            }, 150);
+        forgotPassword.addEventListener("click", (e) => {
+            e.preventDefault();
+            handleForgotPassword();
         });
-        
-        // Simple fade in animations
+
+        // Enter key to login
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                handleLogin();
+            }
+        });
+
+        // Add fade-in animations
         const elements = document.querySelectorAll('.login-container, .input-group, .btn-login');
         elements.forEach((el, index) => {
             el.classList.add('fade-in', `delay-${index}`);
         });
-        
-        // Browser info
-        function detectBrowser() {
-            const userAgent = navigator.userAgent;
-            let browserName = "Unknown Browser";
 
-            if (userAgent.includes("Firefox")) browserName = "Mozilla Firefox";
-            else if (userAgent.includes("Edg")) browserName = "Microsoft Edge";
-            else if (userAgent.includes("Chrome")) browserName = "Google Chrome";
-            else if (userAgent.includes("Safari")) browserName = "Safari";
+        // Check if already logged in
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                console.log("User already logged in:", user.email);
+                // Auto redirect if already logged in
+                setTimeout(() => {
+                    window.location.href = "summary-dashboard.html";
+                }, 1000);
+            }
+        });
+    });
 
-            document.getElementById('browserInfo').textContent = `Browser: ${browserName}`;
-        }
-        
-        detectBrowser();
-        
-        // Remember email
-        const rememberedEmail = localStorage.getItem("rememberEmail");
-        if (rememberedEmail) {
-            document.getElementById("email").value = rememberedEmail;
-            document.getElementById("remember").checked = true;
-        }
-        
-        // Log theme info
-        console.log("Page loaded with theme:", document.documentElement.getAttribute("data-theme"));
-        console.log("Background elements created:");
-        console.log("- Sun:", document.querySelector('.sun') ? "Yes" : "No");
-        console.log("- Clouds:", document.querySelectorAll('.cloud').length);
-        console.log("- Moon:", document.querySelector('.moon') ? "Yes" : "No");
-        console.log("- Stars:", document.querySelectorAll('.star').length);
+    // ========== ERROR HANDLING ==========
+    window.addEventListener("error", (e) => {
+        console.error("Global error:", e.error);
+    });
+
+    window.addEventListener("unhandledrejection", (e) => {
+        console.error("Unhandled promise rejection:", e.reason);
+        e.preventDefault();
     });
   </script>
 </body>

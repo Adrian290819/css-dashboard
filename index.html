@@ -16,7 +16,19 @@
         --danger-color: #ff4757;
         --light-color: #f8f9fa;
         --dark-color: #212529;
-        --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+        
+        /* Light Mode Colors */
+        --light-bg: linear-gradient(to bottom, #87CEEB, #E0F6FF);
+        --light-sun-color: #FFD700;
+        --light-cloud-color: rgba(255, 255, 255, 0.9);
+        --light-sky-color: #87CEEB;
+        
+        /* Dark Mode Colors */
+        --dark-bg: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+        --dark-moon-color: #F5F5DC;
+        --dark-star-color: rgba(255, 255, 255, 0.8);
+        --dark-night-color: #0f0c29;
+        
         --card-bg: rgba(255, 255, 255, 0.95);
         --text-color: #333;
         --text-light: #6c757d;
@@ -41,7 +53,7 @@
     }
 
     body {
-        background: var(--bg-gradient);
+        background: var(--light-bg); /* Default light mode */
         min-height: 100vh;
         display: flex;
         justify-content: center;
@@ -49,10 +61,15 @@
         padding: 20px;
         position: relative;
         overflow: hidden;
+        transition: background 1s ease;
     }
 
-    /* Enhanced Quantum Animation */
-    .quantum-container {
+    [data-theme="dark"] body {
+        background: var(--dark-bg);
+    }
+
+    /* SKY BACKGROUND - COMMON */
+    .sky-background {
         position: absolute;
         top: 0;
         left: 0;
@@ -62,125 +79,276 @@
         overflow: hidden;
     }
 
-    /* Quantum Particles */
-    .quantum-particle {
+    /* ========== LIGHT MODE (DAY SKY) ========== */
+    .sun {
         position: absolute;
+        width: 100px;
+        height: 100px;
+        background: var(--light-sun-color);
         border-radius: 50%;
-        pointer-events: none;
-        opacity: 0;
+        top: 50px;
+        right: 15%;
+        box-shadow: 0 0 60px 20px rgba(255, 215, 0, 0.5);
+        animation: sunGlow 4s infinite ease-in-out;
+    }
+
+    @keyframes sunGlow {
+        0%, 100% {
+            box-shadow: 0 0 60px 20px rgba(255, 215, 0, 0.5);
+        }
+        50% {
+            box-shadow: 0 0 80px 30px rgba(255, 215, 0, 0.7);
+        }
+    }
+
+    /* Clouds for Light Mode */
+    .cloud {
+        position: absolute;
+        background: var(--light-cloud-color);
+        border-radius: 50px;
         filter: blur(1px);
     }
 
-    .quantum-particle.trail {
-        transform: scale(0);
-        filter: blur(3px);
-    }
-
-    /* Quantum Energy Waves */
-    .energy-wave {
+    .cloud:before,
+    .cloud:after {
+        content: '';
         position: absolute;
+        background: var(--light-cloud-color);
         border-radius: 50%;
-        border: 2px solid;
-        opacity: 0;
-        transform: scale(0);
-        pointer-events: none;
-        filter: blur(1px);
     }
 
-    /* Quantum Nexus Points */
-    .nexus-point {
+    .cloud-1 {
+        width: 120px;
+        height: 40px;
+        top: 100px;
+        left: 10%;
+        animation: floatCloud 25s infinite linear;
+    }
+    .cloud-1:before {
+        width: 50px;
+        height: 50px;
+        top: -25px;
+        left: 10px;
+    }
+    .cloud-1:after {
+        width: 70px;
+        height: 70px;
+        top: -35px;
+        left: 40px;
+    }
+
+    .cloud-2 {
+        width: 150px;
+        height: 50px;
+        top: 200px;
+        right: 15%;
+        animation: floatCloud 30s infinite linear reverse;
+    }
+    .cloud-2:before {
+        width: 60px;
+        height: 60px;
+        top: -30px;
+        left: 15px;
+    }
+    .cloud-2:after {
+        width: 80px;
+        height: 80px;
+        top: -40px;
+        left: 50px;
+    }
+
+    .cloud-3 {
+        width: 100px;
+        height: 35px;
+        bottom: 150px;
+        left: 20%;
+        animation: floatCloud 20s infinite linear;
+        opacity: 0.8;
+    }
+    .cloud-3:before {
+        width: 40px;
+        height: 40px;
+        top: -20px;
+        left: 10px;
+    }
+    .cloud-3:after {
+        width: 50px;
+        height: 50px;
+        top: -25px;
+        left: 35px;
+    }
+
+    @keyframes floatCloud {
+        0% {
+            transform: translateX(-100px);
+        }
+        100% {
+            transform: translateX(calc(100vw + 100px));
+        }
+    }
+
+    /* Birds for Light Mode */
+    .bird {
         position: absolute;
+        color: rgba(0, 0, 0, 0.3);
+        font-size: 24px;
+        animation: flyBird 15s infinite linear;
+    }
+
+    .bird-1 {
+        top: 80px;
+        left: 5%;
+        animation-delay: 0s;
+    }
+    .bird-2 {
+        top: 150px;
+        left: 10%;
+        animation-delay: 3s;
+    }
+    .bird-3 {
+        top: 120px;
+        left: 15%;
+        animation-delay: 6s;
+    }
+
+    @keyframes flyBird {
+        0% {
+            transform: translateX(-100px) translateY(0);
+        }
+        25% {
+            transform: translateX(25vw) translateY(-10px);
+        }
+        50% {
+            transform: translateX(50vw) translateY(5px);
+        }
+        75% {
+            transform: translateX(75vw) translateY(-5px);
+        }
+        100% {
+            transform: translateX(calc(100vw + 100px)) translateY(0);
+        }
+    }
+
+    /* ========== DARK MODE (NIGHT SKY) ========== */
+    .moon {
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        background: var(--dark-moon-color);
+        border-radius: 50%;
+        top: 60px;
+        left: 15%;
+        box-shadow: 
+            0 0 40px 15px rgba(245, 245, 220, 0.3),
+            inset -15px -15px 0 0 rgba(0, 0, 0, 0.1);
+        animation: moonGlow 6s infinite ease-in-out;
+    }
+
+    @keyframes moonGlow {
+        0%, 100% {
+            box-shadow: 
+                0 0 40px 15px rgba(245, 245, 220, 0.3),
+                inset -15px -15px 0 0 rgba(0, 0, 0, 0.1);
+        }
+        50% {
+            box-shadow: 
+                0 0 60px 25px rgba(245, 245, 220, 0.4),
+                inset -15px -15px 0 0 rgba(0, 0, 0, 0.1);
+        }
+    }
+
+    /* Stars for Dark Mode */
+    .star {
+        position: absolute;
+        background: var(--dark-star-color);
+        border-radius: 50%;
+        animation: twinkle 3s infinite ease-in-out;
+    }
+
+    .star-small {
+        width: 2px;
+        height: 2px;
+    }
+    .star-medium {
+        width: 3px;
+        height: 3px;
+    }
+    .star-large {
+        width: 4px;
+        height: 4px;
+        box-shadow: 0 0 8px 1px rgba(255, 255, 255, 0.8);
+    }
+
+    @keyframes twinkle {
+        0%, 100% {
+            opacity: 0.3;
+            transform: scale(1);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+    }
+
+    /* Shooting Stars for Dark Mode */
+    .shooting-star {
+        position: absolute;
+        width: 100px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, white);
+        transform: rotate(-45deg);
+        animation: shootingStar 10s infinite linear;
+        opacity: 0;
+    }
+
+    .shooting-star:before {
+        content: '';
+        position: absolute;
+        right: 0;
         width: 10px;
         height: 10px;
         border-radius: 50%;
-        background: #fff;
-        box-shadow: 0 0 20px 5px var(--primary-color);
-        opacity: 0.7;
-        animation: pulse-nexus 4s infinite ease-in-out;
-        z-index: 1;
+        background: white;
+        box-shadow: 0 0 10px 2px white;
     }
 
-    @keyframes pulse-nexus {
-        0%, 100% {
-            transform: scale(1);
-            opacity: 0.7;
-            box-shadow: 0 0 20px 5px var(--primary-color);
-        }
-        50% {
-            transform: scale(1.5);
-            opacity: 0.9;
-            box-shadow: 0 0 30px 10px var(--primary-color);
-        }
-    }
-
-    /* Quantum Strings */
-    .quantum-string {
-        position: absolute;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
-        transform-origin: left center;
-        pointer-events: none;
-        opacity: 0;
-        filter: blur(1px);
-    }
-
-    /* Quantum Portal */
-    .quantum-portal {
-        position: absolute;
-        border-radius: 50%;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        opacity: 0.05;
-        animation: portal-rotate 20s infinite linear;
-        transform-style: preserve-3d;
-    }
-
-    @keyframes portal-rotate {
+    @keyframes shootingStar {
         0% {
-            transform: rotateX(60deg) rotateZ(0deg);
+            opacity: 0;
+            transform: translateX(0) translateY(0) rotate(-45deg);
+        }
+        10% {
+            opacity: 1;
+        }
+        20% {
+            opacity: 0;
+            transform: translateX(200px) translateY(200px) rotate(-45deg);
         }
         100% {
-            transform: rotateX(60deg) rotateZ(360deg);
+            opacity: 0;
         }
     }
 
-    /* Hexagon Grid Enhancement */
-    .hexagon-container {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        opacity: 0.1;
-        overflow: hidden;
+    /* Hide Dark Mode Elements in Light Mode */
+    .moon,
+    .star,
+    .shooting-star {
+        display: none;
     }
 
-    .hexagon {
-        position: absolute;
-        width: 100px;
-        height: 55px;
-        background: transparent;
-        opacity: 0.1;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        transition: opacity 0.5s ease;
+    [data-theme="dark"] .sun,
+    [data-theme="dark"] .cloud,
+    [data-theme="dark"] .bird {
+        display: none;
     }
 
-    .hexagon:before, .hexagon:after {
-        content: "";
-        position: absolute;
-        width: 0;
-        border-left: 50px solid transparent;
-        border-right: 50px solid transparent;
+    [data-theme="dark"] .moon,
+    [data-theme="dark"] .star,
+    [data-theme="dark"] .shooting-star {
+        display: block;
     }
 
-    .hexagon:before {
-        bottom: 100%;
-        border-bottom: 28px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .hexagon:after {
-        top: 100%;
-        border-top: 28px solid rgba(255, 255, 255, 0.2);
-    }
-
-    /* Login Container Styles */
+    /* ========== LOGIN CONTAINER ========== */
     .login-container {
         width: 100%;
         max-width: 380px;
@@ -203,11 +371,36 @@
     }
 
     .login-header {
-        background: linear-gradient(to right, #0f77ff, #2575fc);
+        background: linear-gradient(to right, #4361ee, #3a56d4);
         color: white;
         text-align: center;
         padding: 25px 20px;
         position: relative;
+        overflow: hidden;
+    }
+
+    .login-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transform: translateX(-100%);
+    }
+
+    .login-container:hover .login-header::before {
+        animation: shimmer 2s ease-in-out;
+    }
+
+    @keyframes shimmer {
+        0% {
+            transform: translateX(-100%);
+        }
+        100% {
+            transform: translateX(100%);
+        }
     }
 
     .login-header::after {
@@ -221,20 +414,6 @@
         background: var(--card-bg);
         border-radius: 50%;
         z-index: 2;
-    }
-
-    .login-header::before {
-        content: '';
-        position: absolute;
-        bottom: -30px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 60px;
-        height: 60px;
-        background: linear-gradient(to right, #0f77ff, #2575fc);
-        opacity: 0.2;
-        border-radius: 50%;
-        z-index: 1;
     }
 
     .logo {
@@ -342,7 +521,7 @@
     .btn-login {
         width: 100%;
         padding: 12px;
-        background: linear-gradient(to right, #0f77ff, #2575fc);
+        background: linear-gradient(to right, #4361ee, #3a56d4);
         color: white;
         border: none;
         border-radius: 8px;
@@ -445,9 +624,23 @@
         .login-header {
             padding: 20px 15px;
         }
+        
+        .sun,
+        .moon {
+            width: 60px;
+            height: 60px;
+        }
+        
+        .cloud {
+            transform: scale(0.7);
+        }
+        
+        .bird {
+            font-size: 18px;
+        }
     }
 
-    /* Animasi */
+    /* Animations */
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
@@ -463,8 +656,22 @@
   </style>
 </head>
 <body>
-  <div class="quantum-container" id="quantumContainer">
-    <div class="hexagon-container" id="hexagonContainer"></div>
+  <!-- Sky Background -->
+  <div class="sky-background">
+    <!-- Light Mode Elements -->
+    <div class="sun"></div>
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+    <div class="bird bird-1"><i class="fas fa-dove"></i></div>
+    <div class="bird bird-2"><i class="fas fa-dove"></i></div>
+    <div class="bird bird-3"><i class="fas fa-dove"></i></div>
+    
+    <!-- Dark Mode Elements -->
+    <div class="moon"></div>
+    <!-- Stars will be generated by JavaScript -->
+    <div class="shooting-star" style="top: 100px; left: 80%; animation-delay: 0s;"></div>
+    <div class="shooting-star" style="top: 300px; left: 60%; animation-delay: 5s;"></div>
   </div>
 
   <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
@@ -505,587 +712,118 @@
     </div>
   </div>
 
-  <script type="module">
-  // ========== FIREBASE CONFIGURATION ==========
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-  import {
-    getAuth,
-    signInWithEmailAndPassword,
-    sendPasswordResetEmail,
-    createUserWithEmailAndPassword
-  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
-    authDomain: "dashboard-css.firebaseapp.com",
-    databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "dashboard-css",
-    storageBucket: "dashboard-css.appspot.com",
-    messagingSenderId: "771131792881",
-    appId: "1:771131792881:web:ad634424225bd7de847850",
-    measurementId: "G-3CYBC5B101"
-  };
-
-  // Initialize Firebase app and auth
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
-  // ========== DOM ELEMENTS ==========
-  const loginBtn = document.getElementById("loginBtn");
-  const emailInput = document.getElementById("email");
-  const passwordInput = document.getElementById("password");
-  const loginError = document.getElementById("loginError");
-  const loginSuccess = document.getElementById("loginSuccess");
-  const themeToggle = document.getElementById("themeToggle");
-  const quantumContainer = document.getElementById("quantumContainer");
-  const hexagonContainer = document.getElementById("hexagonContainer");
-  const forgotPassword = document.getElementById("forgotPassword");
-  const browserInfo = document.getElementById("browserInfo");
-
-  // ========== ENHANCED QUANTUM ANIMATION ==========
-  function createHexagonGrid() {
-    const hexagonSize = 100;
-    const hexagonHeight = 55;
-    const hexagonWidth = 100;
-    
-    const cols = Math.ceil(window.innerWidth / hexagonWidth) + 2;
-    const rows = Math.ceil(window.innerHeight / (hexagonHeight * 0.75)) + 2;
-    
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < cols; col++) {
-        const hexagon = document.createElement('div');
-        hexagon.classList.add('hexagon');
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const themeToggle = document.getElementById('themeToggle');
+        const skyBackground = document.querySelector('.sky-background');
         
-        const x = col * hexagonWidth * 0.75;
-        const y = row * hexagonHeight * 0.75;
-        
-        // Offset every other column
-        if (col % 2 === 0) {
-          hexagon.style.top = `${y}px`;
-        } else {
-          hexagon.style.top = `${y + hexagonHeight * 0.375}px`;
+        // Create stars for dark mode
+        function createStars() {
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // Random size
+                const sizes = ['star-small', 'star-medium', 'star-large'];
+                star.classList.add(sizes[Math.floor(Math.random() * sizes.length)]);
+                
+                // Random position
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation delay
+                star.style.animationDelay = `${Math.random() * 3}s`;
+                
+                skyBackground.appendChild(star);
+            }
         }
         
-        hexagon.style.left = `${x}px`;
-        hexagon.style.opacity = `${0.03 + Math.random() * 0.05}`;
-        hexagon.style.transform = `scale(${0.7 + Math.random() * 0.6})`;
+        createStars();
         
-        // Add subtle animation to hexagons
-        hexagon.style.animation = `hexagon-pulse ${10 + Math.random() * 20}s infinite ease-in-out`;
-        hexagon.style.animationDelay = `${Math.random() * 5}s`;
-        
-        hexagonContainer.appendChild(hexagon);
-      }
-    }
-  }
+        // Theme Toggle
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute("data-theme");
+            const next = current === "dark" ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", next);
+            localStorage.setItem("theme", next);
+            
+            // Update icon
+            const icon = themeToggle.querySelector("i");
+            if (next === "dark") {
+                icon.className = "fas fa-sun";
+                // Smooth transition for background
+                document.body.style.transition = "background 1s ease";
+            } else {
+                icon.className = "fas fa-moon";
+                document.body.style.transition = "background 1s ease";
+            }
+            
+            console.log(`Theme changed to: ${next}`);
+        }
 
-  // Add hexagon pulse animation
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes hexagon-pulse {
-      0%, 100% { opacity: 0.03; }
-      50% { opacity: 0.1; }
-    }
-  `;
-  document.head.appendChild(style);
+        function applySavedTheme() {
+            const theme = localStorage.getItem("theme") || "light";
+            document.documentElement.setAttribute("data-theme", theme);
+            
+            // Update icon based on saved theme
+            const icon = themeToggle.querySelector("i");
+            icon.className = theme === "dark" ? "fas fa-sun" : "fas fa-moon";
+            
+            // Apply smooth transition
+            document.body.style.transition = "background 1s ease";
+            
+            console.log(`Applied saved theme: ${theme}`);
+        }
 
-  function createNexusPoints() {
-    const colors = ['#4361ee', '#ff4757', '#2ed573', '#ffa502', '#a55eea'];
-    
-    for (let i = 0; i < 5; i++) {
-      const nexus = document.createElement('div');
-      nexus.classList.add('nexus-point');
-      
-      nexus.style.left = `${10 + Math.random() * 80}%`;
-      nexus.style.top = `${10 + Math.random() * 80}%`;
-      nexus.style.background = colors[i];
-      nexus.style.boxShadow = `0 0 20px 5px ${colors[i]}`;
-      nexus.style.animationDelay = `${Math.random() * 2}s`;
-      
-      quantumContainer.appendChild(nexus);
-    }
-  }
-
-  function createQuantumPortals() {
-    for (let i = 0; i < 3; i++) {
-      const portal = document.createElement('div');
-      portal.classList.add('quantum-portal');
-      
-      const size = 200 + Math.random() * 300;
-      portal.style.width = `${size}px`;
-      portal.style.height = `${size}px`;
-      
-      portal.style.left = `${Math.random() * 100}%`;
-      portal.style.top = `${Math.random() * 100}%`;
-      
-      const colors = ['#4361ee', '#ff4757', '#2ed573', '#ffa502', '#a55eea'];
-      const color = colors[Math.floor(Math.random() * colors.length)];
-      portal.style.borderColor = color;
-      
-      quantumContainer.appendChild(portal);
-    }
-  }
-
-  function createQuantumStrings() {
-    for (let i = 0; i < 10; i++) {
-      setTimeout(() => {
-        const string = document.createElement('div');
-        string.classList.add('quantum-string');
+        // Apply saved theme
+        applySavedTheme();
         
-        const startX = Math.random() * window.innerWidth;
-        const startY = Math.random() * window.innerHeight;
-        const length = 50 + Math.random() * 150;
-        const angle = Math.random() * Math.PI * 2;
-        
-        string.style.left = `${startX}px`;
-        string.style.top = `${startY}px`;
-        string.style.width = `${length}px`;
-        string.style.transform = `rotate(${angle}rad)`;
-        
-        const colors = ['#4361ee', '#ff4757', '#2ed573', '#ffa502', '#a55eea', '#ffffff'];
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        string.style.background = `linear-gradient(90deg, transparent, ${color}, transparent)`;
-        
-        quantumContainer.appendChild(string);
-        
-        // Animate string
-        const animation = string.animate([
-          { opacity: 0, transform: `rotate(${angle}rad) scaleX(0)` },
-          { opacity: 0.7, transform: `rotate(${angle}rad) scaleX(1)` },
-          { opacity: 0, transform: `rotate(${angle}rad) scaleX(0)` }
-        ], {
-          duration: 2000 + Math.random() * 3000,
-          easing: 'ease-in-out'
+        // Theme toggle event
+        themeToggle.addEventListener('click', function() {
+            toggleTheme();
+            // Add click effect
+            this.style.transform = "scale(0.9)";
+            setTimeout(() => {
+                this.style.transform = "scale(1)";
+            }, 150);
         });
         
-        animation.onfinish = () => {
-          string.remove();
-        };
-      }, i * 500);
-    }
-  }
-
-  function createQuantumParticles() {
-    if (document.hidden) return;
-    
-    for (let i = 0; i < 3; i++) {
-      const particle = document.createElement('div');
-      particle.classList.add('quantum-particle');
-      
-      const size = 2 + Math.random() * 4;
-      particle.style.width = particle.style.height = `${size}px`;
-      
-      const colors = ['#4361ee', '#ff4757', '#2ed573', '#ffa502', '#a55eea', '#ffffff'];
-      const color = colors[Math.floor(Math.random() * colors.length)];
-      particle.style.background = color;
-      
-      const startX = Math.random() * window.innerWidth;
-      const startY = Math.random() * window.innerHeight;
-      particle.style.left = `${startX}px`;
-      particle.style.top = `${startY}px`;
-      
-      quantumContainer.appendChild(particle);
-      
-      // Create trail
-      const trail = document.createElement('div');
-      trail.classList.add('quantum-particle', 'trail');
-      trail.style.width = trail.style.height = `${size * 3}px`;
-      trail.style.background = color;
-      trail.style.left = `${startX}px`;
-      trail.style.top = `${startY}px`;
-      quantumContainer.appendChild(trail);
-      
-      // Animate particle with more complex path
-      const angle = Math.random() * Math.PI * 2;
-      const distance = 100 + Math.random() * 200;
-      const curve = Math.random() * 0.5 - 0.25;
-      
-      const keyframes = [
-        { 
-          opacity: 0,
-          transform: 'translate(0, 0)'
-        },
-        { 
-          opacity: 1,
-          transform: 'translate(0, 0)',
-          offset: 0.1
-        },
-        { 
-          opacity: 0.8,
-          transform: `translate(${Math.cos(angle) * distance * 0.5 + Math.sin(angle) * distance * 0.5 * curve}px, 
-                              ${Math.sin(angle) * distance * 0.5 - Math.cos(angle) * distance * 0.5 * curve}px)`,
-          offset: 0.5
-        },
-        { 
-          opacity: 0.6,
-          transform: `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`,
-          offset: 0.8
-        },
-        { 
-          opacity: 0,
-          transform: `translate(${Math.cos(angle) * distance * 1.2}px, ${Math.sin(angle) * distance * 1.2}px)`
-        }
-      ];
-      
-      const particleAnimation = particle.animate(keyframes, {
-        duration: 3000 + Math.random() * 4000,
-        easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)'
-      });
-      
-      // Animate trail
-      const trailAnimation = trail.animate([
-        { 
-          opacity: 0.5,
-          transform: 'scale(0)'
-        },
-        { 
-          opacity: 0.3,
-          transform: 'scale(1)',
-          offset: 0.2
-        },
-        { 
-          opacity: 0,
-          transform: 'scale(2)'
-        }
-      ], {
-        duration: 1500 + Math.random() * 1000,
-        easing: 'ease-out'
-      });
-      
-      // Create energy wave when particle disappears
-      particleAnimation.onfinish = () => {
-        particle.remove();
-        
-        const wave = document.createElement('div');
-        wave.classList.add('energy-wave');
-        const endX = startX + Math.cos(angle) * distance;
-        const endY = startY + Math.sin(angle) * distance;
-        wave.style.left = `${endX}px`;
-        wave.style.top = `${endY}px`;
-        wave.style.borderColor = color;
-        quantumContainer.appendChild(wave);
-        
-        const waveAnimation = wave.animate([
-          { 
-            opacity: 0.7,
-            transform: 'scale(0)'
-          },
-          { 
-            opacity: 0,
-            transform: 'scale(3)'
-          }
-        ], {
-          duration: 1500,
-          easing: 'ease-out'
+        // Simple fade in animations
+        const elements = document.querySelectorAll('.login-container, .input-group, .btn-login');
+        elements.forEach((el, index) => {
+            el.classList.add('fade-in', `delay-${index}`);
         });
         
-        waveAnimation.onfinish = () => {
-          wave.remove();
-        };
-      };
-      
-      trailAnimation.onfinish = () => {
-        trail.remove();
-      };
-    }
-  }
+        // Browser info
+        function detectBrowser() {
+            const userAgent = navigator.userAgent;
+            let browserName = "Unknown Browser";
 
-  function createQuantumExplosion(x, y) {
-    const particlesCount = 20;
-    const colors = ['#4361ee', '#ff4757', '#2ed573', '#ffa502', '#a55eea', '#ffffff'];
-    
-    for (let i = 0; i < particlesCount; i++) {
-      const particle = document.createElement('div');
-      particle.classList.add('quantum-particle');
-      
-      const size = 1 + Math.random() * 3;
-      particle.style.width = particle.style.height = `${size}px`;
-      
-      const color = colors[Math.floor(Math.random() * colors.length)];
-      particle.style.background = color;
-      
-      particle.style.left = `${x}px`;
-      particle.style.top = `${y}px`;
-      
-      quantumContainer.appendChild(particle);
-      
-      const angle = Math.random() * Math.PI * 2;
-      const distance = 50 + Math.random() * 100;
-      const speed = 500 + Math.random() * 1000;
-      
-      const animation = particle.animate([
-        { 
-          opacity: 1,
-          transform: 'translate(0, 0)'
-        },
-        { 
-          opacity: 0,
-          transform: `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`
+            if (userAgent.includes("Firefox")) browserName = "Mozilla Firefox";
+            else if (userAgent.includes("Edg")) browserName = "Microsoft Edge";
+            else if (userAgent.includes("Chrome")) browserName = "Google Chrome";
+            else if (userAgent.includes("Safari")) browserName = "Safari";
+
+            document.getElementById('browserInfo').textContent = `Browser: ${browserName}`;
         }
-      ], {
-        duration: speed,
-        easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)'
-      });
-      
-      animation.onfinish = () => {
-        particle.remove();
-      };
-    }
-  }
-
-  // ========== VALIDASI EMAIL ==========
-  function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
-
-  // ========== SHOW ERROR & SUCCESS MESSAGE ==========
-  function showError(message) {
-    loginError.textContent = message;
-    loginError.style.display = "block";
-    loginSuccess.style.display = "none";
-    setTimeout(() => {
-      loginError.style.display = "none";
-    }, 5000);
-  }
-
-  function showSuccess(message) {
-    loginSuccess.textContent = message;
-    loginSuccess.style.display = "block";
-    loginError.style.display = "none";
-    setTimeout(() => {
-      loginSuccess.style.display = "none";
-    }, 3000);
-  }
-
-  // ========== LOGIN FUNCTION ==========
-  async function handleLogin() {
-    const email = emailInput.value.trim();
-    const password = passwordInput.value.trim();
-
-    if (!email || !password) {
-      showError("Email dan password harus diisi");
-      return;
-    }
-
-    if (!isValidEmail(email)) {
-      showError("Format email tidak valid");
-      return;
-    }
-
-    try {
-      loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
-      loginBtn.disabled = true;
-
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      showSuccess("Login berhasil! Mengarahkan...");
-
-      if (document.getElementById("remember").checked) {
-        localStorage.setItem("rememberEmail", email);
-      } else {
-        localStorage.removeItem("rememberEmail");
-      }
-
-      sessionStorage.setItem("isLoggedIn", "true");
-      sessionStorage.setItem("user", JSON.stringify({
-        email: user.email,
-        displayName: "Administrator",
-        role: "admin",
-        uid: user.uid
-      }));
-
-      setTimeout(() => {
-        window.location.href = "summary-dashboard.html";
-      }, 1500);
-
-    } catch (error) {
-      console.error("Login error:", error);
-      let errorMessage = "Terjadi kesalahan saat login. Silakan coba lagi.";
-
-      if (error.code) {
-        switch (error.code) {
-          case "auth/user-not-found":
-          case "auth/wrong-password":
-            errorMessage = "Email atau password salah. Silakan periksa kembali.";
-            break;
-          case "auth/invalid-email":
-            errorMessage = "Format email tidak valid";
-            break;
-          case "auth/user-disabled":
-            errorMessage = "Akun dinonaktifkan. Silakan hubungi administrator.";
-            break;
-          case "auth/too-many-requests":
-            errorMessage = "Terlalu banyak percobaan gagal. Silakan coba lagi nanti.";
-            break;
-          case "auth/network-request-failed":
-            errorMessage = "Koneksi jaringan bermasalah. Periksa koneksi internet Anda.";
-            break;
-          case "auth/operation-not-allowed":
-            errorMessage = "Login dengan email dan password tidak diizinkan. Silakan hubungi administrator.";
-            break;
-          default:
-            errorMessage = "Tidak dapat mengakses sistem. Silakan coba lagi atau hubungi administrator.";
+        
+        detectBrowser();
+        
+        // Remember email
+        const rememberedEmail = localStorage.getItem("rememberEmail");
+        if (rememberedEmail) {
+            document.getElementById("email").value = rememberedEmail;
+            document.getElementById("remember").checked = true;
         }
-      }
-
-      showError(errorMessage);
-
-      loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
-      loginBtn.disabled = false;
-    }
-  }
-
-  // ========== AUTO REGISTER IF USER NOT FOUND ==========
-  async function handleAutoRegister(email, password) {
-    try {
-      loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mendaftarkan...';
-      loginBtn.disabled = true;
-
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      showSuccess("Akun berhasil dibuat! Silakan login.");
-
-      emailInput.value = email;
-
-    } catch (error) {
-      console.error("Registration error:", error);
-      let errorMessage = "Gagal membuat akun. Silakan coba lagi.";
-      if (error.code === "auth/email-already-in-use") {
-        errorMessage = "Email sudah terdaftar. Silakan gunakan email lain.";
-      } else if (error.code === "auth/weak-password") {
-        errorMessage = "Password terlalu lemah. Gunakan password yang lebih kuat.";
-      }
-      showError(errorMessage);
-    } finally {
-      loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
-      loginBtn.disabled = false;
-    }
-  }
-
-  // ========== FORGOT PASSWORD ==========
-  async function handleForgotPassword() {
-    const email = emailInput.value.trim();
-
-    if (!email) {
-      showError("Masukkan email untuk reset password");
-      return;
-    }
-
-    if (!isValidEmail(email)) {
-      showError("Format email tidak valid");
-      return;
-    }
-
-    try {
-      await sendPasswordResetEmail(auth, email);
-      showSuccess("Email reset password telah dikirim. Periksa inbox Anda.");
-    } catch (error) {
-      console.error("Password reset error:", error);
-      let errorMessage = "Terjadi kesalahan saat mengirim email reset password.";
-      if (error.code === "auth/user-not-found") {
-        errorMessage = "Email tidak terdaftar dalam sistem.";
-      }
-      showError(errorMessage);
-    }
-  }
-
-  // ========== THEME TOGGLE ==========
-  function toggleTheme() {
-    const current = document.documentElement.getAttribute("data-theme");
-    const next = current === "dark" ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", next);
-    localStorage.setItem("theme", next);
-    themeToggle.querySelector("i").className = next === "dark" ? "fas fa-sun" : "fas fa-moon";
-  }
-
-  function applySavedTheme() {
-    const theme = localStorage.getItem("theme") || "light";
-    document.documentElement.setAttribute("data-theme", theme);
-    themeToggle.querySelector("i").className = theme === "dark" ? "fas fa-sun" : "fas fa-moon";
-  }
-
-  // ========== BROWSER DETECTION ==========
-  function detectBrowser() {
-    const userAgent = navigator.userAgent;
-    let browserName = "Unknown Browser";
-
-    if (userAgent.includes("Firefox")) browserName = "Mozilla Firefox";
-    else if (userAgent.includes("Edg")) browserName = "Microsoft Edge";
-    else if (userAgent.includes("Chrome")) browserName = "Google Chrome";
-    else if (userAgent.includes("Safari")) browserName = "Safari";
-
-    browserInfo.textContent = `Browser: ${browserName}`;
-  }
-
-  // ========== EVENT LISTENERS ==========
-  document.addEventListener("DOMContentLoaded", () => {
-    console.log("DOM Content Loaded");
-
-    detectBrowser();
-    applySavedTheme();
-    createHexagonGrid();
-    createNexusPoints();
-    createQuantumPortals();
-    setInterval(createQuantumParticles, 150);
-    setInterval(createQuantumStrings, 3000);
-
-    // Add click effect for quantum explosions
-    document.addEventListener('click', (e) => {
-      createQuantumExplosion(e.clientX, e.clientY);
+        
+        // Log theme info
+        console.log("Page loaded with theme:", document.documentElement.getAttribute("data-theme"));
+        console.log("Background elements created:");
+        console.log("- Sun:", document.querySelector('.sun') ? "Yes" : "No");
+        console.log("- Clouds:", document.querySelectorAll('.cloud').length);
+        console.log("- Moon:", document.querySelector('.moon') ? "Yes" : "No");
+        console.log("- Stars:", document.querySelectorAll('.star').length);
     });
-
-    const rememberedEmail = localStorage.getItem("rememberEmail");
-    if (rememberedEmail) {
-      emailInput.value = rememberedEmail;
-      document.getElementById("remember").checked = true;
-    }
-
-    loginBtn.addEventListener("click", handleLogin);
-    themeToggle.addEventListener("click", toggleTheme);
-    forgotPassword.addEventListener("click", (e) => {
-      e.preventDefault();
-      handleForgotPassword();
-    });
-
-    // Enter key to login
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        handleLogin();
-      }
-    });
-
-    // Add fade-in animations
-    const elements = document.querySelectorAll('.login-container, .input-group, .btn-login');
-    elements.forEach((el, index) => {
-      el.classList.add('fade-in', `delay-${index}`);
-    });
-  });
-
-  // ========== WINDOW RESIZE HANDLER ==========
-  window.addEventListener("resize", () => {
-    // Recreate hexagon grid on resize
-    hexagonContainer.innerHTML = '';
-    createHexagonGrid();
-  });
-
-  // ========== VISIBILITY CHANGE HANDLER ==========
-  document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) {
-      // Resume animations when page becomes visible
-      createQuantumParticles();
-    }
-  });
-
-  // ========== ERROR HANDLING ==========
-  window.addEventListener("error", (e) => {
-    console.error("Global error:", e.error);
-  });
-
-  window.addEventListener("unhandledrejection", (e) => {
-    console.error("Unhandled promise rejection:", e.reason);
-    e.preventDefault();
-  });
   </script>
 </body>
 </html>

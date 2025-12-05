@@ -76,7 +76,7 @@ class SidebarLoader {
                     // Other Menu Items
                     topUpCredit: "Top Up Kredit",
                     eventProvider: "Penyedia Event",
-                    weeklyMeetings: "Rapat Mingguan",
+                    weeklyMeetings: "Ide  Saran Agent",
                     phishingAlerts: "Peringatan Phishing",
                     shiftSchedule: "Jadwal Shift",
                     settings: "Pengaturan",
@@ -145,7 +145,7 @@ class SidebarLoader {
                     // Other Menu Items
                     topUpCredit: "Top Up Credit",
                     eventProvider: "Event Provider",
-                    weeklyMeetings: "Weekly Meetings",
+                    weeklyMeetings: "Agent Recommendations",
                     phishingAlerts: "Phishing Alerts",
                     shiftSchedule: "Shift Schedule",
                     settings: "Settings",
@@ -214,7 +214,7 @@ class SidebarLoader {
                     // Other Menu Items
                     topUpCredit: "クレジットチャージ",
                     eventProvider: "イベントプロバイダー",
-                    weeklyMeetings: "週次会議",
+                    weeklyMeetings: "エージェントからの提案",
                     phishingAlerts: "フィッシング警告",
                     shiftSchedule: "シフトスケジュール",
                     settings: "設定",
@@ -283,7 +283,7 @@ class SidebarLoader {
                     // Other Menu Items
                     topUpCredit: "充值积分",
                     eventProvider: "活动提供商",
-                    weeklyMeetings: "周会",
+                    weeklyMeetings: "代理建议",
                     phishingAlerts: "网络钓鱼警报",
                     shiftSchedule: "轮班安排",
                     settings: "设置",
@@ -528,7 +528,7 @@ class SidebarLoader {
         if (eventProvider) eventProvider.textContent = this.getMenuItem('eventProvider');
         
         // Weekly Meetings
-        const weeklyMeetings = document.querySelector('.menu-item[data-page="weekly-meeting.html"] .menu-text');
+        const weeklyMeetings = document.querySelector('.menu-item[data-page="idesaran-agent.html"] .menu-text');
         if (weeklyMeetings) weeklyMeetings.textContent = this.getMenuItem('weeklyMeetings');
         
         // Phishing Alerts
@@ -1010,31 +1010,7 @@ class SidebarLoader {
                         <span class="menu-text">${this.getMenuItem('chatResponse')}</span>
                     </div>
                 </div>
-                
-                <div class="menu-category">${this.getCategory('daily')}</div>
-                <div class="menu-item has-submenu">
-                    <div class="menu-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <span class="menu-text">${this.getMenuItem('dailyRoutine')}</span>
-                    <div class="submenu-indicator">
-                        <i class="fas fa-chevron-right"></i>
-                    </div>
-                </div>
-                <div class="submenu">
-                    <div class="menu-item" data-page="daily-tasks.html">
-                        <div class="menu-icon">
-                            <i class="fas fa-tasks"></i>
-                        </div>
-                        <span class="menu-text">${this.getMenuItem('dailyTasks')}</span>
-                    </div>
-                    <div class="menu-item" data-page="task-history.html">
-                        <div class="menu-icon">
-                            <i class="fas fa-clipboard-list"></i>
-                        </div>
-                        <span class="menu-text">${this.getMenuItem('taskHistory')}</span>
-                    </div>
-                </div>
+
 
                 ${isSuperAdmin ? `
                 <div class="menu-item" data-page="staff-account.html">
@@ -1057,20 +1033,6 @@ class SidebarLoader {
                         <i class="fas fa-trophy"></i>
                     </div>
                     <span class="menu-text">${this.getMenuItem('eventProvider')}</span>
-                </div>
-
-                <div class="menu-item" data-page="weekly-meeting.html">
-                    <div class="menu-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <span class="menu-text">${this.getMenuItem('weeklyMeetings')}</span>
-                </div>
-
-                <div class="menu-item" data-page="phishing.html">
-                    <div class="menu-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <span class="menu-text">${this.getMenuItem('phishingAlerts')}</span>
                 </div>
 
                 <div class="menu-item" data-page="jadwalshift.html">
@@ -1245,7 +1207,7 @@ class SidebarLoader {
             'releases-newgame.html', 'kpi-css.html', 'ide-saran.html',
             'research.html', 'chat-response.html', 'daily-tasks.html', 'task-history.html',
             'staff-account.html', 'topup-credit.html', 'eventprovider.html', 
-            'weekly-meeting.html', 'phishing.html', 'jadwalshift.html', 'pengaturan.html',
+            'idesaran-agent.html', 'phishing.html', 'jadwalshift.html', 'pengaturan.html',
             'index.html'
         ];
         

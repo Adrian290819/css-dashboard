@@ -1273,12 +1273,25 @@ const db = window.db;
             this.staffData = [];
             this.currentUser = null;
             this.currentAction = null;
+            this.unsubscribeListener = null;
             
             this.initializeEventListeners();
             this.loadStaffData();
             this.loadCurrentUserProfile();
             this.addDetailModalStyles();
+            this.setupRealTimeListener();
         }
+        setupRealTimeListener() {
+    if (!db) return;
+    
+    // Real-time listener untuk update data user
+    db.collection('users').onSnapshot((snapshot) => {
+        console.log("🔄 Real-time update received for users");
+        this.loadStaffData(); // Reload data
+    }, (error) => {
+        console.error("Error in real-time listener:", error);
+    });
+}
 
         // Fungsi untuk mengambil profil pengguna saat ini
         loadCurrentUserProfile() {
@@ -1439,18 +1452,24 @@ const db = window.db;
             const data = doc.data();
             console.log(`Loading user ${doc.id}:`, data);
             
-            // Handle lastLogin dengan berbagai kemungkinan format
+            // Handle lastLogin dengan lebih baik
             let lastLogin = null;
             if (data.lastLogin) {
                 if (data.lastLogin.toDate) {
-                    // Jika Firestore Timestamp
-                    lastLogin = data.lastLogin.toDate().toISOString();
-                } else if (typeof data.lastLogin === 'string') {
-                    // Jika sudah string
+                    // Firestore Timestamp
+                    lastLogin = data.lastLogin;
+                } else if (typeof data.lastLogin === 'object' && data.lastLogin._seconds) {
+                    // Firebase Timestamp object
                     lastLogin = data.lastLogin;
                 } else if (data.lastLogin.seconds) {
-                    // Jika timestamp dalam seconds
-                    lastLogin = new Date(data.lastLogin.seconds * 1000).toISOString();
+                    // Timestamp dalam seconds
+                    lastLogin = {
+                        toDate: () => new Date(data.lastLogin.seconds * 1000),
+                        _seconds: data.lastLogin.seconds
+                    };
+                } else if (typeof data.lastLogin === 'string') {
+                    // String ISO
+                    lastLogin = new Date(data.lastLogin);
                 }
             }
             
@@ -1463,11 +1482,17 @@ const db = window.db;
                 status: this.normalizeStatus(data.status),
                 avatar: data.image || data.avatar || 'https://iili.io/KfDh0EN.png',
                 joinDate: data.createdate ? this.formatFirestoreDate(data.createdate) : new Date().toISOString().split('T')[0],
-                lastLogin: lastLogin,
+                lastLogin: lastLogin, // Simpan object asli, bukan string
                 firestoreData: data
             };
         });
         console.log("Loaded staff data from Firebase:", this.staffData.length, "users");
+        
+        // Log data untuk debugging
+        this.staffData.forEach(staff => {
+            console.log(`${staff.name}: lastLogin =`, staff.lastLogin);
+        });
+        
     } catch (error) {
         console.error("Error loading from Firebase:", error);
         throw error;
@@ -1800,22 +1825,59 @@ const db = window.db;
         }
 
         // Fungsi untuk memformat last login dengan lebih baik
+// Fungsi untuk memformat last login dengan lebih baik
 formatLastLogin(lastLogin) {
     if (!lastLogin) return 'Belum pernah login';
     
     try {
-        const loginDate = new Date(lastLogin);
-        const now = new Date();
-        const diffTime = Math.abs(now - loginDate);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        let loginDate;
         
-        if (diffDays === 1) {
+        // Handle berbagai format timestamp
+        if (lastLogin.toDate) {
+            // Firestore Timestamp
+            loginDate = lastLogin.toDate();
+        } else if (lastLogin.seconds) {
+            // Firebase Timestamp dalam seconds
+            loginDate = new Date(lastLogin.seconds * 1000);
+        } else if (typeof lastLogin === 'string') {
+            // String ISO
+            loginDate = new Date(lastLogin);
+        } else if (typeof lastLogin === 'object' && lastLogin._seconds) {
+            // Firebase Timestamp object
+            loginDate = new Date(lastLogin._seconds * 1000);
+        } else {
+            console.warn("Unknown lastLogin format:", lastLogin);
+            return 'Data tidak valid';
+        }
+        
+        // Validasi date
+        if (isNaN(loginDate.getTime())) {
+            return 'Data tidak valid';
+        }
+        
+        const now = new Date();
+        const diffMs = now - loginDate;
+        const diffMinutes = Math.floor(diffMs / (1000 * 60));
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        
+        // Format berdasarkan waktu yang lalu
+        if (diffMinutes < 1) {
+            return 'Baru saja';
+        } else if (diffMinutes < 60) {
+            return `${diffMinutes} menit yang lalu`;
+        } else if (diffHours < 24) {
+            return `${diffHours} jam yang lalu`;
+        } else if (diffDays === 1) {
             return 'Kemarin ' + loginDate.toLocaleTimeString('id-ID', { 
                 hour: '2-digit', 
                 minute: '2-digit' 
             });
         } else if (diffDays < 7) {
             return `${diffDays} hari yang lalu`;
+        } else if (diffDays < 30) {
+            const weeks = Math.floor(diffDays / 7);
+            return `${weeks} minggu yang lalu`;
         } else {
             return loginDate.toLocaleDateString('id-ID', {
                 day: 'numeric',
@@ -2011,6 +2073,19 @@ formatLastLogin(lastLogin) {
             }
         });
     }
+    function handleLoginSuccess(user) {
+    // Update last login di Firestore
+    db.collection('users').doc(user.uid).update({
+        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+        console.log("Last login updated");
+    }).catch(error => {
+        console.error("Error updating last login:", error);
+    });
+    
+    // Redirect atau lanjutkan proses
+    window.location.href = 'dashboard.html';
+}
     
     // Isi konten modal
     const content = document.getElementById('staffDetailsContent');
@@ -2296,6 +2371,22 @@ function toggleDarkMode() {
         localStorage.setItem('theme', 'dark');
     }
 }
+// Fungsi untuk update last login saat user berhasil login
+async function updateUserLastLogin(userId) {
+    try {
+        if (!db) return;
+        
+        await db.collection('users').doc(userId).update({
+            lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+            lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        console.log(`✅ Updated last login for user: ${userId}`);
+    } catch (error) {
+        console.error("❌ Error updating last login:", error);
+    }
+}
+
     </script>
 </body>
 </html>

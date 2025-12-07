@@ -854,6 +854,75 @@
     border-color: #4361ee;
     box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
 }
+/* Style untuk tombol Tambah Kategori */
+.add-row-btn {
+    background: var(--success-gradient);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--text-xs);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all var(--transition-fast);
+}
+
+.add-row-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* Variabel untuk mode terang/gelap */
+:root {
+    --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+/* Mode gelap - jika sudah ada dark mode styles */
+[data-theme="dark"] .add-row-btn {
+    background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+    color: white;
+}
+
+/* Jika menggunakan class untuk mode gelap */
+.dark-mode .add-row-btn {
+    background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+    color: white;
+}
+
+/* Style untuk teks tombol agar kontras dengan background */
+.add-row-btn span,
+.add-row-btn i {
+    color: white !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Style untuk mode terang khusus (opsional) */
+.light-mode .add-row-btn {
+    background: var(--success-gradient);
+    color: white;
+}
+
+/* Style untuk hover state */
+.add-row-btn:hover span,
+.add-row-btn:hover i {
+    color: white !important;
+    opacity: 0.95;
+}
+
+/* Style untuk tombol lainnya yang serupa */
+.btn-primary,
+.add-research-btn {
+    color: white !important;
+}
+
+.btn-primary span,
+.btn-primary i,
+.add-research-btn span,
+.add-research-btn i {
+    color: white !important;
+}
     </style>
 </head>
 <body>

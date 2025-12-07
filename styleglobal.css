@@ -55,8 +55,8 @@
   --bg-tertiary: #f1f5f9;
   --card-bg: #ffffff;
   --text-primary: #1e293b;
-  --text-secondary: #64748b;
-  --text-tertiary: #94a3b8;
+  --text-secondary: #ffffff;
+  --text-tertiary: #ffffff;
   --border-color: #e2e8f0;
   --hover-color: rgba(0, 0, 0, 0.05);
   --input-bg: #ffffff;
@@ -1613,4 +1613,67 @@ tr:hover {
     color: black;
     background: white;
   }
+}
+/* Tambahkan di bagian atas style.css atau global.css */
+:root {
+    /* Light Mode Variables */
+    --primary-color: #5D3FD3;
+    --primary-light: #7B5FE8;
+    --primary-dark: #4a2fc1;
+    --primary-shadow: rgba(93, 63, 211, 0.15);
+    
+    --secondary-color: #6c757d;
+    --secondary-light: #868e96;
+    
+    --card-bg: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    --card-bg-hover: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    --card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
+    
+    --text-primary: #495057;
+    --text-secondary: #6c757d;
+    
+    --border-color: #e9ecef;
+    
+    --input-bg: white;
+    --input-bg-focus: #f9f7ff;
+    --input-border: #e9ecef;
+    
+    --info-bg: #f8f9fa;
+}
+
+body.dark-mode {
+    /* Dark Mode Variables */
+    --primary-color: #7c3aed;
+    --primary-light: #a78bfa;
+    --primary-dark: #6d28d9;
+    --primary-shadow: rgba(167, 139, 250, 0.15);
+    
+    --secondary-color: #94a3b8;
+    --secondary-light: #cbd5e0;
+    
+    --card-bg: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    --card-bg-hover: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    --card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.3);
+    
+    --text-primary: #e2e8f0;
+    --text-secondary: #cbd5e0;
+    
+    --border-color: #4a5568;
+    
+    --input-bg: #2d3748;
+    --input-bg-focus: #4a5568;
+    --input-border: #4a5568;
+    
+    --info-bg: #4a5568;
+    
+    --dark-bg: #1a202c;
+    --dark-bg-light: #2d3748;
+    --dark-border: #4a5568;
+    --dark-input-bg: #2d3748;
+    --dark-input-bg-focus: #4a5568;
+    --dark-info-bg: #4a5568;
+    --dark-text-primary: #e2e8f0;
+    --dark-text-secondary: #cbd5e0;
 }

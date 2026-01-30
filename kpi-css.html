@@ -110,7 +110,15 @@
             <i class="fas fa-chart-line"></i> Data KPI Performance
         </h2>
         <div class="action-buttons">
-            <!-- Tombol Edit All dan Reset akan ditambahkan di sini -->
+              <button class="btn btn-secondary" id="back-to-all-users" style="display: none;">
+        <i class="fas fa-arrow-left"></i> Kembali ke Semua User
+    </button>
+    <button class="btn btn-primary" id="edit-all-btn">
+        <i class="fas fa-edit"></i> Edit All
+    </button>
+    <button class="btn btn-danger" id="reset-data-btn">
+        <i class="fas fa-redo"></i> Reset Data
+    </button>
         </div>
     </div>
                     
@@ -124,7 +132,7 @@
                                 <th colspan="2">Indikator</th>
                                 <th>Skor Akhir</th>
                                 <th>Bulan</th>
-                                <th id="current-month-header">Desember</th>
+                                <th id="current-month-header"></th>
                                 <th rowspan="2">Action</th>
                             </tr>
                             <tr>
@@ -357,22 +365,26 @@
     ];
 
     // Variabel Global
-    let isEditMode = false;
-    let isEditingMode = false;
-    let preventRealTimeUpdate = false;
-    let unsubscribeFunctions = [];
-    let currentFilter = 'current';
-    let isSuperAdminUser = false;
-    let isLocalChange = false;
-    let lastLocalChangeTime = 0;
-    let currentPeriod = getCurrentMonthYear();
+let isEditMode = false;
+let isEditingMode = false;
+let preventRealTimeUpdate = false;
+let unsubscribeFunctions = [];
+let currentFilter = 'current';
+let isSuperAdminUser = false;
+let isLocalChange = false;
+let lastLocalChangeTime = 0;
+let currentPeriod = getCurrentMonthYear();
+// 🔥 TAMBAHKAN VARIABEL UNTUK TOMBOL KEMBALI
+let isViewingUserDetail = false;
 
     // Elemen DOM
-    const editAllBtn = document.getElementById('edit-all-btn');
-    const resetBtn = document.getElementById('reset-data-btn');
-    const notificationContainer = document.getElementById('notificationContainer');
-    const menuItems = document.querySelectorAll('.menu-item');
-    const dashboards = document.querySelectorAll('.dashboard');
+const editAllBtn = document.getElementById('edit-all-btn');
+const resetBtn = document.getElementById('reset-data-btn');
+// 🔥 TAMBAHKAN TOMBOL KEMBALI
+const backToAllBtn = document.getElementById('back-to-all-users');
+const notificationContainer = document.getElementById('notificationContainer');
+const menuItems = document.querySelectorAll('.menu-item');
+const dashboards = document.querySelectorAll('.dashboard');
 
     // ========== FUNGSI AUTENTIKASI & ROLE MANAGEMENT ==========
 
@@ -427,33 +439,38 @@
     }
 
     function setupAdminUI(isAdmin) {
-        console.log('Setting up admin UI, isAdmin:', isAdmin);
+    console.log('Setting up admin UI, isAdmin:', isAdmin);
+    
+    const headerActions = document.querySelector('.header-actions');
+    if (!headerActions) {
+        console.error('Header actions element not found');
+        return;
+    }
+    
+    // Hapus filter yang sudah ada
+    const existingFilter = document.getElementById('userFilterContainer');
+    if (existingFilter) existingFilter.remove();
+    
+    const editAllBtn = document.getElementById('edit-all-btn');
+    const resetBtn = document.getElementById('reset-data-btn');
+    const backToAllBtn = document.getElementById('back-to-all-users');
+    
+    if (isAdmin) {
+        console.log('🛠 Setting up Super Admin UI');
         
-        const headerActions = document.querySelector('.header-actions');
-        if (!headerActions) {
-            console.error('Header actions element not found');
-            return;
+        // TAMPILKAN tombol Edit All dan Reset
+        if (editAllBtn) {
+            editAllBtn.style.display = 'inline-flex';
+            editAllBtn.style.visibility = 'visible';
         }
-        
-        // Hapus filter yang sudah ada
-        const existingFilter = document.getElementById('userFilterContainer');
-        if (existingFilter) existingFilter.remove();
-        
-        const editAllBtn = document.getElementById('edit-all-btn');
-        const resetBtn = document.getElementById('reset-data-btn');
-        
-        if (isAdmin) {
-            console.log('🛠 Setting up Super Admin UI');
-            
-            // TAMPILKAN tombol Edit All dan Reset
-            if (editAllBtn) {
-                editAllBtn.style.display = 'inline-flex';
-                editAllBtn.style.visibility = 'visible';
-            }
-            if (resetBtn) {
-                resetBtn.style.display = 'inline-flex';
-                resetBtn.style.visibility = 'visible';
-            }
+        if (resetBtn) {
+            resetBtn.style.display = 'inline-flex';
+            resetBtn.style.visibility = 'visible';
+        }
+        if (backToAllBtn) {
+            backToAllBtn.style.display = 'none'; // 🔥 SEMBUNYIKAN AWALNYA
+        }
+
             
             // Tambahkan filter user di header
             const filterHTML = `
@@ -504,7 +521,37 @@
         
         console.log('✅ Admin UI setup completed');
     }
+// ========== FUNGSI KEMBALI KE SEMUA USER ==========
 
+function backToAllUsers() {
+    console.log('🔙 Back to all users clicked');
+    
+    // Reset state
+    window.currentViewingUserId = null;
+    isViewingUserDetail = false;
+    
+    // 🔥 SEMBUNYIKAN TOMBOL KEMBALI
+    if (backToAllBtn) {
+        backToAllBtn.style.display = 'none';
+    }
+    
+    // Reset header
+    displayUserNameInHeader(null);
+    
+    // Tampilkan semua user lagi
+    const monthFilter = document.getElementById('monthFilter');
+    const selectedMonth = monthFilter ? monthFilter.value : getCurrentMonthYear().display;
+    
+    loadAllUsersData(selectedMonth);
+    
+    // Update filter dropdown
+    const userFilter = document.getElementById('userFilter');
+    if (userFilter) {
+        userFilter.value = 'all';
+    }
+    
+    showNotification('Kembali ke tampilan semua user', 'info');
+}
     // ========== FUNGSI DATA MODULES ==========
 
     async function getIdeasData(userId = null) {
@@ -709,27 +756,30 @@
     }
 
     // ========== FUNGSI UTAMA KPI ==========
+function calculateScore(target, realization, isSmallerBetter = false, index = -1, id = -1) {
+    // Gunakan id atau index untuk identifikasi
+    const isChatResponse = index === 3 || id === 4;
+    
+    // LOGIKA KHUSUS UNTUK CHAT RESPONSE
+    if (isChatResponse) {
+        // Default score untuk chat adalah 100%
+        let baseScore = 100;
+        
+        // Setiap chat response yang diinput mengurangi 25% dari base score
+        const penalty = realization * 25; // 100% / target 4 = 25% per chat
+        
+        // Score akhir = baseScore - penalty
+        const finalScore = Math.max(0, baseScore - penalty);
+        
+        console.log(`📊 Chat Score Calculation: 
+            Base: ${baseScore}% 
+            Realization: ${realization} 
+            Penalty: ${penalty}% 
+            Final: ${finalScore}%`);
+        
+        return finalScore;
+    }
 
-    function calculateScore(target, realization, isSmallerBetter = false, index = -1) {
-        // LOGIKA KHUSUS UNTUK CHAT RESPONSE (index 3)
-        if (index === 3) { // Chat Response
-            // Default score untuk chat adalah 100%
-            let baseScore = 100;
-            
-            // Setiap chat response yang diinput mengurangi 25% dari base score
-            const penalty = realization * 25; // 100% / target 4 = 25% per chat
-            
-            // Score akhir = baseScore - penalty
-            const finalScore = Math.max(0, baseScore - penalty);
-            
-            console.log(`📊 Chat Score Calculation: 
-                Base: ${baseScore}% 
-                Realization: ${realization} 
-                Penalty: ${penalty}% 
-                Final: ${finalScore}%`);
-            
-            return finalScore;
-        } 
         // LOGIKA UNTUK YANG LAIN
         else if (isSmallerBetter) {
             // Logika untuk yang "Semakin Kecil Semakin Bagus"
@@ -871,25 +921,29 @@
     // ========== UPDATE FUNGSI INISIALISASI ==========
 
     async function initializeKpiData() {
-        try {
-            await checkAndResetForNewMonth();
-            
-            const firestoreLoaded = await loadKpiDataFromFirestore();
-            
-            if (!firestoreLoaded) {
-                await updateAllKpiData();
-                await saveKpiDataToFirestore();
-            }
-            
-            // Inisialisasi khusus untuk chat response
-            initializeChatResponse();
-            
-            updateDisplay();
-            
-        } catch (error) {
-            console.error('Error initializing KPI data:', error);
+    try {
+        const currentUser = firebase.auth().currentUser;
+if (currentUser) {
+  updateMonthDisplay(getCurrentMonthYear().display);
+  await checkAndResetForNewMonthForUser(currentUser.uid);
+}
+        
+        const firestoreLoaded = await loadKpiDataFromFirestore();
+        
+        if (!firestoreLoaded) {
+            await updateAllKpiData();
+            await saveKpiDataToFirestore();
         }
+        
+        // Pastikan fungsi ini dipanggil
+        initializeChatResponse();
+        
+        updateDisplay();
+        
+    } catch (error) {
+        console.error('Error initializing KPI data:', error);
     }
+}
 
     function updateKPI() {
         let totalScore = 0;
@@ -1013,6 +1067,7 @@
     }
 
     async function saveKpiDataToFirestore() {
+        const currentPeriod = getCurrentMonthYear().display;
         try {
             const currentUser = firebase.auth().currentUser;
             if (!currentUser) {
@@ -1056,25 +1111,28 @@
             lastLocalChangeTime = Date.now();
 
             const kpiDoc = {
-                kpiData: kpiData.map(item => ({
-                    id: item.id,
-                    area: item.area,
-                    target: item.target,
-                    weight: item.weight,
-                    description: item.description,
-                    note: item.note,
-                    realization: item.realization,
-                    score: item.score
-                })),
-                userId: targetUserId, // ✅ PASTIKAN ini user target
-                userName: targetUserName, // ✅ Nama user target
-                userEmail: currentUser.email,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                totalScore: calculateTotalScore(kpiData),
-                lastUpdatedBy: currentUser.uid,
-                updatedByAdmin: isSuperAdminUser,
-                adminEmail: currentUser.email // ✅ Tandai admin yang mengedit
-            };
+    kpiData: kpiData.map(item => ({
+        id: item.id,
+        area: item.area,
+        target: item.target,
+        weight: item.weight,
+        description: item.description,
+        note: item.note,
+        realization: item.realization,
+        score: item.score
+    })),
+    userId: targetUserId,
+    userName: targetUserName,
+    userEmail: currentUser.email,
+
+    period: currentPeriod, // 🔥 INI WAJIB
+
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    totalScore: calculateTotalScore(kpiData),
+    lastUpdatedBy: currentUser.uid,
+    updatedByAdmin: isSuperAdminUser
+};
+
 
             console.log('📤 Saving to Firestore document:', targetUserId);
             await db.collection('kpiData').doc(targetUserId).set(kpiDoc, { merge: true });
@@ -1117,53 +1175,40 @@
     // ========== FUNGSI FILTER & USER MANAGEMENT ==========
 
     async function loadKpiData(filter = 'current', specificUserId = null, selectedMonth = null) {
-        try {
-            const currentUser = firebase.auth().currentUser;
-            if (!currentUser) return;
-            
-            // Tentukan bulan yang dipilih
-            const targetMonth = selectedMonth || getCurrentMonthYear().display;
-            console.log('🔄 LOAD KPI DATA:', {
-                filter: filter,
-                specificUserId: specificUserId,
-                selectedMonth: targetMonth,
-                isSuperAdmin: isSuperAdminUser
-            });
-            
-            // Update display bulan di header
-            updateMonthDisplay(targetMonth);
-            
-            if (filter === 'current' || specificUserId) {
-                const userId = specificUserId || currentUser.uid;
-                console.log('👤 Loading data for SPECIFIC user:', userId, 'month:', targetMonth);
-                
-                if (specificUserId && specificUserId !== currentUser.uid) {
-                    window.currentViewingUserId = specificUserId;
-                }
-                
-                // Cek apakah bulan yang dipilih adalah bulan berjalan
-                const isCurrentMonth = targetMonth === getCurrentMonthYear().display;
-                
-                if (isCurrentMonth) {
-                    // Load data real-time untuk bulan berjalan
-                    await loadRealTimeUserData(userId);
-                } else {
-                    // Load data historical untuk bulan sebelumnya
-                    await loadHistoricalData(userId, targetMonth);
-                }
-                
-            } else if (filter === 'all' && isSuperAdminUser) {
-                console.log('👥 Loading ALL users data for month:', targetMonth);
-                await loadAllUsersData(targetMonth);
-            } else {
-                console.log('❌ Cannot load all data - not super admin');
-                showNotification('Hanya Super Admin yang dapat melihat semua data', 'error');
-            }
-        } catch (error) {
-            console.error('❌ Error loading KPI data:', error);
-            showNotification('Error memuat data KPI: ' + error.message, 'error');
-        }
+  try {
+    const currentUser = firebase.auth().currentUser;
+    if (!currentUser) return;
+
+    const targetMonth = selectedMonth || getCurrentMonthYear().display;
+
+    // ✅ TAMBAHKAN INI (WAJIB)
+    const isCurrentMonth = targetMonth === getCurrentMonthYear().display;
+
+    updateMonthDisplay(targetMonth);
+
+    if (filter === 'current' || specificUserId) {
+      const userId = specificUserId || currentUser.uid;
+
+      if (specificUserId && specificUserId !== currentUser.uid) {
+        window.currentViewingUserId = specificUserId;
+      }
+
+      if (isCurrentMonth) {
+        await checkAndResetForNewMonthForUser(userId);
+        await loadRealTimeUserData(userId);
+      } else {
+        await loadHistoricalData(userId, targetMonth);
+      }
+
+    } else if (filter === 'all' && isSuperAdminUser) {
+      await loadAllUsersData(targetMonth);
     }
+  } catch (error) {
+    console.error('❌ Error loading KPI data:', error);
+    showNotification('Error memuat data KPI: ' + error.message, 'error');
+  }
+}
+
 
     async function loadAllUsersData(selectedMonth = null) {
         try {
@@ -1321,6 +1366,11 @@
         // Hapus tabel semua user yang sudah ada
         const existingTable = container.querySelector('.all-users-table');
         if (existingTable) existingTable.remove();
+
+            if (backToAllBtn) {
+        backToAllBtn.style.display = 'none';
+    }
+    isViewingUserDetail = false;
         
         // SEMBUNYIKAN tabel reguler
         const regularTable = container.querySelector('.kpi-table');
@@ -1457,35 +1507,43 @@
     }
 
     async function viewUserDetail(userId, month = null) {
-        console.log('🔍 VIEW USER DETAIL:', userId, 'Month:', month);
-        
-        // SIMPAN USER ID YANG SEDANG DILIHAT
-        window.currentViewingUserId = userId;
-        
-        const regularTable = document.querySelector('.kpi-table');
-        if (regularTable) regularTable.style.display = '';
-        
-        const allUsersTable = document.querySelector('.all-users-table');
-        if (allUsersTable) allUsersTable.remove();
-        
-        // Dapatkan nama user dan update header
-        const userName = await getUserNameById(userId);
-        displayUserNameInHeader(userName);
-        
-        // LOAD DATA TERBARU DARI COLLECTIONS, BUKAN DARI KPIDATA SAJA
-        await loadRealTimeUserData(userId);
-        
-        const userFilter = document.getElementById('userFilter');
-        if (userFilter) userFilter.value = 'current';
-        
-        showNotification(`Memuat data user: ${userName}`, 'info');
-        
-        console.log('🎯 Current viewing state:', {
-            viewingUserId: window.currentViewingUserId,
-            currentUser: firebase.auth().currentUser?.uid,
-            isSuperAdmin: isSuperAdminUser
-        });
-    }
+  console.log('🔍 VIEW USER DETAIL:', userId, 'Month:', month);
+
+  window.currentViewingUserId = userId;
+  isViewingUserDetail = true;
+
+  if (backToAllBtn && isSuperAdminUser) {
+    backToAllBtn.style.display = 'inline-flex';
+  }
+
+  const regularTable = document.querySelector('.kpi-table');
+  if (regularTable) regularTable.style.display = '';
+
+  const allUsersTable = document.querySelector('.all-users-table');
+  if (allUsersTable) allUsersTable.remove();
+
+  const userName = await getUserNameById(userId);
+  displayUserNameInHeader(userName);
+
+  // ✅ Pakai month yang dipilih
+  const targetMonth = month || getCurrentMonthYear().display;
+  const isCurrentMonth = targetMonth === getCurrentMonthYear().display;
+
+  updateMonthDisplay(targetMonth);
+
+  if (isCurrentMonth) {
+    await checkAndResetForNewMonthForUser(userId);
+    await loadRealTimeUserData(userId);
+  } else {
+    await loadHistoricalData(userId, targetMonth);
+  }
+
+  const userFilter = document.getElementById('userFilter');
+  if (userFilter) userFilter.value = 'current';
+
+  showNotification(`Memuat data user: ${userName}`, 'info');
+}
+
 
     async function loadRealTimeUserData(userId) {
         try {
@@ -2138,12 +2196,12 @@
                         <p class="reset-modal-text">Pilih jenis edit yang ingin dilakukan:</p>
                         <div style="display: flex; flex-direction: column; gap: 10px; margin: 20px 0;">
                             <button class="edit-option-btn" data-type="realisasi">
-                                <i class="fas fa-chart-bar"></i>
-                                <div>
-                                    <strong>Edit Realisasi Saja</strong>
-                                    <small>Hanya mengubah nilai realisasi</small>
-                                </div>
-                            </button>
+  <i class="fas fa-chart-bar"></i>
+  <div class="edit-option-text">
+    <strong>Edit Realisasi Saja</strong>
+    <small>Hanya mengubah nilai realisasi</small>
+  </div>
+</button>
                             <button class="edit-option-btn" data-type="full">
                                 <i class="fas fa-cogs"></i>
                                 <div>
@@ -2493,6 +2551,69 @@
             fullDisplay: `${monthName} ${currentYear}`
         };
     }
+async function checkAndResetForNewMonthForUser(userId) {
+  try {
+    const db = firebase.firestore();
+    const currentPeriod = getCurrentMonthYear().display;
+
+    const kpiDoc = await db.collection('kpiData').doc(userId).get();
+    if (!kpiDoc.exists) return;
+
+    const data = kpiDoc.data();
+    const firestorePeriod = data.period || null;
+
+    if (firestorePeriod !== currentPeriod) {
+      if (firestorePeriod) await saveCurrentMonthToHistoryForUser(userId, firestorePeriod);
+      await resetKpiDataForNewMonthForUser(userId, data);
+    }
+  } catch (e) {
+    console.error('checkAndResetForNewMonthForUser error:', e);
+  }
+}
+
+async function saveCurrentMonthToHistoryForUser(userId, period) {
+  const db = firebase.firestore();
+  const safePeriod = period.replace('/', '_');
+  const currentKpiDoc = await db.collection('kpiData').doc(userId).get();
+  if (!currentKpiDoc.exists) return;
+
+  await db.collection('kpiHistory')
+    .doc(userId)
+    .collection('monthlyData')
+    .doc(safePeriod)
+    .set({
+      ...currentKpiDoc.data(),
+      period,
+      savedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      isHistorical: true
+    });
+}
+
+async function resetKpiDataForNewMonthForUser(userId, existingData) {
+  const db = firebase.firestore();
+  const currentPeriod = getCurrentMonthYear().display;
+
+  if (existingData.kpiData && Array.isArray(existingData.kpiData)) {
+    existingData.kpiData.forEach(item => {
+      item.realization = 0;
+      item.score = 0;
+    });
+  }
+
+  await db.collection('kpiData').doc(userId).set({
+    ...existingData,
+    period: currentPeriod,
+    lastReset: firebase.firestore.FieldValue.serverTimestamp(),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }, { merge: true });
+
+  // kalau yang sedang dilihat = user ini, sinkronkan UI lokal
+  if (window.currentViewingUserId === userId || firebase.auth().currentUser?.uid === userId) {
+    kpiData.length = 0;
+    existingData.kpiData.forEach(item => kpiData.push(item));
+    updateDisplay();
+  }
+}
 
     function generateMonthOptions() {
         const monthsID = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
@@ -2609,27 +2730,25 @@
     }
 
     function updateMonthDisplay(monthYear) {
-        try {
-            console.log('🔄 Updating month display to:', monthYear);
-            
-            // Update header tabel
-            const monthHeader = document.getElementById('current-month-header');
-            if (monthHeader) {
-                monthHeader.textContent = getMonthNameFromPeriod(monthYear);
-            }
-            
-            // Update period display jika ada
-            const periodDisplay = document.getElementById('current-period-display');
-            if (periodDisplay) {
-                const monthName = getMonthNameFromPeriod(monthYear);
-                periodDisplay.innerHTML = `<i class="fas fa-calendar-alt"></i><span>${monthName}</span>`;
-            }
-            
-            console.log('✅ Month display updated successfully');
-        } catch (error) {
-            console.error('❌ Error updating month display:', error);
+    try {
+        console.log('🔄 Updating month display to:', monthYear);
+        
+        // Update header tabel
+        const monthHeader = document.getElementById('current-month-header');
+        if (monthHeader) {
+            monthHeader.textContent = getMonthNameFromPeriod(monthYear);
         }
+        
+        // 🔥 UPDATE TOMBOL KEMBALI JIKA SEDANG MELIHAT DETAIL USER
+        if (backToAllBtn && isSuperAdminUser && isViewingUserDetail) {
+            backToAllBtn.style.display = 'inline-flex';
+        }
+        
+        console.log('✅ Month display updated successfully');
+    } catch (error) {
+        console.error('❌ Error updating month display:', error);
     }
+}
 
     // ========== FUNGSI NOTIFICATION ==========
 
@@ -2749,72 +2868,22 @@
         }
     }
 
-    async function checkAndResetForNewMonth() {
-        const savedPeriod = localStorage.getItem('currentKpiPeriod');
-        const currentPeriod = getCurrentMonthYear();
-        
-        if (savedPeriod !== currentPeriod.display) {
-            console.log('🔄 New month detected! Resetting realization data...');
-            
-            // Simpan data bulan sebelumnya ke history
-            if (savedPeriod) {
-                await saveCurrentMonthToHistory(savedPeriod);
-            }
-            
-            // Reset hanya realization dan score
-            await resetKpiDataForNewMonth();
-            localStorage.setItem('currentKpiPeriod', currentPeriod.display);
-            
-            showNotification(`Data realisasi KPI telah direset untuk bulan ${currentPeriod.fullDisplay}`, 'info');
-        }
-    }
+async function initializeKpiDocument() {
+    const currentUser = firebase.auth().currentUser;
+    if (!currentUser) return;
 
-    async function resetKpiDataForNewMonth() {
-        console.log('🔄 Resetting KPI data for new month...');
-        
-        // Hanya reset realization dan score, pertahankan data lainnya
-        kpiData.forEach(item => {
-            item.realization = 0;
-            item.score = 0;
-            // Target, weight, description, note tetap dipertahankan
-        });
-        
-        await saveKpiDataToFirestore();
-        updateDisplay();
-        
-        console.log('✅ KPI data reset for new month - only realization & score cleared');
-    }
+    const db = firebase.firestore();
+    const currentPeriod = getCurrentMonthYear();
 
-    async function saveCurrentMonthToHistory(period) {
-        try {
-            const currentUser = firebase.auth().currentUser;
-            if (!currentUser) return;
-
-            const safePeriod = period.replace('/', '_');
-            
-            const db = firebase.firestore();
-            const currentKpiDoc = await db.collection('kpiData').doc(currentUser.uid).get();
-            
-            if (currentKpiDoc.exists) {
-                const currentData = currentKpiDoc.data();
-                
-                await db.collection('kpiHistory')
-                    .doc(currentUser.uid)
-                    .collection('monthlyData')
-                    .doc(safePeriod)
-                    .set({
-                        ...currentData,
-                        period: period,
-                        savedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        isHistorical: true
-                    });
-                
-                console.log('✅ Month data saved to history:', period, 'as ID:', safePeriod);
-            }
-        } catch (error) {
-            console.error('Error saving month to history:', error);
-        }
-    }
+    await db.collection('kpiData').doc(currentUser.uid).set({
+        kpiData: kpiData, // data default yang sudah kamu set di atas
+        userId: currentUser.uid,
+        userName: currentUser.displayName || currentUser.email,
+        period: currentPeriod.display, // ✅ penting untuk reset bulanan
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+}
 
     // ========== EVENT LISTENERS ==========
 
@@ -2823,6 +2892,19 @@
         
         if (typeof firebase !== 'undefined' && firebase.auth()) {
             let isInitialized = false;
+            if (backToAllBtn) {
+        backToAllBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (!isSuperAdminUser) {
+                showNotification('Hanya Super Admin yang dapat menggunakan fitur ini', 'error');
+                return;
+            }
+            
+            backToAllUsers();
+        });
+    }
 
             firebase.auth().onAuthStateChanged(async (user) => {
                 if (user) {

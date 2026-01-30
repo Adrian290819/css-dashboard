@@ -2405,3 +2405,441 @@ body.dark-mode .btn-view-detail.outline:hover {
     box-shadow: 0 4px 8px rgba(93, 63, 211, 0.3);
     background: linear-gradient(135deg, var(--primary-dark, #4a2fc1) 0%, var(--primary-color, #5D3FD3) 100%);
 }   
+/* Tombol Edit All - sesuai dengan style yang ada */
+#edit-all-btn {
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+}
+
+#edit-all-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+#edit-all-btn:active {
+    transform: translateY(0);
+}
+
+/* Mode edit aktif */
+#edit-all-btn.btn-success {
+    background: var(--success-gradient);
+}
+
+#edit-all-btn.btn-success:hover {
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+}
+
+/* Mode dark untuk tombol edit */
+body.dark-mode #edit-all-btn {
+    background: linear-gradient(135deg, var(--primary-dark, #7c3aed) 0%, var(--primary-color, #8b5cf6) 100%);
+}
+
+body.dark-mode #edit-all-btn:hover {
+    background: linear-gradient(135deg, var(--primary-color, #8b5cf6) 0%, var(--primary-light, #a78bfa) 100%);
+    box-shadow: 0 4px 8px rgba(139, 92, 246, 0.4);
+}
+
+/* Loading state */
+#edit-all-btn.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+#edit-all-btn.loading i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    #edit-all-btn {
+        padding: 8px 12px;
+        font-size: var(--text-xs);
+    }
+    
+    #edit-all-btn i {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    #edit-all-btn {
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+}
+
+/* Style untuk tombol Reset Data - lebih konsisten */
+#reset-data-btn {
+    background: var(--warning-gradient);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    cursor: pointer;
+    display: flex !important;
+    align-items: center;
+    gap: 6px;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-sm);
+}
+
+#reset-data-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+#reset-data-btn:active {
+    transform: translateY(0);
+}
+
+/* Container tombol aksi yang konsisten */
+.action-buttons {
+    display: flex !important;
+    gap: var(--space-sm);
+    align-items: center;
+    margin-left: auto;
+}
+
+/* Untuk layout header KPI */
+.kpi-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+}
+
+.kpi-actions {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+}
+
+/* Responsive design untuk action buttons */
+@media (max-width: 768px) {
+    .kpi-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-sm);
+    }
+    
+    .kpi-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    #edit-all-btn,
+    #reset-data-btn {
+        flex: 1;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .kpi-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    #edit-all-btn,
+    #reset-data-btn {
+        width: 100%;
+    }
+}
+/* =========================
+   MODAL: Pilihan Edit
+   ========================= */
+
+/* overlay */
+.reset-modal{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  display: none;            /* default hidden */
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+}
+
+/* box */
+.reset-modal-content{
+  width: min(520px, 100%);
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 18px 50px rgba(0,0,0,.25);
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,.06);
+  transform: translateY(6px);
+  animation: modalPop .18s ease-out forwards;
+}
+
+@keyframes modalPop{
+  to { transform: translateY(0); }
+}
+
+/* header */
+.reset-modal-header{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 18px 10px;
+}
+
+.reset-modal-icon{
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #6d5efc, #ff4fd8);
+  color: #fff;
+  box-shadow: 0 10px 25px rgba(109,94,252,.25);
+}
+
+.reset-modal-title{
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* divider */
+.reset-modal-content .reset-modal-header + .reset-modal-body{
+  border-top: 1px solid rgba(0,0,0,.06);
+}
+
+/* body */
+.reset-modal-body{
+  padding: 14px 18px 8px;
+}
+
+.reset-modal-text{
+  margin: 0 0 14px;
+  color: #4b5563;
+  line-height: 1.45;
+  font-size: 14px;
+}
+
+/* options container (yang kamu buat inline) */
+#edit-options-modal .reset-modal-body > div{
+  gap: 12px !important;
+  margin: 14px 0 6px !important;
+}
+
+/* option button (card style) */
+.edit-option-btn{
+  width: 100%;
+  border: 1px solid rgba(0,0,0,.10);
+  border-radius: 14px;
+  padding: 12px 12px;
+  background: #f9fafb;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease;
+}
+
+.edit-option-btn i{
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: rgba(109,94,252,.12);
+  color: #4f46e5;
+  font-size: 16px;
+  flex: 0 0 auto;
+}
+
+.edit-option-btn strong{
+  display: block;
+  font-size: 14px;
+  color: #111827;
+  margin-bottom: 2px;
+}
+
+.edit-option-btn small{
+  display: block;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* hover / active */
+.edit-option-btn:hover{
+  background: #fff;
+  border-color: rgba(79,70,229,.35);
+  box-shadow: 0 12px 30px rgba(17,24,39,.10);
+  transform: translateY(-1px);
+}
+
+.edit-option-btn:active{
+  transform: translateY(0);
+  box-shadow: 0 8px 18px rgba(17,24,39,.10);
+}
+
+/* keyboard focus */
+.edit-option-btn:focus-visible{
+  outline: 3px solid rgba(79,70,229,.25);
+  outline-offset: 2px;
+}
+
+/* footer/actions */
+.reset-modal-actions{
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 18px 18px;
+  border-top: 1px solid rgba(0,0,0,.06);
+}
+
+.reset-modal-btn{
+  border: 1px solid rgba(0,0,0,.12);
+  background: #fff;
+  color: #111827;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background .12s ease, border-color .12s ease, transform .12s ease;
+}
+
+.reset-modal-btn:hover{
+  background: #f9fafb;
+  border-color: rgba(0,0,0,.20);
+}
+
+.reset-modal-btn:active{ transform: translateY(1px); }
+
+/* responsive */
+@media (max-width: 420px){
+  .reset-modal-header{ padding: 16px 14px 10px; }
+  .reset-modal-body{ padding: 12px 14px 6px; }
+  .reset-modal-actions{ padding: 10px 14px 14px; }
+}
+
+/* =========================
+   DARK MODE (optional)
+   Jika kamu pakai class .dark di body/html
+   ========================= */
+.dark .reset-modal-content{
+  background: #0b1220;
+  border-color: rgba(255,255,255,.08);
+}
+.dark .reset-modal-title{ color: #e5e7eb; }
+.dark .reset-modal-text{ color: #9ca3af; }
+.dark .reset-modal-body{ border-top-color: rgba(255,255,255,.08); }
+.dark .reset-modal-actions{ border-top-color: rgba(255,255,255,.08); }
+
+.dark .edit-option-btn{
+  background: rgba(255,255,255,.04);
+  border-color: rgba(255,255,255,.10);
+}
+.dark .edit-option-btn:hover{
+  background: rgba(255,255,255,.06);
+  border-color: rgba(99,102,241,.45);
+}
+.dark .edit-option-btn strong{ color: #e5e7eb; }
+.dark .edit-option-btn small{ color: #9ca3af; }
+.dark .reset-modal-btn{
+  background: rgba(255,255,255,.04);
+  border-color: rgba(255,255,255,.12);
+  color: #e5e7eb;
+}
+.dark .reset-modal-btn:hover{
+  background: rgba(255,255,255,.06);
+}
+.edit-option-text{ display:flex; flex-direction:column; }
+/* tombol simpan semua - normal */
+#saveAllBtn,
+.save-all-btn{
+  background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+  color: #fff !important;
+  border: 1px solid rgba(0,0,0,.06) !important;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 8px 18px rgba(34,197,94,.30);
+  transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+
+/* hover */
+#saveAllBtn:hover,
+.save-all-btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(34,197,94,.38);
+  filter: brightness(1.03);
+}
+
+/* active */
+#saveAllBtn:active,
+.save-all-btn:active{
+  transform: translateY(0);
+  box-shadow: 0 8px 18px rgba(34,197,94,.30);
+}
+/* FIX: tombol Simpan Semua (btn-success) */
+#edit-all-btn.btn.btn-success{
+  background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(0,0,0,.06) !important;
+  border-radius: 12px !important;
+  padding: 10px 14px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 10px 22px rgba(34,197,94,.30) !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* icon ikut warna text */
+#edit-all-btn.btn.btn-success i{
+  color: inherit !important;
+}
+
+/* hover */
+#edit-all-btn.btn.btn-success:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(34,197,94,.38) !important;
+}
+
+/* active */
+#edit-all-btn.btn.btn-success:active{
+  transform: translateY(0);
+}
+#edit-all-btn,
+#reset-data-btn,
+#back-to-all-users{
+  display: none !important;
+  visibility: hidden !important;
+}
+

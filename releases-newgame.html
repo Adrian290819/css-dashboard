@@ -966,6 +966,50 @@
         width: 100%;
     }
 }
+/* ========== PAGINATION STYLES ========== */
+.pagination-container {
+    margin-top: var(--space-xl);
+    text-align: center;
+    padding: var(--space-lg);
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-sm);
+}
+
+.page-info {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--text-primary);
+    padding: 0 var(--space-md);
+}
+
+.pagination-stats {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+}
+
+/* Responsive pagination */
+@media (max-width: 768px) {
+    .pagination {
+        flex-wrap: wrap;
+        gap: var(--space-sm);
+    }
+    
+    .page-info {
+        order: 3;
+        width: 100%;
+        margin-top: var(--space-sm);
+    }
+}
     </style>
 </head>
 <body>
@@ -1183,7 +1227,20 @@
             <div class="games-grid" id="gamesGrid">
                 <!-- Games will be loaded dynamically -->
             </div>
-            
+            <div class="pagination-container" id="paginationContainer" style="display: none;">
+        <div class="pagination">
+            <button class="btn btn-outline" id="prevPageBtn" disabled>
+                <i class="fas fa-chevron-left"></i> Sebelumnya
+            </button>
+            <span class="page-info" id="pageInfo">Halaman 1 dari 1</span>
+            <button class="btn btn-outline" id="nextPageBtn" disabled>
+                Selanjutnya <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        <div class="pagination-stats">
+            <span id="paginationStats">Menampilkan 0 dari 0 game</span>
+        </div>
+    </div>
             <div id="noGames" class="empty-state" style="display: none;">
                 <i class="fas fa-gamepad"></i>
                 <h3>No Games Found</h3>
@@ -3837,6 +3894,7 @@ if (typeof module !== 'undefined' && module.exports) {
         initializeGamesLanguage
     };
 }
+
 </script>
 </body>
 </html>

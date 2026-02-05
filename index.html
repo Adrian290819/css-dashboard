@@ -653,6 +653,27 @@
     .delay-1 { animation-delay: 0.2s; }
     .delay-2 { animation-delay: 0.4s; }
     .delay-3 { animation-delay: 0.6s; }
+
+    /* show/hide password */
+.toggle-password {
+  position: absolute;
+  right: 15px;
+  top: 38px;          /* sejajar dengan icon kiri */
+  cursor: pointer;
+  color: var(--text-light);
+  font-size: 16px;
+  user-select: none;
+}
+
+.toggle-password:hover {
+  color: var(--primary-color);
+}
+
+/* biar teks password tidak ketutup icon mata */
+#password {
+  padding-right: 45px;
+}
+
   </style>
 </head>
 <body>
@@ -691,10 +712,16 @@
       </div>
 
       <div class="input-group">
-        <label for="password">Password</label>
-        <div class="input-icon"><i class="fas fa-lock"></i></div>
-        <input type="password" id="password" placeholder="Masukkan password Anda" autocomplete="current-password">
-      </div>
+  <label for="password">Password</label>
+  <div class="input-icon"><i class="fas fa-lock"></i></div>
+
+  <input type="password" id="password" placeholder="Masukkan password Anda" autocomplete="current-password">
+
+  <!-- tombol show/hide password -->
+  <span class="toggle-password" id="togglePassword" aria-label="Tampilkan password" role="button" tabindex="0">
+    <i class="fas fa-eye"></i>
+  </span>
+</div>
 
       <div class="remember-forgot">
         <label><input type="checkbox" id="remember"> Remember me</label>
@@ -748,12 +775,30 @@
     const loginBtn = document.getElementById("loginBtn");
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
+    const togglePassword = document.getElementById("togglePassword");
     const loginError = document.getElementById("loginError");
     const loginSuccess = document.getElementById("loginSuccess");
     const themeToggle = document.getElementById("themeToggle");
     const forgotPassword = document.getElementById("forgotPassword");
     const browserInfo = document.getElementById("browserInfo");
     const skyBackground = document.querySelector('.sky-background');
+
+    // Show/Hide password
+togglePassword.addEventListener("click", () => {
+  const isPassword = passwordInput.type === "password";
+  passwordInput.type = isPassword ? "text" : "password";
+  togglePassword.innerHTML = isPassword
+    ? '<i class="fas fa-eye-slash"></i>'
+    : '<i class="fas fa-eye"></i>';
+});
+
+// Optional: bisa juga toggle pakai Enter/Space saat fokus di ikon
+togglePassword.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    togglePassword.click();
+  }
+});
 
     // ========== CREATE STARS ==========
     function createStars() {

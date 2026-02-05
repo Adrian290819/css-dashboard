@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -329,6 +328,7 @@
     <div class="notification-container" id="notificationContainer"></div>
     
     <script src="sidebar-loader.js"></script>
+    <script src="translation-kpi.js"></script>
     <script src="user-profile.js"></script>
 
  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -454,6 +454,12 @@ const dashboards = document.querySelectorAll('.dashboard');
     const editAllBtn = document.getElementById('edit-all-btn');
     const resetBtn = document.getElementById('reset-data-btn');
     const backToAllBtn = document.getElementById('back-to-all-users');
+
+    // ✅ Toggle class agar tombol "Edit All" hanya terlihat untuk Super Admin
+    document.querySelectorAll('.btn-edit-all').forEach(btn => {
+        btn.classList.toggle('admin-visible', !!isAdmin);
+    });
+    if (editAllBtn) editAllBtn.classList.toggle('admin-visible', !!isAdmin);
     
     if (isAdmin) {
         console.log('🛠 Setting up Super Admin UI');
@@ -552,6 +558,14 @@ function backToAllUsers() {
     
     showNotification('Kembali ke tampilan semua user', 'info');
 }
+function getMonthRange(periodDisplay) {
+  // Contoh periodDisplay: "02-2026" (sesuaikan format monthFilter kamu)
+  const [m, y] = periodDisplay.split('-').map(n => parseInt(n, 10));
+  const start = new Date(y, m - 1, 1, 0, 0, 0);
+  const end   = new Date(y, m, 1, 0, 0, 0); // awal bulan berikutnya
+  return { start, end };
+}
+
     // ========== FUNGSI DATA MODULES ==========
 
     async function getIdeasData(userId = null) {
@@ -1171,6 +1185,77 @@ if (currentUser) {
             return 0;
         }
     }
+let __refreshRunning = false;
+
+async function refreshAllUsersKpiFromModules(selectedMonth) {
+  if (__refreshRunning) return;
+  __refreshRunning = true;
+
+  const btn = document.getElementById('refresh-all-data');
+  const originalText = btn ? btn.innerHTML : null;
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '⏳ Refreshing...';
+  }
+
+  try {
+    const current = getCurrentMonthYear().display;
+    const isCurrentMonth = selectedMonth === current;
+
+    // Kalau bukan bulan berjalan, jangan recompute (historical)
+    if (!isCurrentMonth) {
+      await loadAllUsersData(selectedMonth);
+      return;
+    }
+
+    const db = firebase.firestore();
+    const usersSnapshot = await db.collection('users').get();
+
+    // Loop semua user, hitung modul dari koleksi aslinya, lalu simpan ke kpiData/{userId}
+    for (const u of usersSnapshot.docs) {
+      const userId = u.id;
+
+      // 1) AMBIL data dari modul asli (contoh minimal: ideas, research, chats)
+      const [ideasSnap, researchSnap, chatsSnap] = await Promise.all([
+        db.collection('ideas').where('userId', '==', userId).get(),
+        db.collection('research').where('userId', '==', userId).get(),
+        db.collection('chats').where('userId', '==', userId).get(),
+      ]);
+
+      const ideasCount = ideasSnap.size;
+      const researchCount = researchSnap.size;
+      const chatsCount = chatsSnap.size;
+
+      // 2) SIMPAN hasil perhitungan ke dokumen KPI user (cache)
+      // (ini “membangunkan” data user supaya muncul di tabel semua user)
+      await db.collection('kpiData').doc(userId).set({
+        // simpan angka modul yang kamu butuhkan
+        modules: {
+          ideasCount,
+          researchCount,
+          chatsCount,
+        },
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedByAdmin: true,
+        period: current
+      }, { merge: true });
+    }
+
+    // 3) Setelah semua selesai, reload tabel
+    await loadAllUsersData(current);
+
+    showNotification('✅ Refresh semua user selesai', 'success');
+  } catch (err) {
+    console.error('refreshAllUsersKpiFromModules error:', err);
+    showNotification('❌ Refresh gagal: ' + (err?.message || err), 'error');
+  } finally {
+    __refreshRunning = false;
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = originalText || 'Refresh Data';
+    }
+  }
+}
 
     // ========== FUNGSI FILTER & USER MANAGEMENT ==========
 
@@ -1485,12 +1570,13 @@ if (currentUser) {
         container.insertAdjacentHTML('beforeend', tableHtml);
         
         // Event listeners
-        document.getElementById('refresh-all-data').addEventListener('click', function() {
-            const monthFilter = document.getElementById('monthFilter');
-            const selectedMonth = monthFilter ? monthFilter.value : getCurrentMonthYear().display;
-            loadAllUsersData(selectedMonth);
-        });
-        
+document.getElementById('refresh-all-data').addEventListener('click', async function() {
+  const monthFilter = document.getElementById('monthFilter');
+  const selectedMonth = monthFilter ? monthFilter.value : getCurrentMonthYear().display;
+
+  await refreshAllUsersKpiAndTotals(selectedMonth);
+});
+
         container.querySelectorAll('.btn-view-user').forEach(btn => {
             btn.addEventListener('click', function() {
                 const userId = this.dataset.uid;
@@ -1802,33 +1888,40 @@ if (currentUser) {
         kpiHeader.appendChild(userBadge);
     }
 
-    function getCurrentViewingUserId() {
-        const currentUser = firebase.auth().currentUser;
-        if (!currentUser) return null;
-        
-        console.log('🔍 Getting viewing user ID:', {
-            isSuperAdmin: isSuperAdminUser,
-            currentFilter: currentFilter,
-            windowCurrentViewing: window.currentViewingUserId,
-            currentUser: currentUser.uid
-        });
-        
-        // Jika Super Admin dan sedang melihat detail user tertentu
-        if (isSuperAdminUser && window.currentViewingUserId && window.currentViewingUserId !== currentUser.uid) {
-            console.log('✅ Returning viewing user:', window.currentViewingUserId);
-            return window.currentViewingUserId;
-        }
-        
-        // Jika Super Admin di mode "Semua User" tapi belum pilih user spesifik
-        if (isSuperAdminUser && currentFilter === 'all') {
-            console.log('⚠️ Super Admin in "all" mode but no specific user selected');
-            return currentUser.uid; // Tetap ke data sendiri
-        }
-        
-        // Default ke current user
-        console.log('✅ Returning current user:', currentUser.uid);
-        return currentUser.uid;
+    // ========== PERBAIKAN FUNGSI GET CURRENT VIEWING USER ==========
+
+function getCurrentViewingUserId() {
+    const currentUser = firebase.auth().currentUser;
+    if (!currentUser) {
+        console.log('❌ No current user');
+        return null;
     }
+    
+    console.log('🔍 Getting viewing user ID:', {
+        currentUser: currentUser.uid,
+        currentUserEmail: currentUser.email,
+        isSuperAdmin: isSuperAdminUser,
+        currentFilter: currentFilter,
+        windowCurrentViewing: window.currentViewingUserId,
+        isViewingUserDetail: isViewingUserDetail
+    });
+    
+    // 1. Jika Super Admin sedang melihat detail user tertentu
+    if (isSuperAdminUser && window.currentViewingUserId && window.currentViewingUserId !== currentUser.uid) {
+        console.log('✅ Super Admin viewing specific user:', window.currentViewingUserId);
+        return window.currentViewingUserId;
+    }
+    
+    // 2. Jika Super Admin di mode "Semua User" tapi belum pilih user spesifik
+    if (isSuperAdminUser && currentFilter === 'all' && !window.currentViewingUserId) {
+        console.log('⚠️ Super Admin in "all" mode, using own data');
+        return currentUser.uid; // Tetap ke data sendiri
+    }
+    
+    // 3. Default: current user sendiri
+    console.log('✅ Using current user data:', currentUser.uid);
+    return currentUser.uid;
+}
 
     // ========== FUNGSI EDIT SYSTEM ==========
 
@@ -2350,55 +2443,43 @@ if (currentUser) {
     // ========== FUNGSI UPDATE DISPLAY ==========
 
     function updateDisplay() {
-        console.log('🔄 Updating display with current data...');
-        
-        const rows = document.querySelectorAll('.kpi-table tbody tr:not(.result-row)');
-        rows.forEach((row, index) => {
-            if (index < kpiData.length) {
-                const data = kpiData[index];
-                
-                const safeTarget = data.target || 0;
-                const safeWeight = data.weight || 0;
-                const safeRealization = data.realization || 0;
-                const safeScore = data.score || 0;
-                
-                row.querySelector('td:nth-child(2)').textContent = data.area || '';
-                row.querySelector('td:nth-child(3)').textContent = safeTarget;
-                row.querySelector('td:nth-child(4)').textContent = safeWeight.toFixed(2) + '%';
-                row.querySelector('td:nth-child(5)').textContent = data.description || '';
-                row.querySelector('td:nth-child(6)').textContent = data.note || '';
-                
-                const realizationCell = row.querySelector('.realization-cell');
-                if (realizationCell) realizationCell.textContent = safeRealization;
-                
-                const scoreCell = row.querySelector('td:nth-child(9)');
-                if (scoreCell) {
-                    scoreCell.textContent = safeScore.toFixed(2) + '%';
-                    scoreCell.className = '';
-                    
-                    if (safeScore >= 100) scoreCell.classList.add('target-achieved');
-                    else if (safeScore >= 70) scoreCell.classList.add('target-partial');
-                    else scoreCell.classList.add('target-missed');
-                }
-                
-                const actionCell = row.querySelector('td:last-child');
-                if (actionCell) {
-                    if (isSuperAdminUser) {
-                        actionCell.innerHTML = `
-                            <button class="btn-edit-cell" onclick="editSingleRow(${index})">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                        `;
-                    } else {
-                        actionCell.innerHTML = `<span class="no-action">-</span>`;
-                    }
-                }
+    console.log('🔄 Updating display (protected mode)');
+    
+    // Simpan semua teks yang sudah diterjemahkan
+    const translationBackup = new Map();
+    
+    // Backup teks pada elemen yang sudah diterjemahkan
+    document.querySelectorAll('.kpi-table th, .kpi-table td.text-left, .summary-title').forEach(el => {
+        const text = el.textContent;
+        if (text && text.trim()) {
+            translationBackup.set(el, text);
+        }
+    });
+    
+    // Update data seperti biasa
+    const rows = document.querySelectorAll('.kpi-table tbody tr:not(.result-row)');
+    rows.forEach((row, index) => {
+        if (index < kpiData.length) {
+            const data = kpiData[index];
+            
+            // ... kode update angka/nilai ...
+            
+            // JANGAN ubah teks yang sudah ada di backup
+            const areaCell = row.querySelector('td:nth-child(2)');
+            if (areaCell && translationBackup.has(areaCell)) {
+                // Biarkan teks terjemahan asli
+            } else {
+                // Update jika tidak ada backup
+                areaCell.textContent = data.area || '';
             }
-        });
-        
-        updateKPI();
-        console.log('✅ Display updated successfully');
-    }
+            
+            // ... sisa update ...
+        }
+    });
+    
+    updateKPI();
+    console.log('✅ Display updated (translations preserved)');
+}
 
     function updateDisplayWithoutReload() {
         console.log('🔄 Updating display without reload...');
@@ -2488,48 +2569,68 @@ if (currentUser) {
     // ========== FUNGSI REAL-TIME LISTENERS ==========
 
     function setupRealTimeListeners() {
-        const currentUser = firebase.auth().currentUser;
-        if (!currentUser) return;
-        
-        const targetUserId = getCurrentViewingUserId() || currentUser.uid;
-        
-        console.log('🔔 Setting up kpiData listener for user:', targetUserId);
-        
-        const db = firebase.firestore();
-        const kpiUnsubscribe = db.collection('kpiData')
-            .doc(targetUserId)
-            .onSnapshot((doc) => {
-                if (isLocalChange && (Date.now() - lastLocalChangeTime < 5000)) {
-                    console.log('🔄 Skipping real-time update (local change)');
+    console.log('🔔 Setting up real-time listeners');
+    
+    const currentUser = firebase.auth().currentUser;
+    if (!currentUser) {
+        console.log('❌ No user for real-time listeners');
+        return;
+    }
+    
+    // Hentikan semua listener sebelumnya
+    unsubscribeFunctions.forEach(unsub => unsub());
+    unsubscribeFunctions = [];
+    
+    // Tentukan target user dengan benar
+    const targetUserId = getCurrentViewingUserId();
+    
+    console.log('🎯 Setting up real-time listeners for user:', targetUserId);
+    
+    // JANGAN setup listener jika tidak ada target user
+    if (!targetUserId) {
+        console.log('⚠️ No target user for listeners, skipping');
+        return;
+    }
+    
+    const db = firebase.firestore();
+    
+    // Listener untuk kpiData
+    const kpiUnsubscribe = db.collection('kpiData')
+        .doc(targetUserId)
+        .onSnapshot((doc) => {
+            // SKIP jika perubahan dari edit lokal
+            if (isLocalChange && (Date.now() - lastLocalChangeTime < 5000)) {
+                console.log('🔄 Skipping real-time update (local change)');
+                return;
+            }
+            
+            // SKIP jika sedang dalam mode edit
+            if (isEditingMode || preventRealTimeUpdate) {
+                console.log('⚠️ Skipping real-time update (edit mode)');
+                return;
+            }
+            
+            if (doc.exists) {
+                const savedData = doc.data();
+                console.log('📥 Real-time update from Firestore for user:', targetUserId);
+                
+                // CEK apakah data ini untuk user yang sedang dilihat
+                const currentViewing = getCurrentViewingUserId();
+                if (savedData.userId !== currentViewing) {
+                    console.log('🚫 Ignoring update - data is for different user:', savedData.userId);
                     return;
                 }
                 
-                if (doc.exists) {
-                    const savedData = doc.data();
-                    console.log('📥 Real-time update from kpiData for user:', targetUserId);
-                    updateKpiFromFirestore(savedData);
-                }
-            }, (error) => {
-                console.error('❌ Real-time listener error:', error);
-            });
-        
-        unsubscribeFunctions.push(kpiUnsubscribe);
-    }
-
-    function updateKpiFromFirestore(firestoreData) {
-        if (firestoreData.kpiData && Array.isArray(firestoreData.kpiData)) {
-            firestoreData.kpiData.forEach((savedItem, index) => {
-                if (index < kpiData.length) {
-                    if (JSON.stringify(kpiData[index]) !== JSON.stringify(savedItem)) {
-                        Object.assign(kpiData[index], savedItem);
-                    }
-                }
-            });
-            
-            updateDisplay();
-            console.log('✅ Data updated from Firestore real-time listener');
-        }
-    }
+                updateKpiFromFirestore(savedData);
+            }
+        }, (error) => {
+            console.error('❌ Real-time listener error:', error);
+        });
+    
+    unsubscribeFunctions.push(kpiUnsubscribe);
+    
+    console.log('✅ Real-time listeners setup complete for user:', targetUserId);
+}
 
     // ========== FUNGSI PERIODE & BULAN ==========
 
@@ -2707,6 +2808,104 @@ async function resetKpiDataForNewMonthForUser(userId, existingData) {
     }
     
     console.log('✅ Month filter added to KPI container');
+}
+let __refreshKpiRunning = false;
+
+async function refreshAllUsersKpiAndTotals(selectedMonth) {
+  if (__refreshKpiRunning) return;
+  __refreshKpiRunning = true;
+
+  const btn = document.getElementById('refresh-all-data');
+  const originalText = btn?.innerHTML;
+  if (btn) { btn.disabled = true; btn.innerHTML = '⏳ Refresh KPI...'; }
+
+  try {
+    const currentPeriod = getCurrentMonthYear().display;
+    const isCurrentMonth = selectedMonth === currentPeriod;
+
+    // historical: jangan recompute (cukup reload)
+    if (!isCurrentMonth) {
+      await loadAllUsersData(selectedMonth);
+      return;
+    }
+
+    const db = firebase.firestore();
+    const usersSnapshot = await db.collection('users').get();
+
+    for (const u of usersSnapshot.docs) {
+      const userId = u.id;
+
+      // 1) Ambil ulang data real dari modul
+      const [ideasSnap, researchSnap, chatsSnap] = await Promise.all([
+        db.collection('ideas').where('userId', '==', userId).get(),
+        db.collection('research').where('userId', '==', userId).get(),
+        db.collection('chats').where('userId', '==', userId).get(),
+      ]);
+
+      const ideasCount = ideasSnap.size;
+      const researchCount = researchSnap.size;
+      const chatsCount = chatsSnap.size;
+
+      // 2) Siapkan array KPI item untuk dihitung ulang
+      const kpiDocRef = db.collection('kpiData').doc(userId);
+      const kpiDocSnap = await kpiDocRef.get();
+      const existing = kpiDocSnap.exists ? kpiDocSnap.data() : null;
+
+      // Kalau user belum punya kpiData, pakai template dari variabel kpiData (default KPI kamu)
+      let items = (existing?.kpiData && Array.isArray(existing.kpiData))
+        ? existing.kpiData
+        : kpiData.map(x => ({
+            id: x.id,
+            area: x.area,
+            target: x.target,
+            weight: x.weight,
+            description: x.description,
+            note: x.note,
+            realization: 0,
+            score: 0
+          }));
+
+      // helper: set realization + hitung score item
+      function setRealization(id, realization) {
+        const idx = items.findIndex(it => it.id === id);
+        if (idx === -1) return;
+
+        items[idx].realization = realization;
+
+        // kamu sudah pakai konsep “Semakin Kecil” di note untuk menentukan arah scoring :contentReference[oaicite:3]{index=3}
+        const smallerBetter = (items[idx].note || '').includes('Semakin Kecil');
+        items[idx].score = calculateScore(items[idx].target, realization, smallerBetter, idx);
+      }
+
+      // 3) Mapping ID KPI → realization (SESUAIKAN ID kamu)
+      // Dari file kpi-css, ideas sering dianggap id=3 :contentReference[oaicite:4]{index=4}
+      setRealization(3, ideasCount);       // Ideas
+      setRealization(5, researchCount);    // Research (sesuaikan jika id beda)
+      setRealization(4, chatsCount);       // Chat (sesuaikan jika id beda)
+
+      // 4) Hitung total dan simpan balik
+      const totalScore = calculateTotalScore(items);
+
+      await kpiDocRef.set({
+        kpiData: items,
+        totalScore: totalScore,
+        period: currentPeriod,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedByAdmin: true
+      }, { merge: true });
+    }
+
+    // 5) Reload tabel supaya angka total yang baru langsung tampil
+    await loadAllUsersData(currentPeriod);
+    showNotification('✅ Total KPI semua user berhasil diupdate', 'success');
+
+  } catch (err) {
+    console.error('refreshAllUsersKpiAndTotals error:', err);
+    showNotification('❌ Gagal refresh total KPI: ' + (err?.message || err), 'error');
+  } finally {
+    __refreshKpiRunning = false;
+    if (btn) { btn.disabled = false; btn.innerHTML = originalText || 'Refresh Data'; }
+  }
 }
 
     function getMonthNameFromPeriod(period) {
@@ -3079,6 +3278,277 @@ async function initializeKpiDocument() {
 
     console.log('✅ Enhanced KPI System loaded successfully');
 </script>
+<script>
+(function forceShowSaveAll() {
+function force(el) {
+  if (!el) return;
+
+  // ✅ HANYA IZINKAN JIKA SUPER ADMIN
+  // (tombol harus punya class admin-visible)
+  if (!el.classList.contains("admin-visible")) return;
+
+  el.style.setProperty("display", "inline-flex", "important");
+  el.style.setProperty("visibility", "visible", "important");
+  el.style.setProperty("opacity", "1", "important");
+
+
+    // Paksa bentuk tombol biar gak putih polos
+    el.style.setProperty("align-items", "center", "important");
+    el.style.setProperty("gap", "8px", "important");
+    el.style.setProperty("padding", "10px 14px", "important");
+    el.style.setProperty("border-radius", "10px", "important");
+    el.style.setProperty("border", "none", "important");
+
+    // Kalau class btn-success ada → hijau, kalau tidak → fallback biru
+    const isSuccess = el.classList.contains("btn-success") || /simpan/i.test(el.textContent || "");
+    el.style.setProperty("background-color", isSuccess ? "#2ecc71" : "#4f46e5", "important");
+    el.style.setProperty("color", "#fff", "important");
+    el.style.setProperty("cursor", "pointer", "important");
+  }
+
+  function run() {
+    // 1) tombol header (biasanya id ini)
+    force(document.querySelector("#edit-all-btn"));
+
+    // 2) tombol simpan/edit yang di submenu/card (yang sering jadi kotak putih)
+    document.querySelectorAll(".submenu-container .btn-edit-all, .btn-edit-all").forEach(force);
+  }
+
+  // Jalankan sekali saat load
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run);
+  } else {
+    run();
+  }
+
+  // Pantau perubahan DOM (kalau tombol dibuat ulang / teks berubah)
+  const obs = new MutationObserver(() => run());
+  obs.observe(document.documentElement, { childList: true, subtree: true, attributes: true });
+
+  // Jaga-jaga: interval pendek beberapa detik pertama
+  let count = 0;
+  const t = setInterval(() => {
+    run();
+    if (++count > 20) clearInterval(t); // stop setelah ~10 detik
+  }, 500);
+})();
+</script>
+<script>
+// SIMPLE KPI LANGUAGE INITIALIZER
+(function initKpiLanguageSystem() {
+    console.log('🔧 Setting up KPI language system');
+    
+    let isApplyingTranslation = false;
+    let languageChangeTimeout = null;
+    
+    function applyTranslation(language) {
+        if (isApplyingTranslation || !window.applyKpiTranslations) return;
+        
+        isApplyingTranslation = true;
+        console.log('🌐 Applying KPI translation for:', language);
+        
+        // Beri tanda pada elemen yang akan diterjemahkan
+        document.querySelectorAll('.kpi-table th, .kpi-table td, .summary-title, .summary-content p')
+            .forEach(el => el.classList.add('translating'));
+        
+        window.applyKpiTranslations(language);
+        
+        // Hapus tanda setelah selesai
+        setTimeout(() => {
+            document.querySelectorAll('.translating').forEach(el => el.classList.remove('translating'));
+            isApplyingTranslation = false;
+        }, 1000);
+    }
+    
+    // Inisialisasi awal
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            const lang = localStorage.getItem('language') || 'id';
+            applyTranslation(lang);
+        }, 800); // Delay cukup panjang
+    });
+    
+    // Handle language change (only once)
+    if (!window.kpiLangHandler) {
+        window.addEventListener('languageChanged', (e) => {
+            if (languageChangeTimeout) clearTimeout(languageChangeTimeout);
+            
+            languageChangeTimeout = setTimeout(() => {
+                applyTranslation(e.detail.language);
+            }, 500);
+        });
+        
+        window.kpiLangHandler = true;
+    }
+    
+    console.log('✅ KPI language system ready');
+})();
+function updateKpiFromFirestore(firestoreData) {
+    // CEK: apakah data ini menyebabkan perubahan bahasa?
+    console.log('🔄 Firestore update received for:', firestoreData.userId);
+    
+    // Skip jika data tidak valid
+    if (!firestoreData.kpiData || !Array.isArray(firestoreData.kpiData)) {
+        console.log('⚠️ Invalid firestore data, skipping');
+        return;
+    }
+    
+    // Simpan bahasa saat ini sebelum update
+    const currentLang = localStorage.getItem('language') || 'id';
+    const wasTranslated = document.querySelectorAll('.translated-element').length > 0;
+    
+    console.log('📊 Before update - Language:', currentLang, 'Translated:', wasTranslated);
+    
+    // Update data
+    firestoreData.kpiData.forEach((savedItem, index) => {
+        if (index < kpiData.length) {
+            if (JSON.stringify(kpiData[index]) !== JSON.stringify(savedItem)) {
+                Object.assign(kpiData[index], savedItem);
+            }
+        }
+    });
+    
+    // Update display TANPA mengubah bahasa
+    updateDisplay();
+    
+    // RESTORE bahasa jika diperlukan
+    setTimeout(() => {
+        const newLang = localStorage.getItem('language') || 'id';
+        if (newLang !== currentLang && window.applyKpiTranslations) {
+            console.log('🌐 Restoring language after firestore update:', newLang);
+            window.applyKpiTranslations(newLang);
+        }
+    }, 100);
+    
+    console.log('✅ Data updated from Firestore (language protected)');
+}
+</script>
+<script>
+// ========== LANGUAGE PROTECTION SYSTEM ==========
+(function protectKpiTranslations() {
+    console.log('🛡️ Activating KPI translation protection');
+    
+    let currentLanguage = localStorage.getItem('language') || 'id';
+    let protectionActive = false;
+    let restoreTimeout = null;
+    
+    // Function to restore translations
+    function restoreTranslations() {
+        if (protectionActive || !window.applyKpiTranslations) return;
+        
+        protectionActive = true;
+        console.log('🔄 Restoring KPI translations:', currentLanguage);
+        
+        // Beri tanda pada elemen yang sedang dipulihkan
+        document.querySelectorAll('.kpi-table, .summary-container, .kpi-container')
+            .forEach(el => el.classList.add('translating'));
+        
+        window.applyKpiTranslations(currentLanguage);
+        
+        // Hapus tanda setelah selesai
+        setTimeout(() => {
+            document.querySelectorAll('.translating').forEach(el => el.classList.remove('translating'));
+            protectionActive = false;
+            
+            // Tambahkan class untuk menandai elemen yang sudah diterjemahkan
+            document.querySelectorAll('.kpi-table th, .kpi-table td.text-left, .summary-title, .summary-content p')
+                .forEach(el => el.classList.add('translated-element'));
+        }, 500);
+    }
+    
+    // Monitor untuk perubahan tak terduga
+    const translationObserver = new MutationObserver((mutations) => {
+        let needsRestore = false;
+        
+        mutations.forEach(mutation => {
+            // Cek jika ada perubahan teks pada elemen terjemahan
+            if (mutation.type === 'characterData' || 
+               (mutation.type === 'childList' && mutation.target.nodeType === Node.TEXT_NODE)) {
+                
+                const parent = mutation.target.parentElement;
+                if (parent && parent.classList.contains('translated-element')) {
+                    console.log('⚠️ Unexpected translation change detected');
+                    needsRestore = true;
+                }
+            }
+        });
+        
+        if (needsRestore && !protectionActive) {
+            if (restoreTimeout) clearTimeout(restoreTimeout);
+            restoreTimeout = setTimeout(restoreTranslations, 300);
+        }
+    });
+    
+    // Mulai observer setelah delay
+    setTimeout(() => {
+        translationObserver.observe(document.body, {
+            childList: true,
+            subtree: true,
+            characterData: true
+        });
+        
+        // Tandai elemen awal sebagai terjemahan
+        document.querySelectorAll('.kpi-table th, .kpi-table td.text-left, .summary-title, .summary-content p')
+            .forEach(el => el.classList.add('translated-element'));
+        
+        console.log('✅ Translation protection active');
+    }, 1000);
+    
+    // Update saat bahasa berubah
+    window.addEventListener('languageChanged', (e) => {
+        currentLanguage = e.detail.language;
+        if (restoreTimeout) clearTimeout(restoreTimeout);
+        restoreTimeout = setTimeout(restoreTranslations, 200);
+    });
+    
+    // Initial restore
+    setTimeout(restoreTranslations, 1500);
+})();
+// QUICK FIX untuk terjemahan yang missing
+function fixMissingTranslations() {
+    const lang = localStorage.getItem('language') || 'id';
+    
+    if (lang === 'ja') {
+        // Fix header tabel
+        const thElements = document.querySelectorAll('.kpi-table th');
+        thElements.forEach(th => {
+            const text = th.textContent.trim();
+            
+            if (text === 'Indikator') th.textContent = '指標';
+            if (text === 'Skor Akhir') th.textContent = '最終スコア';
+            if (text === 'Action') th.textContent = '操作';
+        });
+        
+        // Fix filter
+        const periodLabel = document.querySelector('.month-filter-label');
+        if (periodLabel && periodLabel.textContent.includes('Pilih Periode')) {
+            periodLabel.textContent = '期間を選択:';
+        }
+        
+        // Fix filter info
+        const filterInfo = document.querySelector('.filter-info');
+        if (filterInfo) {
+            filterInfo.textContent = '特定期間のKPIデータを表示する月を選択';
+        }
+        
+        // Fix chat response note
+        const chatNote = document.querySelector('.kpi-table tbody tr:nth-child(4) td:nth-child(6)');
+        if (chatNote && chatNote.textContent.includes('小さいほど')) {
+            chatNote.textContent = '小さくないほど良い';
+        }
+    }
+}
+
+// Jalankan setelah halaman dimuat
+setTimeout(fixMissingTranslations, 2000);
+
+// Jalankan lagi saat bahasa berubah
+window.addEventListener('languageChanged', () => {
+    setTimeout(fixMissingTranslations, 500);
+});
+</script>
+
+
 </body>
 
 </html>

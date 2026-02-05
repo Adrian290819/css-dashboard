@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Research Dashboard - Sistem Terintegrasi</title>
+    <title>Research - Sistem Terintegrasi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="stylemobile.css">
     <script src="global-time.js"></script>
-        <link rel="stylesheet" href="stylemobile.css">
     <style>
-      :root {
+        /* ========== VARIABEL CSS ========== */
+        :root {
             --primary-gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
             --warning-gradient: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
             --info-gradient: linear-gradient(135deg, #4895ef 0%, #3f37c9 100%);
@@ -19,57 +20,7 @@
             --overdue-color: #ef4444;
         }
 
-        .main-content {
-            padding: var(--space-lg);
-            background-color: var(--bg-secondary);
-            min-height: 100vh;
-        }
-
-        .header {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: var(--space-lg);
-            margin-bottom: var(--space-lg);
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-color);
-        }
-
-        .search-bar {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .search-bar i {
-            position: absolute;
-            left: 12px;
-            color: var(--text-secondary, #6b7280);
-        }
-
-        .search-bar input {
-            padding: var(--space-sm) var(--space-sm) var(--space-sm) 40px;
-            border: 1px solid var(--border-color, #e5e7eb);
-            border-radius: var(--radius-md);
-            background-color: var(--input-bg, #fff);
-            color: var(--text-primary, #111827);
-            font-size: var(--text-sm);
-            width: 250px;
-        }
-
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
-
+        /* ========== LAYOUT UTAMA ========== */
         .main-content {
             padding: var(--space-lg);
             background-color: var(--bg-secondary);
@@ -90,20 +41,18 @@
 
         .header h1 {
             font-size: var(--text-2xl);
-            font-weight: var(--font-semibold);
+            font-weight: var(--font-bold);
+            color: var(--text-primary);
             display: flex;
             align-items: center;
             gap: var(--space-sm);
-        }
-
-        .header h1 i {
-            color: #4361ee;
+            margin: 0;
         }
 
         .header-actions {
             display: flex;
             align-items: center;
-            gap: var(--space-lg);
+            gap: var(--space-md);
         }
 
         .search-bar {
@@ -122,10 +71,42 @@
             padding: var(--space-sm) var(--space-sm) var(--space-sm) 40px;
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
-            background-color: var(--card-bg);
+            background-color: var(--input-bg);
             color: var(--text-primary);
             font-size: var(--text-sm);
             width: 250px;
+        }
+
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            transition: background-color var(--transition-fast);
+        }
+
+        .notification-bell:hover {
+            background: var(--hover-color);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--overdue-color);
+            color: white;
+            font-size: 10px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .user-profile {
@@ -154,36 +135,10 @@
             color: var(--text-secondary);
         }
 
-        .research-container {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: var(--space-lg);
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-color);
-            margin-bottom: var(--space-xl);
-        }
-
-        .research-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--space-lg);
-            padding-bottom: var(--space-md);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .research-title {
-            font-size: var(--text-xl);
-            font-weight: var(--font-semibold);
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-        }
-
-        .research-stats {
+        /* ========== STATISTICS STYLES ========== */
+        .stats-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: var(--space-lg);
             margin-bottom: var(--space-xl);
         }
@@ -199,13 +154,13 @@
 
         .stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
         }
 
         .stat-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: var(--space-md);
         }
 
@@ -219,28 +174,28 @@
             width: 40px;
             height: 40px;
             border-radius: var(--radius-md);
-            background: var(--primary-gradient);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
         }
 
-        .stat-content {
-            margin-bottom: var(--space-md);
-        }
+        .stat-icon.total { background: var(--primary-gradient); }
+        .stat-icon.completed { background: var(--success-gradient); }
+        .stat-icon.pending { background: var(--warning-gradient); }
+        .stat-icon.kpi { background: var(--info-gradient); }
 
-        .stat-content h3 {
+        .stat-value {
             font-size: var(--text-2xl);
             font-weight: var(--font-bold);
             color: var(--text-primary);
-            margin: 0 0 var(--space-xs);
+            margin-bottom: var(--space-xs);
         }
 
-        .stat-content p {
+        .stat-description {
             font-size: var(--text-xs);
             color: var(--text-secondary);
-            margin: 0;
+            margin-bottom: var(--space-md);
         }
 
         .progress-bar {
@@ -256,154 +211,40 @@
             transition: width 1s ease;
         }
 
-        .research-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--space-lg);
-        }
-
-        .research-list {
-            background: var(--bg-secondary);
+        /* ========== RESEARCH CONTAINER ========== */
+        .research-container {
+            background: var(--card-bg);
             border-radius: var(--radius-lg);
             padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
             border: 1px solid var(--border-color);
+            margin-bottom: var(--space-xl);
         }
 
-        .list-header {
+        .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: var(--space-lg);
+            padding-bottom: var(--space-md);
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .list-title {
-            font-size: var(--text-lg);
+        .section-title {
+            font-size: var(--text-xl);
             font-weight: var(--font-semibold);
             color: var(--text-primary);
-        }
-
-        .add-research-btn {
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-            border-radius: var(--radius-md);
-            padding: var(--space-sm) var(--space-md);
-            font-size: var(--text-sm);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all var(--transition-fast);
-        }
-
-        .add-research-btn:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
-
-        .research-items {
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-md);
-        }
-
-        .research-item {
-            background: var(--card-bg);
-            border-radius: var(--radius-md);
-            padding: var(--space-md);
-            border: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all var(--transition-fast);
-        }
-
-        .research-item:hover {
-            box-shadow: var(--shadow-sm);
-            transform: translateY(-2px);
-        }
-
-        .research-info {
-            flex: 1;
-        }
-
-        .research-name {
-            font-weight: var(--font-semibold);
-            margin-bottom: var(--space-xs);
-            color: var(--text-primary);
-        }
-
-        .research-desc {
-            font-size: var(--text-sm);
-            color: var(--text-secondary);
-            margin-bottom: var(--space-xs);
-        }
-
-        .research-date {
-            font-size: var(--text-xs);
-            color: var(--text-tertiary);
-        }
-
-        .research-actions {
             display: flex;
             align-items: center;
             gap: var(--space-sm);
         }
 
-        .research-status {
-            padding: 4px 8px;
-            border-radius: var(--radius-full);
-            font-size: var(--text-xs);
-            font-weight: var(--font-medium);
-        }
-
-        .status-completed {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--completed-color);
-        }
-
-        .status-pending {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--pending-color);
-        }
-
-        .status-overdue {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--overdue-color);
-        }
-
-        .status-nodeadline {
-            background: rgba(156, 163, 175, 0.1);
-            color: var(--text-secondary);
-        }
-
-        .action-btn {
-            padding: 6px;
-            border-radius: var(--radius-md);
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: all var(--transition-fast);
-        }
-
-        .action-btn:hover {
-            background: var(--hover-color);
-            color: var(--text-primary);
-        }
-
+        /* ========== RESEARCH FORM ========== */
         .research-form {
-            background: var(--bg-secondary);
-            border-radius: var(--radius-lg);
-            padding: var(--space-lg);
-            border: 1px solid var(--border-color);
-        }
-
-        .form-title {
-            font-size: var(--text-lg);
-            font-weight: var(--font-semibold);
-            color: var(--text-primary);
-            margin-bottom: var(--space-lg);
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-md);
+            margin-bottom: var(--space-xl);
         }
 
         .form-group {
@@ -418,205 +259,45 @@
             margin-bottom: var(--space-xs);
         }
 
-        .form-input,
-        .form-textarea,
-        .form-select {
-            width: 100%;
+        .form-control {
             padding: var(--space-sm);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
-            background: var(--card-bg);
+            background-color: var(--input-bg);
             color: var(--text-primary);
             font-size: var(--text-sm);
-            transition: border-color var(--transition-fast);
+            transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+            width: 100%;
         }
 
-        .form-input:focus,
-        .form-textarea:focus,
-        .form-select:focus {
+        .form-control:focus {
             outline: none;
-            border-color: #4361ee;
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
 
-        .form-textarea {
-            min-height: 100px;
+        textarea.form-control {
             resize: vertical;
+            min-height: 120px;
         }
 
-        .form-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: var(--space-sm);
-            margin-top: var(--space-lg);
-        }
-
-        .btn {
-            padding: var(--space-sm) var(--space-md);
-            border-radius: var(--radius-md);
-            font-size: var(--text-sm);
-            font-weight: var(--font-medium);
-            cursor: pointer;
-            border: none;
-            transition: all var(--transition-fast);
-        }
-
-        .btn-primary {
-            background: var(--primary-gradient);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-        }
-
-        .btn-secondary:hover {
-            background: var(--hover-color);
-        }
-
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .notification-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 10000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .notification {
-            padding: 12px 16px;
-            border-radius: var(--radius-md);
-            background: var(--card-bg);
-            border-left: 4px solid #4361ee;
-            box-shadow: var(--shadow-md);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            animation: notificationSlideIn 0.5s ease forwards;
-            max-width: 350px;
-            position: relative;
-        }
-
-        .notification.success {
-            border-left-color: var(--completed-color);
-        }
-
-        .notification.error {
-            border-left-color: var(--overdue-color);
-        }
-
-        .notification.info {
-            border-left-color: #4361ee;
-        }
-
-        .notification button.notification-close {
-            background: none;
-            border: none;
-            cursor: pointer;
-            margin-left: auto;
-            color: var(--text-secondary);
-            padding: 4px;
-            border-radius: 4px;
-            transition: background-color 0.2s ease;
-        }
-
-        .notification button.notification-close:hover {
-            color: var(--text-primary);
-            background-color: rgba(0, 0, 0, 0.1);
-        }
-
-        .notification.hiding {
-            animation: notificationSlideOut 0.5s ease forwards;
-        }
-
-        @keyframes notificationSlideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes notificationSlideOut {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-        }
-
-        /* Style untuk form mode indicator */
-        .form-mode-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 15px;
-            font-size: var(--text-sm);
-            color: var(--text-secondary);
-        }
-
-        .form-mode-indicator .mode-badge {
-            padding: 4px 8px;
-            border-radius: var(--radius-full);
-            font-weight: var(--font-medium);
-        }
-
-        .edit-mode-badge {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--pending-color);
-        }
-
-        .add-mode-badge {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--completed-color);
-        }
-
-        .deadline-toggle {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-
-        .deadline-toggle input {
-            margin: 0;
-        }
-
-        .deadline-field {
-            display: none;
-        }
-
-        .deadline-field.visible {
-            display: block;
-        }
-
-        /* Table Styles */
+        /* ========== RESEARCH TABLE ========== */
         .research-table-container {
-            margin-top: var(--space-lg);
+            margin-top: var(--space-md);
             overflow-x: auto;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-md);
+        }
+
+        .table-title {
+            font-size: var(--text-lg);
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
         }
 
         .research-table {
@@ -663,7 +344,7 @@
 
         .table-input:focus {
             outline: none;
-            border-color: #4361ee;
+            border-color: var(--primary);
             box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
         }
 
@@ -689,17 +370,222 @@
             font-size: var(--text-sm);
         }
 
-        .table-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--space-md);
+        /* ========== RESEARCH GRID ========== */
+        .research-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: var(--space-lg);
         }
 
-        .table-title {
+        .research-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .research-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .research-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-md);
+            position: relative;
+        }
+
+        .research-title {
             font-size: var(--text-lg);
             font-weight: var(--font-semibold);
             color: var(--text-primary);
+            margin: 0 0 var(--space-xs);
+            line-height: 1.4;
+            flex: 1;
+            padding-right: var(--space-md);
+        }
+
+        .research-date {
+            font-size: var(--text-xs);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            margin-bottom: var(--space-sm);
+        }
+
+        .research-details {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: var(--space-md);
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .research-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--border-color-light);
+        }
+
+        .research-author {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .author-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .author-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .author-name {
+            font-size: var(--text-xs);
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+        }
+
+        .author-role {
+            font-size: var(--text-xs);
+            color: var(--text-tertiary);
+        }
+
+        /* ========== STATUS BADGE ========== */
+        .research-status {
+            padding: 6px 12px;
+            border-radius: var(--radius-full);
+            font-size: var(--text-xs);
+            font-weight: var(--font-semibold);
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            position: absolute;
+            top: var(--space-md);
+            right: var(--space-md);
+            z-index: 2;
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+        }
+
+        .status-completed {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+
+        .status-overdue {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        /* ========== ACTION BUTTONS ========== */
+        .research-actions {
+            display: flex;
+            gap: var(--space-xs);
+            margin-top: var(--space-sm);
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-icon:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-icon.edit:hover {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.2);
+        }
+
+        .btn-icon.delete:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border-color: var(--danger);
+            box-shadow: 0 4px 8px rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-icon.view {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--completed-color);
+        }
+
+        .btn-icon.view:hover {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--completed-color);
+            border-color: var(--completed-color);
+            box-shadow: 0 4px 8px rgba(16, 185, 129, 0.2);
+        }
+
+        /* ========== BUTTON STYLES ========== */
+        .btn {
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            cursor: pointer;
+            border: none;
+            transition: all var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--hover-color);
         }
 
         .add-row-btn {
@@ -735,29 +621,130 @@
             background: rgba(239, 68, 68, 0.1);
         }
 
-        .connection-status {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 10px 15px;
-            border-radius: var(--radius-md);
-            font-size: var(--text-sm);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            z-index: 1000;
-        }
-        
-        .status-connected {
-            background: var(--completed-color);
-            color: white;
-        }
-        
-        .status-disconnected {
-            background: var(--overdue-color);
-            color: white;
+        /* ========== EMPTY STATE ========== */
+        .empty-state {
+            text-align: center;
+            padding: var(--space-xl);
+            color: var(--text-secondary);
+            grid-column: 1 / -1;
+            display: none;
         }
 
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: var(--space-md);
+            color: var(--text-tertiary);
+        }
+
+        .empty-state h3 {
+            margin: 0 0 var(--space-sm);
+            color: var(--text-primary);
+        }
+
+        .empty-state p {
+            margin: 0;
+        }
+
+        /* ========== NOTIFICATION STYLES ========== */
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .notification {
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            background: var(--card-bg);
+            border-left: 4px solid var(--primary);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: notificationSlideIn 0.5s ease forwards;
+            max-width: 350px;
+            position: relative;
+        }
+
+        .notification.success {
+            border-left-color: var(--completed-color);
+        }
+
+        .notification.error {
+            border-left-color: var(--overdue-color);
+        }
+
+        .notification.info {
+            border-left-color: var(--primary);
+        }
+
+        .notification button.notification-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-left: auto;
+            color: var(--text-secondary);
+            padding: 4px;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+        }
+
+        .notification button.notification-close:hover {
+            color: var(--text-primary);
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .notification.hiding {
+            animation: notificationSlideOut 0.5s ease forwards;
+        }
+
+        @keyframes notificationSlideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes notificationSlideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        /* ========== FADE ANIMATION ========== */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========== PAGINATION ========== */
+        .pagination-container {
+            margin-top: var(--space-lg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--space-sm);
+            flex-wrap: wrap;
+        }
+
+        /* ========== RESPONSIVE ADJUSTMENTS ========== */
         @media (max-width: 1024px) {
             .header {
                 flex-direction: column;
@@ -773,14 +760,14 @@
             .search-bar input {
                 width: 200px;
             }
-
-            .research-content {
-                grid-template-columns: 1fr;
-            }
         }
 
         @media (max-width: 768px) {
-            .research-stats {
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .research-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -798,7 +785,7 @@
                 width: 100%;
             }
 
-            .research-header {
+            .section-header {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: var(--space-md);
@@ -806,7 +793,7 @@
         }
 
         @media (max-width: 480px) {
-            .research-item {
+            .research-card {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: var(--space-md);
@@ -817,128 +804,58 @@
                 justify-content: space-between;
             }
 
-            .form-actions {
-                flex-direction: column;
-            }
-
             .btn {
                 width: 100%;
             }
         }
-        /* Tambahkan di bagian CSS yang sudah ada */
-.detail-link {
-    color: #4361ee;
-    text-decoration: none;
-    margin-right: 8px;
-    transition: color var(--transition-fast);
-}
-
-.detail-link:hover {
-    color: #3a0ca3;
-    text-decoration: underline;
-}
-
-/* Style untuk input URL di tabel */
-.detail-url {
-    width: 100%;
-    padding: var(--space-xs) var(--space-sm);
+        /* Tambahkan di bagian CSS */
+.form-select {
+    padding: var(--space-sm);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    background-color: var(--input-bg);
     color: var(--text-primary);
     font-size: var(--text-sm);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    width: 100%;
 }
 
-.detail-url:focus {
+.form-select:focus {
     outline: none;
-    border-color: #4361ee;
-    box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
-}
-/* Style untuk tombol Tambah Kategori */
-.add-row-btn {
-    background: var(--success-gradient);
-    color: white;
-    border: none;
-    border-radius: var(--radius-md);
-    padding: var(--space-xs) var(--space-sm);
-    font-size: var(--text-xs);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    transition: all var(--transition-fast);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
-.add-row-btn:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
+.form-select option {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    padding: 8px;
 }
 
-/* Variabel untuk mode terang/gelap */
-:root {
-    --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
-}
-
-/* Mode gelap - jika sudah ada dark mode styles */
-[data-theme="dark"] .add-row-btn {
-    background: linear-gradient(135deg, #10b981 0%, #047857 100%);
-    color: white;
-}
-
-/* Jika menggunakan class untuk mode gelap */
-.dark-mode .add-row-btn {
-    background: linear-gradient(135deg, #10b981 0%, #047857 100%);
-    color: white;
-}
-
-/* Style untuk teks tombol agar kontras dengan background */
-.add-row-btn span,
-.add-row-btn i {
-    color: white !important;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-/* Style untuk mode terang khusus (opsional) */
-.light-mode .add-row-btn {
-    background: var(--success-gradient);
-    color: white;
-}
-
-/* Style untuk hover state */
-.add-row-btn:hover span,
-.add-row-btn:hover i {
-    color: white !important;
-    opacity: 0.95;
-}
-
-/* Style untuk tombol lainnya yang serupa */
-.btn-primary,
-.add-research-btn {
-    color: white !important;
-}
-
-.btn-primary span,
-.btn-primary i,
-.add-research-btn span,
-.add-research-btn i {
-    color: white !important;
+.form-select option[value=""] {
+    color: var(--text-secondary);
 }
     </style>
 </head>
 <body>
+    <div class="notification-container" id="notificationContainer"></div>
+    
     <div id="sidebar-container"></div>
     <button class="menu-toggle">
-                <i class="fas fa-bars"></i>
-            </button>
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <!-- Main Content -->
     <div class="main-content">
         <div class="header">
-            <h1><i class="fas fa-search"></i> Research Dashboard</h1>
+            <h1><i class="fas fa-search"></i> Research</h1>
             <div class="header-actions">
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Cari research..." id="researchSearch">
+                    <input type="text" placeholder="Cari research..." id="searchResearch">
                 </div>
-<button class="menu-toggle">
+                
+                <button class="menu-toggle">
                     <i class="fas fa-bars"></i>
                 </button>
                 <div class="user-profile">
@@ -951,1758 +868,1157 @@
             </div>
         </div>
 
-            
-            <div class="research-stats">
-                <div class="stat-card fade-in">
-                    <div class="stat-header">
-                        <span class="stat-title">Total Research</span>
-                        <div class="stat-icon">
-                            <i class="fas fa-chart-bar"></i>
-                        </div>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="total-research">0</h3>
-                        <p>Dari target 28 research/bulan</p>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%; background: var(--primary-gradient);"></div>
+        <!-- Statistics Section -->
+        <div class="stats-container">
+            <div class="stat-card fade-in">
+                <div class="stat-header">
+                    <span class="stat-title">Total Research</span>
+                    <div class="stat-icon total">
+                        <i class="fas fa-chart-bar"></i>
                     </div>
                 </div>
-
-                <div class="stat-card fade-in">
-                    <div class="stat-header">
-                        <span class="stat-title">Research Selesai</span>
-                        <div class="stat-icon">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="completed-research">0</h3>
-                        <p>Research yang telah diselesaikan</p>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%; background: var(--success-gradient);"></div>
-                    </div>
-                </div>
-
-                <div class="stat-card fade-in">
-                    <div class="stat-header">
-                        <span class="stat-title">Research Tertunda</span>
-                        <div class="stat-icon">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="pending-research">0</h3>
-                        <p>Research yang masih dalam proses</p>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%; background: var(--warning-gradient);"></div>
-                    </div>
-                </div>
-
-                <div class="stat-card fade-in">
-                    <div class="stat-header">
-                        <span class="stat-title">KPI Research</span>
-                        <div class="stat-icon">
-                            <i class="fas fa-percentage"></i>
-                        </div>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="kpi-research">0%</h3>
-                        <p>Pencapaian target research</p>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%; background: var(--info-gradient);"></div>
-                    </div>
+                <div class="stat-value" id="total-research">0</div>
+                <div class="stat-description">Dari target 28 research/bulan</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="total-progress" style="width: 0%; background: var(--primary-gradient);"></div>
                 </div>
             </div>
 
-            <div class="research-content">
-                <div class="research-list">
-                    <div class="list-header">
-                        <h2 class="list-title">Daftar Research</h2>
-                        <button class="add-research-btn" id="add-research-btn">
-                            <i class="fas fa-plus"></i>
-                            Tambah Research
-                        </button>
-                    </div>
-                    <div class="research-items" id="research-items">
-                        <!-- Research items will be added here dynamically -->
+            <div class="stat-card fade-in">
+                <div class="stat-header">
+                    <span class="stat-title">Research Selesai</span>
+                    <div class="stat-icon completed">
+                        <i class="fas fa-check-circle"></i>
                     </div>
                 </div>
+                <div class="stat-value" id="completed-research">0</div>
+                <div class="stat-description">Research yang telah diselesaikan</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="completed-progress" style="width: 0%; background: var(--success-gradient);"></div>
+                </div>
+            </div>
 
-                <div class="research-form" id="research-form">
-                    <div id="form-mode-indicator" class="form-mode-indicator">
-                        <i class="fas fa-info-circle"></i>
-                        <span>Mode: </span>
-                        <span id="mode-badge" class="mode-badge add-mode-badge">Tambah Baru</span>
+            <div class="stat-card fade-in">
+                <div class="stat-header">
+                    <span class="stat-title">Research Tertunda</span>
+                    <div class="stat-icon pending">
+                        <i class="fas fa-clock"></i>
                     </div>
-                    <h2 class="form-title" id="form-main-title">Tambah Research Baru</h2>
-                    <form id="new-research-form">
-                        <input type="hidden" id="edit-research-id" value="">
-                        <div class="form-group">
-                            <label class="form-label" for="research-platform">Platform/Agent*</label>
-                            <input type="text" id="research-platform" class="form-input" placeholder="Nama platform/agent yang di research" required>
+                </div>
+                <div class="stat-value" id="pending-research">0</div>
+                <div class="stat-description">Research yang masih dalam proses</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="pending-progress" style="width: 0%; background: var(--warning-gradient);"></div>
+                </div>
+            </div>
+
+            <div class="stat-card fade-in">
+                <div class="stat-header">
+                    <span class="stat-title">KPI Research</span>
+                    <div class="stat-icon kpi">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="kpi-research">0%</div>
+                <div class="stat-description">Pencapaian target research</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="kpi-progress" style="width: 0%; background: var(--info-gradient);"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="research-container">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-plus-circle"></i> Formulir Research</h2>
+            </div>
+            
+            <form id="researchForm" class="research-form">
+                <div class="form-group">
+                    <label for="researchPlatform" class="form-label">Platform/Agent*</label>
+                    <input type="text" id="researchPlatform" class="form-control" placeholder="Masukkan nama platform/agent yang di research" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Detail Research*</label>
+                    <div class="research-table-container">
+                        <div class="table-header">
+                            <h3 class="table-title">Kategori Research</h3>
+                            <button type="button" class="add-row-btn" id="addRowBtn">
+                                <i class="fas fa-plus"></i>
+                                Tambah Kategori
+                            </button>
                         </div>
-                        
-                        
-                        <div class="form-group" id="status-field-container" style="display: none;">
-                            <label class="form-label" for="research-status">Status</label>
-                            <select id="research-status" class="form-select">
-                                <option value="pending">Dalam Proses</option>
-                                <option value="completed">Selesai</option>
-                                <option value="overdue">Terlambat</option>
-                            </select>
-                        </div>
-<div class="research-table-container">
-    <div class="table-header">
-        <h3 class="table-title">Detail Research</h3>
-        <button type="button" class="add-row-btn" id="add-row-btn">
-            <i class="fas fa-plus"></i>
-            Tambah Kategori
-        </button>
-    </div>
-    <table class="research-table" id="research-detail-table">
-        <thead>
-            <tr>
-                <th>Kategori</th>
-                <th>Deskripsi</th>
-                <th>URL (Opsional)</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody id="research-detail-tbody">
+                        <table class="research-table" id="researchDetailTable">
+                            <thead>
+                                <tr>
+                                    <th>Kategori</th>
+                                    <th>Deskripsi</th>
+                                    <th>URL (Opsional)</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="researchDetailTbody">
                                 <!-- Rows will be added dynamically -->
                             </tbody>
                         </table>
                     </div>
-                    
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-secondary" id="cancel-research-btn">Batal</button>
-                        <button type="submit" class="btn btn-primary" id="submit-research-btn">Simpan Research</button>
-                    </div>
-                </form>
+                </div>
+                
+                <div class="form-group" style="display: flex; justify-content: flex-end;">
+                    <button type="submit" class="btn btn-primary" id="submitButton">
+                        <i class="fas fa-paper-plane"></i> Simpan Research
+                    </button>
+                </div>
+            </form>
+            
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-list"></i> Daftar Research</h2>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="refreshResearch">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+            </div>
+            
+            <div class="research-grid" id="researchGrid"></div>
+
+            <!-- PAGINATION -->
+            <div class="pagination-container" id="paginationContainer" style="display:none;">
+                <button class="btn btn-outline" id="prevPage">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                <span id="pageInfo">Page 1 / 1</span>
+                <button class="btn btn-outline" id="nextPage">
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <div class="empty-state" id="emptyState">
+                <i class="fas fa-search"></i>
+                <h3>Tidak ada research</h3>
+                <p>Tambahkan research baru untuk memulai!</p>
             </div>
         </div>
     </div>
 
+    <!-- Modal Detail Research -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-eye"></i> Detail Research</h3>
+                <button class="modal-close" id="closeDetailModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-content" id="detailContent">
+                    <!-- Detail konten akan dimuat di sini -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="closeDetail">
+                    <i class="fas fa-times"></i> Tutup
+                </button>
+            </div>
+        </div>
+    </div>
 
-    <div class="notification-container" id="notificationContainer"></div>
+    <!-- Modal Edit Research -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-edit"></i> Edit Research</h3>
+                <button class="modal-close" id="closeEditModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editResearchForm">
+                    <input type="hidden" id="editResearchId">
+                    <div class="form-group">
+                        <label for="editResearchPlatform" class="form-label">Platform/Agent</label>
+                        <input type="text" id="editResearchPlatform" class="form-control" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelEdit">
+                    <i class="fas fa-times"></i> Batal
+                </button>
+                <button class="btn btn-primary" id="saveEdit">
+                    <i class="fas fa-save"></i> Simpan Perubahan
+                </button>
+            </div>
+        </div>
+    </div>
+    
     <script src="sidebar-loader.js"></script>
     <script src="user-profile.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
- <script>
-// Konfigurasi Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
-    authDomain: "dashboard-css.firebaseapp.com",
-    databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "dashboard-css",
-    storageBucket: "dashboard-css.appspot.com",
-    messagingSenderId: "771131792881",
-    appId: "1:771131792881:web:ad634424225bd7de847850",
-    measurementId: "G-3CYBC5B101"
-};
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <script>
+    // Konfigurasi Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
+        authDomain: "dashboard-css.firebaseapp.com",
+        databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "dashboard-css",
+        storageBucket: "dashboard-css.appspot.com",
+        messagingSenderId: "771131792881",
+        appId: "1:771131792881:web:ad634424225bd7de847850",
+        measurementId: "G-3CYBC5B101"
+    };
 
-// Inisialisasi Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+    // Inisialisasi Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-// Data Research
-let researchData = [];
-const researchTarget = 28;
-let currentEditId = null;
-let currentUser = null;
-let unsubscribeResearch = null;
+    // Data Research
+    let researchData = [];
+    let currentEditId = null;
+    let currentUser = null;
+    let currentUserData = null;
+    let unsubscribeResearch = null;
+    let currentPage = 1;
+    const pageSize = 10;
+    let currentFilteredResearch = null;
+    const researchTarget = 28;
 
-// Elemen DOM
-const researchItemsContainer = document.getElementById('research-items');
-const researchFormElement = document.getElementById('research-form');
-const newResearchForm = document.getElementById('new-research-form');
-const addResearchBtn = document.getElementById('add-research-btn');
-const cancelResearchBtn = document.getElementById('cancel-research-btn');
-const notificationContainer = document.getElementById('notificationContainer');
-const researchSearch = document.getElementById('researchSearch');
-const formModeIndicator = document.getElementById('form-mode-indicator');
-const modeBadge = document.getElementById('mode-badge');
-const formMainTitle = document.getElementById('form-main-title');
-const submitResearchBtn = document.getElementById('submit-research-btn');
-const statusFieldContainer = document.getElementById('status-field-container');
-const researchStatusField = document.getElementById('research-status');
-const editResearchIdField = document.getElementById('edit-research-id');
-const addRowBtn = document.getElementById('add-row-btn');
-const researchDetailTbody = document.getElementById('research-detail-tbody');
+    // Elemen DOM
+    const researchForm = document.getElementById('researchForm');
+    const researchGrid = document.getElementById('researchGrid');
+    const emptyState = document.getElementById('emptyState');
+    const searchResearch = document.getElementById('searchResearch');
+    const refreshResearch = document.getElementById('refreshResearch');
+    const notificationContainer = document.getElementById('notificationContainer');
+    const submitButton = document.getElementById('submitButton');
+    const addRowBtn = document.getElementById('addRowBtn');
+    const researchDetailTbody = document.getElementById('researchDetailTbody');
 
-// Statistik elements
-const totalResearchEl = document.getElementById('total-research');
-const completedResearchEl = document.getElementById('completed-research');
-const pendingResearchEl = document.getElementById('pending-research');
-const kpiResearchEl = document.getElementById('kpi-research');
+    // Statistik elements
+    const totalResearchEl = document.getElementById('total-research');
+    const completedResearchEl = document.getElementById('completed-research');
+    const pendingResearchEl = document.getElementById('pending-research');
+    const kpiResearchEl = document.getElementById('kpi-research');
+    const totalProgress = document.getElementById('total-progress');
+    const completedProgress = document.getElementById('completed-progress');
+    const pendingProgress = document.getElementById('pending-progress');
+    const kpiProgress = document.getElementById('kpi-progress');
 
-// Buat elemen status koneksi jika belum ada
-let connectionStatus = document.getElementById('connectionStatus');
-if (!connectionStatus) {
-    connectionStatus = document.createElement('div');
-    connectionStatus.id = 'connectionStatus';
-    connectionStatus.className = 'connection-status status-connected';
-    connectionStatus.innerHTML = '<i class="fas fa-check-circle"></i> Terhubung dengan Firebase';
-    document.body.appendChild(connectionStatus);
-    
-    setTimeout(() => {
-        connectionStatus.style.display = 'none';
-    }, 3000);
-}
+    // Pagination elements
+    const paginationContainer = document.getElementById('paginationContainer');
+    const prevPageBtn = document.getElementById('prevPage');
+    const nextPageBtn = document.getElementById('nextPage');
+    const pageInfo = document.getElementById('pageInfo');
 
-// Fungsi untuk menampilkan notifikasi
-function showNotification(message, type = 'info') {
-    if (!notificationContainer) {
-        console.error('Notification container not found');
-        return;
-    }
-    
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-        <span>${message}</span>
-        <button class="notification-close">
-            <i class="fas fa-times"></i>
-        </button>
-    `;
-    
-    notificationContainer.appendChild(notification);
-    
-    const closeBtn = notification.querySelector('.notification-close');
-    closeBtn.addEventListener('click', function() {
-        closeNotification(notification);
-    });
-    
-    const timeoutId = setTimeout(() => {
-        closeNotification(notification);
-    }, 5000);
-    
-    notification.dataset.timeoutId = timeoutId;
-}
-
-function closeNotification(notification) {
-    if (notification.dataset.timeoutId) {
-        clearTimeout(parseInt(notification.dataset.timeoutId));
-    }
-    
-    notification.classList.add('hiding');
-    
-    setTimeout(() => {
-        if (notification.parentElement) {
-            notificationContainer.removeChild(notification);
-        }
-    }, 500);
-}
-
-// Fungsi untuk memastikan user document ada
-// Fungsi untuk memastikan user document ada (FIXED VERSION)
-// Fungsi untuk memastikan user document ada (FIXED VERSION)
-async function ensureUserDocument(user) {
-    try {
-        const userRef = db.collection('users').doc(user.uid);
-        const userDoc = await userRef.get();
-        
-        // Daftar email super admin
-        const superAdminEmails = [
-            "superadmin@gachaengine.com",
-            "admin@gachaengine.com"
-        ];
-        
-        const isSuperAdmin = superAdminEmails.includes(user.email);
-        
-        if (userDoc.exists) {
-            // Document sudah ada - update tanpa overwrite role/isSuperAdmin
-            const currentData = userDoc.data();
-            const updateData = {
-                lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
-                email: user.email,
-                displayName: user.displayName || currentData.displayName || user.email
-            };
-            
-            // Hanya update role/isSuperAdmin jika belum ada
-            if (!currentData.hasOwnProperty('role')) {
-                updateData.role = isSuperAdmin ? 'super_admin' : 'user';
-            }
-            if (!currentData.hasOwnProperty('isSuperAdmin')) {
-                updateData.isSuperAdmin = isSuperAdmin;
-            }
-            
-            await userRef.update(updateData);
-            console.log('User document updated for:', user.uid, 'Role:', currentData.role || updateData.role);
-            
-            // RETURN THE UPDATED DATA
-            return { ...currentData, ...updateData };
-        } else {
-            // Document baru - buat dengan role dan isSuperAdmin yang benar
-            const newUserDoc = {
-                email: user.email,
-                displayName: user.displayName || user.email,
-                role: isSuperAdmin ? 'super_admin' : 'user',
-                isSuperAdmin: isSuperAdmin,
-                lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            };
-            
-            await userRef.set(newUserDoc);
-            console.log('New user document created for:', user.uid, 'Role:', newUserDoc.role);
-            
-            // RETURN THE NEW DATA
-            return newUserDoc;
-        }
-    } catch (error) {
-        console.error('Error ensuring user document:', error);
-        throw error;
-    }
-}
-
-async function checkAuth() {
-    return new Promise((resolve, reject) => {
-        const unsubscribe = auth.onAuthStateChanged(async user => {
-            unsubscribe();
-            if (user) {
-                currentUser = user;
-                try {
-                    // Dapatkan data user yang lengkap termasuk role
-                    currentUserData = await ensureUserDocument(user); // SIMPAN KE VARIABLE GLOBAL
-                    resolve(user);
-                } catch (error) {
-                    reject(error);
-                }
-            } else {
-                reject(new Error('User not authenticated'));
-            }
-        });
-    });
-}
-
-// Fungsi untuk mendapatkan data research dari Firestore
-async function getResearchData() {
-    try {
-        await checkAuth();
-        
-        const snapshot = await db
-            .collection('research')
-            .where('userId', '==', currentUser.uid)
-            .get();
-        
-        researchData = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }));
-        
-        // Sort secara manual di client side
-        researchData.sort((a, b) => {
-            const dateA = a.createdAt ? (a.createdAt.toDate ? a.createdAt.toDate() : new Date(a.createdAt)) : new Date(0);
-            const dateB = b.createdAt ? (b.createdAt.toDate ? b.createdAt.toDate() : new Date(b.createdAt)) : new Date(0);
-            return dateB - dateA;
-        });
-        
-        checkDeadlines();
-        renderResearchList();
-        updateResearchStats();
-        
-    } catch (error) {
-        console.error('Error getting research data:', error);
-        showNotification('Gagal memuat data research', 'error');
-    }
-}
-
-// Fungsi untuk menyimpan research ke Firestore
-async function saveResearch(researchData) {
-    try {
-        await checkAuth();
-        
-        const researchWithUser = {
-            platform: researchData.platform,
-            details: researchData.details || [],
-            userId: currentUser.uid,
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        };
-
-        if (researchData.id) {
-            // Update existing research
-            await db.collection('research').doc(researchData.id).update(researchWithUser);
-            return researchData.id;
-        } else {
-            // Add new research
-            researchWithUser.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-            researchWithUser.status = 'pending'; // Default status
-            const docRef = await db.collection('research').add(researchWithUser);
-            return docRef.id;
-        }
-    } catch (error) {
-        console.error('Error saving research:', error);
-        throw error;
-    }
-}
-
-// Fungsi untuk mendapatkan research details dari tabel
-// Fungsi untuk mendapatkan research details dari tabel
-function getResearchDetailsFromTable() {
-    if (!researchDetailTbody) {
-        console.error('researchDetailTbody not found');
-        return [];
-    }
-    
-    const rows = researchDetailTbody.querySelectorAll('tr');
-    const details = [];
-    
-    rows.forEach(row => {
-        const categorySelect = row.querySelector('.detail-category');
-        const descriptionTextarea = row.querySelector('.detail-description');
-        const urlInput = row.querySelector('.detail-url');
-        
-        const category = categorySelect ? categorySelect.value : '';
-        const description = descriptionTextarea ? descriptionTextarea.value : '';
-        const url = urlInput ? urlInput.value.trim() : '';
-        
-        // Validasi: hanya tambahkan jika kedua field utama terisi
-        if (category && description) {
-            details.push({
-                category,
-                description,
-                url: url || null // Simpan URL jika ada, null jika kosong
-            });
-        }
-    });
-    
-    return details;
-}
-
-// Fungsi untuk mengisi research details ke tabel
-function populateResearchDetailsTable(details) {
-    if (!researchDetailTbody) {
-        console.error('researchDetailTbody not found');
-        return;
-    }
-    
-    researchDetailTbody.innerHTML = '';
-    
-    if (details && details.length > 0) {
-        details.forEach(detail => {
-            addResearchDetailRow(detail);
-        });
-    } else {
-        // Tambahkan satu baris kosong untuk memulai
-        addResearchDetailRow();
-    }
-}
-
-// Fungsi untuk menambah baris research detail
-// Fungsi untuk menambah baris research detail
-function addResearchDetailRow(data = {}) {
-    if (!researchDetailTbody) {
-        console.error('researchDetailTbody not found');
-        return;
-    }
-    
-    const row = document.createElement('tr');
-    row.innerHTML = `
-        <td>
-            <select class="table-select detail-category" required>
-                <option value="">Pilih kategori</option>
-                <option value="Tampilan UIUX" ${data.category === 'Tampilan UIUX' ? 'selected' : ''}>Tampilan UI/UX</option>
-                <option value="Fitur System" ${data.category === 'Fitur System' ? 'selected' : ''}>Fitur/System</option>
-                <option value="Provider Game" ${data.category === 'Provider Game' ? 'selected' : ''}>Provider/Game</option>
-                <option value="Promosi" ${data.category === 'Promosi' ? 'selected' : ''}>Promosi</option>
-                <option value="Other" ${data.category === 'Other' ? 'selected' : ''}>Other</option>
-            </select>
-        </td>
-        <td>
-            <textarea class="table-textarea detail-description" placeholder="Deskripsi research..." required>${data.description || ''}</textarea>
-        </td>
-        <td>
-            <input type="url" class="table-input detail-url" placeholder="https://example.com" value="${data.url || ''}">
-        </td>
-        <td>
-            <button type="button" class="delete-row-btn" onclick="this.closest('tr').remove()">
-                <i class="fas fa-trash"></i>
-            </button>
-        </td>
-    `;
-    researchDetailTbody.appendChild(row);
-}
-
-// Fungsi untuk menghapus research dari Firestore
-async function deleteResearchFromFirestore(researchId) {
-    try {
-        await checkAuth();
-        await db.collection('research').doc(researchId).delete();
-    } catch (error) {
-        console.error('Error deleting research:', error);
-        throw error;
-    }
-}
-
-// Fungsi untuk memperbarui statistik research
-function updateResearchStats() {
-    if (!totalResearchEl || !completedResearchEl || !pendingResearchEl || !kpiResearchEl) {
-        console.error('Statistic elements not found');
-        return;
-    }
-    
-    const totalResearch = researchData.length;
-    const completedResearch = researchData.filter(item => item.status === 'completed').length;
-    const pendingResearch = researchData.filter(item => item.status === 'pending' || item.status === 'overdue').length;
-    const kpiResearch = Math.min(100, Math.round((totalResearch / researchTarget) * 100));
-    
-    totalResearchEl.textContent = totalResearch;
-    completedResearchEl.textContent = completedResearch;
-    pendingResearchEl.textContent = pendingResearch;
-    kpiResearchEl.textContent = `${kpiResearch}%`;
-    
-    const progressBars = document.querySelectorAll('.progress-fill');
-    if (progressBars.length >= 4) {
-        setTimeout(() => {
-            progressBars[0].style.width = `${Math.min(100, (totalResearch / researchTarget) * 100)}%`;
-            progressBars[1].style.width = `${completedResearch > 0 ? (completedResearch / totalResearch) * 100 : 0}%`;
-            progressBars[2].style.width = `${pendingResearch > 0 ? (pendingResearch / totalResearch) * 100 : 0}%`;
-            progressBars[3].style.width = `${kpiResearch}%`;
-        }, 100);
-    }
-    
-    updateResearchKPI(totalResearch);
-}
-
-// Fungsi untuk memperbarui KPI research
-function updateResearchKPI(count) {
-    const researchScore = Math.min(100, (count / researchTarget) * 100);
-    
-    localStorage.setItem('researchCount', count);
-    
-    window.dispatchEvent(new CustomEvent('researchDataChanged', { 
-        detail: { researchCount: count } 
-    }));
-    
-    if (connectionStatus) {
+    // Buat elemen status koneksi jika belum ada
+    let connectionStatus = document.getElementById('connectionStatus');
+    if (!connectionStatus) {
+        connectionStatus = document.createElement('div');
+        connectionStatus.id = 'connectionStatus';
         connectionStatus.className = 'connection-status status-connected';
-        connectionStatus.innerHTML = '<i class="fas fa-check-circle"></i> Data research tersimpan di Firebase';
-        connectionStatus.style.display = 'flex';
+        connectionStatus.innerHTML = '<i class="fas fa-check-circle"></i> Terhubung dengan Firebase';
+        document.body.appendChild(connectionStatus);
         
         setTimeout(() => {
             connectionStatus.style.display = 'none';
         }, 3000);
     }
-    
-    return researchScore;
-}
 
-// Fungsi untuk memeriksa deadline dan update status
-async function checkDeadlines() {
-    const today = new Date();
-    
-    const updatePromises = researchData.map(async (research) => {
-        if (research.status === 'completed' || !research.deadline) {
+    // Fungsi untuk menampilkan notifikasi
+    function showNotification(message, type = 'info') {
+        if (!notificationContainer) {
+            console.error('Notification container not found');
             return;
         }
         
-        const deadline = research.deadline.toDate ? research.deadline.toDate() : new Date(research.deadline);
-        if (deadline < today && research.status !== 'overdue') {
-            try {
-                await db.collection('research').doc(research.id).update({
-                    status: 'overdue',
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-            } catch (error) {
-                console.error('Error updating overdue research:', error);
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+            <span>${message}</span>
+            <button class="notification-close">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        
+        notificationContainer.appendChild(notification);
+        
+        const closeBtn = notification.querySelector('.notification-close');
+        closeBtn.addEventListener('click', function() {
+            closeNotification(notification);
+        });
+        
+        const timeoutId = setTimeout(() => {
+            closeNotification(notification);
+        }, 5000);
+        
+        notification.dataset.timeoutId = timeoutId;
+    }
+
+    function closeNotification(notification) {
+        if (notification.dataset.timeoutId) {
+            clearTimeout(parseInt(notification.dataset.timeoutId));
+        }
+        
+        notification.classList.add('hiding');
+        
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notificationContainer.removeChild(notification);
             }
-        }
-    });
-    
-    await Promise.all(updatePromises);
-}
+        }, 500);
+    }
 
-// Fungsi untuk merender daftar research
-// Fungsi untuk merender daftar research (MODIFIED VERSION)
-// Fungsi untuk merender daftar research (MODIFIED VERSION)
-function renderResearchList() {
-    if (!researchItemsContainer) {
-        console.error('researchItemsContainer not found');
-        return;
-    }
-    
-    researchItemsContainer.innerHTML = '';
-    
-    if (researchData.length === 0) {
-        researchItemsContainer.innerHTML = `
-            <div style="text-align: center; padding: 20px; color: var(--text-secondary);">
-                <i class="fas fa-search" style="font-size: 48px; margin-bottom: 10px;"></i>
-                <p>Belum ada research. ${currentUserData && currentUserData.isSuperAdmin ? 'Data dari semua user akan muncul di sini.' : 'Tambahkan research baru untuk memulai.'}</p>
-            </div>
-        `;
-        return;
-    }
-    
-    researchData.forEach((research) => {
-        const researchItem = document.createElement('div');
-        researchItem.className = 'research-item fade-in';
-        
-        let statusText, statusClass;
-        if (research.status === 'completed') {
-            statusText = 'Selesai';
-            statusClass = 'status-completed';
-        } else if (research.status === 'overdue') {
-            statusText = 'Terlambat';
-            statusClass = 'status-overdue';
-        } else if (research.status === 'pending') {
-            statusText = 'Dalam Proses';
-            statusClass = 'status-pending';
-        } else {
-            statusText = 'Tidak Ada Deadline';
-            statusClass = 'status-nodeadline';
-        }
-
-        let formattedDate = 'Tanggal tidak tersedia';
-        if (research.createdAt) {
-            const createdDate = research.createdAt.toDate ? research.createdAt.toDate() : new Date(research.createdAt);
-            formattedDate = createdDate.toLocaleDateString('id-ID', { 
-                day: 'numeric', 
-                month: 'long', 
-                year: 'numeric' 
-            });
-        }
-        
-        // Tampilkan info pemilik research untuk super admin
-        const ownerInfo = currentUserData && currentUserData.isSuperAdmin ? 
-            `<p class="research-owner" style="font-size: var(--text-xs); color: var(--text-tertiary); margin-bottom: 5px;">
-                <i class="fas fa-user"></i> User ID: ${research.userId}
-            </p>` : '';
-        
-        // Buat daftar detail dengan link jika ada URL
-        let detailsHtml = 'Tidak ada detail';
-        if (research.details && research.details.length > 0) {
-            detailsHtml = research.details.map(detail => {
-                if (detail.url) {
-                    return `<a href="${detail.url}" target="_blank" class="detail-link" style="color: #4361ee; text-decoration: none; margin-right: 8px;">
-                        <i class="fas fa-external-link-alt" style="font-size: 0.8em;"></i> ${detail.category}
-                    </a>`;
-                } else {
-                    return `<span style="margin-right: 8px;">${detail.category}</span>`;
-                }
-            }).join('');
-        }
-        
-        researchItem.innerHTML = `
-            <div class="research-info">
-                ${ownerInfo}
-                <h3 class="research-name">${research.platform}</h3>
-                <div class="research-desc">${detailsHtml}</div>
-                <p class="research-date">Dibuat: ${formattedDate}</p>
-            </div>
-            <div class="research-actions">
-                <span class="research-status ${statusClass}">${statusText}</span>
-                ${currentUserData && (currentUserData.isSuperAdmin || research.userId === currentUser.uid) ? `
-                    <button class="action-btn edit-btn" data-id="${research.id}">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="action-btn delete-btn" data-id="${research.id}">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                ` : `
-                    <span style="color: var(--text-secondary); font-size: var(--text-xs);">Read Only</span>
-                `}
-            </div>
-        `;
-        
-        researchItemsContainer.appendChild(researchItem);
-    });
-    
-    // Tambahkan event listeners untuk tombol edit dan delete
-    document.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const id = this.getAttribute('data-id');
-            editResearch(id);
-        });
-    });
-    
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const id = this.getAttribute('data-id');
-            deleteResearch(id);
-        });
-    });
-}
-
-// Fungsi untuk menambah research baru
-async function addResearch(e) {
-    e.preventDefault();
-    
-    if (!newResearchForm) {
-        console.error('newResearchForm not found');
-        return;
-    }
-    
-    const platform = document.getElementById('research-platform')?.value.trim() || '';
-    
-    console.log('Form data:', { platform });
-    
-    // Validasi form - hanya platform yang wajib
-    if (!platform) {
-        showNotification('Harap isi platform/agent research', 'error');
-        return;
-    }
-    
-    // Validasi research details
-    const researchDetails = getResearchDetailsFromTable();
-    console.log('Research details:', researchDetails);
-    
-    if (researchDetails.length === 0) {
-        showNotification('Harap tambahkan minimal satu detail research dengan kategori dan deskripsi', 'error');
-        return;
-    }
-    
-    try {
-        const researchToSave = {
-            platform,
-            details: researchDetails
-        };
-
-        if (currentEditId) {
-            // Update existing research
-            researchToSave.id = currentEditId;
-            await saveResearch(researchToSave);
-            showNotification('Research berhasil diperbarui', 'success');
-        } else {
-            // Add new research
-            await saveResearch(researchToSave);
-            showNotification('Research berhasil ditambahkan', 'success');
-        }
-        
-        resetForm();
-        
-    } catch (error) {
-        console.error('Error saving research:', error);
-        showNotification('Gagal menyimpan research: ' + error.message, 'error');
-    }
-}
-
-// Fungsi untuk mengedit research
-// Fungsi untuk mengedit research (MODIFIED VERSION)
-function editResearch(researchId) {
-    const research = researchData.find(item => item.id === researchId);
-    if (!research) return;
-    
-    // Cek izin: hanya super admin atau pemilik research yang bisa mengedit
-    if (!currentUserData.isSuperAdmin && research.userId !== currentUser.uid) {
-        showNotification('Anda tidak memiliki izin untuk mengedit research ini', 'error');
-        return;
-    }
-    
-    currentEditId = researchId;
-    
-    // Isi form dengan data research
-    const platformInput = document.getElementById('research-platform');
-    
-    if (platformInput) platformInput.value = research.platform || '';
-    if (editResearchIdField) editResearchIdField.value = research.id;
-    
-    // Isi research details
-    if (research.details) {
-        populateResearchDetailsTable(research.details);
-    } else {
-        populateResearchDetailsTable([]);
-    }
-    
-    // Ubah mode form ke edit
-    if (formModeIndicator) formModeIndicator.style.display = 'flex';
-    if (modeBadge) {
-        modeBadge.textContent = 'Edit';
-        modeBadge.className = 'mode-badge edit-mode-badge';
-    }
-    if (formMainTitle) formMainTitle.textContent = 'Edit Research';
-    if (submitResearchBtn) submitResearchBtn.textContent = 'Perbarui Research';
-    
-    // Scroll ke form
-    if (researchFormElement) {
-        researchFormElement.scrollIntoView({ behavior: 'smooth' });
-    }
-}
-
-// Fungsi untuk menghapus research
-// Fungsi untuk menghapus research (MODIFIED VERSION)
-async function deleteResearch(researchId) {
-    const research = researchData.find(item => item.id === researchId);
-    if (!research) return;
-    
-    // Cek izin: hanya super admin atau pemilik research yang bisa menghapus
-    if (!currentUserData.isSuperAdmin && research.userId !== currentUser.uid) {
-        showNotification('Anda tidak memiliki izin untuk menghapus research ini', 'error');
-        return;
-    }
-    
-    if (confirm('Apakah Anda yakin ingin menghapus research ini?')) {
+    // Fungsi untuk memastikan user document ada
+    async function ensureUserDocument(user) {
         try {
-            await deleteResearchFromFirestore(researchId);
-            showNotification('Research berhasil dihapus', 'success');
+            const userRef = db.collection('users').doc(user.uid);
+            const userDoc = await userRef.get();
             
-            // Jika sedang mengedit research yang dihapus, reset form
-            if (currentEditId === researchId) {
-                resetForm();
+            const superAdminEmails = [
+                "superadmin@gachaengine.com",
+                "admin@gachaengine.com"
+            ];
+            
+            const isSuperAdmin = superAdminEmails.includes(user.email);
+            
+            if (userDoc.exists) {
+                const currentData = userDoc.data();
+                const updateData = {
+                    lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                    email: user.email,
+                    displayName: user.displayName || currentData.displayName || user.email
+                };
+                
+                if (!currentData.hasOwnProperty('role')) {
+                    updateData.role = isSuperAdmin ? 'super_admin' : 'user';
+                }
+                if (!currentData.hasOwnProperty('isSuperAdmin')) {
+                    updateData.isSuperAdmin = isSuperAdmin;
+                }
+                
+                await userRef.update(updateData);
+                return { ...currentData, ...updateData };
+            } else {
+                const newUserDoc = {
+                    email: user.email,
+                    displayName: user.displayName || user.email,
+                    role: isSuperAdmin ? 'super_admin' : 'user',
+                    isSuperAdmin: isSuperAdmin,
+                    lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                await userRef.set(newUserDoc);
+                return newUserDoc;
             }
-            
         } catch (error) {
-            console.error('Error deleting research:', error);
-            showNotification('Gagal menghapus research', 'error');
+            console.error('Error ensuring user document:', error);
+            throw error;
         }
     }
-}
 
-// Fungsi untuk mereset form
-function resetForm() {
-    if (newResearchForm) newResearchForm.reset();
-    currentEditId = null;
-    
-    if (statusFieldContainer) statusFieldContainer.style.display = 'none';
-    if (formModeIndicator) formModeIndicator.style.display = 'none';
-    if (formMainTitle) formMainTitle.textContent = 'Tambah Research Baru';
-    if (submitResearchBtn) submitResearchBtn.textContent = 'Simpan Research';
-    if (editResearchIdField) editResearchIdField.value = '';
-    
-    // Reset research details table - tambahkan satu baris kosong
-    populateResearchDetailsTable([]);
-}
-
-// Fungsi untuk mencari research
-function searchResearch() {
-    const searchTerm = researchSearch?.value.toLowerCase() || '';
-    
-    if (searchTerm === '') {
-        renderResearchList();
-        return;
-    }
-    
-    const filteredResearch = researchData.filter(research => 
-        research.platform.toLowerCase().includes(searchTerm) ||
-        (research.details && research.details.some(detail => 
-            detail.category.toLowerCase().includes(searchTerm) ||
-            detail.description.toLowerCase().includes(searchTerm)
-        ))
-    );
-    
-    if (!researchItemsContainer) return;
-    
-    researchItemsContainer.innerHTML = '';
-    
-    if (filteredResearch.length === 0) {
-        researchItemsContainer.innerHTML = `
-            <div style="text-align: center; padding: 20px; color: var(--text-secondary);">
-                <i class="fas fa-search" style="font-size: 48px; margin-bottom: 10px;"></i>
-                <p>Tidak ada research yang sesuai dengan pencarian.</p>
-            </div>
-        `;
-        return;
-    }
-    
-    filteredResearch.forEach((research) => {
-        const researchItem = document.createElement('div');
-        researchItem.className = 'research-item fade-in';
-        
-        let statusText, statusClass;
-        if (research.status === 'completed') {
-            statusText = 'Selesai';
-            statusClass = 'status-completed';
-        } else if (research.status === 'overdue') {
-            statusText = 'Terlambat';
-            statusClass = 'status-overdue';
-        } else if (research.status === 'pending') {
-            statusText = 'Dalam Proses';
-            statusClass = 'status-pending';
-        } else {
-            statusText = 'Tidak Ada Deadline';
-            statusClass = 'status-nodeadline';
-        }
-        
-        let formattedDate = 'Tanggal tidak tersedia';
-        if (research.createdAt) {
-            const createdDate = research.createdAt.toDate ? research.createdAt.toDate() : new Date(research.createdAt);
-            formattedDate = createdDate.toLocaleDateString('id-ID', { 
-                day: 'numeric', 
-                month: 'long', 
-                year: 'numeric' 
+    // Fungsi untuk memeriksa autentikasi pengguna
+    async function checkAuth() {
+        return new Promise((resolve, reject) => {
+            const unsubscribe = auth.onAuthStateChanged(async user => {
+                unsubscribe();
+                if (user) {
+                    currentUser = user;
+                    try {
+                        currentUserData = await ensureUserDocument(user);
+                        resolve(user);
+                    } catch (error) {
+                        reject(error);
+                    }
+                } else {
+                    reject(new Error('User not authenticated'));
+                }
             });
+        });
+    }
+
+    // Fungsi untuk mendapatkan research details dari tabel
+    function getResearchDetailsFromTable() {
+        if (!researchDetailTbody) {
+            console.error('researchDetailTbody not found');
+            return [];
         }
         
-        researchItem.innerHTML = `
-            <div class="research-info">
-                <h3 class="research-name">${research.platform}</h3>
-                <p class="research-desc">${research.details && research.details.length > 0 ? 
-                    research.details.map(detail => detail.category).join(', ') : 'Tidak ada detail'}</p>
-                <p class="research-date">Dibuat: ${formattedDate}</p>
-            </div>
-            <div class="research-actions">
-                <span class="research-status ${statusClass}">${statusText}</span>
-                <button class="action-btn edit-btn" data-id="${research.id}">
-                    <i class="fas fa-edit"></i>
-                </button>
-                <button class="action-btn delete-btn" data-id="${research.id}">
+        const rows = researchDetailTbody.querySelectorAll('tr');
+        const details = [];
+        
+        rows.forEach(row => {
+            const categorySelect = row.querySelector('.detail-category');
+            const descriptionTextarea = row.querySelector('.detail-description');
+            const urlInput = row.querySelector('.detail-url');
+            
+            const category = categorySelect ? categorySelect.value : '';
+            const description = descriptionTextarea ? descriptionTextarea.value : '';
+            const url = urlInput ? urlInput.value.trim() : '';
+            
+            if (category && description) {
+                details.push({
+                    category,
+                    description,
+                    url: url || null
+                });
+            }
+        });
+        
+        return details;
+    }
+
+    // Fungsi untuk mengisi research details ke tabel
+    function populateResearchDetailsTable(details) {
+        if (!researchDetailTbody) {
+            console.error('researchDetailTbody not found');
+            return;
+        }
+        
+        researchDetailTbody.innerHTML = '';
+        
+        if (details && details.length > 0) {
+            details.forEach(detail => {
+                addResearchDetailRow(detail);
+            });
+        } else {
+            addResearchDetailRow();
+        }
+    }
+
+    // Fungsi untuk menambah baris research detail
+    function addResearchDetailRow(data = {}) {
+        if (!researchDetailTbody) {
+            console.error('researchDetailTbody not found');
+            return;
+        }
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>
+                <select class="table-select detail-category" required>
+                    <option value="">Pilih kategori</option>
+                    <option value="Tampilan UIUX" ${data.category === 'Tampilan UIUX' ? 'selected' : ''}>Tampilan UI/UX</option>
+                    <option value="Fitur System" ${data.category === 'Fitur System' ? 'selected' : ''}>Fitur/System</option>
+                    <option value="Provider Game" ${data.category === 'Provider Game' ? 'selected' : ''}>Provider/Game</option>
+                    <option value="Promosi" ${data.category === 'Promosi' ? 'selected' : ''}>Promosi</option>
+                    <option value="Other" ${data.category === 'Other' ? 'selected' : ''}>Other</option>
+                </select>
+            </td>
+            <td>
+                <textarea class="table-textarea detail-description" placeholder="Deskripsi research..." required>${data.description || ''}</textarea>
+            </td>
+            <td>
+                <input type="url" class="table-input detail-url" placeholder="https://example.com" value="${data.url || ''}">
+            </td>
+            <td>
+                <button type="button" class="delete-row-btn" onclick="this.closest('tr').remove()">
                     <i class="fas fa-trash"></i>
                 </button>
-            </div>
+            </td>
         `;
-        
-        researchItemsContainer.appendChild(researchItem);
-    });
-    
-    // Tambahkan event listeners untuk tombol edit dan delete
-    document.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const id = this.getAttribute('data-id');
-            editResearch(id);
-        });
-    });
-    
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const id = this.getAttribute('data-id');
-            deleteResearch(id);
-        });
-    });
-}
+        researchDetailTbody.appendChild(row);
+    }
 
-// Setup real-time listener untuk data research
-// Setup real-time listener untuk data research (MODIFIED VERSION)
-function setupRealTimeListener() {
-    if (unsubscribeResearch) {
-        unsubscribeResearch();
+    // Fungsi untuk menyimpan research ke Firestore
+    async function saveResearch(researchData, targetUserId = null) {
+        try {
+            await checkAuth();
+            
+            // Tentukan user ID target
+            let targetUserUid;
+            let targetUserEmail;
+            let targetUserName;
+            
+            if (targetUserId && currentUserData && currentUserData.isSuperAdmin) {
+                // Super Admin bisa pilih user lain
+                targetUserUid = targetUserId;
+                
+                // Dapatkan data user target
+                try {
+                    const targetUserDoc = await db.collection('users').doc(targetUserId).get();
+                    if (targetUserDoc.exists) {
+                        const targetUserData = targetUserDoc.data();
+                        targetUserEmail = targetUserData.email;
+                        targetUserName = targetUserData.displayName || targetUserData.email;
+                    } else {
+                        targetUserEmail = currentUser.email;
+                        targetUserName = currentUser.displayName || currentUser.email;
+                    }
+                } catch (error) {
+                    console.error('Error getting target user data:', error);
+                    targetUserEmail = currentUser.email;
+                    targetUserName = currentUser.displayName || currentUser.email;
+                }
+            } else {
+                // User biasa hanya untuk dirinya sendiri
+                targetUserUid = currentUser.uid;
+                targetUserEmail = currentUser.email;
+                targetUserName = currentUser.displayName || currentUser.email;
+            }
+            
+            // Siapa yang membuat research? (bisa berbeda dengan user target)
+            const createdBy = {
+                uid: currentUser.uid,
+                email: currentUser.email,
+                name: currentUser.displayName || currentUser.email,
+                isSuperAdmin: currentUserData.isSuperAdmin || false
+            };
+            
+            const researchWithUser = {
+                platform: researchData.platform,
+                details: researchData.details || [],
+                userId: targetUserUid,
+                userEmail: targetUserEmail,
+                userName: targetUserName,
+                createdBy: createdBy,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                status: 'pending'
+            };
+            
+            if (researchData.id) {
+                // Update existing research
+                await db.collection('research').doc(researchData.id).update({
+                    platform: researchData.platform,
+                    details: researchData.details || [],
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                return researchData.id;
+            } else {
+                // Create new research
+                const docRef = await db.collection('research').add(researchWithUser);
+                return docRef.id;
+            }
+        } catch (error) {
+            console.error('Error saving research:', error);
+            throw error;
+        }
     }
-    
-    let query;
-    
-    // Jika super admin, ambil semua data tanpa filter user
-    if (currentUserData && currentUserData.isSuperAdmin) {
-        query = db.collection('research');
-        console.log('Super admin mode: Loading all research data');
-    } else {
-        // Jika user biasa, hanya ambil data miliknya sendiri
-        query = db.collection('research').where('userId', '==', currentUser.uid);
-        console.log('User mode: Loading user-specific research data');
+
+    // Fungsi untuk menghapus research dari Firestore
+    async function deleteResearchFromFirestore(researchId) {
+        try {
+            await checkAuth();
+            await db.collection('research').doc(researchId).delete();
+        } catch (error) {
+            console.error('Error deleting research:', error);
+            throw error;
+        }
     }
-    
-    unsubscribeResearch = query.onSnapshot(snapshot => {
-        researchData = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
+
+    // Fungsi untuk membuat dropdown user selector
+    async function createUserSelector() {
+        if (!currentUserData || !currentUserData.isSuperAdmin) return;
+        
+        try {
+            const usersSnapshot = await db.collection('users').get();
+            const userSelectContainer = document.getElementById('userSelectContainer');
+            
+            if (!userSelectContainer) {
+                // Tambahkan dropdown untuk memilih user
+                const platformGroup = document.querySelector('label[for="researchPlatform"]').parentElement;
+                const userSelectHTML = `
+                    <div class="form-group" id="userSelectContainer">
+                        <label for="researchUser" class="form-label">User Target*</label>
+                        <select id="researchUser" class="form-control form-select" required>
+                            <option value="">Pilih User</option>
+                        </select>
+                    </div>
+                `;
+                platformGroup.insertAdjacentHTML('beforebegin', userSelectHTML);
+            }
+            
+            const researchUserSelect = document.getElementById('researchUser');
+            researchUserSelect.innerHTML = '<option value="">Pilih User</option>';
+            
+            usersSnapshot.forEach(doc => {
+                const userData = doc.data();
+                const option = document.createElement('option');
+                option.value = doc.id; // User UID
+                option.textContent = `${userData.displayName || 'No Name'} (${userData.email})`;
+                if (doc.id === currentUser.uid) {
+                    option.textContent += ' (Anda)';
+                    option.selected = true;
+                }
+                researchUserSelect.appendChild(option);
+            });
+            
+        } catch (error) {
+            console.error('Error loading users:', error);
+            showNotification('Gagal memuat daftar user', 'error');
+        }
+    }
+
+    // Fungsi untuk menangani submit form
+    async function handleSubmitResearch(e) {
+        e.preventDefault();
+        
+        // Pastikan user sudah login
+        if (!currentUser) {
+            showNotification('Silakan login terlebih dahulu', 'error');
+            return;
+        }
+        
+        const platform = document.getElementById('researchPlatform').value;
+        
+        if (!platform) {
+            showNotification('Harap isi platform/agent research', 'error');
+            return;
+        }
+        
+        const researchDetails = getResearchDetailsFromTable();
+        
+        if (researchDetails.length === 0) {
+            showNotification('Harap tambahkan minimal satu detail research', 'error');
+            return;
+        }
+        
+        // Ambil target user ID jika Super Admin
+        let targetUserId = null;
+        if (currentUserData && currentUserData.isSuperAdmin) {
+            const userSelect = document.getElementById('researchUser');
+            if (userSelect) {
+                targetUserId = userSelect.value;
+                if (!targetUserId) {
+                    showNotification('Harap pilih user target', 'error');
+                    return;
+                }
+            }
+        }
+        
+        submitButton.classList.add('btn-loading');
+        submitButton.disabled = true;
+        
+        try {
+            const newResearch = {
+                platform,
+                details: researchDetails
+            };
+            
+            if (currentEditId) {
+                newResearch.id = currentEditId;
+            }
+            
+            await saveResearch(newResearch, targetUserId);
+            
+            researchForm.reset();
+            populateResearchDetailsTable([]);
+            
+            // Reset user selector ke default
+            if (currentUserData && currentUserData.isSuperAdmin && document.getElementById('researchUser')) {
+                document.getElementById('researchUser').value = currentUser.uid;
+            }
+            
+            submitButton.classList.remove('btn-loading');
+            submitButton.disabled = false;
+            
+            showNotification(currentEditId ? 'Research berhasil diperbarui!' : 'Research berhasil disimpan!', 'success');
+            
+            currentEditId = null;
+            
+        } catch (error) {
+            console.error('Error saving research:', error);
+            showNotification('Gagal menyimpan research: ' + error.message, 'error');
+            
+            submitButton.classList.remove('btn-loading');
+            submitButton.disabled = false;
+        }
+    }
+
+    // Fungsi untuk update pagination UI
+    function updatePaginationUI(totalItems) {
+        const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+
+        if (paginationContainer) {
+            paginationContainer.style.display = totalItems > 0 ? 'flex' : 'none';
+        }
+
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        if (pageInfo) pageInfo.textContent = `Page ${currentPage} / ${totalPages}`;
+        if (prevPageBtn) prevPageBtn.disabled = currentPage <= 1;
+        if (nextPageBtn) nextPageBtn.disabled = currentPage >= totalPages;
+    }
+
+    // Fungsi untuk merender daftar research
+    function renderResearchList(filteredResearch = null) {
+        const researchToRender = filteredResearch || researchData;
+        currentFilteredResearch = filteredResearch;
+
+        if (researchToRender.length === 0) {
+            emptyState.style.display = 'block';
+            researchGrid.style.display = 'none';
+            updatePaginationUI(0);
+            return;
+        }
+
+        emptyState.style.display = 'none';
+        researchGrid.style.display = 'grid';
+        researchGrid.innerHTML = '';
+
+        const startIndex = (currentPage - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+        const pagedResearch = researchToRender.slice(startIndex, endIndex);
+
+        updatePaginationUI(researchToRender.length);
+
+        // Cek jika pagedResearch kosong
+        if (!pagedResearch || pagedResearch.length === 0) {
+            emptyState.style.display = 'block';
+            researchGrid.style.display = 'none';
+            return;
+        }
+
+        pagedResearch.forEach(research => {
+            const researchCard = document.createElement('div');
+            researchCard.className = 'research-card fade-in';
+            
+            const createdDate = research.createdAt
+                ? (research.createdAt.toDate ? research.createdAt.toDate() : new Date(research.createdAt))
+                : new Date();
+            const formattedDate = createdDate.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+            
+            let statusClass = '';
+            let statusText = '';
+            
+            switch(research.status) {
+                case 'pending':
+                    statusClass = 'status-pending';
+                    statusText = 'Dalam Proses';
+                    break;
+                case 'completed':
+                    statusClass = 'status-completed';
+                    statusText = 'Selesai';
+                    break;
+                case 'overdue':
+                    statusClass = 'status-overdue';
+                    statusText = 'Terlambat';
+                    break;
+                default:
+                    statusClass = 'status-pending';
+                    statusText = 'Dalam Proses';
+            }
+            
+            // Tentukan informasi user untuk ditampilkan
+            let displayName = '';
+            let displayRole = '';
+            
+            // Gunakan data dari research jika ada
+            if (research.userName) {
+                displayName = research.userName;
+                displayRole = 'Customer Service Support';
+            } else if (research.userEmail) {
+                displayName = research.userEmail;
+                displayRole = 'Customer Service Support';
+            } else if (research.createdBy && research.createdBy.name) {
+                displayName = research.createdBy.name;
+                displayRole = research.createdBy.isSuperAdmin ? 'Super Admin' : 'Customer Service Support';
+            } else {
+                // Fallback ke currentUser
+                displayName = currentUser ? (currentUser.displayName || currentUser.email) : 'Unknown User';
+                displayRole = currentUserData && currentUserData.isSuperAdmin ? 'Super Admin' : 'Customer Service Support';
+            }
+            
+            // Info pemilik untuk Super Admin
+            const ownerInfo = currentUserData && currentUserData.isSuperAdmin ? 
+                `<div class="card-meta" style="margin-bottom: 10px; font-size: 12px; color: var(--text-secondary);">
+                    <div class="meta-item">
+                        <i class="fas fa-user"></i>
+                        <span>User ID: ${research.userId || 'N/A'}</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>Email: ${research.userEmail || 'No email'}</span>
+                    </div>
+                </div>` : '';
+            
+            let detailsHtml = 'Tidak ada detail';
+            if (research.details && research.details.length > 0) {
+                detailsHtml = research.details.map(detail => {
+                    if (detail.url) {
+                        return `<a href="${detail.url}" target="_blank" class="detail-link">
+                            <i class="fas fa-external-link-alt"></i> ${detail.category}
+                        </a>`;
+                    } else {
+                        return `<span>${detail.category}</span>`;
+                    }
+                }).join(', ');
+            }
+            
+            researchCard.innerHTML = `
+                <div class="research-header">
+                    <div>
+                        <h3 class="research-title">${research.platform || 'No Platform'}</h3>
+                        <p class="research-date"><i class="far fa-calendar-alt"></i> ${formattedDate}</p>
+                    </div>
+                    <span class="research-status ${statusClass}">
+                        <i class="fas fa-circle"></i> ${statusText}
+                    </span>
+                </div>
+                
+                ${ownerInfo}
+                
+                <p class="research-details">${detailsHtml}</p>
+                
+                <div class="research-footer">
+                    <div class="research-author">
+                        <img class="author-avatar" src="https://iili.io/Fpiva7S.png" alt="Author">
+                        <div class="author-info">
+                            <span class="author-name">${displayName}</span>
+                            <span class="author-role">${displayRole}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="research-actions">
+                    ${currentUserData && (currentUserData.isSuperAdmin || (research.userId === currentUser.uid)) ? `
+                        <button class="btn-icon edit" data-id="${research.id}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-icon delete" data-id="${research.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    ` : `
+                        <span style="color: var(--text-secondary); font-size: var(--text-xs);">Read Only</span>
+                    `}
+                </div>
+            `;
+            
+            researchGrid.appendChild(researchCard);
+            
+            if (currentUserData && (currentUserData.isSuperAdmin || research.userId === currentUser.uid)) {
+                const editBtn = researchCard.querySelector('.btn-icon.edit');
+                const deleteBtn = researchCard.querySelector('.btn-icon.delete');
+                
+                if (editBtn) {
+                    editBtn.addEventListener('click', function() {
+                        editResearch(research.id);
+                    });
+                }
+                
+                if (deleteBtn) {
+                    deleteBtn.addEventListener('click', function() {
+                        deleteResearch(research.id);
+                    });
+                }
+            }
+        });
+    }
+
+    // Fungsi untuk mengedit research
+    function editResearch(id) {
+        const research = researchData.find(item => item.id === id);
+        
+        if (!research) return;
+        
+        if (!currentUserData.isSuperAdmin && research.userId !== currentUser.uid) {
+            showNotification('Anda tidak memiliki izin untuk mengedit research ini', 'error');
+            return;
+        }
+        
+        currentEditId = research.id;
+        
+        document.getElementById('researchPlatform').value = research.platform;
+        
+        // Set user selector untuk Super Admin
+        if (currentUserData && currentUserData.isSuperAdmin && document.getElementById('researchUser')) {
+            document.getElementById('researchUser').value = research.userId;
+        }
+        
+        if (research.details) {
+            populateResearchDetailsTable(research.details);
+        } else {
+            populateResearchDetailsTable([]);
+        }
+        
+        researchForm.scrollIntoView({ behavior: 'smooth' });
+        showNotification('Anda sedang dalam mode edit. Perbarui data dan klik "Simpan Research" untuk menyimpan perubahan.', 'info');
+    }
+
+    // Fungsi untuk menghapus research
+    async function deleteResearch(id) {
+        const research = researchData.find(item => item.id === id);
+        if (!research) return;
+        
+        if (!currentUserData.isSuperAdmin && research.userId !== currentUser.uid) {
+            showNotification('Anda tidak memiliki izin untuk menghapus research ini', 'error');
+            return;
+        }
+        
+        if (confirm('Apakah Anda yakin ingin menghapus research ini?')) {
+            try {
+                await deleteResearchFromFirestore(id);
+                showNotification('Research berhasil dihapus', 'success');
+                
+                if (currentEditId === id) {
+                    currentEditId = null;
+                    researchForm.reset();
+                    populateResearchDetailsTable([]);
+                }
+                
+            } catch (error) {
+                console.error('Error deleting research:', error);
+                showNotification('Gagal menghapus research', 'error');
+            }
+        }
+    }
+
+    // Fungsi untuk memperbarui statistik
+    function updateResearchStats() {
+        const totalResearch = researchData.length;
+        const completedResearch = researchData.filter(item => item.status === 'completed').length;
+        const pendingResearch = researchData.filter(item => item.status === 'pending' || item.status === 'overdue').length;
+        const kpiResearch = Math.min(100, Math.round((totalResearch / researchTarget) * 100));
+        
+        if (totalResearchEl) totalResearchEl.textContent = totalResearch;
+        if (completedResearchEl) completedResearchEl.textContent = completedResearch;
+        if (pendingResearchEl) pendingResearchEl.textContent = pendingResearch;
+        if (kpiResearchEl) kpiResearchEl.textContent = `${kpiResearch}%`;
+        
+        setTimeout(() => {
+            if (totalProgress) totalProgress.style.width = `${Math.min(100, (totalResearch / researchTarget) * 100)}%`;
+            if (completedProgress) completedProgress.style.width = `${completedResearch > 0 ? (completedResearch / totalResearch) * 100 : 0}%`;
+            if (pendingProgress) pendingProgress.style.width = `${pendingResearch > 0 ? (pendingResearch / totalResearch) * 100 : 0}%`;
+            if (kpiProgress) kpiProgress.style.width = `${kpiResearch}%`;
+        }, 100);
+        
+        updateResearchKPI(totalResearch);
+    }
+
+    // Fungsi untuk memperbarui KPI
+    function updateResearchKPI(count) {
+        const researchScore = Math.min(100, (count / researchTarget) * 100);
+        
+        localStorage.setItem('researchCount', count);
+        
+        window.dispatchEvent(new CustomEvent('researchDataChanged', { 
+            detail: { researchCount: count } 
         }));
         
-        // Sort secara manual di client side
-        researchData.sort((a, b) => {
-            const dateA = a.createdAt ? (a.createdAt.toDate ? a.createdAt.toDate() : new Date(a.createdAt)) : new Date(0);
-            const dateB = b.createdAt ? (b.createdAt.toDate ? b.createdAt.toDate() : new Date(b.createdAt)) : new Date(0);
-            return dateB - dateA;
-        });
+        if (connectionStatus) {
+            connectionStatus.className = 'connection-status status-connected';
+            connectionStatus.innerHTML = '<i class="fas fa-check-circle"></i> Data research tersimpan di Firebase';
+            connectionStatus.style.display = 'flex';
+            
+            setTimeout(() => {
+                connectionStatus.style.display = 'none';
+            }, 3000);
+        }
         
-        checkDeadlines();
-        renderResearchList();
-        updateResearchStats();
+        return researchScore;
+    }
+
+    // Fungsi untuk memfilter research
+    function filterResearch() {
+        const searchTerm = searchResearch.value.toLowerCase();
         
-        // Tampilkan info mode akses
+        if (!searchTerm) {
+            currentPage = 1;
+            renderResearchList();
+            return;
+        }
+        
+        const filteredResearch = researchData.filter(research => 
+            research.platform.toLowerCase().includes(searchTerm) ||
+            (research.details && research.details.some(detail => 
+                detail.category.toLowerCase().includes(searchTerm) ||
+                detail.description.toLowerCase().includes(searchTerm)
+            ))
+        );
+        
+        currentPage = 1;
+        renderResearchList(filteredResearch);
+    }
+
+    // Setup real-time listener
+    function setupRealTimeListener() {
+        if (unsubscribeResearch) {
+            unsubscribeResearch();
+        }
+        
+        let query;
+        
         if (currentUserData && currentUserData.isSuperAdmin) {
-        }
-    }, error => {
-        console.error('Error in real-time listener:', error);
-    });
-}
-
-// Event Listeners
-document.addEventListener('DOMContentLoaded', async function() {
-    console.log('DOM Content Loaded - Initializing Research Dashboard');
-    
-    try {
-        // Periksa autentikasi pengguna
-        await checkAuth();
-        await ensureUserDocument(currentUser);
-        
-        console.log('User authenticated:', currentUser.uid);
-        
-        // Setup real-time listener
-        setupRealTimeListener();
-        
-        // Setup event listeners
-        if (newResearchForm) {
-            newResearchForm.addEventListener('submit', addResearch);
+            query = db.collection('research');
+        } else {
+            query = db.collection('research').where('userId', '==', currentUser.uid);
         }
         
-        if (addResearchBtn) {
-            addResearchBtn.addEventListener('click', function() {
-                resetForm();
-                if (researchFormElement) {
-                    researchFormElement.scrollIntoView({ behavior: 'smooth' });
-                }
+        unsubscribeResearch = query.onSnapshot(snapshot => {
+            researchData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            
+            // Sort berdasarkan tanggal terbaru
+            researchData.sort((a, b) => {
+                const dateA = a.createdAt ? (a.createdAt.toDate ? a.createdAt.toDate() : new Date(a.createdAt)) : new Date(0);
+                const dateB = b.createdAt ? (b.createdAt.toDate ? b.createdAt.toDate() : new Date(b.createdAt)) : new Date(0);
+                return dateB - dateA;
             });
-        }
-        
-        if (cancelResearchBtn) {
-            cancelResearchBtn.addEventListener('click', resetForm);
-        }
-        
-        if (researchSearch) {
-            researchSearch.addEventListener('input', searchResearch);
-        }
-        
-        // Add row button
-        if (addRowBtn) {
-            addRowBtn.addEventListener('click', function() {
-                addResearchDetailRow();
-            });
-        }
-        
-        // Update user profile info
-        updateUserProfile(currentUser);
-        
-        // Initialize research details table dengan satu baris kosong
-        populateResearchDetailsTable([]);
-        
-        console.log('Research dashboard initialized successfully');
-        
-    } catch (error) {
-        console.error('Authentication error:', error);
-        showNotification('Silakan login untuk mengakses research dashboard', 'error');
-        
-        setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 3000);
-    }
-});
-
-// Handle auth state changes
-// Handle auth state changes
-auth.onAuthStateChanged(async user => {
-    if (user) {
-        currentUser = user;
-        currentUserData = await ensureUserDocument(user); // SIMPAN KE VARIABLE GLOBAL
-        console.log('User is signed in:', user.uid, 'Role:', currentUserData.role);
-        
-        if (unsubscribeResearch) {
-            unsubscribeResearch();
-        }
-        setupRealTimeListener();
-        updateUserProfile(user, currentUserData); // PASS USER DATA
-        
-    } else {
-        console.log('User is signed out');
-        currentUser = null;
-        currentUserData = null;
-        if (unsubscribeResearch) {
-            unsubscribeResearch();
-        }
-        showNotification('Anda telah logout', 'info');
-        
-        setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 2000);
-    }
-});
-
-// Update user profile info (MODIFIED VERSION)
-function updateUserProfile(user, userData) {
-    const userProfile = document.querySelector('.user-info h4');
-    const userRole = document.querySelector('.user-info p');
-    
-    if (userProfile) {
-        userProfile.textContent = user.displayName || user.email || 'User';
-    }
-    if (userRole) {
-        const roleText = userData && userData.isSuperAdmin ? 
-            'Super Administrator' : 
-            'Customer Service Support';
-        userRole.textContent = roleText;
-        
-        // Tambahkan badge super admin jika diperlukan
-        if (userData && userData.isSuperAdmin) {
-            const headerTitle = document.querySelector('.header h1');
-            if (headerTitle && !headerTitle.querySelector('.super-admin-badge')) {
-                const badge = document.createElement('span');
-                badge.className = 'super-admin-badge';
-                badge.style.background = 'var(--warning-gradient)';
-                badge.style.color = 'white';
-                badge.style.padding = '2px 8px';
-                badge.style.borderRadius = '12px';
-                badge.style.fontSize = 'var(--text-xs)';
-                badge.style.marginLeft = '8px';
-                badge.textContent = 'Super Admin';
-                headerTitle.appendChild(badge);
+            
+            // Reset ke halaman 1 saat data berubah
+            currentPage = 1;
+            
+            renderResearchList();
+            updateResearchStats();
+            
+            if (currentUserData && currentUserData.isSuperAdmin) {
+                showNotification(`Super Admin Mode: Memuat ${researchData.length} research dari semua user`, 'info');
             }
+        }, error => {
+            console.error('Error in real-time listener:', error);
+            showNotification('Gagal memuat data real-time', 'error');
+        });
+    }
+
+    // Update user profile info
+    function updateUserProfile(user, userData) {
+        const userProfile = document.querySelector('.user-info h4');
+        const userRole = document.querySelector('.user-info p');
+        
+        if (userProfile) {
+            const displayName = userData?.displayName || user.displayName || user.email || 'User';
+            userProfile.textContent = displayName;
         }
-    }
-}
-// ========== TRANSLATIONS FOR RESEARCH DASHBOARD ==========
-const researchTranslations = {
-    id: {
-        // Header
-        "researchTitle": "Research Dashboard",
-        "searchPlaceholder": "Cari research...",
         
-        // Stats Section
-        "totalResearch": "Total Research",
-        "completedResearch": "Research Selesai",
-        "pendingResearch": "Research Tertunda",
-        "kpiResearch": "KPI Research",
-        "monthlyTarget": "Dari target 28 research/bulan",
-        "completedDescription": "Research yang telah diselesaikan",
-        "pendingDescription": "Research yang masih dalam proses",
-        "kpiDescription": "Pencapaian target research",
-        
-        // List Section
-        "listTitle": "Daftar Research",
-        "addResearch": "Tambah Research",
-        "noResearch": "Belum ada research",
-        "noResearchMessage": "Tambahkan research baru untuk memulai.",
-        "superAdminNoResearch": "Belum ada research. Data dari semua user akan muncul di sini.",
-        "noSearchResults": "Tidak ada research yang sesuai dengan pencarian.",
-        
-        // Form Section
-        "addNewResearch": "Tambah Research Baru",
-        "editResearch": "Edit Research",
-        "platformLabel": "Platform/Agent*",
-        "platformPlaceholder": "Nama platform/agent yang di research",
-        "statusLabel": "Status",
-        "statusPending": "Dalam Proses",
-        "statusCompleted": "Selesai",
-        "statusOverdue": "Terlambat",
-        "detailsTitle": "Detail Research",
-        "addCategory": "Tambah Kategori",
-        "categoryLabel": "Kategori",
-        "descriptionLabel": "Deskripsi",
-        "actionsLabel": "Aksi",
-        "selectCategory": "Pilih kategori",
-        "descriptionPlaceholder": "Deskripsi research...",
-        
-        // Categories
-        "uiUxCategory": "Tampilan UI/UX",
-        "systemFeatureCategory": "Fitur/System",
-        "gameProviderCategory": "Provider/Game",
-        "promotionCategory": "Promosi",
-        "otherCategory": "Other",
-        
-        // Status Badges
-        "statusCompleted": "Selesai",
-        "statusOverdue": "Terlambat",
-        "statusPending": "Dalam Proses",
-        "statusNoDeadline": "Tidak Ada Deadline",
-        
-        // Actions
-        "edit": "Edit",
-        "delete": "Hapus",
-        "readOnly": "Read Only",
-        "cancel": "Batal",
-        "saveResearch": "Simpan Research",
-        "updateResearch": "Perbarui Research",
-        
-        // Form Mode
-        "addMode": "Tambah Baru",
-        "editMode": "Edit",
-        
-        // Notifications
-        "researchAdded": "Research berhasil ditambahkan",
-        "researchUpdated": "Research berhasil diperbarui",
-        "researchDeleted": "Research berhasil dihapus",
-        "errorLoading": "Gagal memuat data research",
-        "platformRequired": "Harap isi platform/agent research",
-        "detailsRequired": "Harap tambahkan minimal satu detail research dengan kategori dan deskripsi",
-        "confirmDelete": "Apakah Anda yakin ingin menghapus research ini?",
-        "noPermissionEdit": "Anda tidak memiliki izin untuk mengedit research ini",
-        "noPermissionDelete": "Anda tidak memiliki izin untuk menghapus research ini",
-        "superAdminMode": "Super Admin Mode: Memuat {count} research dari semua user",
-        
-        // User Roles
-        "superAdmin": "Super Administrator",
-        "customerSupport": "Customer Service Support",
-        "superAdminView": "Super Admin View"
-    },
-    
-    en: {
-        // Header
-        "researchTitle": "Research Dashboard",
-        "searchPlaceholder": "Search research...",
-        
-        // Stats Section
-        "totalResearch": "Total Research",
-        "completedResearch": "Completed Research",
-        "pendingResearch": "Pending Research",
-        "kpiResearch": "KPI Research",
-        "monthlyTarget": "From target of 28 research/month",
-        "completedDescription": "Research that has been completed",
-        "pendingDescription": "Research still in progress",
-        "kpiDescription": "Research target achievement",
-        
-        // List Section
-        "listTitle": "Research List",
-        "addResearch": "Add Research",
-        "noResearch": "No research yet",
-        "noResearchMessage": "Add new research to get started.",
-        "superAdminNoResearch": "No research yet. Data from all users will appear here.",
-        "noSearchResults": "No research matching your search.",
-        
-        // Form Section
-        "addNewResearch": "Add New Research",
-        "editResearch": "Edit Research",
-        "platformLabel": "Platform/Agent*",
-        "platformPlaceholder": "Name of platform/agent being researched",
-        "statusLabel": "Status",
-        "statusPending": "In Progress",
-        "statusCompleted": "Completed",
-        "statusOverdue": "Overdue",
-        "detailsTitle": "Research Details",
-        "addCategory": "Add Category",
-        "categoryLabel": "Category",
-        "descriptionLabel": "Description",
-        "actionsLabel": "Actions",
-        "selectCategory": "Select category",
-        "descriptionPlaceholder": "Research description...",
-        
-        // Categories
-        "uiUxCategory": "UI/UX Display",
-        "systemFeatureCategory": "Feature/System",
-        "gameProviderCategory": "Provider/Game",
-        "promotionCategory": "Promotion",
-        "otherCategory": "Other",
-        
-        // Status Badges
-        "statusCompleted": "Completed",
-        "statusOverdue": "Overdue",
-        "statusPending": "In Progress",
-        "statusNoDeadline": "No Deadline",
-        
-        // Actions
-        "edit": "Edit",
-        "delete": "Delete",
-        "readOnly": "Read Only",
-        "cancel": "Cancel",
-        "saveResearch": "Save Research",
-        "updateResearch": "Update Research",
-        
-        // Form Mode
-        "addMode": "Add New",
-        "editMode": "Edit",
-        
-        // Notifications
-        "researchAdded": "Research successfully added",
-        "researchUpdated": "Research successfully updated",
-        "researchDeleted": "Research successfully deleted",
-        "errorLoading": "Failed to load research data",
-        "platformRequired": "Please fill in platform/agent research",
-        "detailsRequired": "Please add at least one research detail with category and description",
-        "confirmDelete": "Are you sure you want to delete this research?",
-        "noPermissionEdit": "You don't have permission to edit this research",
-        "noPermissionDelete": "You don't have permission to delete this research",
-        "superAdminMode": "Super Admin Mode: Loading {count} research from all users",
-        
-        // User Roles
-        "superAdmin": "Super Administrator",
-        "customerSupport": "Customer Service Support",
-        "superAdminView": "Super Admin View"
-    },
-    
-    ja: {
-        // Header
-        "researchTitle": "リサーチダッシュボード",
-        "searchPlaceholder": "リサーチを検索...",
-        
-        // Stats Section
-        "totalResearch": "総リサーチ数",
-        "completedResearch": "完了したリサーチ",
-        "pendingResearch": "保留中のリサーチ",
-        "kpiResearch": "KPIリサーチ",
-        "monthlyTarget": "月間目標28リサーチから",
-        "completedDescription": "完了したリサーチ",
-        "pendingDescription": "進行中のリサーチ",
-        "kpiDescription": "リサーチ目標達成率",
-        
-        // List Section
-        "listTitle": "リサーチリスト",
-        "addResearch": "リサーチを追加",
-        "noResearch": "まだリサーチがありません",
-        "noResearchMessage": "新しいリサーチを追加して開始してください。",
-        "superAdminNoResearch": "まだリサーチがありません。全ユーザーのデータがここに表示されます。",
-        "noSearchResults": "検索条件に一致するリサーチはありません。",
-        
-        // Form Section
-        "addNewResearch": "新しいリサーチを追加",
-        "editResearch": "リサーチを編集",
-        "platformLabel": "プラットフォーム/エージェント*",
-        "platformPlaceholder": "リサーチ対象のプラットフォーム/エージェント名",
-        "statusLabel": "ステータス",
-        "statusPending": "進行中",
-        "statusCompleted": "完了",
-        "statusOverdue": "期限切れ",
-        "detailsTitle": "リサーチ詳細",
-        "addCategory": "カテゴリーを追加",
-        "categoryLabel": "カテゴリー",
-        "descriptionLabel": "説明",
-        "actionsLabel": "操作",
-        "selectCategory": "カテゴリーを選択",
-        "descriptionPlaceholder": "リサーチの説明...",
-        
-        // Categories
-        "uiUxCategory": "UI/UX表示",
-        "systemFeatureCategory": "機能/システム",
-        "gameProviderCategory": "プロバイダー/ゲーム",
-        "promotionCategory": "プロモーション",
-        "otherCategory": "その他",
-        
-        // Status Badges
-        "statusCompleted": "完了",
-        "statusOverdue": "期限切れ",
-        "statusPending": "進行中",
-        "statusNoDeadline": "期限なし",
-        
-        // Actions
-        "edit": "編集",
-        "delete": "削除",
-        "readOnly": "読み取り専用",
-        "cancel": "キャンセル",
-        "saveResearch": "リサーチを保存",
-        "updateResearch": "リサーチを更新",
-        
-        // Form Mode
-        "addMode": "新規追加",
-        "editMode": "編集",
-        
-        // Notifications
-        "researchAdded": "リサーチが正常に追加されました",
-        "researchUpdated": "リサーチが正常に更新されました",
-        "researchDeleted": "リサーチが正常に削除されました",
-        "errorLoading": "リサーチデータの読み込みに失敗しました",
-        "platformRequired": "プラットフォーム/エージェントのリサーチを入力してください",
-        "detailsRequired": "カテゴリーと説明を含む少なくとも1つのリサーチ詳細を追加してください",
-        "confirmDelete": "このリサーチを削除してもよろしいですか？",
-        "noPermissionEdit": "このリサーチを編集する権限がありません",
-        "noPermissionDelete": "このリサーチを削除する権限がありません",
-        "superAdminMode": "スーパー管理者モード：全ユーザーから{count}件のリサーチを読み込み中",
-        
-        // User Roles
-        "superAdmin": "スーパー管理者",
-        "customerSupport": "カスタマーサービスサポート",
-        "superAdminView": "スーパー管理者ビュー"
-    },
-    
-    zh: {
-        // Header
-        "researchTitle": "研究仪表板",
-        "searchPlaceholder": "搜索研究...",
-        
-        // Stats Section
-        "totalResearch": "总研究数",
-        "completedResearch": "已完成研究",
-        "pendingResearch": "待处理研究",
-        "kpiResearch": "KPI研究",
-        "monthlyTarget": "来自每月28个研究的目标",
-        "completedDescription": "已完成的研究",
-        "pendingDescription": "仍在进行中的研究",
-        "kpiDescription": "研究目标达成率",
-        
-        // List Section
-        "listTitle": "研究列表",
-        "addResearch": "添加研究",
-        "noResearch": "尚无研究",
-        "noResearchMessage": "添加新研究以开始。",
-        "superAdminNoResearch": "尚无研究。所有用户的数据将显示在此处。",
-        "noSearchResults": "没有符合搜索条件的研究。",
-        
-        // Form Section
-        "addNewResearch": "添加新研究",
-        "editResearch": "编辑研究",
-        "platformLabel": "平台/代理*",
-        "platformPlaceholder": "正在研究的平台/代理名称",
-        "statusLabel": "状态",
-        "statusPending": "进行中",
-        "statusCompleted": "已完成",
-        "statusOverdue": "逾期",
-        "detailsTitle": "研究详情",
-        "addCategory": "添加类别",
-        "categoryLabel": "类别",
-        "descriptionLabel": "描述",
-        "actionsLabel": "操作",
-        "selectCategory": "选择类别",
-        "descriptionPlaceholder": "研究描述...",
-        
-        // Categories
-        "uiUxCategory": "UI/UX显示",
-        "systemFeatureCategory": "功能/系统",
-        "gameProviderCategory": "提供商/游戏",
-        "promotionCategory": "促销",
-        "otherCategory": "其他",
-        
-        // Status Badges
-        "statusCompleted": "已完成",
-        "statusOverdue": "逾期",
-        "statusPending": "进行中",
-        "statusNoDeadline": "无截止日期",
-        
-        // Actions
-        "edit": "编辑",
-        "delete": "删除",
-        "readOnly": "只读",
-        "cancel": "取消",
-        "saveResearch": "保存研究",
-        "updateResearch": "更新研究",
-        
-        // Form Mode
-        "addMode": "新增",
-        "editMode": "编辑",
-        
-        // Notifications
-        "researchAdded": "研究已成功添加",
-        "researchUpdated": "研究已成功更新",
-        "researchDeleted": "研究已成功删除",
-        "errorLoading": "加载研究数据失败",
-        "platformRequired": "请填写平台/代理研究",
-        "detailsRequired": "请至少添加一个包含类别和描述的研究详情",
-        "confirmDelete": "您确定要删除此研究吗？",
-        "noPermissionEdit": "您没有权限编辑此研究",
-        "noPermissionDelete": "您没有权限删除此研究",
-        "superAdminMode": "超级管理员模式：正在从所有用户加载{count}个研究",
-        
-        // User Roles
-        "superAdmin": "超级管理员",
-        "customerSupport": "客户服务支持",
-        "superAdminView": "超级管理员视图"
-    }
-};
-
-// ========== TRANSLATION FUNCTIONS ==========
-
-// Fungsi untuk menerapkan terjemahan ke halaman research
-function applyResearchTranslations(language) {
-    const lang = researchTranslations[language] || researchTranslations['id'];
-    
-    if (!lang) return;
-
-    console.log("Applying research translations for:", language);
-
-    // Terjemahkan elemen utama
-    const elements = {
-        'researchTitle': '.header h1',
-        'searchPlaceholder': '#researchSearch',
-        'listTitle': '.list-title',
-        'noResearch': '.research-items .no-research h3',
-        'noResearchMessage': '.research-items .no-research p'
-    };
-
-    Object.keys(elements).forEach(key => {
-        const element = document.querySelector(elements[key]);
-        if (element && lang[key]) {
-            if (key === 'searchPlaceholder') {
-                element.placeholder = lang[key];
-            } else {
-                // Simpan ikon jika ada
-                const iconMatch = element.innerHTML.match(/(<i[^>]*><\/i>)/);
-                if (iconMatch) {
-                    element.innerHTML = iconMatch[0] + ' ' + lang[key];
-                } else {
-                    element.textContent = lang[key];
+        if (userRole) {
+            const roleText = userData && userData.isSuperAdmin ? 
+                'Super Administrator' : 
+                'Customer Service Support';
+            userRole.textContent = roleText;
+            
+            if (userData && userData.isSuperAdmin) {
+                const headerTitle = document.querySelector('.header h1');
+                if (headerTitle && !headerTitle.querySelector('.super-admin-badge')) {
+                    const badge = document.createElement('span');
+                    badge.className = 'super-admin-badge';
+                    badge.style.background = 'var(--warning-gradient)';
+                    badge.style.color = 'white';
+                    badge.style.padding = '2px 8px';
+                    badge.style.borderRadius = '12px';
+                    badge.style.fontSize = 'var(--text-xs)';
+                    badge.style.marginLeft = '8px';
+                    badge.textContent = 'Super Admin';
+                    headerTitle.appendChild(badge);
                 }
             }
         }
-    });
-
-    // Update form labels dan placeholders
-    updateResearchFormTranslations(language);
-    
-    // Update tombol
-    updateResearchButtonsTranslations(language);
-    
-    // Update statistik
-    updateResearchStatsTranslations(language);
-    
-    // Update tabel
-    updateResearchTableTranslations(language);
-    
-    // Update status badges
-    updateResearchStatusTranslations(language);
-    
-    // Update user role display
-    updateResearchUserRoleTranslations(language);
-}
-
-// Update terjemahan form
-function updateResearchFormTranslations(language) {
-    const lang = researchTranslations[language] || researchTranslations['id'];
-    
-    // Form labels
-    const formLabels = {
-        'platformLabel': 'label[for="research-platform"]',
-        'statusLabel': 'label[for="research-status"]',
-        'detailsTitle': '.table-title'
-    };
-    
-    Object.keys(formLabels).forEach(key => {
-        const element = document.querySelector(formLabels[key]);
-        if (element && lang[key]) {
-            element.textContent = lang[key];
-        }
-    });
-    
-    // Placeholders
-    const platformInput = document.getElementById('research-platform');
-    
-    if (platformInput && lang.platformPlaceholder) {
-        platformInput.placeholder = lang.platformPlaceholder;
     }
-    
-    // Status options
-    const statusSelect = document.getElementById('research-status');
-    if (statusSelect) {
-        if (lang.statusPending) statusSelect.options[0].text = lang.statusPending;
-        if (lang.statusCompleted) statusSelect.options[1].text = lang.statusCompleted;
-        if (lang.statusOverdue) statusSelect.options[2].text = lang.statusOverdue;
-    }
-    
-    // Category options in table
-    document.querySelectorAll('.detail-category').forEach(select => {
-        if (select) {
-            const options = select.querySelectorAll('option');
-            if (options.length >= 6) {
-                if (lang.selectCategory) options[0].text = lang.selectCategory;
-                if (lang.uiUxCategory) options[1].text = lang.uiUxCategory;
-                if (lang.systemFeatureCategory) options[2].text = lang.systemFeatureCategory;
-                if (lang.gameProviderCategory) options[3].text = lang.gameProviderCategory;
-                if (lang.promotionCategory) options[4].text = lang.promotionCategory;
-                if (lang.otherCategory) options[5].text = lang.otherCategory;
+
+    // Event Listeners
+    document.addEventListener('DOMContentLoaded', async function() {
+        console.log('DOM Content Loaded - Initializing Research Dashboard');
+        
+        try {
+            await checkAuth();
+            await createUserSelector();
+
+            console.log('User authenticated:', currentUser.uid, 'Role:', currentUserData.role);
+            
+            setupRealTimeListener();
+            
+            if (researchForm) {
+                researchForm.addEventListener('submit', handleSubmitResearch);
             }
+            
+            if (searchResearch) {
+                searchResearch.addEventListener('input', filterResearch);
+            }
+            
+            if (refreshResearch) {
+                refreshResearch.addEventListener('click', function() {
+                    renderResearchList();
+                    showNotification('Daftar research diperbarui', 'info');
+                });
+            }
+            
+            if (addRowBtn) {
+                addRowBtn.addEventListener('click', function() {
+                    addResearchDetailRow();
+                });
+            }
+            
+            if (prevPageBtn) {
+                prevPageBtn.addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        renderResearchList(currentFilteredResearch);
+                    }
+                });
+            }
+            
+            if (nextPageBtn) {
+                nextPageBtn.addEventListener('click', () => {
+                    const data = currentFilteredResearch || researchData;
+                    const totalPages = Math.max(1, Math.ceil(data.length / pageSize));
+            
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        renderResearchList(currentFilteredResearch);
+                    }
+                });
+            }
+            
+            updateUserProfile(currentUser, currentUserData);
+            
+            populateResearchDetailsTable([]);
+            
+            console.log('Research dashboard initialized successfully');
+            
+        } catch (error) {
+            console.error('Authentication error:', error);
+            showNotification('Silakan login untuk mengakses dashboard research', 'error');
+            
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 3000);
         }
     });
-    
-    // Description placeholders in table
-    document.querySelectorAll('.detail-description').forEach(textarea => {
-        if (textarea && lang.descriptionPlaceholder) {
-            textarea.placeholder = lang.descriptionPlaceholder;
+
+    // Handle auth state changes
+    auth.onAuthStateChanged(async user => {
+        if (user) {
+            currentUser = user;
+            try {
+                currentUserData = await ensureUserDocument(user);
+                console.log('User is signed in:', user.uid, 'Role:', currentUserData.role);
+                
+                if (unsubscribeResearch) {
+                    unsubscribeResearch();
+                }
+                setupRealTimeListener();
+                updateUserProfile(user, currentUserData);
+                
+            } catch (error) {
+                console.error('Error handling auth state:', error);
+            }
+            
+        } else {
+            console.log('User is signed out');
+            if (unsubscribeResearch) {
+                unsubscribeResearch();
+            }
+            showNotification('Anda telah logout', 'info');
+            
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
         }
     });
-}
 
-// Update terjemahan tombol
-function updateResearchButtonsTranslations(language) {
-    const lang = researchTranslations[language] || researchTranslations['id'];
-    
-    // Add research button
-    const addResearchBtn = document.getElementById('add-research-btn');
-    if (addResearchBtn && lang.addResearch) {
-        addResearchBtn.innerHTML = `<i class="fas fa-plus"></i> ${lang.addResearch}`;
-    }
-    
-    // Add category button
-    const addCategoryBtn = document.getElementById('add-row-btn');
-    if (addCategoryBtn && lang.addCategory) {
-        addCategoryBtn.innerHTML = `<i class="fas fa-plus"></i> ${lang.addCategory}`;
-    }
-    
-    // Form buttons
-    const cancelBtn = document.getElementById('cancel-research-btn');
-    const submitBtn = document.getElementById('submit-research-btn');
-    
-    if (cancelBtn && lang.cancel) {
-        cancelBtn.textContent = lang.cancel;
-    }
-    if (submitBtn) {
-        const isEditMode = submitBtn.textContent.includes('Perbarui') || submitBtn.textContent.includes('Update');
-        submitBtn.textContent = isEditMode ? lang.updateResearch : lang.saveResearch;
-    }
-    
-    // Form titles
-    const formTitle = document.getElementById('form-main-title');
-    if (formTitle) {
-        const isEditMode = formTitle.textContent.includes('Edit') || formTitle.textContent.includes('編集') || formTitle.textContent.includes('编辑');
-        formTitle.textContent = isEditMode ? lang.editResearch : lang.addNewResearch;
-    }
-    
-    // Form mode indicator
-    const modeBadge = document.getElementById('mode-badge');
-    if (modeBadge) {
-        const isEditMode = modeBadge.textContent.includes('Edit') || modeBadge.textContent.includes('編集') || modeBadge.textContent.includes('编辑');
-        modeBadge.textContent = isEditMode ? lang.editMode : lang.addMode;
-    }
-}
-
-// Update terjemahan statistik
-function updateResearchStatsTranslations(language) {
-    const lang = researchTranslations[language] || researchTranslations['id'];
-    
-    // Stat cards
-    const statTitles = document.querySelectorAll('.stat-title');
-    if (statTitles.length >= 4) {
-        if (lang.totalResearch) statTitles[0].textContent = lang.totalResearch;
-        if (lang.completedResearch) statTitles[1].textContent = lang.completedResearch;
-        if (lang.pendingResearch) statTitles[2].textContent = lang.pendingResearch;
-        if (lang.kpiResearch) statTitles[3].textContent = lang.kpiResearch;
-    }
-    
-    // Stat descriptions
-    const statDescriptions = document.querySelectorAll('.stat-content p');
-    if (statDescriptions.length >= 4) {
-        if (lang.monthlyTarget) statDescriptions[0].textContent = lang.monthlyTarget;
-        if (lang.completedDescription) statDescriptions[1].textContent = lang.completedDescription;
-        if (lang.pendingDescription) statDescriptions[2].textContent = lang.pendingDescription;
-        if (lang.kpiDescription) statDescriptions[3].textContent = lang.kpiDescription;
-    }
-}
-
-// Update terjemahan tabel
-function updateResearchTableTranslations(language) {
-    const lang = researchTranslations[language] || researchTranslations['id'];
-    
-    // Table headers
-    const tableHeaders = document.querySelectorAll('.research-table th');
-    if (tableHeaders.length >= 3) {
-        if (lang.categoryLabel) tableHeaders[0].textContent = lang.categoryLabel;
-        if (lang.descriptionLabel) tableHeaders[1].textContent = lang.descriptionLabel;
-        if (lang.actionsLabel) tableHeaders[2].textContent = lang.actionsLabel;
-    }
-}
-
-// Update terjemahan status
-function updateResearchStatusTranslations(language) {
-    const lang = researchTranslations[language] || researchTranslations['id'];
-    
-    // Update status badges di cards yang sudah ada
-    document.querySelectorAll('.research-status').forEach(statusElement => {
-        const statusClass = statusElement.className;
-        let statusText = statusElement.textContent.trim();
-        
-        if (statusClass.includes('status-completed') && lang.statusCompleted) {
-            statusElement.textContent = lang.statusCompleted;
-        } else if (statusClass.includes('status-overdue') && lang.statusOverdue) {
-            statusElement.textContent = lang.statusOverdue;
-        } else if (statusClass.includes('status-pending') && lang.statusPending) {
-            statusElement.textContent = lang.statusPending;
-        } else if (statusClass.includes('status-nodeadline') && lang.statusNoDeadline) {
-            statusElement.textContent = lang.statusNoDeadline;
+    // Tambahkan pengecekan null untuk semua event listener
+    window.addEventListener('beforeunload', () => {
+        if (unsubscribeResearch) {
+            unsubscribeResearch();
         }
     });
-}
-
-// Update terjemahan peran pengguna
-function updateResearchUserRoleTranslations(language) {
-    const lang = researchTranslations[language] || researchTranslations['id'];
-    
-    // Update role display di user profile
-    const userRoleElement = document.querySelector('.user-info p');
-    if (userRoleElement) {
-        const currentText = userRoleElement.textContent;
-        if (currentText.includes('Customer Service Support') && lang.customerSupport) {
-            userRoleElement.textContent = lang.customerSupport;
-        } else if (currentText.includes('Super Administrator') && lang.superAdmin) {
-            userRoleElement.textContent = lang.superAdmin;
-        }
-    }
-    
-    // Update role di cards
-    document.querySelectorAll('.research-owner').forEach(ownerElement => {
-        const currentText = ownerElement.textContent;
-        if (currentText.includes('Customer Service Support') && lang.customerSupport) {
-            // Handle owner info text
-        } else if (currentText.includes('Super Admin View') && lang.superAdminView) {
-            // Handle super admin view text
-        }
-    });
-    
-    // Update action buttons text
-    document.querySelectorAll('.edit-btn').forEach(btn => {
-        const icon = btn.querySelector('i');
-        if (icon && lang.edit) {
-            btn.title = lang.edit;
-        }
-    });
-    
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-        const icon = btn.querySelector('i');
-        if (icon && lang.delete) {
-            btn.title = lang.delete;
-        }
-    });
-    
-    // Update read-only text
-    document.querySelectorAll('.research-actions span').forEach(span => {
-        if (span.textContent.includes('Read Only') && lang.readOnly) {
-            span.textContent = lang.readOnly;
-        }
-    });
-}
-
-// ========== NOTIFICATION TRANSLATIONS ==========
-
-// Fungsi untuk update notifikasi
-function updateResearchNotificationMessages(language) {
-    const lang = researchTranslations[language] || researchTranslations['id'];
-    
-    // Simpan referensi ke fungsi showNotification asli
-    const originalShowNotification = window.showNotification;
-    
-    // Override fungsi showNotification untuk menerjemahkan pesan tertentu
-    window.showNotification = function(message, type = 'info') {
-        let translatedMessage = message;
-        
-        // Terjemahkan pesan-pesan umum
-        if (message.includes('Research berhasil ditambahkan') || message.includes('Research successfully added')) {
-            translatedMessage = lang.researchAdded;
-        } else if (message.includes('Research berhasil diperbarui') || message.includes('Research successfully updated')) {
-            translatedMessage = lang.researchUpdated;
-        } else if (message.includes('Research berhasil dihapus') || message.includes('Research successfully deleted')) {
-            translatedMessage = lang.researchDeleted;
-        } else if (message.includes('Gagal memuat data research') || message.includes('Failed to load research data')) {
-            translatedMessage = lang.errorLoading;
-        } else if (message.includes('Harap isi platform/agent research') || message.includes('Please fill in platform/agent research')) {
-            translatedMessage = lang.platformRequired;
-        } else if (message.includes('Harap tambahkan minimal satu detail research') || message.includes('Please add at least one research detail')) {
-            translatedMessage = lang.detailsRequired;
-        } else if (message.includes('Apakah Anda yakin ingin menghapus research ini') || message.includes('Are you sure you want to delete this research')) {
-            translatedMessage = lang.confirmDelete;
-        } else if (message.includes('tidak memiliki izin untuk mengedit research ini') || message.includes("don't have permission to edit this research")) {
-            translatedMessage = lang.noPermissionEdit;
-        } else if (message.includes('tidak memiliki izin untuk menghapus research ini') || message.includes("don't have permission to delete this research")) {
-            translatedMessage = lang.noPermissionDelete;
-        } else if (message.includes('Super Admin Mode: Memuat') || message.includes('Super Admin Mode: Loading')) {
-            // Extract count and format message
-            const countMatch = message.match(/\d+/);
-            const count = countMatch ? countMatch[0] : '0';
-            translatedMessage = lang.superAdminMode.replace('{count}', count);
-        }
-        
-        // Panggil fungsi asli dengan pesan yang sudah diterjemahkan
-        originalShowNotification(translatedMessage, type);
-    };
-}
-
-// ========== LANGUAGE INITIALIZATION ==========
-
-// Fungsi inisialisasi bahasa untuk research
-function initializeResearchLanguage() {
-    const savedLanguage = localStorage.getItem('language') || 'id';
-    console.log("Initializing research with language:", savedLanguage);
-    
-    // Terapkan terjemahan
-    applyResearchTranslations(savedLanguage);
-    updateResearchNotificationMessages(savedLanguage);
-    
-    // Setup listener untuk perubahan bahasa
-    window.addEventListener('languageChanged', function(event) {
-        console.log("Language changed in research to:", event.detail.language);
-        applyResearchTranslations(event.detail.language);
-        updateResearchNotificationMessages(event.detail.language);
-    });
-}
-
-// Panggil inisialisasi saat DOM ready
-document.addEventListener('DOMContentLoaded', function() {
-    // Tunggu sebentar untuk memastikan semua element sudah terload
-    setTimeout(() => {
-        initializeResearchLanguage();
-    }, 100);
-});
-
-// Juga panggil saat halaman sepenuhnya loaded
-window.addEventListener('load', function() {
-    initializeResearchLanguage();
-});
 </script>
-</body> 
+</body>
 </html>
-

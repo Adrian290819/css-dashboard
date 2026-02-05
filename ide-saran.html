@@ -1011,7 +1011,15 @@
                 width: 100%;
             }
         }
-        
+        .pagination-container{
+    margin-top: var(--space-lg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
     </style>
 </head>
 <div class="notification-container" id="notificationContainer"></div>
@@ -1054,7 +1062,11 @@
                     <label for="ideaTitle" class="form-label">Judul Ide/Saran</label>
                     <input type="text" id="ideaTitle" class="form-control" placeholder="Masukkan judul ide atau saran" required>
                 </div>
-                
+                <div class="form-group">
+    <label for="ideaDate" class="form-label">Tanggal Ide</label>
+    <input type="date" id="ideaDate" class="form-control" required>
+</div>
+
                 <div class="form-group">
                     <label for="ideaCategory" class="form-label">Kategori</label>
                     <select id="ideaCategory" class="form-control" required>
@@ -1104,10 +1116,22 @@
                 </div>
             </div>
             
-            <div class="ideas-grid" id="ideasGrid">
-                <!-- Ide dan saran akan dimuat di sini secara dinamis -->
-            </div>
-            
+            <div class="ideas-grid" id="ideasGrid"></div>
+
+<!-- PAGINATION DI BAWAH GRID -->
+<div class="pagination-container" id="paginationContainer" style="display:none;">
+    <button class="btn btn-outline" id="prevPage">
+        <i class="fas fa-chevron-left"></i> Previous
+    </button>
+
+    <span id="pageInfo">Page 1 / 1</span>
+
+    <button class="btn btn-outline" id="nextPage">
+        Next <i class="fas fa-chevron-right"></i>
+    </button>
+</div>
+
+
             <div class="empty-state" id="emptyState">
                 <i class="fas fa-lightbulb"></i>
                 <h3>Tidak ada ide atau saran</h3>
@@ -1216,6 +1240,9 @@ let currentEditId = null;
 let currentUser = null;
 let currentUserData = null;
 let unsubscribeIdeas = null;
+let currentPage = 1;
+const pageSize = 10; // maksimal 10 ide per halaman
+let currentFilteredIdeas = null;
 
 // Elemen DOM
 const ideaForm = document.getElementById('ideaForm');
@@ -1415,20 +1442,40 @@ async function getIdeasData() {
         showNotification('Gagal memuat data ide & saran', 'error');
     }
 }
+function updatePaginationUI(totalItems) {
+    const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+
+    const pageInfo = document.getElementById('pageInfo');
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+    const paginationContainer = document.getElementById('paginationContainer');
+
+    // Tampilkan pagination hanya kalau item > 0
+    if (paginationContainer) {
+        paginationContainer.style.display = totalItems > 0 ? 'flex' : 'none';
+    }
+
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    if (pageInfo) pageInfo.textContent = `Page ${currentPage} / ${totalPages}`;
+    if (prevBtn) prevBtn.disabled = currentPage <= 1;
+    if (nextBtn) nextBtn.disabled = currentPage >= totalPages;
+}
 
 // Fungsi untuk menyimpan ide ke Firestore
 async function saveIdea(ideaData) {
     try {
         await checkAuth();
         
-        const ideaWithUser = {
-            title: ideaData.title,
-            category: ideaData.category,
-            description: ideaData.description,
-            images: ideaData.images || [],
-            userId: currentUser.uid,
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        };
+const ideaWithUser = {
+    title: ideaData.title,
+    category: ideaData.category,
+    description: ideaData.description,
+    images: ideaData.images || [],
+    ideaDate: firebase.firestore.Timestamp.fromDate(ideaData.ideaDate),
+    userId: currentUser.uid,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+};
 
         if (ideaData.id) {
             // Update existing idea
@@ -1437,7 +1484,7 @@ async function saveIdea(ideaData) {
         } else {
             // Add new idea
             ideaWithUser.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-            ideaWithUser.status = 'pending'; // Default status
+            ideaWithUser.status = 'approved'; // Default status
             ideaWithUser.submittedBy = currentUser.displayName || currentUser.email;
             const docRef = await db.collection('ideas').add(ideaWithUser);
             return docRef.id;
@@ -1517,11 +1564,11 @@ function handleFileUpload(e) {
 // Fungsi untuk menangani submit form
 async function handleSubmitIdea(e) {
     e.preventDefault();
-    
+    const ideaDateInput = document.getElementById('ideaDate').value;
     const title = document.getElementById('ideaTitle').value;
     const category = document.getElementById('ideaCategory').value;
     const description = document.getElementById('ideaDescription').value;
-    
+    const ideaDate = new Date(ideaDateInput);
     if (!title || !category || !description) {
         showNotification('Harap isi semua field yang wajib diisi', 'error');
         return;
@@ -1533,11 +1580,12 @@ async function handleSubmitIdea(e) {
     
     try {
         const newIdea = {
-            title,
-            category,
-            description,
-            images: []
-        };
+    title,
+    category,
+    description,
+    images: [],
+    ideaDate: ideaDate
+};
         
         if (currentEditId) {
             newIdea.id = currentEditId;
@@ -1597,26 +1645,37 @@ async function handleSubmitIdea(e) {
 // Fungsi untuk merender daftar ide (MODIFIED VERSION)
 function renderIdeas(filteredIdeas = null) {
     const ideasToRender = filteredIdeas || ideasData;
-    
+    currentFilteredIdeas = filteredIdeas;
+
+    // JIKA DATA KOSONG
     if (ideasToRender.length === 0) {
         emptyState.style.display = 'block';
         ideasGrid.style.display = 'none';
+        updatePaginationUI(0);
         return;
     }
-    
+
     emptyState.style.display = 'none';
     ideasGrid.style.display = 'grid';
-    
     ideasGrid.innerHTML = '';
-    
-    ideasToRender.forEach(idea => {
+
+    // PAGINATION (MAKS 10 DATA)
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const pagedIdeas = ideasToRender.slice(startIndex, endIndex);
+
+    // TAMPILKAN TOMBOL PAGINATION
+    updatePaginationUI(ideasToRender.length);
+
+    // RENDER DATA PER HALAMAN
+    pagedIdeas.forEach(idea => {
         const ideaCard = document.createElement('div');
         ideaCard.className = 'idea-card fade-in';
         
         // Format tanggal
-        const ideaDate = idea.createdAt ? 
-            (idea.createdAt.toDate ? idea.createdAt.toDate() : new Date(idea.createdAt)) : 
-            new Date();
+const ideaDate = idea.ideaDate
+    ? (idea.ideaDate.toDate ? idea.ideaDate.toDate() : new Date(idea.ideaDate))
+    : new Date();
         const formattedDate = ideaDate.toLocaleDateString('id-ID', {
             day: 'numeric',
             month: 'long',
@@ -1630,7 +1689,7 @@ function renderIdeas(filteredIdeas = null) {
         switch(idea.status) {
             case 'pending':
                 statusClass = 'status-pending';
-                statusText = 'Menunggu Review';
+                statusText = 'Baru';
                 break;
             case 'approved':
                 statusClass = 'status-approved';
@@ -1642,7 +1701,7 @@ function renderIdeas(filteredIdeas = null) {
                 break;
             default:
                 statusClass = 'status-pending';
-                statusText = 'Menunggu Review';
+                statusText = 'Baru';
         }
         
         // Tampilkan info pemilik ide untuk super admin
@@ -2020,6 +2079,29 @@ document.addEventListener('DOMContentLoaded', async function() {
         }, 3000);
     }
 });
+const prevPageBtn = document.getElementById('prevPage');
+const nextPageBtn = document.getElementById('nextPage');
+
+if (prevPageBtn) {
+    prevPageBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            renderIdeas(currentFilteredIdeas);
+        }
+    });
+}
+
+if (nextPageBtn) {
+    nextPageBtn.addEventListener('click', () => {
+        const data = currentFilteredIdeas || ideasData;
+        const totalPages = Math.max(1, Math.ceil(data.length / pageSize));
+
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderIdeas(currentFilteredIdeas);
+        }
+    });
+}
 
 // Handle auth state changes
 auth.onAuthStateChanged(async user => {

@@ -722,7 +722,7 @@ class SidebarLoader {
             <div class="sidebar">
                 <div class="sidebar-header">
                     <div class="logo-container">
-                        <img src="https://iili.io/KfDh0EN.png" alt="Logo" class="logo-image" />
+                        <img src="https://iili.io/f4e5HhP.png" alt="Logo" class="logo-image" />
                         <h2 class="logo-text">${this.getTranslation('dashboardTitle')}</h2>
                     </div>
                 </div>

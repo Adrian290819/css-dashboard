@@ -846,49 +846,74 @@ class SidebarLoader {
                         </div>
                     </div>
 
-                    ${isSuperAdmin ? `
-                    <div class="menu-item" data-page="staff-account.html">
-                        <div class="menu-icon">
-                            <i class="fas fa-user-friends"></i>
-                        </div>
-                        <span class="menu-text">${this.getMenuItem('staffAccount')}</span>
-                    </div>
-                    ` : ''}
+                   <!-- MENU PROMOSI PANEL -->
+<div class="menu-item has-submenu" data-submenu="promosi-submenu">
+    <div class="menu-icon">
+        <i class="fas fa-bullhorn"></i>
+    </div>
+    <span class="menu-text">Promosi Panel</span>
+    <div class="submenu-indicator">
+        <i class="fas fa-chevron-right"></i>
+    </div>
+</div>
+<div class="submenu" id="promosi-submenu">
+    <div class="menu-item" data-page="promosi-leads.html">
+        <div class="menu-icon">
+            <i class="fas fa-users"></i>
+        </div>
+        <span class="menu-text">Leads</span>
+    </div>
+    <div class="menu-item" data-page="promosi-statistik.html">
+        <div class="menu-icon">
+            <i class="fas fa-chart-line"></i>
+        </div>
+        <span class="menu-text">Statistik</span>
+    </div>
+</div>
 
-                    <div class="menu-item" data-page="topup-credit.html">
-                        <div class="menu-icon">
-                            <i class="fas fa-coins"></i>
-                        </div>
-                        <span class="menu-text">${this.getMenuItem('topUpCredit')}</span>
-                    </div>  
+${isSuperAdmin ? `
+<div class="menu-item" data-page="staff-account.html">
+    <div class="menu-icon">
+        <i class="fas fa-user-friends"></i>
+    </div>
+    <span class="menu-text">${this.getMenuItem('staffAccount')}</span>
+</div>
+` : ''}
 
-                    <div class="menu-item" data-page="eventprovider.html">
-                        <div class="menu-icon">
-                            <i class="fas fa-trophy"></i>
-                        </div>
-                        <span class="menu-text">${this.getMenuItem('eventProvider')}</span>
-                    </div>
+<div class="menu-item" data-page="topup-credit.html">
+    <div class="menu-icon">
+        <i class="fas fa-coins"></i>
+    </div>
+    <span class="menu-text">${this.getMenuItem('topUpCredit')}</span>
+</div>  
 
-                    <div class="menu-item" data-page="jadwalshift.html">
-                        <div class="menu-icon">
-                            <i class="fas fa-calendar-alt"></i>
-                        </div>
-                        <span class="menu-text">${this.getMenuItem('shiftSchedule')}</span>
-                    </div>
+<div class="menu-item" data-page="eventprovider.html">
+    <div class="menu-icon">
+        <i class="fas fa-trophy"></i>
+    </div>
+    <span class="menu-text">${this.getMenuItem('eventProvider')}</span>
+</div>
 
-                    <div class="menu-item" data-page="pengaturan.html">
-                        <div class="menu-icon">
-                            <i class="fas fa-cog"></i>
-                        </div>
-                        <span class="menu-text">${this.getMenuItem('settings')}</span>
-                    </div>
+<div class="menu-item" data-page="jadwalshift.html">
+    <div class="menu-icon">
+        <i class="fas fa-calendar-alt"></i>
+    </div>
+    <span class="menu-text">${this.getMenuItem('shiftSchedule')}</span>
+</div>
 
-                    <div class="menu-item logout-btn" id="logoutButton">
-                        <div class="menu-icon">
-                            <i class="fas fa-sign-out-alt"></i>
-                        </div>
-                        <span class="menu-text">${this.getMenuItem('logout')}</span>
-                    </div>
+<div class="menu-item" data-page="pengaturan.html">
+    <div class="menu-icon">
+        <i class="fas fa-cog"></i>
+    </div>
+    <span class="menu-text">${this.getMenuItem('settings')}</span>
+</div>
+
+<div class="menu-item logout-btn" id="logoutButton">
+    <div class="menu-icon">
+        <i class="fas fa-sign-out-alt"></i>
+    </div>
+    <span class="menu-text">${this.getMenuItem('logout')}</span>
+</div>
                 </div>
             </div>
         `;
@@ -1045,7 +1070,7 @@ class SidebarLoader {
             'summary-dashboard.html', 'pending-reports.html', 'solved-report.html',
             'maintenance.html', 'completed-report.html', 'releases-newfeature.html',
             'releases-newgame.html', 'kpi-css.html', 'ide-saran.html',
-            'research.html', 'chat-response.html', 'daily-tasks.html', 'task-history.html',
+            'research.html', 'chat-response.html', 'promosi-leads.html', 'promosi-statistik.html',
             'staff-account.html', 'topup-credit.html', 'eventprovider.html', 
             'idesaran-agent.html', 'phishing.html', 'jadwalshift.html', 'pengaturan.html',
             'index.html'

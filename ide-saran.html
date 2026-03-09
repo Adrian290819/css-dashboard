@@ -1377,36 +1377,44 @@
             });
         });
     }
-
     // Fungsi untuk menyimpan ide ke Firestore
-    async function saveIdea(ideaData) {
-        try {
-            await checkAuth();
-            
-            const ideaWithUser = {
-                title: ideaData.title,
-                category: ideaData.category,
-                description: ideaData.description,
-                images: ideaData.images || [],
-                userId: currentUser.uid,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-            };
-
-            if (ideaData.id) {
-                await db.collection('ideas').doc(ideaData.id).update(ideaWithUser);
-                return ideaData.id;
-            } else {
-                ideaWithUser.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-                ideaWithUser.status = 'pending';
-                ideaWithUser.submittedBy = currentUser.displayName || currentUser.email;
-                const docRef = await db.collection('ideas').add(ideaWithUser);
-                return docRef.id;
-            }
-        } catch (error) {
-            console.error('Error saving idea:', error);
-            throw error;
+async function saveIdea(ideaData) {
+    try {
+        await checkAuth();
+        
+        // Dapatkan display name dengan lebih baik
+        let displayName = currentUser.displayName;
+        if (!displayName) {
+            // Jika displayName tidak ada, gunakan email tanpa domain
+            displayName = currentUser.email.split('@')[0];
         }
+        
+        const ideaWithUser = {
+            title: ideaData.title,
+            category: ideaData.category,
+            description: ideaData.description,
+            images: ideaData.images || [],
+            userId: currentUser.uid,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        if (ideaData.id) {
+            // Update ide yang sudah ada
+            await db.collection('ideas').doc(ideaData.id).update(ideaWithUser);
+            return ideaData.id;
+        } else {
+            // Ide baru
+            ideaWithUser.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+            ideaWithUser.status = 'pending';
+            ideaWithUser.submittedBy = displayName; // Gunakan displayName yang sudah diproses
+            const docRef = await db.collection('ideas').add(ideaWithUser);
+            return docRef.id;
+        }
+    } catch (error) {
+        console.error('Error saving idea:', error);
+        throw error;
     }
+}
 
     // Fungsi untuk menghapus ide dari Firestore
     async function deleteIdeaFromFirestore(ideaId) {
@@ -1593,10 +1601,11 @@
                 <div class="idea-footer">
                     <div class="idea-author">
                         <img class="author-avatar" src="https://iili.io/Fpiva7S.png" alt="Author">
-                        <div class="author-info">
-                            <span class="author-name">${idea.submittedBy || currentUser.displayName || currentUser.email}</span>
-                            <span class="author-role">${currentUserData && currentUserData.isSuperAdmin ? 'Super Admin View' : 'Customer Service Support'}</span>
-                        </div>
+// Di dalam function renderIdeas(), bagian author-info:
+<div class="author-info">
+    <span class="author-name">${idea.submittedBy || 'User'}</span>
+    <span class="author-role">${currentUserData && currentUserData.isSuperAdmin ? 'Super Admin View' : 'Customer Service Support'}</span>
+</div>
                     </div>
                 </div>
                 

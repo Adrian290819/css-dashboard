@@ -735,11 +735,6 @@
             </div>
         </div>
 
-        <!-- Statistic Cards -->
-        <div class="stats-container fade-in" id="statCards">
-            <!-- Akan diisi oleh JavaScript -->
-        </div>
-
         <!-- Filter Panel -->
         <div class="filter-panel fade-in">
             <div class="filter-header">
@@ -881,25 +876,29 @@
     
     <script>
         // ========== FIREBASE INITIALIZATION ==========
-        const firebaseConfig = {
-            apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
-            authDomain: "dashboard-css.firebaseapp.com",
-            databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "dashboard-css",
-            storageBucket: "dashboard-css.appspot.com",
-            messagingSenderId: "771131792881",
-            appId: "1:771131792881:web:ad634424225bd7de847850",
-            measurementId: "G-3CYBC5B101"
-        };
+        // Cek apakah Firebase sudah diinisialisasi
+        if (!firebase.apps.length) {
+            const firebaseConfig = {
+                apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
+                authDomain: "dashboard-css.firebaseapp.com",
+                databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
+                projectId: "dashboard-css",
+                storageBucket: "dashboard-css.appspot.com",
+                messagingSenderId: "771131792881",
+                appId: "1:771131792881:web:ad634424225bd7de847850",
+                measurementId: "G-3CYBC5B101"
+            };
+            
+            firebase.initializeApp(firebaseConfig);
+        }
 
-        // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Variabel global
+        // ========== GLOBAL VARIABLES ==========
         let currentUser = null;
-        let leadsData = [];
+        let promosiData = []; // Data dari koleksi promosi (untuk jumlah promosi)
+        let leadsData = [];    // Data dari koleksi promosiLeads (untuk leads, follow up, closingan)
         let filteredLeadsData = [];
         let cssStats = {};
         let cssList = [
@@ -919,7 +918,7 @@
                     currentUser = user;
                     console.log("User is signed in:", user.uid);
                     document.getElementById('userName').textContent = user.displayName || user.email;
-                    loadLeadsData();
+                    loadAllData();
                     setupEventListeners();
                 } else {
                     console.log("User is signed out");
@@ -928,7 +927,46 @@
             });
         }
 
-        // Fungsi untuk memuat data leads dari Firestore
+        // Load semua data (promosi + leads)
+        async function loadAllData() {
+            try {
+                showLoading(true);
+                
+                // Load data promosi untuk jumlah promosi
+                await loadPromosiData();
+                
+                // Load data leads untuk leads, follow up, closingan
+                await loadLeadsData();
+                
+                // Proses statistik gabungan
+                processStatistics();
+                renderStatsTable();
+                renderCharts();
+                
+            } catch (error) {
+                console.error("Error loading data:", error);
+                showToast('Gagal memuat data', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Load data promosi dari koleksi PROMOSI (untuk jumlah promosi)
+        async function loadPromosiData() {
+            try {
+                const snapshot = await db.collection('promosi').get();
+                promosiData = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                console.log(`Loaded ${promosiData.length} promosi data`);
+            } catch (error) {
+                console.error("Error loading promosi data:", error);
+                promosiData = [];
+            }
+        }
+
+        // Load data leads dari koleksi PROMOSILEADS (untuk leads, follow up, closingan)
         async function loadLeadsData() {
             try {
                 const snapshot = await db.collection('promosiLeads')
@@ -937,19 +975,16 @@
                 
                 leadsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 filteredLeadsData = [...leadsData];
-                
-                processStatistics();
-                renderStatCards();
-                renderStatsTable();
-                renderCharts();
+                console.log(`Loaded ${leadsData.length} leads data`);
                 
             } catch (error) {
-                console.error("Error loading leads:", error);
-                showToast('Gagal memuat data leads', 'error');
+                console.error("Error loading leads data:", error);
+                leadsData = [];
+                filteredLeadsData = [];
             }
         }
 
-        // Fungsi untuk memproses statistik dari data leads
+        // Fungsi untuk memproses statistik dari data leads + promosi
         function processStatistics() {
             // Inisialisasi statistik untuk setiap CSS
             cssStats = {};
@@ -973,7 +1008,20 @@
                 };
             });
             
-            // Proses setiap lead
+            // HITUNG JUMLAH PROMOSI dari koleksi promosi
+            promosiData.forEach(promosi => {
+                const cssName = promosi.namaCSS ? promosi.namaCSS.toUpperCase() : '';
+                
+                // Cari CSS yang sesuai
+                for (let key in cssStats) {
+                    if (cssName.includes(key) || key.includes(cssName)) {
+                        cssStats[key].totalPromosi++;
+                        break;
+                    }
+                }
+            });
+            
+            // Proses setiap lead untuk data lainnya
             filteredLeadsData.forEach(lead => {
                 const cssName = lead.namaCSS ? lead.namaCSS.toUpperCase() : '';
                 let found = false;
@@ -981,8 +1029,6 @@
                 // Cari CSS yang sesuai
                 for (let key in cssStats) {
                     if (cssName.includes(key) || key.includes(cssName)) {
-                        cssStats[key].totalPromosi++;
-                        
                         // Hitung leads (jika ada leads atau follow)
                         if (lead.leads) {
                             cssStats[key].jumlahLeads++;
@@ -1010,19 +1056,19 @@
                         // Hitung follow up dari notesFU
                         if (lead.notesFU) {
                             const notes = lead.notesFU.toLowerCase();
-                            if (notes.includes('follow up 1') || notes.includes('fu 1') || notes.includes('follow up 1')) {
+                            if (notes.includes('follow up 1') || notes.includes('fu 1')) {
                                 cssStats[key].followUp1++;
                             }
-                            if (notes.includes('follow up 2') || notes.includes('fu 2') || notes.includes('follow up 2')) {
+                            if (notes.includes('follow up 2') || notes.includes('fu 2')) {
                                 cssStats[key].followUp2++;
                             }
-                            if (notes.includes('follow up 3') || notes.includes('fu 3') || notes.includes('follow up 3')) {
+                            if (notes.includes('follow up 3') || notes.includes('fu 3')) {
                                 cssStats[key].followUp3++;
                             }
-                            if (notes.includes('follow up 4') || notes.includes('fu 4') || notes.includes('follow up 4')) {
+                            if (notes.includes('follow up 4') || notes.includes('fu 4')) {
                                 cssStats[key].followUp4++;
                             }
-                            if (notes.includes('follow up 5') || notes.includes('fu 5') || notes.includes('follow up 5')) {
+                            if (notes.includes('follow up 5') || notes.includes('fu 5')) {
                                 cssStats[key].followUp5++;
                             }
                             
@@ -1043,7 +1089,7 @@
                     if (!cssStats[newCss]) {
                         cssStats[newCss] = {
                             nama: lead.namaCSS,
-                            totalPromosi: 1,
+                            totalPromosi: 0, // Akan diisi dari data promosi nanti
                             jumlahLeads: lead.leads ? 1 : 0,
                             leadsFollowUp: lead.leads === 'Follow Up' ? 1 : 0,
                             cold: lead.leadQualification === 'Cold' ? 1 : 0,
@@ -1070,82 +1116,20 @@
                     }
                 }
             });
+            
+            // Update total promosi untuk CSS yang mungkin hanya ada di leads
+            promosiData.forEach(promosi => {
+                const cssName = promosi.namaCSS ? promosi.namaCSS.toUpperCase() : '';
+                
+                for (let key in cssStats) {
+                    if (cssName.includes(key) || key.includes(cssName)) {
+                        // Sudah dihitung sebelumnya
+                        break;
+                    }
+                }
+            });
         }
 
-        // Fungsi untuk merender statistik cards
-        function renderStatCards() {
-            const container = document.getElementById('statCards');
-            if (!container) return;
-            
-            const totalPromosi = filteredLeadsData.length;
-            const totalLeads = filteredLeadsData.filter(lead => lead.leads).length;
-            const totalFollowUp = filteredLeadsData.filter(lead => lead.leads === 'Follow Up').length;
-            const totalClosing = filteredLeadsData.filter(lead => 
-                lead.notesFU && (lead.notesFU.toLowerCase().includes('closing') || 
-                lead.notesFU.toLowerCase().includes('deal'))
-            ).length;
-            
-            const coldCount = filteredLeadsData.filter(lead => lead.leadQualification === 'Cold').length;
-            const warmCount = filteredLeadsData.filter(lead => lead.leadQualification === 'Warm').length;
-            const hotCount = filteredLeadsData.filter(lead => lead.leadQualification === 'Hot').length;
-            
-            container.innerHTML = `
-                <div class="stat-card total-promosi">
-                    <div class="stat-header">
-                        <h3 class="stat-title">Total Promosi</h3>
-                        <div class="stat-icon primary">
-                            <i class="fas fa-bullhorn"></i>
-                        </div>
-                    </div>
-                    <div class="stat-value">${totalPromosi}</div>
-                    <div class="stat-description">Total seluruh promosi</div>
-                </div>
-                
-                <div class="stat-card total-leads">
-                    <div class="stat-header">
-                        <h3 class="stat-title">Total Leads</h3>
-                        <div class="stat-icon success">
-                            <i class="fas fa-users"></i>
-                        </div>
-                    </div>
-                    <div class="stat-value">${totalLeads}</div>
-                    <div class="stat-description">${((totalLeads/totalPromosi)*100 || 0).toFixed(1)}% dari total promosi</div>
-                </div>
-                
-                <div class="stat-card follow-up">
-                    <div class="stat-header">
-                        <h3 class="stat-title">Follow Up</h3>
-                        <div class="stat-icon warning">
-                            <i class="fas fa-phone-alt"></i>
-                        </div>
-                    </div>
-                    <div class="stat-value">${totalFollowUp}</div>
-                    <div class="stat-description">${((totalFollowUp/totalLeads)*100 || 0).toFixed(1)}% dari total leads</div>
-                </div>
-                
-                <div class="stat-card closingan">
-                    <div class="stat-header">
-                        <h3 class="stat-title">Closingan</h3>
-                        <div class="stat-icon purple">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                    </div>
-                    <div class="stat-value">${totalClosing}</div>
-                    <div class="stat-description">${((totalClosing/totalLeads)*100 || 0).toFixed(1)}% dari total leads</div>
-                </div>
-                
-                <div class="stat-card avg-qualification">
-                    <div class="stat-header">
-                        <h3 class="stat-title">Kualifikasi</h3>
-                        <div class="stat-icon orange">
-                            <i class="fas fa-chart-pie"></i>
-                        </div>
-                    </div>
-                    <div class="stat-value">${coldCount} / ${warmCount} / ${hotCount}</div>
-                    <div class="stat-description">Cold / Warm / Hot</div>
-                </div>
-            `;
-        }
 
         // Fungsi untuk merender tabel statistik
         function renderStatsTable() {
@@ -1154,7 +1138,7 @@
             
             if (!tableBody) return;
             
-            const statsArray = Object.values(cssStats).filter(stat => stat.totalPromosi > 0);
+            const statsArray = Object.values(cssStats).filter(stat => stat.totalPromosi > 0 || stat.jumlahLeads > 0);
             
             if (statsArray.length === 0) {
                 tableBody.innerHTML = '';
@@ -1437,7 +1421,6 @@
             
             filteredLeadsData = filtered;
             processStatistics();
-            renderStatCards();
             renderStatsTable();
             renderCharts();
         }
@@ -1452,7 +1435,6 @@
             
             filteredLeadsData = [...leadsData];
             processStatistics();
-            renderStatCards();
             renderStatsTable();
             renderCharts();
             
@@ -1479,7 +1461,7 @@
             
             let csvContent = headers.join(',') + '\n';
             
-            const statsArray = Object.values(cssStats).filter(stat => stat.totalPromosi > 0);
+            const statsArray = Object.values(cssStats).filter(stat => stat.totalPromosi > 0 || stat.jumlahLeads > 0);
             statsArray.sort((a, b) => b.totalPromosi - a.totalPromosi);
             
             let totalPromosi = 0, totalLeads = 0, totalFollowUp = 0;
@@ -1489,7 +1471,7 @@
             
             statsArray.forEach(stat => {
                 const row = [
-                    stat.nama,
+                    `"${stat.nama}"`,
                     stat.totalPromosi,
                     stat.jumlahLeads,
                     stat.leadsFollowUp,
@@ -1538,7 +1520,7 @@
             ];
             csvContent += totalRow.join(',') + '\n';
             
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
@@ -1546,6 +1528,7 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+            URL.revokeObjectURL(url);
             
             showToast('Data berhasil diexport!', 'success');
         }
@@ -1576,10 +1559,36 @@
             }, duration);
         }
 
+        // Fungsi untuk menampilkan loading
+        let loadingTimeout;
+        function showLoading(show) {
+            if (show) {
+                loadingTimeout = setTimeout(() => {
+                    const existingOverlay = document.querySelector('.loading-overlay');
+                    if (!existingOverlay) {
+                        const overlay = document.createElement('div');
+                        overlay.className = 'loading-overlay';
+                        overlay.innerHTML = '<div class="loading-spinner"></div>';
+                        document.body.appendChild(overlay);
+                    }
+                }, 300);
+            } else {
+                if (loadingTimeout) {
+                    clearTimeout(loadingTimeout);
+                    loadingTimeout = null;
+                }
+                
+                const existingOverlay = document.querySelector('.loading-overlay');
+                if (existingOverlay) {
+                    existingOverlay.remove();
+                }
+            }
+        }
+
         // ========== EVENT LISTENERS ==========
         function setupEventListeners() {
             document.getElementById('refreshStats').addEventListener('click', () => {
-                loadLeadsData();
+                loadAllData();
                 showToast('Data statistik diperbarui!', 'success');
             });
             

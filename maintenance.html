@@ -953,7 +953,14 @@
         width: 100%;
     }
 }
-
+.maintenance-actions {
+    display: flex;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end; /* Ini akan meratakan semua tombol ke kanan */
+}
     </style>
 </head>
 <body>
@@ -1018,15 +1025,17 @@
             </div>
         </div>
         
-        <div class="maintenance-actions">
-            <button class="btn btn-primary" id="addMaintenanceBtn">
-                <i class="fas fa-plus"></i> Add New Task
-            </button>
-            
-            <button class="btn btn-outline" id="refreshBtn">
-                <i class="fas fa-sync-alt"></i> Refresh
-            </button>
-        </div>
+<div class="maintenance-actions">
+    <div style="flex: 1;"></div> <!-- Spacer untuk mendorong tombol ke kanan -->
+    
+    <button class="btn btn-outline" id="refreshBtn">
+        <i class="fas fa-sync-alt"></i> Refresh
+    </button>
+    
+    <button class="btn btn-primary" id="addMaintenanceBtn">
+        <i class="fas fa-plus"></i> Add New Task
+    </button>
+</div>
         
         <div class="activities-section fade-in" style="animation-delay: 0.5s;">
             <div class="section-header">

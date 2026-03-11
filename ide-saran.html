@@ -15,6 +15,8 @@
             --primary-gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
             --warning-gradient: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
             --info-gradient: linear-gradient(135deg, #4895ef 0%, #3f37c9 100%);
+            --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --danger-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
             --completed-color: #10b981;
             --pending-color: #f59e0b;
             --overdue-color: #ef4444;
@@ -77,38 +79,6 @@
             width: 250px;
         }
 
-        .notification-bell {
-            position: relative;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: var(--bg-secondary);
-            transition: background-color var(--transition-fast);
-        }
-
-        .notification-bell:hover {
-            background: var(--hover-color);
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: var(--overdue-color);
-            color: white;
-            font-size: 10px;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
         .user-profile {
             display: flex;
             align-items: center;
@@ -135,35 +105,83 @@
             color: var(--text-secondary);
         }
 
-        .menu-item {
-            background-color: transparent;
-            color: var(--text-primary);
-            padding: 12px;
+        /* ========== STATISTICS CARDS ========== */
+        .ideas-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-md);
+        }
+
+        .stat-title {
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            color: var(--text-secondary);
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
             border-radius: var(--radius-md);
-            cursor: pointer;
+            background: var(--primary-gradient);
             display: flex;
             align-items: center;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            border: none;
-           
+            justify-content: center;
+            color: white;
         }
 
-        .menu-item:hover {
-            background-color: var(--hover-color);
-            color: var(--menu-hover-text);
+        .stat-content {
+            margin-bottom: var(--space-md);
         }
 
-        .menu-item:hover i,
-        .menu-item:hover .menu-icon {
-            color: var(--menu-hover-text);
+        .stat-content h3 {
+            font-size: var(--text-2xl);
+            font-weight: var(--font-bold);
+            color: var(--text-primary);
+            margin: 0 0 var(--space-xs);
         }
 
-        .menu-item.active {
-            background: var(--success-gradient);
-            color: #fff;
+        .stat-content p {
+            font-size: var(--text-xs);
+            color: var(--text-secondary);
+            margin: 0;
         }
 
-        /* ========== IDEAS STYLES ========== */
+        .progress-bar {
+            height: 8px;
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: var(--radius-full);
+            transition: width 1s ease;
+        }
+
+        /* ========== IDEAS CONTAINER ========== */
         .ideas-container {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
@@ -191,6 +209,7 @@
             gap: var(--space-sm);
         }
 
+        /* ========== FORM STYLES ========== */
         .ideas-form {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -198,12 +217,12 @@
             margin-bottom: var(--space-xl);
         }
 
-        .ideas-form .form-group:last-child {
-            grid-column: 1 / -1;
-        }
-
         .form-group {
             margin-bottom: var(--space-md);
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
         }
 
         .form-label {
@@ -214,7 +233,8 @@
             margin-bottom: var(--space-xs);
         }
 
-        .form-control {
+        .form-control, .form-select {
+            width: 100%;
             padding: var(--space-sm);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
@@ -222,10 +242,9 @@
             color: var(--text-primary);
             font-size: var(--text-sm);
             transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
-            width: 100%;
         }
 
-        .form-control:focus {
+        .form-control:focus, .form-select:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
@@ -236,99 +255,56 @@
             min-height: 120px;
         }
 
-        /* ========== STYLE UNTUK UPLOAD FOTO ========== */
-        .file-upload-container {
-            grid-column: 1 / -1;
-        }
-
-        .file-upload-label {
+        .form-text {
+            color: var(--text-tertiary);
+            font-size: var(--text-xs);
+            margin-top: 4px;
             display: block;
-            padding: var(--space-md);
-            border: 2px dashed var(--border-color);
-            border-radius: var(--radius-md);
-            text-align: center;
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            background-color: var(--input-bg);
         }
 
-        .file-upload-label:hover {
-            border-color: var(--primary);
-            background-color: rgba(67, 97, 238, 0.05);
+        .form-text i {
+            margin-right: 4px;
         }
 
-        .file-upload-label i {
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: var(--space-sm);
-        }
-
-        .file-upload-label h4 {
-            margin: 0 0 var(--space-xs);
-            color: var(--text-primary);
-        }
-
-        .file-upload-label p {
-            margin: 0;
-            color: var(--text-secondary);
-            font-size: var(--text-sm);
-        }
-
-        .file-upload-input {
-            display: none;
-        }
-
-        .file-preview-container {
+        /* ========== DESKRIPSI DAN URL BERSEBELAHAN ========== */
+        .description-url-row {
             grid-column: 1 / -1;
-            display: none;
-            margin-top: var(--space-md);
-        }
-
-        .file-preview {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
             gap: var(--space-md);
-            margin-top: var(--space-sm);
         }
 
-        .preview-item {
-            position: relative;
-            width: 100px;
-            height: 100px;
-            border-radius: var(--radius-md);
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
+        .description-url-row .form-group {
+            margin-bottom: 0;
         }
 
-        .preview-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .preview-item-remove {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: rgba(239, 68, 68, 0.8);
-            color: white;
+        /* ========== FORM MODE INDICATOR ========== */
+        .form-mode-indicator {
             display: flex;
             align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all var(--transition-fast);
+            gap: 8px;
+            margin-bottom: 15px;
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
         }
 
-        .preview-item-remove:hover {
-            background: var(--danger);
-            transform: scale(1.1);
+        .mode-badge {
+            padding: 4px 8px;
+            border-radius: var(--radius-full);
+            font-weight: var(--font-medium);
         }
 
-        /* ========== IMPROVED IDEA CARD STYLES ========== */
+        .edit-mode-badge {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--pending-color);
+        }
+
+        .add-mode-badge {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--completed-color);
+        }
+
+        /* ========== IDEAS GRID ========== */
         .ideas-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
@@ -405,6 +381,30 @@
             text-overflow: ellipsis;
         }
 
+        .idea-url {
+            margin-bottom: var(--space-md);
+            font-size: var(--text-sm);
+        }
+
+        .idea-url a {
+            color: var(--primary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            transition: all var(--transition-fast);
+        }
+
+        .idea-url a:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
         .idea-footer {
             display: flex;
             justify-content: space-between;
@@ -443,58 +443,7 @@
             color: var(--text-tertiary);
         }
 
-        /* ========== IMPROVED GALLERY STYLES ========== */
-        .idea-gallery {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: var(--space-xs);
-            margin-bottom: var(--space-md);
-            border-radius: var(--radius-md);
-            overflow: hidden;
-        }
-
-        .idea-gallery-item {
-            border-radius: var(--radius-xs);
-            overflow: hidden;
-            aspect-ratio: 1/1;
-            cursor: pointer;
-            transition: transform var(--transition-normal);
-            position: relative;
-        }
-
-        .idea-gallery-item:first-child:nth-last-child(1),
-        .idea-gallery-item:first-child:nth-last-child(1) ~ * {
-            grid-column: span 3;
-        }
-
-        .idea-gallery-item:first-child:nth-last-child(2),
-        .idea-gallery-item:first-child:nth-last-child(2) ~ * {
-            grid-column: span 1.5;
-        }
-
-        .idea-gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform var(--transition-normal);
-        }
-
-        .idea-gallery-item:hover img {
-            transform: scale(1.08);
-        }
-
-        .gallery-count {
-            position: absolute;
-            bottom: 4px;
-            right: 4px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: var(--radius-xs);
-        }
-
-        /* ========== IMPROVED STATUS BADGE ========== */
+        /* ========== STATUS BADGE ========== */
         .idea-status {
             padding: 6px 12px;
             border-radius: var(--radius-full);
@@ -525,11 +474,26 @@
             color: #ef4444;
         }
 
-        /* ========== IMPROVED ACTION BUTTONS ========== */
+        /* ========== ACTION BUTTONS ========== */
         .idea-actions {
             display: flex;
             gap: var(--space-xs);
             margin-top: var(--space-sm);
+        }
+
+        .action-btn {
+            padding: 6px;
+            border-radius: var(--radius-md);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all var(--transition-fast);
+        }
+
+        .action-btn:hover {
+            background: var(--hover-color);
+            color: var(--text-primary);
         }
 
         .btn-icon {
@@ -564,39 +528,7 @@
             box-shadow: 0 4px 8px rgba(239, 68, 68, 0.2);
         }
 
-        .btn-icon.view {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--completed-color);
-        }
-
-        .btn-icon.view:hover {
-            background: rgba(16, 185, 129, 0.2);
-            color: var(--completed-color);
-            border-color: var(--completed-color);
-            box-shadow: 0 4px 8px rgba(16, 185, 129, 0.2);
-        }
-
-        /* ========== READ MORE BUTTON ========== */
-        .read-more {
-            background: none;
-            border: none;
-            color: var(--primary);
-            font-size: var(--text-sm);
-            font-weight: var(--font-medium);
-            cursor: pointer;
-            padding: 0;
-            margin-top: var(--space-xs);
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            transition: color var(--transition-fast);
-        }
-
-        .read-more:hover {
-            color: var(--primary-dark);
-        }
-
-        /* ========== CARD META INFORMATION ========== */
+        /* ========== CARD META ========== */
         .card-meta {
             display: flex;
             align-items: center;
@@ -636,13 +568,13 @@
             transform: translateY(-1px);
         }
 
-        .btn-outline {
+        .btn-secondary {
             background: var(--bg-secondary);
             color: var(--text-primary);
             border: 1px solid var(--border-color);
         }
 
-        .btn-outline:hover {
+        .btn-secondary:hover {
             background: var(--hover-color);
         }
 
@@ -672,7 +604,7 @@
             background: var(--card-bg);
             border-radius: var(--radius-lg);
             width: 90%;
-            max-width: 700px;
+            max-width: 500px;
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: var(--shadow-md);
@@ -724,102 +656,6 @@
             display: flex;
             justify-content: flex-end;
             gap: var(--space-sm);
-        }
-
-        /* ========== DETAIL MODAL STYLES ========== */
-        .detail-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--space-lg);
-        }
-
-        .detail-info {
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-md);
-        }
-
-        .detail-field {
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-xs);
-        }
-
-        .detail-label {
-            font-size: var(--text-sm);
-            font-weight: var(--font-semibold);
-            color: var(--text-primary);
-        }
-
-        .detail-value {
-            font-size: var(--text-sm);
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-
-        .detail-images {
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-md);
-        }
-
-        .detail-gallery {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: var(--space-sm);
-        }
-
-        .detail-gallery-item {
-            border-radius: var(--radius-md);
-            overflow: hidden;
-            aspect-ratio: 1/1;
-            cursor: pointer;
-        }
-
-        .detail-gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform var(--transition-normal);
-        }
-
-        .detail-gallery-item:hover img {
-            transform: scale(1.05);
-        }
-
-        /* ========== MODAL GAMBAR BESAR ========== */
-        .image-modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            justify-content: center;
-            align-items: center;
-        }
-
-        .image-modal-content {
-            max-width: 90%;
-            max-height: 90%;
-        }
-
-        .image-modal-close {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            color: white;
-            font-size: 30px;
-            cursor: pointer;
-            background: rgba(0, 0, 0, 0.5);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         /* ========== NOTIFICATION STYLES ========== */
@@ -925,6 +761,30 @@
             margin: 0;
         }
 
+        /* ========== CONNECTION STATUS ========== */
+        .connection-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            border-radius: var(--radius-md);
+            font-size: var(--text-sm);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 1000;
+        }
+        
+        .status-connected {
+            background: var(--completed-color);
+            color: white;
+        }
+        
+        .status-disconnected {
+            background: var(--overdue-color);
+            color: white;
+        }
+
         /* ========== FADE ANIMATION ========== */
         .fade-in {
             animation: fadeIn 0.5s ease-in;
@@ -935,7 +795,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ========== RESPONSIVE ADJUSTMENTS ========== */
+        /* ========== RESPONSIVE ========== */
         @media (max-width: 1024px) {
             .header {
                 flex-direction: column;
@@ -958,12 +818,16 @@
                 grid-template-columns: 1fr;
             }
             
+            .description-url-row {
+                grid-template-columns: 1fr;
+            }
+            
             .ideas-grid {
                 grid-template-columns: 1fr;
             }
 
-            .idea-gallery {
-                grid-template-columns: repeat(2, 1fr);
+            .ideas-stats {
+                grid-template-columns: 1fr;
             }
 
             .header-actions {
@@ -985,19 +849,9 @@
                 align-items: flex-start;
                 gap: var(--space-md);
             }
-
-            .detail-content {
-                grid-template-columns: 1fr;
-            }
         }
 
         @media (max-width: 480px) {
-            .idea-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: var(--space-md);
-            }
-
             .idea-actions {
                 width: 100%;
                 justify-content: space-between;
@@ -1011,29 +865,21 @@
                 width: 100%;
             }
         }
+
         .idea-time {
-    margin-left: var(--space-sm);
-    color: var(--text-tertiary);
-    font-size: var(--text-xs);
-}
+            margin-left: var(--space-sm);
+            color: var(--text-tertiary);
+            font-size: var(--text-xs);
+        }
 
-.idea-time i {
-    margin-right: 4px;
-    font-size: 10px;
-}
-.form-text {
-    color: var(--text-tertiary);
-    font-size: var(--text-xs);
-    margin-top: 4px;
-    display: block;
-}
-
-.form-text i {
-    margin-right: 4px;
-}
+        .idea-time i {
+            margin-right: 4px;
+            font-size: 10px;
+        }
     </style>
 </head>
- <div class="notification-container" id="notificationContainer"></div>
+<body>
+    <div class="notification-container" id="notificationContainer"></div>
     
     <div id="sidebar-container"></div>
     <button class="menu-toggle">
@@ -1063,44 +909,67 @@
             </div>
         </div>
 
+        
+
         <div class="ideas-container">
             <div class="section-header">
                 <h2 class="section-title"><i class="fas fa-plus-circle"></i> Formulir Ide & Saran</h2>
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" id="cancel-idea-btn" style="display: none;">
+                        <i class="fas fa-times"></i> Batal
+                    </button>
+                </div>
             </div>
             
+            <div class="form-mode-indicator" id="form-mode-indicator" style="display: none;">
+                <i class="fas fa-info-circle"></i>
+                <span>Mode: </span>
+                <span id="mode-badge" class="mode-badge add-mode-badge">Tambah Baru</span>
+            </div>
+
             <form id="ideaForm" class="ideas-form">
-                <div class="form-group">
+                <input type="hidden" id="edit-idea-id" value="">
+                
+                <!-- Baris 1: Judul Ide (Full Width) -->
+                <div class="form-group full-width">
                     <label for="ideaTitle" class="form-label">Judul Ide/Saran</label>
                     <input type="text" id="ideaTitle" class="form-control" placeholder="Masukkan judul ide atau saran" required>
                 </div>
                 
-                <div class="form-group">
+                <!-- Baris 2: Kategori (Full Width) -->
+                <div class="form-group full-width">
                     <label for="ideaCategory" class="form-label">Kategori</label>
                     <select id="ideaCategory" class="form-control" required>
                         <option value="">Pilih kategori</option>
-                        <option value="UI UX">UI/UX</option>
+                        <option value="UI/UX">UI/UX</option>
                         <option value="Fitur Panel">Fitur Panel</option>
                         <option value="Fitur Membersite">Fitur Membersite</option>
-                        <option value="Update Fitur Panel">Update Fitur Panel</option>
+                        <option value="Update Fitur">Update Fitur</option>
                         <option value="Lainnya">Lainnya</option>
                     </select>
                 </div>
                 
-                <div class="form-group">
-                    <label for="ideaDescription" class="form-label">Deskripsi Ide/Saran</label>
-                    <textarea id="ideaDescription" class="form-control" placeholder="Jelaskan ide atau saran Anda secara detail..." required></textarea>
-                </div>
-
-                <!-- INPUT URL GAMBAR (MENGGANTIKAN UPLOAD FOTO) -->
-                <div class="form-group">
-                    <label for="ideaImageUrl" class="form-label">URL Gambar (Opsional)</label>
-                    <input type="url" id="ideaImageUrl" class="form-control" placeholder="https://example.com/gambar.jpg">
-                    <small style="color: var(--text-tertiary); font-size: var(--text-xs); margin-top: 4px; display: block;">
-                        <i class="fas fa-info-circle"></i> Masukkan URL gambar yang valid (jpg, png, gif)
-                    </small>
+                <!-- Baris 3: Deskripsi dan URL bersebelahan -->
+                <div class="description-url-row">
+                    <div class="form-group">
+                        <label for="ideaDescription" class="form-label">Deskripsi Ide/Saran</label>
+                        <textarea id="ideaDescription" class="form-control" placeholder="Jelaskan ide atau saran Anda secara detail..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ideaUrl" class="form-label">URL Referensi</label>
+                        <input type="url" id="ideaUrl" class="form-control" placeholder="https://example.com/gambar.jpg">
+                        <small class="form-text">
+                            <i class="fas fa-info-circle"></i> Opsional
+                        </small>
+                    </div>
                 </div>
                 
-                <div class="form-group" style="grid-column: 1 / -1; display: flex; justify-content: flex-end;">
+                <!-- Tombol Submit -->
+                <div class="form-group full-width" style="display: flex; justify-content: flex-end; gap: var(--space-sm);">
+                    <button type="button" class="btn btn-secondary" id="cancel-edit-btn" style="display: none;">
+                        <i class="fas fa-times"></i> Batal Edit
+                    </button>
                     <button type="submit" class="btn btn-primary" id="submitButton">
                         <i class="fas fa-paper-plane"></i> Kirim Ide
                     </button>
@@ -1128,26 +997,6 @@
         </div>
     </div>
 
-    <!-- Modal Detail Ide -->
-    <div class="modal-overlay" id="detailModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 class="modal-title"><i class="fas fa-eye"></i> Detail Ide & Saran</h3>
-                <button class="modal-close" id="closeDetailModal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="detail-content" id="detailContent">
-                    <!-- Detail konten akan dimuat di sini -->
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline" id="closeDetail">
-                    <i class="fas fa-times"></i> Tutup
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- Modal Edit Ide -->
     <div class="modal-overlay" id="editModal">
         <div class="modal">
@@ -1158,6 +1007,7 @@
             <div class="modal-body">
                 <form id="editIdeaForm">
                     <input type="hidden" id="editIdeaId">
+                    
                     <div class="form-group">
                         <label for="editIdeaTitle" class="form-label">Judul Ide/Saran</label>
                         <input type="text" id="editIdeaTitle" class="form-control" required>
@@ -1166,10 +1016,10 @@
                     <div class="form-group">
                         <label for="editIdeaCategory" class="form-label">Kategori</label>
                         <select id="editIdeaCategory" class="form-control" required>
-                            <option value="UI UX">UI/UX</option>
+                            <option value="UI/UX">UI/UX</option>
                             <option value="Fitur Panel">Fitur Panel</option>
                             <option value="Fitur Membersite">Fitur Membersite</option>
-                            <option value="Update Fitur Panel">Update Fitur Panel</option>
+                            <option value="Update Fitur">Update Fitur</option>
                             <option value="Lainnya">Lainnya</option>
                         </select>
                     </div>
@@ -1178,10 +1028,24 @@
                         <label for="editIdeaDescription" class="form-label">Deskripsi Ide/Saran</label>
                         <textarea id="editIdeaDescription" class="form-control" required></textarea>
                     </div>
+
+                    <div class="form-group">
+                        <label for="editIdeaUrl" class="form-label">URL Referensi</label>
+                        <input type="url" id="editIdeaUrl" class="form-control" placeholder="https://example.com/gambar.jpg">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editIdeaStatus" class="form-label">Status</label>
+                        <select id="editIdeaStatus" class="form-control">
+                            <option value="pending">Menunggu Review</option>
+                            <option value="approved">Disetujui</option>
+                            <option value="rejected">Ditolak</option>
+                        </select>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-outline" id="cancelEdit">
+                <button class="btn btn-secondary" id="cancelEdit">
                     <i class="fas fa-times"></i> Batal
                 </button>
                 <button class="btn btn-primary" id="saveEdit">
@@ -1189,12 +1053,6 @@
                 </button>
             </div>
         </div>
-    </div>
-
-    <!-- Modal Gambar Besar (masih dipertahankan untuk kompatibilitas) -->
-    <div class="image-modal" id="imageModal">
-        <span class="image-modal-close" id="closeImageModal">&times;</span>
-        <img class="image-modal-content" id="expandedImage">
     </div>
     
     <script src="sidebar-loader.js"></script>
@@ -1204,896 +1062,803 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     
     <script>
-    // Konfigurasi Firebase
-    const firebaseConfig = {
-        apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
-        authDomain: "dashboard-css.firebaseapp.com",
-        databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "dashboard-css",
-        storageBucket: "dashboard-css.appspot.com",
-        messagingSenderId: "771131792881",
-        appId: "1:771131792881:web:ad634424225bd7de847850",
-        measurementId: "G-3CYBC5B101"
-    };
-
-    // Inisialisasi Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    // Data Ide & Saran
-    let ideasData = [];
-    let currentEditId = null;
-    let currentUser = null;
-    let currentUserData = null;
-    let unsubscribeIdeas = null;
-
-    // Elemen DOM
-    const ideaForm = document.getElementById('ideaForm');
-    const ideasGrid = document.getElementById('ideasGrid');
-    const emptyState = document.getElementById('emptyState');
-    const searchIdeas = document.getElementById('searchIdeas');
-    const refreshIdeas = document.getElementById('refreshIdeas');
-    const editModal = document.getElementById('editModal');
-    const closeEditModal = document.getElementById('closeEditModal');
-    const cancelEdit = document.getElementById('cancelEdit');
-    const saveEdit = document.getElementById('saveEdit');
-    const editIdeaForm = document.getElementById('editIdeaForm');
-    const notificationContainer = document.getElementById('notificationContainer');
-    const imageModal = document.getElementById('imageModal');
-    const expandedImage = document.getElementById('expandedImage');
-    const closeImageModal = document.getElementById('closeImageModal');
-    const submitButton = document.getElementById('submitButton');
-
-    // Buat elemen status koneksi jika belum ada
-    let connectionStatus = document.getElementById('connectionStatus');
-    if (!connectionStatus) {
-        connectionStatus = document.createElement('div');
-        connectionStatus.id = 'connectionStatus';
-        connectionStatus.className = 'connection-status status-connected';
-        connectionStatus.innerHTML = '<i class="fas fa-check-circle"></i> Terhubung dengan Firebase';
-        document.body.appendChild(connectionStatus);
-        
-        setTimeout(() => {
-            connectionStatus.style.display = 'none';
-        }, 3000);
-    }
-
-    // Fungsi untuk menampilkan notifikasi
-    function showNotification(message, type = 'info') {
-        if (!notificationContainer) {
-            console.error('Notification container not found');
-            return;
-        }
-        
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.innerHTML = `
-            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-            <span>${message}</span>
-            <button class="notification-close">
-                <i class="fas fa-times"></i>
-            </button>
-        `;
-        
-        notificationContainer.appendChild(notification);
-        
-        const closeBtn = notification.querySelector('.notification-close');
-        closeBtn.addEventListener('click', function() {
-            closeNotification(notification);
-        });
-        
-        const timeoutId = setTimeout(() => {
-            closeNotification(notification);
-        }, 5000);
-        
-        notification.dataset.timeoutId = timeoutId;
-    }
-
-    function closeNotification(notification) {
-        if (notification.dataset.timeoutId) {
-            clearTimeout(parseInt(notification.dataset.timeoutId));
-        }
-        
-        notification.classList.add('hiding');
-        
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notificationContainer.removeChild(notification);
-            }
-        }, 500);
-    }
-
-    // Fungsi untuk memastikan user document ada
-    async function ensureUserDocument(user) {
-        try {
-            const userRef = db.collection('users').doc(user.uid);
-            const userDoc = await userRef.get();
-            
-            // Daftar email super admin
-            const superAdminEmails = [
-                "superadmin@gachaengine.com",
-                "admin@gachaengine.com"
-            ];
-            
-            const isSuperAdmin = superAdminEmails.includes(user.email);
-            
-            if (userDoc.exists) {
-                const currentData = userDoc.data();
-                const updateData = {
-                    lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
-                    email: user.email,
-                    displayName: user.displayName || currentData.displayName || user.email
-                };
-                
-                if (!currentData.hasOwnProperty('role')) {
-                    updateData.role = isSuperAdmin ? 'super_admin' : 'user';
-                }
-                if (!currentData.hasOwnProperty('isSuperAdmin')) {
-                    updateData.isSuperAdmin = isSuperAdmin;
-                }
-                
-                await userRef.update(updateData);
-                console.log('User document updated for:', user.uid, 'Role:', currentData.role || updateData.role);
-                
-                return { ...currentData, ...updateData };
-            } else {
-                const newUserDoc = {
-                    email: user.email,
-                    displayName: user.displayName || user.email,
-                    role: isSuperAdmin ? 'super_admin' : 'user',
-                    isSuperAdmin: isSuperAdmin,
-                    lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
-                
-                await userRef.set(newUserDoc);
-                console.log('New user document created for:', user.uid, 'Role:', newUserDoc.role);
-                
-                return newUserDoc;
-            }
-        } catch (error) {
-            console.error('Error ensuring user document:', error);
-            throw error;
-        }
-    }
-
-    // Fungsi untuk memeriksa autentikasi pengguna
-    async function checkAuth() {
-        return new Promise((resolve, reject) => {
-            const unsubscribe = auth.onAuthStateChanged(async user => {
-                unsubscribe();
-                if (user) {
-                    currentUser = user;
-                    try {
-                        currentUserData = await ensureUserDocument(user);
-                        resolve(user);
-                    } catch (error) {
-                        reject(error);
-                    }
-                } else {
-                    reject(new Error('User not authenticated'));
-                }
-            });
-        });
-    }
-    // Fungsi untuk menyimpan ide ke Firestore
-async function saveIdea(ideaData) {
-    try {
-        await checkAuth();
-        
-        // Dapatkan display name dengan lebih baik
-        let displayName = currentUser.displayName;
-        if (!displayName) {
-            // Jika displayName tidak ada, gunakan email tanpa domain
-            displayName = currentUser.email.split('@')[0];
-        }
-        
-        const ideaWithUser = {
-            title: ideaData.title,
-            category: ideaData.category,
-            description: ideaData.description,
-            images: ideaData.images || [],
-            userId: currentUser.uid,
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        // Konfigurasi Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
+            authDomain: "dashboard-css.firebaseapp.com",
+            databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "dashboard-css",
+            storageBucket: "dashboard-css.appspot.com",
+            messagingSenderId: "771131792881",
+            appId: "1:771131792881:web:ad634424225bd7de847850",
+            measurementId: "G-3CYBC5B101"
         };
 
-        if (ideaData.id) {
-            // Update ide yang sudah ada
-            await db.collection('ideas').doc(ideaData.id).update(ideaWithUser);
-            return ideaData.id;
-        } else {
-            // Ide baru
-            ideaWithUser.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-            ideaWithUser.status = 'pending';
-            ideaWithUser.submittedBy = displayName; // Gunakan displayName yang sudah diproses
-            const docRef = await db.collection('ideas').add(ideaWithUser);
-            return docRef.id;
-        }
-    } catch (error) {
-        console.error('Error saving idea:', error);
-        throw error;
-    }
-}
+        // Inisialisasi Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
 
-    // Fungsi untuk menghapus ide dari Firestore
-    async function deleteIdeaFromFirestore(ideaId) {
-        try {
-            await checkAuth();
-            await db.collection('ideas').doc(ideaId).delete();
-        } catch (error) {
-            console.error('Error deleting idea:', error);
-            throw error;
-        }
-    }
+        // Data Ide & Saran
+        let ideasData = [];
+        let currentEditId = null;
+        let currentUser = null;
+        let currentUserData = null;
+        let unsubscribeIdeas = null;
 
-    // Fungsi untuk menangani submit form
-    async function handleSubmitIdea(e) {
-        e.preventDefault();
-        
-        const title = document.getElementById('ideaTitle').value.trim();
-        const category = document.getElementById('ideaCategory').value;
-        const description = document.getElementById('ideaDescription').value.trim();
-        const imageUrl = document.getElementById('ideaImageUrl')?.value.trim() || '';
-        
-        if (!title || !category || !description) {
-            showNotification('Harap isi semua field yang wajib diisi', 'error');
-            return;
-        }
-        
-        // Validasi URL jika diisi
-        if (imageUrl) {
-            try {
-                new URL(imageUrl);
-            } catch (e) {
-                showNotification('URL gambar tidak valid', 'error');
-                return;
-            }
-        }
-        
-        // Tampilkan loading state
-        submitButton.classList.add('btn-loading');
-        submitButton.disabled = true;
-        
-        try {
-            const newIdea = {
-                title,
-                category,
-                description,
-                images: imageUrl ? [imageUrl] : []
-            };
-            
-            if (currentEditId) {
-                newIdea.id = currentEditId;
-            }
-            
-            await saveIdea(newIdea);
-            
-            // Reset form
-            ideaForm.reset();
-            
-            // Hapus loading state
-            submitButton.classList.remove('btn-loading');
-            submitButton.disabled = false;
-            
-            showNotification(currentEditId ? 'Ide berhasil diperbarui!' : 'Ide Anda berhasil dikirim!', 'success');
-            
-            currentEditId = null;
-            
-        } catch (error) {
-            console.error('Error saving idea:', error);
-            showNotification('Gagal menyimpan ide: ' + error.message, 'error');
-            
-            submitButton.classList.remove('btn-loading');
-            submitButton.disabled = false;
-        }
-    }
+        // Elemen DOM
+        const ideaForm = document.getElementById('ideaForm');
+        const ideasGrid = document.getElementById('ideasGrid');
+        const emptyState = document.getElementById('emptyState');
+        const searchIdeas = document.getElementById('searchIdeas');
+        const refreshIdeas = document.getElementById('refreshIdeas');
+        const editModal = document.getElementById('editModal');
+        const closeEditModal = document.getElementById('closeEditModal');
+        const cancelEdit = document.getElementById('cancelEdit');
+        const saveEdit = document.getElementById('saveEdit');
+        const editIdeaForm = document.getElementById('editIdeaForm');
+        const notificationContainer = document.getElementById('notificationContainer');
+        const submitButton = document.getElementById('submitButton');
+        const formModeIndicator = document.getElementById('form-mode-indicator');
+        const modeBadge = document.getElementById('mode-badge');
+        const editIdeaId = document.getElementById('edit-idea-id');
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
+        const cancelIdeaBtn = document.getElementById('cancel-idea-btn');
 
-    // Fungsi untuk merender daftar ide
-    function renderIdeas(filteredIdeas = null) {
-        const ideasToRender = filteredIdeas || ideasData;
-        
-        if (ideasToRender.length === 0) {
-            emptyState.style.display = 'block';
-            ideasGrid.style.display = 'none';
-            return;
-        }
-        
-        emptyState.style.display = 'none';
-        ideasGrid.style.display = 'grid';
-        
-        ideasGrid.innerHTML = '';
-        
-        ideasToRender.forEach(idea => {
-            const ideaCard = document.createElement('div');
-            ideaCard.className = 'idea-card fade-in';
-            
-            // Format tanggal
-            let formattedDate = 'Tanggal tidak tersedia';
-            let timeDisplay = '';
+        // Statistik elements
+        const totalIdeasEl = document.getElementById('total-ideas');
+        const pendingIdeasEl = document.getElementById('pending-ideas');
+        const approvedIdeasEl = document.getElementById('approved-ideas');
+        const rejectedIdeasEl = document.getElementById('rejected-ideas');
+        const totalProgress = document.getElementById('total-progress');
+        const pendingProgress = document.getElementById('pending-progress');
+        const approvedProgress = document.getElementById('approved-progress');
+        const rejectedProgress = document.getElementById('rejected-progress');
 
-            if (idea.createdAt) {
-                try {
-                    const ideaDate = idea.createdAt.toDate ? idea.createdAt.toDate() : new Date(idea.createdAt);
-                    if (!isNaN(ideaDate.getTime())) {
-                        formattedDate = ideaDate.toLocaleDateString('id-ID', {
-                            day: 'numeric',
-                            month: 'long',
-                            year: 'numeric'
-                        });
-                        timeDisplay = ideaDate.toLocaleTimeString('id-ID', {
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        });
-                    }
-                } catch (e) {
-                    console.error('Error formatting date:', e);
-                    formattedDate = 'Tanggal error';
-                }
-            }
-            
-            // Tentukan kelas status
-            let statusClass = '';
-            let statusText = '';
-            
-            switch(idea.status) {
-                case 'pending':
-                    statusClass = 'status-pending';
-                    statusText = 'Menunggu Review';
-                    break;
-                case 'approved':
-                    statusClass = 'status-approved';
-                    statusText = 'Disetujui';
-                    break;
-                case 'rejected':
-                    statusClass = 'status-rejected';
-                    statusText = 'Ditolak';
-                    break;
-                default:
-                    statusClass = 'status-pending';
-                    statusText = 'Menunggu Review';
-            }
-            
-            // Tampilkan info pemilik ide untuk super admin
-            const ownerInfo = currentUserData && currentUserData.isSuperAdmin ? 
-                `<div class="card-meta">
-                    <div class="meta-item">
-                        <i class="fas fa-user"></i>
-                        <span>User ID: ${idea.userId}</span>
-                    </div>
-                </div>` : '';
-
-            // HTML untuk URL gambar (sederhana seperti research)
-            let imageUrlHtml = '';
-            if (idea.images && idea.images.length > 0 && idea.images[0]) {
-                imageUrlHtml = `
-                    <div style="margin-bottom: var(--space-md);">
-                        <a href="${idea.images[0]}" target="_blank" style="color: #4361ee; text-decoration: none; font-size: var(--text-sm); display: inline-flex; align-items: center; gap: 6px;">
-                            <i class="fas fa-external-link-alt"></i> 
-                            Lihat Gambar/Referensi
-                        </a>
-                    </div>
-                `;
-            }
-
-            ideaCard.innerHTML = `
-                <div class="idea-header">
-                    <div>
-                        <h3 class="idea-title">${idea.title}</h3>
-                        <p class="idea-date">
-                            <i class="far fa-calendar-alt"></i> ${formattedDate} 
-                            ${timeDisplay ? `<span style="margin-left: var(--space-sm); color: var(--text-tertiary);"><i class="far fa-clock"></i> ${timeDisplay}</span>` : ''}
-                        </p>
-                    </div>
-                    <span class="idea-status ${statusClass}">
-                        <i class="fas fa-circle"></i> ${statusText}
-                    </span>
-                </div>
-                
-                ${ownerInfo}
-                
-                <span class="idea-category">${idea.category}</span>
-                
-                <p class="idea-description">${idea.description}</p>
-                
-                ${imageUrlHtml}
-                
-                <div class="idea-footer">
-                    <div class="idea-author">
-                        <img class="author-avatar" src="https://iili.io/Fpiva7S.png" alt="Author">
-// Di dalam function renderIdeas(), bagian author-info:
-<div class="author-info">
-    <span class="author-name">${idea.submittedBy || 'User'}</span>
-    <span class="author-role">${currentUserData && currentUserData.isSuperAdmin ? 'Super Admin View' : 'Customer Service Support'}</span>
-</div>
-                    </div>
-                </div>
-                
-                <div class="idea-actions">
-                    ${currentUserData && (currentUserData.isSuperAdmin || idea.userId === currentUser.uid) ? `
-                        <button class="btn-icon edit" data-id="${idea.id}" title="Edit">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn-icon delete" data-id="${idea.id}" title="Hapus">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    ` : `
-                        <span style="color: var(--text-secondary); font-size: var(--text-xs);">Read Only</span>
-                    `}
-                </div>
-            `;
-            
-            ideasGrid.appendChild(ideaCard);
-            
-            // Event listener untuk tombol edit dan delete
-            if (currentUserData && (currentUserData.isSuperAdmin || idea.userId === currentUser.uid)) {
-                const editBtn = ideaCard.querySelector('.btn-icon.edit');
-                if (editBtn) {
-                    editBtn.addEventListener('click', function() {
-                        openEditModal(idea.id);
-                    });
-                }
-                
-                const deleteBtn = ideaCard.querySelector('.btn-icon.delete');
-                if (deleteBtn) {
-                    deleteBtn.addEventListener('click', function() {
-                        deleteIdea(idea.id);
-                    });
-                }
-            }
-        });
-    }
-
-    // Fungsi untuk membuka modal edit
-    function openEditModal(id) {
-        const idea = ideasData.find(item => item.id === id);
-        
-        if (!idea) return;
-        
-        if (!currentUserData.isSuperAdmin && idea.userId !== currentUser.uid) {
-            showNotification('Anda tidak memiliki izin untuk mengedit ide ini', 'error');
-            return;
-        }
-        
-        currentEditId = idea.id;
-        
-        document.getElementById('ideaTitle').value = idea.title;
-        document.getElementById('ideaCategory').value = idea.category;
-        document.getElementById('ideaDescription').value = idea.description;
-        
-        const imageUrlInput = document.getElementById('ideaImageUrl');
-        if (imageUrlInput && idea.images && idea.images.length > 0) {
-            imageUrlInput.value = idea.images[0];
-        }
-        
-        ideaForm.scrollIntoView({ behavior: 'smooth' });
-        
-        showNotification('Anda sedang dalam mode edit. Perbarui data dan klik "Kirim Ide" untuk menyimpan perubahan.', 'info');
-    }
-
-    // Fungsi untuk menghapus ide
-    async function deleteIdea(id) {
-        const idea = ideasData.find(item => item.id === id);
-        if (!idea) return;
-        
-        if (!currentUserData.isSuperAdmin && idea.userId !== currentUser.uid) {
-            showNotification('Anda tidak memiliki izin untuk menghapus ide ini', 'error');
-            return;
-        }
-        
-        if (confirm('Apakah Anda yakin ingin menghapus ide ini?')) {
-            try {
-                await deleteIdeaFromFirestore(id);
-                showNotification('Ide berhasil dihapus', 'success');
-                
-                if (currentEditId === id) {
-                    currentEditId = null;
-                    ideaForm.reset();
-                }
-                
-            } catch (error) {
-                console.error('Error deleting idea:', error);
-                showNotification('Gagal menghapus ide', 'error');
-            }
-        }
-    }
-
-    // Fungsi untuk memfilter ide berdasarkan pencarian
-    function filterIdeas() {
-        const searchTerm = searchIdeas.value.toLowerCase();
-        
-        if (!searchTerm) {
-            renderIdeas();
-            return;
-        }
-        
-        const filteredIdeas = ideasData.filter(idea => 
-            idea.title.toLowerCase().includes(searchTerm) ||
-            idea.category.toLowerCase().includes(searchTerm) ||
-            idea.description.toLowerCase().includes(searchTerm) ||
-            (idea.submittedBy && idea.submittedBy.toLowerCase().includes(searchTerm)) ||
-            (currentUserData && currentUserData.isSuperAdmin && idea.userId.toLowerCase().includes(searchTerm))
-        );
-        
-        renderIdeas(filteredIdeas);
-    }
-
-    // Fungsi untuk memperbarui counter ide di localStorage
-    function updateIdeasCounter() {
-        const totalIdeas = ideasData.length;
-        
-        localStorage.setItem('ideasCount', totalIdeas.toString());
-        
-        window.dispatchEvent(new CustomEvent('ideasDataChanged', { 
-            detail: { ideasCount: totalIdeas } 
-        }));
-        
-        if (connectionStatus) {
+        // Buat elemen status koneksi
+        let connectionStatus = document.getElementById('connectionStatus');
+        if (!connectionStatus) {
+            connectionStatus = document.createElement('div');
+            connectionStatus.id = 'connectionStatus';
             connectionStatus.className = 'connection-status status-connected';
-            connectionStatus.innerHTML = '<i class="fas fa-check-circle"></i> Data ide tersimpan di Firebase';
-            connectionStatus.style.display = 'flex';
+            document.body.appendChild(connectionStatus);
             
             setTimeout(() => {
                 connectionStatus.style.display = 'none';
             }, 3000);
         }
-    }
 
-    // Setup real-time listener untuk data ide
-    function setupRealTimeListener() {
-        if (unsubscribeIdeas) {
-            unsubscribeIdeas();
-        }
-        
-        let query;
-        
-        if (currentUserData && currentUserData.isSuperAdmin) {
-            query = db.collection('ideas');
-            console.log('Super admin mode: Loading all ideas data');
-        } else {
-            query = db.collection('ideas').where('userId', '==', currentUser.uid);
-            console.log('User mode: Loading user-specific ideas data');
-        }
-        
-        unsubscribeIdeas = query.onSnapshot(snapshot => {
-            ideasData = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
+        // Fungsi untuk menampilkan notifikasi
+        function showNotification(message, type = 'info') {
+            if (!notificationContainer) {
+                console.error('Notification container not found');
+                return;
+            }
             
-            ideasData.sort((a, b) => {
-                const dateA = a.createdAt ? (a.createdAt.toDate ? a.createdAt.toDate() : new Date(a.createdAt)) : new Date(0);
-                const dateB = b.createdAt ? (b.createdAt.toDate ? b.createdAt.toDate() : new Date(b.createdAt)) : new Date(0);
-                return dateB - dateA;
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+                <button class="notification-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            notificationContainer.appendChild(notification);
+            
+            const closeBtn = notification.querySelector('.notification-close');
+            closeBtn.addEventListener('click', function() {
+                closeNotification(notification);
             });
             
-            renderIdeas();
-            updateIdeasCounter();
+            const timeoutId = setTimeout(() => {
+                closeNotification(notification);
+            }, 5000);
             
-            if (currentUserData && currentUserData.isSuperAdmin) {
-                showNotification(`Super Admin Mode: Memuat ${ideasData.length} ide dari semua user`, 'info');
-            }
-        }, error => {
-            console.error('Error in real-time listener:', error);
-            showNotification('Gagal memuat data real-time', 'error');
-        });
-    }
-
-    // Update user profile info
-    function updateUserProfile(user, userData) {
-        const userProfile = document.querySelector('.user-info h4');
-        const userRole = document.querySelector('.user-info p');
-        
-        if (userProfile) {
-            const displayName = userData?.displayName || user.displayName || user.email || 'User';
-            userProfile.textContent = displayName;
+            notification.dataset.timeoutId = timeoutId;
         }
-        
-        if (userRole) {
-            const roleText = userData && userData.isSuperAdmin ? 
-                'Super Administrator' : 
-                'Customer Service Support';
-            userRole.textContent = roleText;
+
+        function closeNotification(notification) {
+            if (notification.dataset.timeoutId) {
+                clearTimeout(parseInt(notification.dataset.timeoutId));
+            }
             
-            if (userData && userData.isSuperAdmin) {
-                const headerTitle = document.querySelector('.header h1');
-                if (headerTitle && !headerTitle.querySelector('.super-admin-badge')) {
-                    const badge = document.createElement('span');
-                    badge.className = 'super-admin-badge';
-                    badge.style.background = 'var(--warning-gradient)';
-                    badge.style.color = 'white';
-                    badge.style.padding = '2px 8px';
-                    badge.style.borderRadius = '12px';
-                    badge.style.fontSize = 'var(--text-xs)';
-                    badge.style.marginLeft = '8px';
-                    badge.textContent = 'Super Admin';
-                    headerTitle.appendChild(badge);
+            notification.classList.add('hiding');
+            
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notificationContainer.removeChild(notification);
+                }
+            }, 500);
+        }
+
+        // Fungsi untuk memastikan user document ada
+        async function ensureUserDocument(user) {
+            try {
+                const userRef = db.collection('users').doc(user.uid);
+                const userDoc = await userRef.get();
+                
+                const superAdminEmails = [
+                    "superadmin@gachaengine.com",
+                    "admin@gachaengine.com"
+                ];
+                
+                const isSuperAdmin = superAdminEmails.includes(user.email);
+                
+                if (userDoc.exists) {
+                    const currentData = userDoc.data();
+                    const updateData = {
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                        email: user.email,
+                        displayName: user.displayName || currentData.displayName || user.email
+                    };
+                    
+                    if (!currentData.hasOwnProperty('role')) {
+                        updateData.role = isSuperAdmin ? 'super_admin' : 'user';
+                    }
+                    if (!currentData.hasOwnProperty('isSuperAdmin')) {
+                        updateData.isSuperAdmin = isSuperAdmin;
+                    }
+                    
+                    await userRef.update(updateData);
+                    
+                    return { ...currentData, ...updateData };
+                } else {
+                    const newUserDoc = {
+                        email: user.email,
+                        displayName: user.displayName || user.email,
+                        role: isSuperAdmin ? 'super_admin' : 'user',
+                        isSuperAdmin: isSuperAdmin,
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                    
+                    await userRef.set(newUserDoc);
+                    
+                    return newUserDoc;
+                }
+            } catch (error) {
+                console.error('Error ensuring user document:', error);
+                throw error;
+            }
+        }
+
+        // Fungsi untuk memeriksa autentikasi
+        async function checkAuth() {
+            return new Promise((resolve, reject) => {
+                const unsubscribe = auth.onAuthStateChanged(async user => {
+                    unsubscribe();
+                    if (user) {
+                        currentUser = user;
+                        try {
+                            currentUserData = await ensureUserDocument(user);
+                            resolve(user);
+                        } catch (error) {
+                            reject(error);
+                        }
+                    } else {
+                        reject(new Error('User not authenticated'));
+                    }
+                });
+            });
+        }
+
+        // Fungsi untuk menyimpan ide ke Firestore
+        async function saveIdea(ideaData) {
+            try {
+                await checkAuth();
+                
+                let displayName = currentUser.displayName;
+                if (!displayName) {
+                    displayName = currentUser.email.split('@')[0];
+                }
+                
+                const ideaWithUser = {
+                    title: ideaData.title,
+                    category: ideaData.category,
+                    description: ideaData.description,
+                    url: ideaData.url || null,
+                    userId: currentUser.uid,
+                    submittedBy: displayName,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                if (ideaData.id) {
+                    await db.collection('ideas').doc(ideaData.id).update(ideaWithUser);
+                    return ideaData.id;
+                } else {
+                    ideaWithUser.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                    ideaWithUser.status = 'pending';
+                    const docRef = await db.collection('ideas').add(ideaWithUser);
+                    return docRef.id;
+                }
+            } catch (error) {
+                console.error('Error saving idea:', error);
+                throw error;
+            }
+        }
+
+        // Fungsi untuk menghapus ide
+        async function deleteIdeaFromFirestore(ideaId) {
+            try {
+                await checkAuth();
+                await db.collection('ideas').doc(ideaId).delete();
+            } catch (error) {
+                console.error('Error deleting idea:', error);
+                throw error;
+            }
+        }
+
+        // Fungsi untuk mengupdate status ide
+        async function updateIdeaStatus(ideaId, status) {
+            try {
+                await checkAuth();
+                await db.collection('ideas').doc(ideaId).update({
+                    status: status,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } catch (error) {
+                console.error('Error updating idea status:', error);
+                throw error;
+            }
+        }
+
+        // Fungsi untuk menghitung dan update statistik
+        function updateIdeasStats() {
+            const total = ideasData.length;
+            const pending = ideasData.filter(idea => idea.status === 'pending').length;
+            const approved = ideasData.filter(idea => idea.status === 'approved').length;
+            const rejected = ideasData.filter(idea => idea.status === 'rejected').length;
+
+            if (totalIdeasEl) totalIdeasEl.textContent = total;
+            if (pendingIdeasEl) pendingIdeasEl.textContent = pending;
+            if (approvedIdeasEl) approvedIdeasEl.textContent = approved;
+            if (rejectedIdeasEl) rejectedIdeasEl.textContent = rejected;
+
+            // Update progress bars
+            if (totalProgress) {
+                const target = 50; // Target 50 ide
+                totalProgress.style.width = `${Math.min(100, (total / target) * 100)}%`;
+            }
+            if (pendingProgress && total > 0) {
+                pendingProgress.style.width = `${(pending / total) * 100}%`;
+            }
+            if (approvedProgress && total > 0) {
+                approvedProgress.style.width = `${(approved / total) * 100}%`;
+            }
+            if (rejectedProgress && total > 0) {
+                rejectedProgress.style.width = `${(rejected / total) * 100}%`;
+            }
+
+            // Update counter di localStorage
+            localStorage.setItem('ideasCount', total.toString());
+            window.dispatchEvent(new CustomEvent('ideasDataChanged', { 
+                detail: { ideasCount: total } 
+            }));
+        }
+
+        // Fungsi untuk merender daftar ide
+        function renderIdeas(filteredIdeas = null) {
+            const ideasToRender = filteredIdeas || ideasData;
+            
+            if (ideasToRender.length === 0) {
+                if (emptyState) emptyState.style.display = 'block';
+                if (ideasGrid) ideasGrid.style.display = 'none';
+                return;
+            }
+            
+            if (emptyState) emptyState.style.display = 'none';
+            if (ideasGrid) ideasGrid.style.display = 'grid';
+            
+            ideasGrid.innerHTML = '';
+            
+            ideasToRender.forEach(idea => {
+                const ideaCard = document.createElement('div');
+                ideaCard.className = 'idea-card fade-in';
+                
+                let formattedDate = 'Tanggal tidak tersedia';
+                let timeDisplay = '';
+
+                if (idea.createdAt) {
+                    try {
+                        const ideaDate = idea.createdAt.toDate ? idea.createdAt.toDate() : new Date(idea.createdAt);
+                        if (!isNaN(ideaDate.getTime())) {
+                            formattedDate = ideaDate.toLocaleDateString('id-ID', {
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric'
+                            });
+                            timeDisplay = ideaDate.toLocaleTimeString('id-ID', {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            });
+                        }
+                    } catch (e) {
+                        console.error('Error formatting date:', e);
+                    }
+                }
+                
+                let statusClass = '';
+                let statusText = '';
+                
+                switch(idea.status) {
+                    case 'pending':
+                        statusClass = 'status-pending';
+                        statusText = 'Menunggu Review';
+                        break;
+                    case 'approved':
+                        statusClass = 'status-approved';
+                        statusText = 'Disetujui';
+                        break;
+                    case 'rejected':
+                        statusClass = 'status-rejected';
+                        statusText = 'Ditolak';
+                        break;
+                    default:
+                        statusClass = 'status-pending';
+                        statusText = 'Menunggu Review';
+                }
+                
+                const ownerInfo = currentUserData && currentUserData.isSuperAdmin ? 
+                    `<div class="card-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-user"></i>
+                            <span>User ID: ${idea.userId}</span>
+                        </div>
+                    </div>` : '';
+
+                // Tampilkan URL jika ada
+                const urlHtml = idea.url ? `
+                    <div class="idea-url">
+                        <a href="${idea.url}" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> 
+                            Lihat Referensi
+                        </a>
+                    </div>
+                ` : '';
+
+                ideaCard.innerHTML = `
+                    <div class="idea-header">
+                        <div>
+                            <h3 class="idea-title">${idea.title}</h3>
+                            <p class="idea-date">
+                                <i class="far fa-calendar-alt"></i> ${formattedDate} 
+                                ${timeDisplay ? `<span class="idea-time"><i class="far fa-clock"></i> ${timeDisplay}</span>` : ''}
+                            </p>
+                        </div>
+                        <span class="idea-status ${statusClass}">
+                            <i class="fas fa-circle"></i> ${statusText}
+                        </span>
+                    </div>
+                    
+                    ${ownerInfo}
+                    
+                    <span class="idea-category">${idea.category}</span>
+                    
+                    <p class="idea-description">${idea.description}</p>
+                    
+                    ${urlHtml}
+                    
+                    <div class="idea-footer">
+                        <div class="idea-author">
+                            <img class="author-avatar" src="https://iili.io/Fpiva7S.png" alt="Author">
+                            <div class="author-info">
+                                <span class="author-name">${idea.submittedBy || 'User'}</span>
+                                <span class="author-role">${currentUserData && currentUserData.isSuperAdmin ? 'Super Admin View' : 'Customer Service Support'}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="idea-actions">
+                        ${currentUserData && (currentUserData.isSuperAdmin || idea.userId === currentUser.uid) ? `
+                            <button class="action-btn edit-btn" data-id="${idea.id}" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn delete-btn" data-id="${idea.id}" title="Hapus">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        ` : `
+                            <span style="color: var(--text-secondary); font-size: var(--text-xs);">Read Only</span>
+                        `}
+                        ${currentUserData && currentUserData.isSuperAdmin ? `
+                            <select class="form-select status-select" data-id="${idea.id}" style="width: 120px; margin-left: auto; padding: 4px;">
+                                <option value="pending" ${idea.status === 'pending' ? 'selected' : ''}>Menunggu</option>
+                                <option value="approved" ${idea.status === 'approved' ? 'selected' : ''}>Setujui</option>
+                                <option value="rejected" ${idea.status === 'rejected' ? 'selected' : ''}>Tolak</option>
+                            </select>
+                        ` : ''}
+                    </div>
+                `;
+                
+                ideasGrid.appendChild(ideaCard);
+                
+                // Event listeners
+                if (currentUserData && (currentUserData.isSuperAdmin || idea.userId === currentUser.uid)) {
+                    const editBtn = ideaCard.querySelector('.edit-btn');
+                    if (editBtn) {
+                        editBtn.addEventListener('click', function() {
+                            openEditModal(idea.id);
+                        });
+                    }
+                    
+                    const deleteBtn = ideaCard.querySelector('.delete-btn');
+                    if (deleteBtn) {
+                        deleteBtn.addEventListener('click', function() {
+                            deleteIdea(idea.id);
+                        });
+                    }
+                }
+
+                // Status select untuk super admin
+                if (currentUserData && currentUserData.isSuperAdmin) {
+                    const statusSelect = ideaCard.querySelector('.status-select');
+                    if (statusSelect) {
+                        statusSelect.addEventListener('change', async function() {
+                            const newStatus = this.value;
+                            try {
+                                await updateIdeaStatus(idea.id, newStatus);
+                                showNotification(`Status ide berhasil diubah menjadi ${this.options[this.selectedIndex].text}`, 'success');
+                            } catch (error) {
+                                console.error('Error updating status:', error);
+                                showNotification('Gagal mengubah status', 'error');
+                                this.value = idea.status;
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+        // Fungsi untuk handle submit form
+        async function handleSubmitIdea(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('ideaTitle').value.trim();
+            const category = document.getElementById('ideaCategory').value;
+            const description = document.getElementById('ideaDescription').value.trim();
+            const url = document.getElementById('ideaUrl').value.trim();
+            
+            if (!title || !category || !description) {
+                showNotification('Harap isi semua field yang wajib diisi', 'error');
+                return;
+            }
+            
+            // Validasi URL jika diisi
+            if (url) {
+                try {
+                    new URL(url);
+                } catch (e) {
+                    showNotification('URL tidak valid', 'error');
+                    return;
+                }
+            }
+            
+            submitButton.classList.add('btn-loading');
+            submitButton.disabled = true;
+            
+            try {
+                const newIdea = {
+                    title,
+                    category,
+                    description,
+                    url: url || null
+                };
+                
+                if (currentEditId) {
+                    newIdea.id = currentEditId;
+                }
+                
+                await saveIdea(newIdea);
+                
+                resetForm();
+                
+                showNotification(currentEditId ? 'Ide berhasil diperbarui!' : 'Ide Anda berhasil dikirim!', 'success');
+                
+            } catch (error) {
+                console.error('Error saving idea:', error);
+                showNotification('Gagal menyimpan ide: ' + error.message, 'error');
+            } finally {
+                submitButton.classList.remove('btn-loading');
+                submitButton.disabled = false;
+            }
+        }
+
+        // Fungsi untuk reset form
+        function resetForm() {
+            ideaForm.reset();
+            currentEditId = null;
+            editIdeaId.value = '';
+            
+            if (formModeIndicator) formModeIndicator.style.display = 'none';
+            if (cancelEditBtn) cancelEditBtn.style.display = 'none';
+            if (cancelIdeaBtn) cancelIdeaBtn.style.display = 'none';
+            
+            const submitBtn = document.getElementById('submitButton');
+            if (submitBtn) {
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim Ide';
+            }
+        }
+
+        // Fungsi untuk membuka modal edit
+        function openEditModal(id) {
+            const idea = ideasData.find(item => item.id === id);
+            if (!idea) return;
+            
+            if (!currentUserData.isSuperAdmin && idea.userId !== currentUser.uid) {
+                showNotification('Anda tidak memiliki izin untuk mengedit ide ini', 'error');
+                return;
+            }
+            
+            // Isi form edit di modal
+            document.getElementById('editIdeaId').value = idea.id;
+            document.getElementById('editIdeaTitle').value = idea.title;
+            document.getElementById('editIdeaCategory').value = idea.category;
+            document.getElementById('editIdeaDescription').value = idea.description;
+            document.getElementById('editIdeaUrl').value = idea.url || '';
+            document.getElementById('editIdeaStatus').value = idea.status || 'pending';
+            
+            // Tampilkan modal
+            editModal.classList.add('active');
+        }
+
+        // Fungsi untuk menghapus ide
+        async function deleteIdea(id) {
+            const idea = ideasData.find(item => item.id === id);
+            if (!idea) return;
+            
+            if (!currentUserData.isSuperAdmin && idea.userId !== currentUser.uid) {
+                showNotification('Anda tidak memiliki izin untuk menghapus ide ini', 'error');
+                return;
+            }
+            
+            if (confirm('Apakah Anda yakin ingin menghapus ide ini?')) {
+                try {
+                    await deleteIdeaFromFirestore(id);
+                    showNotification('Ide berhasil dihapus', 'success');
+                    
+                    if (currentEditId === id) {
+                        resetForm();
+                    }
+                } catch (error) {
+                    console.error('Error deleting idea:', error);
+                    showNotification('Gagal menghapus ide', 'error');
                 }
             }
         }
-        
-        console.log('User profile updated:', {
-            name: userProfile?.textContent,
-            role: userRole?.textContent
-        });
-    }
 
-    // Fungsi untuk menutup modal
-    function closeModal() {
-        editModal.classList.remove('active');
-    }
-
-    // Fungsi untuk menangani simpan edit
-    async function handleSaveEdit() {
-        const id = document.getElementById('editIdeaId').value;
-        const title = document.getElementById('editIdeaTitle').value;
-        const category = document.getElementById('editIdeaCategory').value;
-        const description = document.getElementById('editIdeaDescription').value;
-        
-        if (!title || !category || !description) {
-            showNotification('Harap isi semua field', 'error');
-            return;
+        // Fungsi untuk filter ide
+        function filterIdeas() {
+            const searchTerm = searchIdeas.value.toLowerCase();
+            
+            if (!searchTerm) {
+                renderIdeas();
+                return;
+            }
+            
+            const filteredIdeas = ideasData.filter(idea => 
+                idea.title.toLowerCase().includes(searchTerm) ||
+                idea.category.toLowerCase().includes(searchTerm) ||
+                idea.description.toLowerCase().includes(searchTerm) ||
+                (idea.submittedBy && idea.submittedBy.toLowerCase().includes(searchTerm))
+            );
+            
+            renderIdeas(filteredIdeas);
         }
-        
-        try {
-            const ideaToUpdate = {
-                id,
-                title,
-                category,
-                description
-            };
-            
-            await saveIdea(ideaToUpdate);
-            closeModal();
-            
-        } catch (error) {
-            console.error('Error updating idea:', error);
-            showNotification('Gagal memperbarui ide: ' + error.message, 'error');
-        }
-    }
 
-    // Event Listeners
-    document.addEventListener('DOMContentLoaded', async function() {
-        console.log('DOM Content Loaded - Initializing Ideas & Suggestions Dashboard');
-        
-        try {
-            await checkAuth();
-            
-            console.log('User authenticated:', currentUser.uid, 'Role:', currentUserData.role);
-            
-            setupRealTimeListener();
-            
-            if (ideaForm) {
-                ideaForm.addEventListener('submit', handleSubmitIdea);
-            }
-            
-            if (searchIdeas) {
-                searchIdeas.addEventListener('input', filterIdeas);
-            }
-            
-            if (refreshIdeas) {
-                refreshIdeas.addEventListener('click', function() {
-                    renderIdeas();
-                    showNotification('Daftar ide diperbarui', 'info');
-                });
-            }
-            
-            if (closeEditModal) {
-                closeEditModal.addEventListener('click', closeModal);
-            }
-            
-            if (cancelEdit) {
-                cancelEdit.addEventListener('click', closeModal);
-            }
-            
-            if (saveEdit) {
-                saveEdit.addEventListener('click', handleSaveEdit);
-            }
-            
-            if (closeImageModal) {
-                closeImageModal.addEventListener('click', () => {
-                    imageModal.style.display = 'none';
-                });
-            }
-            
-            updateUserProfile(currentUser, currentUserData);
-            
-            console.log('Ideas & suggestions dashboard initialized successfully');
-            
-        } catch (error) {
-            console.error('Authentication error:', error);
-            showNotification('Silakan login untuk mengakses dashboard ide & saran', 'error');
-            
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 3000);
-        }
-    });
-
-    // Handle auth state changes
-    auth.onAuthStateChanged(async user => {
-        if (user) {
-            currentUser = user;
-            currentUserData = await ensureUserDocument(user);
-            console.log('User is signed in:', user.uid, 'Role:', currentUserData.role);
-            
+        // Setup real-time listener
+        function setupRealTimeListener() {
             if (unsubscribeIdeas) {
                 unsubscribeIdeas();
             }
-            setupRealTimeListener();
-            updateUserProfile(user, currentUserData);
             
-        } else {
-            console.log('User is signed out');
-            if (unsubscribeIdeas) {
-                unsubscribeIdeas();
+            let query;
+            
+            if (currentUserData && currentUserData.isSuperAdmin) {
+                query = db.collection('ideas');
+                console.log('Super admin mode: Loading all ideas');
+            } else {
+                query = db.collection('ideas').where('userId', '==', currentUser.uid);
             }
-            showNotification('Anda telah logout', 'info');
             
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 2000);
+            unsubscribeIdeas = query.onSnapshot(snapshot => {
+                ideasData = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                
+                ideasData.sort((a, b) => {
+                    const dateA = a.createdAt ? (a.createdAt.toDate ? a.createdAt.toDate() : new Date(a.createdAt)) : new Date(0);
+                    const dateB = b.createdAt ? (b.createdAt.toDate ? b.createdAt.toDate() : new Date(b.createdAt)) : new Date(0);
+                    return dateB - dateA;
+                });
+                
+                renderIdeas();
+                updateIdeasStats();
+                
+                if (currentUserData && currentUserData.isSuperAdmin) {
+                    showNotification(`Super Admin Mode: Memuat ${ideasData.length} ide dari semua user`, 'info');
+                }
+            }, error => {
+                console.error('Error in real-time listener:', error);
+                showNotification('Gagal memuat data real-time', 'error');
+            });
         }
-    });
 
-    // ========== TRANSLATIONS ==========
-    const ideasTranslations = {
-        id: {
-            "ideasTitle": "Ide & Saran",
-            "searchPlaceholder": "Cari ide atau saran...",
-            "formTitle": "Formulir Ide & Saran",
-            "ideaTitle": "Judul Ide/Saran",
-            "ideaTitlePlaceholder": "Masukkan judul ide atau saran",
-            "category": "Kategori",
-            "selectCategory": "Pilih kategori",
-            "description": "Deskripsi Ide/Saran",
-            "descriptionPlaceholder": "Jelaskan ide atau saran Anda secara detail...",
-            "imageUrl": "URL Gambar (Opsional)",
-            "imageUrlPlaceholder": "https://example.com/gambar.jpg",
-            "submitIdea": "Kirim Ide",
-            "uiUx": "UI/UX",
-            "panelFeature": "Fitur Panel",
-            "membersiteFeature": "Fitur Membersite",
-            "panelUpdate": "Update Fitur Panel",
-            "others": "Lainnya",
-            "listTitle": "Daftar Ide & Saran",
-            "refresh": "Refresh",
-            "noIdeas": "Tidak ada ide atau saran",
-            "noIdeasMessage": "Jadilah yang pertama untuk berbagi ide atau saran!",
-            "pending": "Menunggu Review",
-            "approved": "Disetujui",
-            "rejected": "Ditolak",
-            "author": "Penulis",
-            "customerService": "Customer Service Support",
-            "superAdminView": "Super Admin View",
-            "edit": "Edit",
-            "delete": "Hapus",
-            "readOnly": "Read Only",
-            "close": "Tutup",
-            "cancel": "Batal",
-            "saveChanges": "Simpan Perubahan",
-            "detailTitle": "Detail Ide & Saran",
-            "editTitle": "Edit Ide & Saran",
-            "ideaSubmitted": "Ide Anda berhasil dikirim!",
-            "ideaUpdated": "Ide berhasil diperbarui!",
-            "ideaDeleted": "Ide berhasil dihapus!",
-            "errorLoading": "Gagal memuat data ide & saran",
-            "allFieldsRequired": "Harap isi semua field yang wajib diisi",
-            "invalidUrl": "URL gambar tidak valid",
-            "confirmDelete": "Apakah Anda yakin ingin menghapus ide ini?",
-            "noPermissionEdit": "Anda tidak memiliki izin untuk mengedit ide ini",
-            "noPermissionDelete": "Anda tidak memiliki izin untuk menghapus ide ini",
-            "editMode": "Anda sedang dalam mode edit. Perbarui data dan klik \"Kirim Ide\" untuk menyimpan perubahan.",
-            "superAdmin": "Super Administrator",
-            "customerSupport": "Customer Service Support"
-        }
-    };
-
-    function applyIdeasTranslations(language) {
-        const lang = ideasTranslations[language] || ideasTranslations['id'];
-        if (!lang) return;
-
-        const elements = {
-            'ideasTitle': '.header h1',
-            'searchPlaceholder': '#searchIdeas',
-            'formTitle': '.section-header:first-child .section-title',
-            'listTitle': '.section-header:last-child .section-title',
-            'noIdeas': '#emptyState h3',
-            'noIdeasMessage': '#emptyState p'
-        };
-
-        Object.keys(elements).forEach(key => {
-            const element = document.querySelector(elements[key]);
-            if (element && lang[key]) {
-                if (key === 'searchPlaceholder') {
-                    element.placeholder = lang[key];
-                } else {
-                    const iconMatch = element.innerHTML.match(/(<i[^>]*><\/i>)/);
-                    if (iconMatch) {
-                        element.innerHTML = iconMatch[0] + ' ' + lang[key];
-                    } else {
-                        element.textContent = lang[key];
+        // Update user profile
+        function updateUserProfile(user, userData) {
+            const userProfile = document.querySelector('.user-info h4');
+            const userRole = document.querySelector('.user-info p');
+            
+            if (userProfile) {
+                const displayName = userData?.displayName || user.displayName || user.email || 'User';
+                userProfile.textContent = displayName;
+            }
+            
+            if (userRole) {
+                const roleText = userData && userData.isSuperAdmin ? 
+                    'Super Administrator' : 
+                    'Customer Service Support';
+                userRole.textContent = roleText;
+                
+                if (userData && userData.isSuperAdmin) {
+                    const headerTitle = document.querySelector('.header h1');
+                    if (headerTitle && !headerTitle.querySelector('.super-admin-badge')) {
+                        const badge = document.createElement('span');
+                        badge.className = 'super-admin-badge';
+                        badge.style.background = 'var(--warning-gradient)';
+                        badge.style.color = 'white';
+                        badge.style.padding = '2px 8px';
+                        badge.style.borderRadius = '12px';
+                        badge.style.fontSize = 'var(--text-xs)';
+                        badge.style.marginLeft = '8px';
+                        badge.textContent = 'Super Admin';
+                        headerTitle.appendChild(badge);
                     }
                 }
             }
-        });
-
-        // Update form
-        const formLabels = {
-            'ideaTitle': 'label[for="ideaTitle"]',
-            'category': 'label[for="ideaCategory"]',
-            'description': 'label[for="ideaDescription"]',
-            'imageUrl': 'label[for="ideaImageUrl"]'
-        };
-        
-        Object.keys(formLabels).forEach(key => {
-            const element = document.querySelector(formLabels[key]);
-            if (element && lang[key]) element.textContent = lang[key];
-        });
-
-        // Placeholders
-        const ideaTitleInput = document.getElementById('ideaTitle');
-        const ideaDescription = document.getElementById('ideaDescription');
-        const imageUrlInput = document.getElementById('ideaImageUrl');
-        
-        if (ideaTitleInput && lang.ideaTitlePlaceholder) ideaTitleInput.placeholder = lang.ideaTitlePlaceholder;
-        if (ideaDescription && lang.descriptionPlaceholder) ideaDescription.placeholder = lang.descriptionPlaceholder;
-        if (imageUrlInput && lang.imageUrlPlaceholder) imageUrlInput.placeholder = lang.imageUrlPlaceholder;
-
-        // Category options
-        const categorySelect = document.getElementById('ideaCategory');
-        if (categorySelect) {
-            if (lang.selectCategory) categorySelect.options[0].text = lang.selectCategory;
-            if (lang.uiUx) categorySelect.options[1].text = lang.uiUx;
-            if (lang.panelFeature) categorySelect.options[2].text = lang.panelFeature;
-            if (lang.membersiteFeature) categorySelect.options[3].text = lang.membersiteFeature;
-            if (lang.panelUpdate) categorySelect.options[4].text = lang.panelUpdate;
-            if (lang.others) categorySelect.options[5].text = lang.others;
         }
 
-        // Buttons
-        const submitBtn = document.getElementById('submitButton');
-        if (submitBtn && lang.submitIdea) submitBtn.innerHTML = `<i class="fas fa-paper-plane"></i> ${lang.submitIdea}`;
-        
-        const refreshBtn = document.getElementById('refreshIdeas');
-        if (refreshBtn && lang.refresh) refreshBtn.innerHTML = `<i class="fas fa-sync-alt"></i> ${lang.refresh}`;
-        
-        const closeDetailBtn = document.getElementById('closeDetail');
-        if (closeDetailBtn && lang.close) closeDetailBtn.innerHTML = `<i class="fas fa-times"></i> ${lang.close}`;
-        
-        const cancelEditBtn = document.getElementById('cancelEdit');
-        if (cancelEditBtn && lang.cancel) cancelEditBtn.innerHTML = `<i class="fas fa-times"></i> ${lang.cancel}`;
-        
-        const saveEditBtn = document.getElementById('saveEdit');
-        if (saveEditBtn && lang.saveChanges) saveEditBtn.innerHTML = `<i class="fas fa-save"></i> ${lang.saveChanges}`;
+        // Fungsi untuk handle simpan edit dari modal
+        async function handleSaveEdit() {
+            const id = document.getElementById('editIdeaId').value;
+            const title = document.getElementById('editIdeaTitle').value;
+            const category = document.getElementById('editIdeaCategory').value;
+            const description = document.getElementById('editIdeaDescription').value;
+            const url = document.getElementById('editIdeaUrl').value.trim();
+            const status = document.getElementById('editIdeaStatus').value;
+            
+            if (!title || !category || !description) {
+                showNotification('Harap isi semua field', 'error');
+                return;
+            }
+            
+            // Validasi URL jika diisi
+            if (url) {
+                try {
+                    new URL(url);
+                } catch (e) {
+                    showNotification('URL tidak valid', 'error');
+                    return;
+                }
+            }
+            
+            try {
+                await db.collection('ideas').doc(id).update({
+                    title,
+                    category,
+                    description,
+                    url: url || null,
+                    status,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                closeModal();
+                showNotification('Ide berhasil diperbarui', 'success');
+                
+            } catch (error) {
+                console.error('Error updating idea:', error);
+                showNotification('Gagal memperbarui ide: ' + error.message, 'error');
+            }
+        }
 
-        // Modal titles
-        const detailModalTitle = document.querySelector('#detailModal .modal-title');
-        if (detailModalTitle && lang.detailTitle) detailModalTitle.innerHTML = `<i class="fas fa-eye"></i> ${lang.detailTitle}`;
-        
-        const editModalTitle = document.querySelector('#editModal .modal-title');
-        if (editModalTitle && lang.editTitle) editModalTitle.innerHTML = `<i class="fas fa-edit"></i> ${lang.editTitle}`;
-    }
+        function closeModal() {
+            editModal.classList.remove('active');
+        }
 
-    function initializeIdeasLanguage() {
-        const savedLanguage = localStorage.getItem('language') || 'id';
-        console.log("Initializing ideas with language:", savedLanguage);
-        applyIdeasTranslations(savedLanguage);
-        
-        window.addEventListener('languageChanged', function(event) {
-            console.log("Language changed in ideas to:", event.detail.language);
-            applyIdeasTranslations(event.detail.language);
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('DOM Content Loaded - Initializing Ideas & Suggestions Dashboard');
+            
+            try {
+                await checkAuth();
+                
+                console.log('User authenticated:', currentUser.uid, 'Role:', currentUserData.role);
+                
+                setupRealTimeListener();
+                
+                if (ideaForm) {
+                    ideaForm.addEventListener('submit', handleSubmitIdea);
+                }
+                
+                if (searchIdeas) {
+                    searchIdeas.addEventListener('input', filterIdeas);
+                }
+                
+                if (refreshIdeas) {
+                    refreshIdeas.addEventListener('click', function() {
+                        renderIdeas();
+                        showNotification('Daftar ide diperbarui', 'info');
+                    });
+                }
+                
+                if (cancelEditBtn) {
+                    cancelEditBtn.addEventListener('click', resetForm);
+                }
+                
+                if (cancelIdeaBtn) {
+                    cancelIdeaBtn.addEventListener('click', resetForm);
+                }
+                
+                // Modal edit listeners
+                if (closeEditModal) {
+                    closeEditModal.addEventListener('click', closeModal);
+                }
+                
+                if (cancelEdit) {
+                    cancelEdit.addEventListener('click', closeModal);
+                }
+                
+                if (saveEdit) {
+                    saveEdit.addEventListener('click', handleSaveEdit);
+                }
+                
+                // Click outside modal to close
+                window.addEventListener('click', function(event) {
+                    if (event.target === editModal) {
+                        closeModal();
+                    }
+                });
+                
+                updateUserProfile(currentUser, currentUserData);
+                
+                console.log('Ideas & suggestions dashboard initialized successfully');
+                
+            } catch (error) {
+                console.error('Authentication error:', error);
+                showNotification('Silakan login untuk mengakses dashboard ide & saran', 'error');
+                
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 3000);
+            }
         });
-    }
 
-    setTimeout(() => {
-        initializeIdeasLanguage();
-    }, 100);
-
-    window.addEventListener('load', function() {
-        initializeIdeasLanguage();
-    });
-
+        // Handle auth state changes
+        auth.onAuthStateChanged(async user => {
+            if (user) {
+                currentUser = user;
+                currentUserData = await ensureUserDocument(user);
+                console.log('User is signed in:', user.uid, 'Role:', currentUserData.role);
+                
+                if (unsubscribeIdeas) {
+                    unsubscribeIdeas();
+                }
+                setupRealTimeListener();
+                updateUserProfile(user, currentUserData);
+                
+            } else {
+                console.log('User is signed out');
+                if (unsubscribeIdeas) {
+                    unsubscribeIdeas();
+                }
+                showNotification('Anda telah logout', 'info');
+                
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+            }
+        });
     </script>
 </body>
 </html>

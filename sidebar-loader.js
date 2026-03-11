@@ -846,7 +846,7 @@ class SidebarLoader {
                         </div>
                     </div>
 
-                   <!-- MENU PROMOSI PANEL -->
+                 <!-- MENU PROMOSI PANEL -->
 <div class="menu-item has-submenu" data-submenu="promosi-submenu">
     <div class="menu-icon">
         <i class="fas fa-bullhorn"></i>
@@ -856,19 +856,33 @@ class SidebarLoader {
         <i class="fas fa-chevron-right"></i>
     </div>
 </div>
+
 <div class="submenu" id="promosi-submenu">
-    <div class="menu-item" data-page="promosi-leads.html">
-        <div class="menu-icon">
-            <i class="fas fa-users"></i>
-        </div>
-        <span class="menu-text">Leads</span>
-    </div>
+
+    <!-- 1. Statistik -->
     <div class="menu-item" data-page="promosi-statistik.html">
         <div class="menu-icon">
             <i class="fas fa-chart-line"></i>
         </div>
         <span class="menu-text">Statistik</span>
     </div>
+
+    <!-- 2. Leads -->
+    <div class="menu-item" data-page="promosi-leads.html">
+        <div class="menu-icon">
+            <i class="fas fa-users"></i>
+        </div>
+        <span class="menu-text">Leads</span>
+    </div>
+
+    <!-- 3. Report Promo -->
+    <div class="menu-item" data-page="report-promo.html">
+        <div class="menu-icon">
+            <i class="fas fa-file-alt"></i>
+        </div>
+        <span class="menu-text">Report Promo</span>
+    </div>
+
 </div>
 
 ${isSuperAdmin ? `
@@ -1070,7 +1084,7 @@ ${isSuperAdmin ? `
             'summary-dashboard.html', 'pending-reports.html', 'solved-report.html',
             'maintenance.html', 'completed-report.html', 'releases-newfeature.html',
             'releases-newgame.html', 'kpi-css.html', 'ide-saran.html',
-            'research.html', 'chat-response.html', 'promosi-leads.html', 'promosi-statistik.html',
+            'research.html', 'chat-response.html', 'promosi-leads.html', 'promosi-statistik.html', 'report-promo.html',
             'staff-account.html', 'topup-credit.html', 'eventprovider.html', 
             'idesaran-agent.html', 'phishing.html', 'jadwalshift.html', 'pengaturan.html',
             'index.html'

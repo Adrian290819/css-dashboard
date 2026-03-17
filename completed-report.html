@@ -1265,7 +1265,6 @@
     <script>
    // ========== GLOBAL FLAGS UNTUK MENCEGAH MULTIPLE INITIALIZATION ==========
 let initializationCompleted = false;
-let chartsInitialized = false;
 let dataListenerActive = false;
 let authListenerSetup = false;
 
@@ -1296,66 +1295,15 @@ const maintenancePerPage = 10;
 // Variabel untuk chart
 let trendsChart, categoryChart, monthlyChart;
 
-// ========== FUNGSI UTAMA YANG DIPERBAIKI ==========
-
-function setupSolvedMaintenanceListener() {
-    // Cegah multiple listeners
-    if (dataListenerActive) {
-        console.log("📡 Listener sudah aktif, skip...");
-        return;
-    }
-    
-    if (unsubscribeSolved) {
-        unsubscribeSolved();
-        unsubscribeSolved = null;
-    }
-    
-    console.log("📡 Menghubungkan ke solvedMaintenance...");
-    
-    // OPTIMASI: Gunakan pagination atau limit untuk mengurangi pembacaan
-    const maintenanceRef = db.collection('solvedMaintenance')
-        .orderBy('dateCompleted', 'desc')
-        .limit(100); // Limit data yang dibaca
-    
-    unsubscribeSolved = maintenanceRef.onSnapshot(snapshot => {
-        if (!snapshot) {
-            console.log("📭 Tidak ada data snapshot");
-            return;
-        }
-        
-        console.log(`📥 Menerima ${snapshot.size} dokumen dari solvedMaintenance`);
-        dataListenerActive = true;
-        
-        solvedMaintenance = [];
-        snapshot.forEach(doc => {
-            const maintenance = doc.data();
-            maintenance.id = doc.id;
-            solvedMaintenance.push(maintenance);
-        });
-
-        console.log("📊 Total maintenance:", solvedMaintenance.length);
-        updateSolvedMaintenanceUI();
-        updateCharts();
-    }, error => {
-        console.error("❌ Error fetching solved maintenance:", error);
-        dataListenerActive = false;
-        showToast("Error loading solved maintenance", "error");
-    });
-}
-
+// ========== FUNGSI KONVERSI TANGGAL ==========
 function convertToDate(timestamp) {
-    if (!timestamp) {
-        console.log("Tidak ada timestamp");
-        return new Date();
-    }
+    if (!timestamp) return new Date();
     
     if (typeof timestamp.toDate === 'function') {
         return timestamp.toDate();
     } else if (typeof timestamp === 'string') {
         const parsedDate = new Date(timestamp);
-        if (!isNaN(parsedDate.getTime())) {
-            return parsedDate;
-        }
+        if (!isNaN(parsedDate.getTime())) return parsedDate;
     } else if (timestamp && typeof timestamp === 'object' && timestamp.seconds) {
         return new Date(timestamp.seconds * 1000);
     }
@@ -1363,124 +1311,17 @@ function convertToDate(timestamp) {
     return new Date();
 }
 
-async function updateSolvedMaintenanceUI() {
-    const tableBody = document.getElementById('completedTableBody');
-    const tasksCount = document.getElementById('tasksCount');
-    const noTasks = document.getElementById('noTasks');
-    const pagination = document.getElementById('pagination');
-    
-    console.log("🔄 Memperbarui UI dengan", solvedMaintenance.length, "tasks");
-    
-    if (solvedMaintenance.length === 0) {
-        tableBody.innerHTML = `
-            <tr>
-                <td colspan="8" class="empty-state">
-                    <i class="fas fa-database"></i>
-                    <h3>No Completed Maintenance Found</h3>
-                    <p>There are no completed maintenance tasks in the database yet.</p>
-                </td>
-            </tr>
-        `;
-        noTasks.style.display = 'block';
-        pagination.style.display = 'none';
-        tasksCount.textContent = '0 tasks';
-        return;
-    }
-    
-    noTasks.style.display = 'none';
-    pagination.style.display = 'flex';
-    
-    const filteredMaintenance = filterMaintenance(solvedMaintenance);
-    
-    tasksCount.textContent = `${filteredMaintenance.length} tasks`;
-    
-    // Pagination
-    const totalPages = Math.ceil(filteredMaintenance.length / maintenancePerPage);
-    document.getElementById('currentPage').textContent = currentPage;
-    document.getElementById('totalPages').textContent = totalPages;
-    
-    // Enable/disable pagination buttons
-    document.getElementById('prevPage').disabled = currentPage === 1;
-    document.getElementById('nextPage').disabled = currentPage === totalPages || totalPages === 0;
-    
-    // Calculate start and end index for current page
-    const startIndex = (currentPage - 1) * maintenancePerPage;
-    const endIndex = Math.min(startIndex + maintenancePerPage, filteredMaintenance.length);
-    const currentPageMaintenance = filteredMaintenance.slice(startIndex, endIndex);
-    
-    // Clear table
-    tableBody.innerHTML = '';
-    
-    if (currentPageMaintenance.length === 0) {
-        const emptyRow = document.createElement('tr');
-        emptyRow.innerHTML = `
-            <td colspan="8" style="text-align: center; padding: 40px 20px;">
-                <i class="fas fa-inbox" style="font-size: 3rem; color: var(--text-tertiary); margin-bottom: 15px; display: block;"></i>
-                <h3 style="color: var(--text-secondary; margin-bottom: 10px;">No completed maintenance found</h3>
-                <p style="color: var(--text-tertiary);">Try adjusting your filters or check back later.</p>
-            </td>
-        `;
-        tableBody.appendChild(emptyRow);
-        return;
-    }
-    
-    // Cek apakah user adalah super admin
-    const isAdmin = await isSuperAdmin();
-    
-    currentPageMaintenance.forEach(maintenance => {
-        const row = document.createElement('tr');
-        
-        // Format dates
-        const createdDate = maintenance.dateCreated ? formatDate(convertToDate(maintenance.dateCreated)) : 'N/A';
-        const completedDate = maintenance.dateCompleted ? formatDate(convertToDate(maintenance.dateCompleted)) : 'N/A';
-        
-        // Calculate completion time
-        let completionTime = 'N/A';
-        if (maintenance.dateCreated && maintenance.dateCompleted) {
-            const created = convertToDate(maintenance.dateCreated);
-            const completed = convertToDate(maintenance.dateCompleted);
-            const diffDays = Math.floor((completed - created) / (1000 * 60 * 60 * 24));
-            const diffHours = Math.floor(((completed - created) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            completionTime = `${diffDays}d ${diffHours}h`;
-        }
-        
-        // Tombol admin hanya untuk super admin
-        const adminButtons = isAdmin ? `
-            <button class="btn-icon reopen" data-id="${maintenance.id}" title="Reopen Task">
-                <i class="fas fa-undo"></i>
-            </button>
-            <button class="btn-icon edit" data-id="${maintenance.id}" title="Edit Task">
-                <i class="fas fa-edit"></i>
-            </button>
-            <button class="btn-icon delete" data-id="${maintenance.id}" title="Delete Task">
-                <i class="fas fa-trash"></i>
-            </button>
-        ` : '';
-        
-        row.innerHTML = `
-            <td>${maintenance.id}</td>
-            <td>${maintenance.title || 'N/A'}</td>
-            <td>${maintenance.category || 'N/A'}</td>
-            <td>${completedDate}</td>
-            <td>${completionTime}</td>
-            <td>${maintenance.assignedTo || 'N/A'}</td>
-            <td>
-                <div class="action-buttons">
-                    <button class="btn-icon view" data-id="${maintenance.id}" title="View Details">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    ${adminButtons}
-                </div>
-            </td>
-        `;
-        
-        tableBody.appendChild(row);
+// ========== FUNGSI FORMAT DATE ==========
+function formatDate(date) {
+    if (!date) return 'N/A';
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
     });
-    
-    // Add event listeners to all buttons
-    addEventListenersToButtons(isAdmin);
 }
 
+// ========== FUNGSI FILTER MAINTENANCE ==========
 function filterMaintenance(maintenance) {
     const categoryFilter = document.getElementById('categoryFilter').value;
     const timeFilter = document.getElementById('timeFilter').value;
@@ -1546,401 +1387,10 @@ function filterMaintenance(maintenance) {
     return filtered;
 }
 
-// ========== CHART FUNCTIONS (DIPERBAIKI) ==========
-
-function initCharts() {
-    // Cegah multiple initialization charts
-    if (chartsInitialized) {
-        console.log("📊 Charts sudah diinisialisasi, skip...");
-        return;
-    }
-    
-    console.log("📊 Menginisialisasi charts...");
-    
-    // Destroy existing charts sebelum membuat yang baru
-    if (trendsChart) {
-        trendsChart.destroy();
-    }
-    if (categoryChart) {
-        categoryChart.destroy();
-    }
-    if (monthlyChart) {
-        monthlyChart.destroy();
-    }
-    
-    // Inisialisasi Completion Trends Chart (Bar Chart)
-    const trendsCtx = document.getElementById('completionTrendsChart').getContext('2d');
-    trendsChart = new Chart(trendsCtx, {
-        type: 'bar',
-        data: {
-            labels: [],
-            datasets: [{
-                label: 'Tasks Completed',
-                data: [],
-                backgroundColor: 'rgba(67, 97, 238, 0.2)',
-                borderColor: 'rgba(67, 97, 238, 1)',
-                borderWidth: 2,
-                tension: 0.3,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                    titleFont: {
-                        size: 14,
-                        family: "'Poppins', sans-serif"
-                    },
-                    bodyFont: {
-                        size: 13,
-                        family: "'Poppins', sans-serif"
-                    },
-                    padding: 10,
-                    cornerRadius: 8
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.05)'
-                    }
-                },
-                x: {
-                    grid: {
-                        display: false
-                    }
-                }
-            }
-        }
-    });
-
-    // Inisialisasi Tasks by Category Chart (Doughnut Chart)
-    const categoryCtx = document.getElementById('categoryPieChart').getContext('2d');
-    categoryChart = new Chart(categoryCtx, {
-        type: 'doughnut',
-        data: {
-            labels: [],
-            datasets: [{
-                data: [],
-                backgroundColor: [
-                    'rgba(67, 97, 238, 0.7)',
-                    'rgba(76, 201, 240, 0.7)',
-                    'rgba(247, 37, 133, 0.7)',
-                    'rgba(58, 12, 163, 0.7)',
-                    'rgba(114, 9, 183, 0.7)'
-                ],
-                borderColor: [
-                    'rgba(67, 97, 238, 1)',
-                    'rgba(76, 201, 240, 1)',
-                    'rgba(247, 37, 133, 1)',
-                    'rgba(58, 12, 163, 1)',
-                    'rgba(114, 9, 183, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        font: {
-                            family: "'Poppins', sans-serif",
-                            size: 12
-                        },
-                        padding: 20
-                    }
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                    titleFont: {
-                        size: 14,
-                        family: "'Poppins', sans-serif"
-                    },
-                    bodyFont: {
-                        size: 13,
-                        family: "'Poppins', sans-serif"
-                    },
-                    padding: 10,
-                    cornerRadius: 8
-                }
-            }
-        }
-    });
-
-    // Inisialisasi Monthly Completion Rate Chart (Line Chart)
-    const monthlyCtx = document.getElementById('monthlyTrendChart').getContext('2d');
-    monthlyChart = new Chart(monthlyCtx, {
-        type: 'line',
-        data: {
-            labels: [],
-            datasets: [{
-                label: 'Completed Tasks',
-                data: [],
-                backgroundColor: 'rgba(67, 97, 238, 0.2)',
-                borderColor: 'rgba(67, 97, 238, 1)',
-                borderWidth: 2,
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                    titleFont: {
-                        size: 14,
-                        family: "'Poppins', sans-serif"
-                    },
-                    bodyFont: {
-                        size: 13,
-                        family: "'Poppins', sans-serif"
-                    },
-                    padding: 10,
-                    cornerRadius: 8
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.05)'
-                    }
-                },
-                x: {
-                    grid: {
-                        display: false
-                    }
-                }
-            }
-        }
-    });
-    
-    chartsInitialized = true;
-}
-
-function updateCharts() {
-    updateCompletionTrendsChart();
-    updateTasksByCategoryChart();
-    updateMonthlyTrendChart();
-}
-
-function updateCompletionTrendsChart() {
-    if (!trendsChart) return;
-    
-    const timeRange = document.getElementById('trendsTimeRange').value;
-    let daysToShow = 7;
-    
-    if (timeRange === 'Last 30 Days') daysToShow = 30;
-    if (timeRange === 'Last 90 Days') daysToShow = 90;
-    
-    const now = new Date();
-    const labels = [];
-    const data = [];
-    
-    for (let i = daysToShow - 1; i >= 0; i--) {
-        const date = new Date(now);
-        date.setDate(date.getDate() - i);
-        const dateString = date.toLocaleDateString('en-US', {month: 'short', day: 'numeric'});
-        labels.push(dateString);
-        data.push(0);
-    }
-    
-    solvedMaintenance.forEach(maintenance => {
-        if (maintenance.dateCompleted) {
-            const completedDate = convertToDate(maintenance.dateCompleted);
-            const completedDateString = completedDate.toLocaleDateString('en-US', {month: 'short', day: 'numeric'});
-            
-            const index = labels.indexOf(completedDateString);
-            if (index !== -1) {
-                data[index]++;
-            }
-        }
-    });
-    
-    trendsChart.data.labels = labels;
-    trendsChart.data.datasets[0].data = data;
-    trendsChart.update('none'); // Update tanpa animasi untuk performa
-}
-
-function updateTasksByCategoryChart() {
-    if (!categoryChart) return;
-    
-    const timeRange = document.getElementById('categoryTimeRange').value;
-    const now = new Date();
-    
-    let filteredMaintenance = solvedMaintenance;
-    
-    if (timeRange !== 'All Time') {
-        filteredMaintenance = solvedMaintenance.filter(maintenance => {
-            if (!maintenance.dateCompleted) return false;
-            
-            const completedDate = convertToDate(maintenance.dateCompleted);
-            
-            if (timeRange === 'This Week') {
-                const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-                return completedDate >= weekAgo;
-            } else if (timeRange === 'This Month') {
-                return completedDate.getMonth() === now.getMonth() && 
-                       completedDate.getFullYear() === now.getFullYear();
-            }
-            
-            return true;
-        });
-    }
-    
-    const categoryCounts = {};
-    filteredMaintenance.forEach(maintenance => {
-        const category = maintenance.category || 'Uncategorized';
-        categoryCounts[category] = (categoryCounts[category] || 0) + 1;
-    });
-    
-    const labels = Object.keys(categoryCounts);
-    const data = Object.values(categoryCounts);
-    
-    categoryChart.data.labels = labels;
-    categoryChart.data.datasets[0].data = data;
-    categoryChart.update('none');
-}
-
-function updateMonthlyTrendChart() {
-    if (!monthlyChart) return;
-    
-    const timeRange = document.getElementById('monthlyTimeRange').value;
-    let monthsToShow = 6;
-    
-    if (timeRange === 'Last 12 Months') monthsToShow = 12;
-    if (timeRange === 'All Time') {
-        const monthsSet = new Set();
-        solvedMaintenance.forEach(maintenance => {
-            if (maintenance.dateCompleted) {
-                const completedDate = convertToDate(maintenance.dateCompleted);
-                const monthYear = completedDate.toLocaleDateString('en-US', {year: 'numeric', month: 'short'});
-                monthsSet.add(monthYear);
-            }
-        });
-        monthsToShow = Math.min(monthsSet.size, 24);
-    }
-    
-    const now = new Date();
-    const labels = [];
-    const data = [];
-    
-    for (let i = monthsToShow - 1; i >= 0; i--) {
-        const date = new Date(now);
-        date.setMonth(date.getMonth() - i);
-        const monthYear = date.toLocaleDateString('en-US', {year: 'numeric', month: 'short'});
-        labels.push(monthYear);
-        data.push(0);
-    }
-    
-    solvedMaintenance.forEach(maintenance => {
-        if (maintenance.dateCompleted) {
-            const completedDate = convertToDate(maintenance.dateCompleted);
-            const monthYear = completedDate.toLocaleDateString('en-US', {year: 'numeric', month: 'short'});
-            
-            const index = labels.indexOf(monthYear);
-            if (index !== -1) {
-                data[index]++;
-            }
-        }
-    });
-    
-    monthlyChart.data.labels = labels;
-    monthlyChart.data.datasets[0].data = data;
-    monthlyChart.update('none');
-}
-
-// ========== FUNGSI LAIN YANG DIBUTUHKAN (TIDAK DIUBAH) ==========
-
-function showMaintenanceDetails(maintenanceId) {
-    const maintenance = solvedMaintenance.find(m => m.id === maintenanceId);
-    
-    if (!maintenance) {
-        showToast("Maintenance details not found", "error");
-        return;
-    }
-    
-    // Populate modal dengan data maintenance
-    document.getElementById('viewTitle').textContent = maintenance.title || 'N/A';
-    document.getElementById('viewCategory').textContent = maintenance.category || 'N/A';
-    
-    // Format dates
-    const createdDate = maintenance.dateCreated ? formatDate(convertToDate(maintenance.dateCreated)) : 'N/A';
-    const dueDate = maintenance.dueDate ? formatDate(convertToDate(maintenance.dueDate)) : 'N/A';
-    const completedDate = maintenance.dateCompleted ? formatDate(convertToDate(maintenance.dateCompleted)) : 'N/A';
-    
-    document.getElementById('viewCreatedDate').textContent = createdDate;
-    document.getElementById('viewDueDate').textContent = dueDate;
-    document.getElementById('viewCompletedDate').textContent = completedDate;
-    
-    document.getElementById('viewAssignedTo').textContent = maintenance.assignedTo || 'N/A';
-    document.getElementById('viewDescription').textContent = maintenance.description || 'N/A';
-    document.getElementById('viewNotes').textContent = maintenance.notes || 'N/A';
-    
-    // Calculate and display time tracking
-    const estimatedTime = maintenance.estimatedTime || 'N/A';
-    const actualTime = maintenance.actualTime || 'N/A';
-    
-    document.getElementById('viewEstimatedTime').textContent = estimatedTime;
-    document.getElementById('viewActualTime').textContent = actualTime;
-    
-    // Calculate efficiency jika kedua waktu tersedia
-    let efficiency = 'N/A';
-    if (estimatedTime !== 'N/A' && actualTime !== 'N/A') {
-        const estimatedHours = parseTimeToHours(estimatedTime);
-        const actualHours = parseTimeToHours(actualTime);
-        
-        if (estimatedHours > 0) {
-            const efficiencyPercent = ((estimatedHours - actualHours) / estimatedHours) * 100;
-            efficiency = `${efficiencyPercent.toFixed(1)}% ${efficiencyPercent >= 0 ? 'faster' : 'slower'}`;
-        }
-    }
-    
-    document.getElementById('viewEfficiency').textContent = efficiency;
-    
-    // Tampilkan modal
-    document.getElementById('viewModal').classList.add('active');
-}
-
-function parseTimeToHours(timeString) {
-    // Parse time strings seperti "2h 30m" atau "3h" atau "45m"
-    const hoursMatch = timeString.match(/(\d+)\s*h/);
-    const minutesMatch = timeString.match(/(\d+)\s*m/);
-    
-    const hours = hoursMatch ? parseInt(hoursMatch[1]) : 0;
-    const minutes = minutesMatch ? parseInt(minutesMatch[1]) : 0;
-    
-    return hours + (minutes / 60);
-}
-
-function formatDate(date) {
-    return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-    });
-}
-
+// ========== FUNGSI SHOW TOAST ==========
 function showToast(message, type = 'info') {
-    // Jika message adalah key translation, gunakan getTranslation
     const displayMessage = getTranslation(message) || message;
     
-    // Create toast element
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
     toast.innerHTML = `
@@ -1950,51 +1400,19 @@ function showToast(message, type = 'info') {
         </div>
     `;
     
-    // Add toast to the page
     document.body.appendChild(toast);
     
-    // Animate in
-    setTimeout(() => {
-        toast.classList.add('show');
-    }, 10);
-    
-    // Remove after delay
+    setTimeout(() => toast.classList.add('show'), 10);
     setTimeout(() => {
         toast.classList.remove('show');
-        setTimeout(() => {
-            document.body.removeChild(toast);
-        }, 300);
+        setTimeout(() => document.body.removeChild(toast), 300);
     }, 3000);
 }
 
-// ========== SUPER ADMIN FEATURES ==========
-
-// Fungsi untuk mendapatkan role user saat ini
-async function getCurrentUserRole() {
-    try {
-        const currentUser = auth.currentUser;
-        if (!currentUser) {
-            console.log("No user logged in");
-            return 'user';
-        }
-        
-        const userDoc = await db.collection('users').doc(currentUser.uid).get();
-        if (userDoc.exists) {
-            const userData = userDoc.data();
-            return userData.role || 'user';
-        }
-        return 'user';
-    } catch (error) {
-        console.error('Error getting user role:', error);
-        return 'user';
-    }
-}
-
-// Fungsi untuk mengecek apakah user adalah super admin
+// ========== FUNGSI SUPER ADMIN ==========
 async function isSuperAdmin() {
     return new Promise(async (resolve) => {
         try {
-            // Tunggu hingga user terautentikasi
             await new Promise(resolve => {
                 const unsubscribe = auth.onAuthStateChanged(user => {
                     unsubscribe();
@@ -2022,83 +1440,64 @@ async function isSuperAdmin() {
     });
 }
 
-// Fungsi untuk menampilkan konfirmasi reopen
-function showReopenConfirmation(maintenanceId) {
+// ========== FUNGSI PARSE TIME ==========
+function parseTimeToHours(timeString) {
+    if (!timeString || timeString === 'N/A') return 0;
+    const hoursMatch = timeString.match(/(\d+)\s*h/);
+    const minutesMatch = timeString.match(/(\d+)\s*m/);
+    
+    const hours = hoursMatch ? parseInt(hoursMatch[1]) : 0;
+    const minutes = minutesMatch ? parseInt(minutesMatch[1]) : 0;
+    
+    return hours + (minutes / 60);
+}
+
+// ========== FUNGSI SHOW MAINTENANCE DETAILS ==========
+function showMaintenanceDetails(maintenanceId) {
     const maintenance = solvedMaintenance.find(m => m.id === maintenanceId);
     
     if (!maintenance) {
-        showToast("Maintenance task not found", "error");
+        showToast("Maintenance details not found", "error");
         return;
     }
     
-    currentMaintenanceId = maintenanceId;
+    document.getElementById('viewTitle').textContent = maintenance.title || 'N/A';
+    document.getElementById('viewCategory').textContent = maintenance.category || 'N/A';
     
-    // Update modal konfirmasi
-    document.getElementById('confirmModalTitle').textContent = "Confirm Reopen";
-    document.getElementById('confirmModalMessage').textContent = 
-        `Are you sure you want to reopen task "${maintenance.title}"? This will move it back to pending maintenance.`;
+    const createdDate = maintenance.dateCreated ? formatDate(convertToDate(maintenance.dateCreated)) : 'N/A';
+    const dueDate = maintenance.dueDate ? formatDate(convertToDate(maintenance.dueDate)) : 'N/A';
+    const completedDate = maintenance.dateCompleted ? formatDate(convertToDate(maintenance.dateCompleted)) : 'N/A';
     
-    // Update tombol konfirmasi
-    const confirmBtn = document.getElementById('confirmActionBtn');
-    confirmBtn.textContent = "Yes, Reopen Task";
-    confirmBtn.className = "btn btn-warning";
+    document.getElementById('viewCreatedDate').textContent = createdDate;
+    document.getElementById('viewDueDate').textContent = dueDate;
+    document.getElementById('viewCompletedDate').textContent = completedDate;
     
-    // Setup event listener untuk tombol konfirmasi
-    confirmBtn.onclick = async function() {
-        const isAdmin = await isSuperAdmin();
-        if (!isAdmin) {
-            showToast("Access denied: Only super admin can reopen tasks", "error");
-            document.getElementById('confirmModal').classList.remove('active');
-            return;
-        }
+    document.getElementById('viewAssignedTo').textContent = maintenance.assignedTo || 'N/A';
+    document.getElementById('viewDescription').textContent = maintenance.description || 'N/A';
+    document.getElementById('viewNotes').textContent = maintenance.notes || 'N/A';
+    
+    const estimatedTime = maintenance.estimatedTime || 'N/A';
+    const actualTime = maintenance.actualTime || 'N/A';
+    
+    document.getElementById('viewEstimatedTime').textContent = estimatedTime;
+    document.getElementById('viewActualTime').textContent = actualTime;
+    
+    let efficiency = 'N/A';
+    if (estimatedTime !== 'N/A' && actualTime !== 'N/A') {
+        const estimatedHours = parseTimeToHours(estimatedTime);
+        const actualHours = parseTimeToHours(actualTime);
         
-        reopenMaintenanceTask(maintenanceId);
-        document.getElementById('confirmModal').classList.remove('active');
-    };
-    
-    // Tampilkan modal
-    document.getElementById('confirmModal').classList.add('active');
-}
-
-// Fungsi untuk menampilkan konfirmasi hapus
-function showDeleteConfirmation(maintenanceId) {
-    const maintenance = solvedMaintenance.find(m => m.id === maintenanceId);
-    
-    if (!maintenance) {
-        showToast("Maintenance task not found", "error");
-        return;
+        if (estimatedHours > 0) {
+            const efficiencyPercent = ((estimatedHours - actualHours) / estimatedHours) * 100;
+            efficiency = `${efficiencyPercent.toFixed(1)}% ${efficiencyPercent >= 0 ? 'faster' : 'slower'}`;
+        }
     }
     
-    currentMaintenanceId = maintenanceId;
-    
-    // Update modal konfirmasi
-    document.getElementById('confirmModalTitle').textContent = "Confirm Delete";
-    document.getElementById('confirmModalMessage').textContent = 
-        `Are you sure you want to permanently delete task "${maintenance.title}"? This action cannot be undone.`;
-    
-    // Update tombol konfirmasi
-    const confirmBtn = document.getElementById('confirmActionBtn');
-    confirmBtn.textContent = "Yes, Delete Task";
-    confirmBtn.className = "btn btn-danger";
-    
-    // Setup event listener untuk tombol konfirmasi
-    confirmBtn.onclick = async function() {
-        const isAdmin = await isSuperAdmin();
-        if (!isAdmin) {
-            showToast("Access denied: Only super admin can delete tasks", "error");
-            document.getElementById('confirmModal').classList.remove('active');
-            return;
-        }
-        
-        deleteMaintenanceTask(maintenanceId);
-        document.getElementById('confirmModal').classList.remove('active');
-    };
-    
-    // Tampilkan modal
-    document.getElementById('confirmModal').classList.add('active');
+    document.getElementById('viewEfficiency').textContent = efficiency;
+    document.getElementById('viewModal').classList.add('active');
 }
 
-// Fungsi untuk reopen maintenance task
+// ========== FUNGSI REOPEN MAINTENANCE ==========
 async function reopenMaintenanceTask(maintenanceId) {
     const isAdmin = await isSuperAdmin();
     if (!isAdmin) {
@@ -2110,7 +1509,6 @@ async function reopenMaintenanceTask(maintenanceId) {
     const pendingMaintenanceRef = db.collection('maintenanceReports').doc(maintenanceId);
 
     try {
-        // Ambil data dari solvedMaintenance
         const solvedDoc = await solvedMaintenanceRef.get();
         
         if (!solvedDoc.exists) {
@@ -2120,7 +1518,6 @@ async function reopenMaintenanceTask(maintenanceId) {
 
         const maintenanceData = solvedDoc.data();
         
-        // Konversi field yang diperlukan untuk maintenanceReports
         const pendingData = {
             title: maintenanceData.title || '',
             category: maintenanceData.category || 'server',
@@ -2132,7 +1529,6 @@ async function reopenMaintenanceTask(maintenanceId) {
             dateUpdated: new Date()
         };
         
-        // Handle dates - konversi dari solvedMaintenance ke maintenanceReports
         if (maintenanceData.dateCreated) {
             pendingData.startDate = maintenanceData.dateCreated;
             const startDate = convertToDate(maintenanceData.dateCreated);
@@ -2149,15 +1545,10 @@ async function reopenMaintenanceTask(maintenanceId) {
             pendingData.dueDate = defaultDueDate.toISOString().slice(0, 16);
         }
         
-        // Pindahkan ke maintenanceReports collection dengan status pending
         await pendingMaintenanceRef.set(pendingData);
-
-        // Hapus dari solvedMaintenance
         await solvedMaintenanceRef.delete();
         
         showToast("Task reopened successfully", "success");
-        
-        // Refresh data
         setupSolvedMaintenanceListener();
         
     } catch (error) {
@@ -2166,20 +1557,7 @@ async function reopenMaintenanceTask(maintenanceId) {
     }
 }
 
-// Fungsi untuk menampilkan modal edit
-function showEditModal(maintenanceId) {
-    const maintenance = solvedMaintenance.find(m => m.id === maintenanceId);
-    
-    if (!maintenance) {
-        showToast("Maintenance task not found", "error");
-        return;
-    }
-    
-    showToast("Edit feature is under development", "info");
-    console.log("Edit maintenance:", maintenanceId);
-}
-
-// Fungsi untuk menghapus task
+// ========== FUNGSI DELETE MAINTENANCE ==========
 async function deleteMaintenanceTask(maintenanceId) {
     const isAdmin = await isSuperAdmin();
     if (!isAdmin) {
@@ -2190,378 +1568,213 @@ async function deleteMaintenanceTask(maintenanceId) {
     try {
         await db.collection('solvedMaintenance').doc(maintenanceId).delete();
         showToast("Task deleted successfully", "success");
-        
-        // Refresh data
         setupSolvedMaintenanceListener();
-        
     } catch (error) {
         console.error("Error deleting maintenance task:", error);
         showToast("Error deleting task: " + error.message, "error");
     }
 }
 
-// ========== EVENT LISTENERS FUNCTIONS ==========
-
-function addEventListenersToButtons(isAdmin) {
-    console.log("🔧 Adding event listeners, isAdmin:", isAdmin);
+// ========== FUNGSI SHOW REOPEN CONFIRMATION ==========
+function showReopenConfirmation(maintenanceId) {
+    const maintenance = solvedMaintenance.find(m => m.id === maintenanceId);
     
-    // Event listener untuk view button (selalu ada)
-    document.querySelectorAll('.btn-icon.view').forEach(button => {
-        button.addEventListener('click', function() {
-            const maintenanceId = this.getAttribute('data-id');
-            showMaintenanceDetails(maintenanceId);
-        });
-    });
-    
-    // Hanya tambahkan event listeners untuk admin jika benar-benar admin
-    if (isAdmin) {
-        console.log("🔧 Adding event listeners for admin buttons");
-        
-        document.querySelectorAll('.btn-icon.reopen').forEach(button => {
-            button.addEventListener('click', function() {
-                const maintenanceId = this.getAttribute('data-id');
-                showReopenConfirmation(maintenanceId);
-            });
-        });
-        
-        document.querySelectorAll('.btn-icon.edit').forEach(button => {
-            button.addEventListener('click', function() {
-                const maintenanceId = this.getAttribute('data-id');
-                showEditModal(maintenanceId);
-            });
-        });
-        
-        document.querySelectorAll('.btn-icon.delete').forEach(button => {
-            button.addEventListener('click', function() {
-                const maintenanceId = this.getAttribute('data-id');
-                showDeleteConfirmation(maintenanceId);
-            });
-        });
-    } else {
-        console.log("🔒 User is not admin, skipping admin button event listeners");
+    if (!maintenance) {
+        showToast("Maintenance task not found", "error");
+        return;
     }
-}
-
-function setupEventListeners() {
-    console.log("🔧 Setting up event listeners...");
     
-    // Set up event listeners untuk filters
-    document.getElementById('categoryFilter').addEventListener('change', function() {
-        currentPage = 1;
-        updateSolvedMaintenanceUI();
-    });
+    currentMaintenanceId = maintenanceId;
     
-    document.getElementById('timeFilter').addEventListener('change', function() {
-        currentPage = 1;
-        updateSolvedMaintenanceUI();
-    });
+    document.getElementById('confirmModalTitle').textContent = "Confirm Reopen";
+    document.getElementById('confirmModalMessage').textContent = 
+        `Are you sure you want to reopen task "${maintenance.title}"? This will move it back to pending maintenance.`;
     
-    document.getElementById('sortFilter').addEventListener('change', function() {
-        currentPage = 1;
-        updateSolvedMaintenanceUI();
-    });
+    const confirmBtn = document.getElementById('confirmActionBtn');
+    confirmBtn.textContent = "Yes, Reopen Task";
+    confirmBtn.className = "btn btn-warning";
     
-    // Set up chart time range filters
-    document.getElementById('trendsTimeRange').addEventListener('change', updateCharts);
-    document.getElementById('categoryTimeRange').addEventListener('change', updateCharts);
-    document.getElementById('monthlyTimeRange').addEventListener('change', updateCharts);
-    
-    // Set up pagination
-    document.getElementById('prevPage').addEventListener('click', function() {
-        if (currentPage > 1) {
-            currentPage--;
-            updateSolvedMaintenanceUI();
-        }
-    });
-    
-    document.getElementById('nextPage').addEventListener('click', function() {
-        const totalPages = Math.ceil(filterMaintenance(solvedMaintenance).length / maintenancePerPage);
-        if (currentPage < totalPages) {
-            currentPage++;
-            updateSolvedMaintenanceUI();
-        }
-    });
-    
-    // Set up modal close buttons
-    document.getElementById('closeViewModal').addEventListener('click', function() {
-        document.getElementById('viewModal').classList.remove('active');
-    });
-    
-    document.getElementById('closeViewBtn').addEventListener('click', function() {
-        document.getElementById('viewModal').classList.remove('active');
-    });
-    
-    document.getElementById('closeConfirmModal').addEventListener('click', function() {
-        document.getElementById('confirmModal').classList.remove('active');
-    });
-    
-    document.getElementById('cancelConfirmBtn').addEventListener('click', function() {
-        document.getElementById('confirmModal').classList.remove('active');
-    });
-    
-    // Close modals when clicking outside
-    window.addEventListener('click', function(event) {
-        if (event.target === document.getElementById('viewModal')) {
-            document.getElementById('viewModal').classList.remove('active');
-        }
-        if (event.target === document.getElementById('confirmModal')) {
+    confirmBtn.onclick = async function() {
+        const isAdmin = await isSuperAdmin();
+        if (!isAdmin) {
+            showToast("Access denied: Only super admin can reopen tasks", "error");
             document.getElementById('confirmModal').classList.remove('active');
+            return;
         }
+        
+        await reopenMaintenanceTask(maintenanceId);
+        document.getElementById('confirmModal').classList.remove('active');
+    };
+    
+    document.getElementById('confirmModal').classList.add('active');
+}
+
+// ========== FUNGSI SHOW DELETE CONFIRMATION ==========
+function showDeleteConfirmation(maintenanceId) {
+    const maintenance = solvedMaintenance.find(m => m.id === maintenanceId);
+    
+    if (!maintenance) {
+        showToast("Maintenance task not found", "error");
+        return;
+    }
+    
+    currentMaintenanceId = maintenanceId;
+    
+    document.getElementById('confirmModalTitle').textContent = "Confirm Delete";
+    document.getElementById('confirmModalMessage').textContent = 
+        `Are you sure you want to permanently delete task "${maintenance.title}"? This action cannot be undone.`;
+    
+    const confirmBtn = document.getElementById('confirmActionBtn');
+    confirmBtn.textContent = "Yes, Delete Task";
+    confirmBtn.className = "btn btn-danger";
+    
+    confirmBtn.onclick = async function() {
+        const isAdmin = await isSuperAdmin();
+        if (!isAdmin) {
+            showToast("Access denied: Only super admin can delete tasks", "error");
+            document.getElementById('confirmModal').classList.remove('active');
+            return;
+        }
+        
+        await deleteMaintenanceTask(maintenanceId);
+        document.getElementById('confirmModal').classList.remove('active');
+    };
+    
+    document.getElementById('confirmModal').classList.add('active');
+}
+
+// ========== FUNGSI SHOW EDIT MODAL ==========
+function showEditModal(maintenanceId) {
+    const maintenance = solvedMaintenance.find(m => m.id === maintenanceId);
+    
+    if (!maintenance) {
+        showToast("Maintenance task not found", "error");
+        return;
+    }
+    
+    currentMaintenanceId = maintenanceId;
+    openEditModal(maintenance);
+}
+
+// ========== FUNGSI OPEN EDIT MODAL ==========
+function openEditModal(maintenance) {
+    const editModalHTML = `
+        <div class="modal-overlay" id="editModal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3 class="modal-title"><i class="fas fa-edit"></i> Edit Task</h3>
+                    <button class="modal-close" id="closeEditModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="editTaskForm">
+                        <div class="form-group">
+                            <label class="form-label">Title</label>
+                            <input type="text" id="editTitle" class="filter-select" value="${maintenance.title || ''}" style="width:100%;">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Category</label>
+                            <select id="editCategory" class="filter-select" style="width:100%;">
+                                <option value="server" ${maintenance.category === 'server' ? 'selected' : ''}>Server Maintenance</option>
+                                <option value="database" ${maintenance.category === 'database' ? 'selected' : ''}>Database</option>
+                                <option value="network" ${maintenance.category === 'network' ? 'selected' : ''}>Network</option>
+                                <option value="security" ${maintenance.category === 'security' ? 'selected' : ''}>Security</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Assigned To</label>
+                            <input type="text" id="editAssignedTo" class="filter-select" value="${maintenance.assignedTo || ''}" style="width:100%;">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <textarea id="editDescription" class="filter-select" rows="4" style="width:100%;">${maintenance.description || ''}</textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Notes</label>
+                            <textarea id="editNotes" class="filter-select" rows="3" style="width:100%;">${maintenance.notes || ''}</textarea>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Estimated Time</label>
+                                <input type="text" id="editEstimatedTime" class="filter-select" value="${maintenance.estimatedTime || ''}" placeholder="e.g., 2h 30m">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Actual Time</label>
+                                <input type="text" id="editActualTime" class="filter-select" value="${maintenance.actualTime || ''}" placeholder="e.g., 2h 15m">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline" id="cancelEditBtn">Cancel</button>
+                    <button class="btn btn-primary" id="saveEditBtn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    const existingModal = document.getElementById('editModal');
+    if (existingModal) existingModal.remove();
+    
+    document.body.insertAdjacentHTML('beforeend', editModalHTML);
+    document.getElementById('editModal').classList.add('active');
+    
+    document.getElementById('closeEditModal').addEventListener('click', () => {
+        document.getElementById('editModal').classList.remove('active');
     });
     
-    // Set up export and print buttons
-    document.getElementById('refreshBtn').addEventListener('click', function() {
-        showToast("Refreshing data...", "info");
-        setupSolvedMaintenanceListener();
+    document.getElementById('cancelEditBtn').addEventListener('click', () => {
+        document.getElementById('editModal').classList.remove('active');
     });
     
-    // Set up search functionality
-    document.getElementById('completedSearch').addEventListener('input', function() {
-        currentPage = 1;
-        updateSolvedMaintenanceUI();
+    document.getElementById('saveEditBtn').addEventListener('click', async () => {
+        await saveEditedTask(maintenance.id);
     });
     
-    // Setup export button di modal
-    document.getElementById('exportTaskBtn').addEventListener('click', function() {
-        const maintenance = solvedMaintenance.find(m => m.id === currentMaintenanceId);
-        if (maintenance) {
-            exportTaskDetails(maintenance);
+    window.addEventListener('click', (event) => {
+        if (event.target === document.getElementById('editModal')) {
+            document.getElementById('editModal').classList.remove('active');
         }
     });
 }
 
-// ========== MULTI-LANGUAGE SUPPORT ==========
-
-let currentLanguage = localStorage.getItem('language') || 'id';
-
-// Fungsi untuk menerapkan terjemahan
-function applyTranslations(language) {
-    const lang = translations[language] || translations['id'];
-    
-    if (!lang) {
-        console.error('Translations not found for language:', language);
+// ========== FUNGSI SAVE EDITED TASK ==========
+async function saveEditedTask(taskId) {
+    const isAdmin = await isSuperAdmin();
+    if (!isAdmin) {
+        showToast("Access denied: Only super admin can edit tasks", "error");
         return;
     }
     
     try {
-        // Header
-        const headerTitle = document.querySelector('.header h1');
-        if (headerTitle) {
-            headerTitle.innerHTML = `<i class="fas fa-check-double"></i> ${lang.completedMaintenance || 'Completed Maintenance'}`;
-        }
+        const updatedData = {
+            title: document.getElementById('editTitle').value,
+            category: document.getElementById('editCategory').value,
+            assignedTo: document.getElementById('editAssignedTo').value,
+            description: document.getElementById('editDescription').value,
+            notes: document.getElementById('editNotes').value,
+            estimatedTime: document.getElementById('editEstimatedTime').value,
+            actualTime: document.getElementById('editActualTime').value,
+            dateUpdated: new Date()
+        };
         
-        // Search placeholder
-        const searchInput = document.getElementById('completedSearch');
-        if (searchInput) {
-            searchInput.placeholder = lang.searchPlaceholder || 'Search completed tasks...';
-        }
+        await db.collection('solvedMaintenance').doc(taskId).update(updatedData);
         
-        // Chart Titles
-        const chartTitles = document.querySelectorAll('.chart-title');
-        if (chartTitles[0]) chartTitles[0].textContent = lang.completionTrends || 'Completion Trends';
-        if (chartTitles[1]) chartTitles[1].textContent = lang.tasksByCategory || 'Tasks by Category';
-        if (chartTitles[2]) chartTitles[2].textContent = lang.monthlyCompletionRate || 'Monthly Completion Rate';
+        showToast("Task updated successfully", "success");
+        document.getElementById('editModal').classList.remove('active');
         
-        // Chart Options
-        const trendsOptions = document.getElementById('trendsTimeRange');
-        if (trendsOptions) {
-            trendsOptions.innerHTML = `
-                <option>${lang.last7Days || 'Last 7 Days'}</option>
-                <option>${lang.last30Days || 'Last 30 Days'}</option>
-                <option>${lang.last90Days || 'Last 90 Days'}</option>
-            `;
-        }
-        
-        const categoryOptions = document.getElementById('categoryTimeRange');
-        if (categoryOptions) {
-            categoryOptions.innerHTML = `
-                <option>${lang.allTime || 'All Time'}</option>
-                <option>${lang.thisMonth || 'This Month'}</option>
-                <option>${lang.thisWeek || 'This Week'}</option>
-            `;
-        }
-        
-        const monthlyOptions = document.getElementById('monthlyTimeRange');
-        if (monthlyOptions) {
-            monthlyOptions.innerHTML = `
-                <option>${lang.last6Months || 'Last 6 Months'}</option>
-                <option>${lang.last12Months || 'Last 12 Months'}</option>
-                <option>${lang.allTime || 'All Time'}</option>
-            `;
-        }
-        
-        // Filter Labels
-        const filterLabels = document.querySelectorAll('.filter-group label');
-        if (filterLabels[0]) filterLabels[0].textContent = lang.categoryLabel || 'Category';
-        if (filterLabels[1]) filterLabels[1].textContent = lang.completionTime || 'Completion Time';
-        if (filterLabels[2]) filterLabels[2].textContent = lang.sortBy || 'Sort By';
-        
-        // Category Filter Options
-        const categoryFilter = document.getElementById('categoryFilter');
-        if (categoryFilter) {
-            categoryFilter.innerHTML = `
-                <option value="all">${lang.allCategories || 'All Categories'}</option>
-                <option value="server">${lang.server || 'Server Maintenance'}</option>
-                <option value="database">${lang.database || 'Database'}</option>
-            `;
-        }
-        
-        // Time Filter Options
-        const timeFilter = document.getElementById('timeFilter');
-        if (timeFilter) {
-            timeFilter.innerHTML = `
-                <option value="all">${lang.allTime || 'All Time'}</option>
-                <option value="today">${lang.today || 'Today'}</option>
-                <option value="week">${lang.week || 'This Week'}</option>
-                <option value="month">${lang.month || 'This Month'}</option>
-                <option value="quarter">${lang.quarter || 'This Quarter'}</option>
-            `;
-        }
-        
-        // Sort Filter Options
-        const sortFilter = document.getElementById('sortFilter');
-        if (sortFilter) {
-            sortFilter.innerHTML = `
-                <option value="newest">${lang.newestFirst || 'Newest First'}</option>
-                <option value="oldest">${lang.oldestFirst || 'Oldest First'}</option>
-                <option value="category">${lang.category || 'Category'}</option>
-            `;
-        }
-        
-        // Action Buttons
-        const refreshBtn = document.getElementById('refreshBtn');
-        if (refreshBtn) {
-            refreshBtn.innerHTML = `<i class="fas fa-sync-alt"></i> ${lang.refresh || 'Refresh'}`;
-        }
-        
-        const viewPendingBtn = document.querySelector('.empty-state .btn');
-        if (viewPendingBtn) {
-            viewPendingBtn.innerHTML = `<i class="fas fa-tools"></i> ${lang.viewPendingTasks || 'View Pending Tasks'}`;
-        }
-        
-        // Section Title
-        const sectionTitle = document.querySelector('.section-title');
-        if (sectionTitle) {
-            sectionTitle.innerHTML = `<i class="fas fa-list"></i> ${lang.completedTasks || 'Completed Tasks'}`;
-        }
-        
-        // Table Headers
-        const tableHeaders = document.querySelectorAll('.maintenance-table th');
-        if (tableHeaders[0]) tableHeaders[0].textContent = lang.taskId || 'Task ID';
-        if (tableHeaders[1]) tableHeaders[1].textContent = lang.title || 'Title';
-        if (tableHeaders[2]) tableHeaders[2].textContent = lang.category || 'Category';
-        if (tableHeaders[3]) tableHeaders[3].textContent = lang.completedDate || 'Completed Date';
-        if (tableHeaders[4]) tableHeaders[4].textContent = lang.completionTime || 'Completion Time';
-        if (tableHeaders[5]) tableHeaders[5].textContent = lang.assignedTo || 'Assigned To';
-        if (tableHeaders[6]) tableHeaders[6].textContent = lang.actions || 'Actions';
-        
-        // Modal Content
-        const modalTitle = document.querySelector('#viewModal .modal-title');
-        if (modalTitle) modalTitle.textContent = lang.taskDetails || 'Task Details';
-        
-        const modalLabels = document.querySelectorAll('#viewModal .form-label');
-        if (modalLabels[0]) modalLabels[0].textContent = lang.title || 'Title';
-        if (modalLabels[1]) modalLabels[1].textContent = lang.category || 'Category';
-        if (modalLabels[3]) modalLabels[3].textContent = lang.dueDate || 'Due Date';
-        if (modalLabels[4]) modalLabels[4].textContent = lang.completedDate || 'Completed Date';
-        if (modalLabels[5]) modalLabels[5].textContent = lang.createdDate || 'Created Date';
-        if (modalLabels[6]) modalLabels[6].textContent = lang.assignedTo || 'Assigned To';
-        if (modalLabels[7]) modalLabels[7].textContent = lang.description || 'Description';
-        if (modalLabels[8]) modalLabels[8].textContent = lang.notes || 'Notes';
-        if (modalLabels[9]) modalLabels[9].textContent = lang.timeTracking || 'Time Tracking';
-        
-        const timeTrackLabels = document.querySelectorAll('.time-track-label');
-        if (timeTrackLabels[0]) timeTrackLabels[0].textContent = lang.estimatedTime || 'Estimated Time:';
-        if (timeTrackLabels[1]) timeTrackLabels[1].textContent = lang.actualTime || 'Actual Time:';
-        if (timeTrackLabels[2]) timeTrackLabels[2].textContent = lang.efficiency || 'Efficiency:';
-        
-        const modalButtons = document.querySelectorAll('#viewModal .btn');
-        if (modalButtons[0]) modalButtons[0].textContent = lang.close || 'Close';
-        if (modalButtons[1]) {
-            modalButtons[1].innerHTML = `<i class="fas fa-file-export"></i> ${lang.exportTaskDetails || 'Export Task Details'}`;
-        }
-        
-        // Empty State
-        const emptyState = document.getElementById('noTasks');
-        if (emptyState) {
-            const emptyTitle = emptyState.querySelector('h3');
-            const emptyDesc = emptyState.querySelector('p');
-            if (emptyTitle) emptyTitle.textContent = lang.noCompletedTasks || 'No Completed Tasks';
-            if (emptyDesc) emptyDesc.textContent = lang.noCompletedTasksDescription || 'You haven\'t completed any maintenance tasks yet.';
-        }
-        
-        // Pagination
-        const paginationButtons = document.querySelectorAll('.pagination .btn');
-        if (paginationButtons[0]) {
-            paginationButtons[0].innerHTML = `<i class="fas fa-chevron-left"></i> ${lang.previous || 'Previous'}`;
-        }
-        if (paginationButtons[1]) {
-            paginationButtons[1].innerHTML = `${lang.next || 'Next'} <i class="fas fa-chevron-right"></i>`;
-        }
-        
+        setTimeout(() => setupSolvedMaintenanceListener(), 500);
     } catch (error) {
-        console.error('Error applying translations:', error);
+        console.error("Error updating task:", error);
+        showToast("Error updating task: " + error.message, "error");
     }
 }
 
-// Fungsi untuk mendapatkan terjemahan
-function getTranslation(key, language = null) {
-    const lang = language || currentLanguage;
-    
-    if (typeof translations === 'undefined') {
-        console.warn('Translations object not available');
-        return key;
-    }
-    
-    const translation = translations[lang]?.[key];
-    
-    if (!translation) {
-        console.warn(`Translation not found for key: ${key} in language: ${lang}`);
-        return key;
-    }
-    
-    return translation;
-}
-
-// Fungsi untuk mengubah bahasa
-function changeLanguage(language) {
-    currentLanguage = language;
-    localStorage.setItem('language', language);
-    applyTranslations(language);
-    updateCharts();
-}
-
-// Fungsi untuk memuat pengaturan bahasa
-function loadLanguageSettings() {
-    const savedLanguage = localStorage.getItem('language') || 'id';
-    changeLanguage(savedLanguage);
-}
-
-// Setup language change listener
-function setupLanguageListener() {
-    window.addEventListener('storage', function(e) {
-        if (e.key === 'language') {
-            changeLanguage(e.newValue);
-        }
-    });
-    
-    setInterval(() => {
-        const currentLang = localStorage.getItem('language') || 'id';
-        if (currentLang !== currentLanguage) {
-            changeLanguage(currentLang);
-        }
-    }, 1000);
-}
-
-// ========== FUNGSI TAMBAHAN ==========
-
-// Fungsi untuk memuat sidebar
-function loadSidebar() {
-    console.log("Loading sidebar...");
-    // Sidebar akan dimuat oleh sidebar-loader.js
-}
-
-// Fungsi untuk export task details
+// ========== FUNGSI EXPORT TASK DETAILS ==========
 function exportTaskDetails(maintenance) {
     const dataStr = JSON.stringify(maintenance, null, 2);
     const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
@@ -2576,39 +1789,726 @@ function exportTaskDetails(maintenance) {
     showToast("Task details exported successfully", "success");
 }
 
-// Cleanup function untuk menghindari memory leaks
-function cleanupResources() {
-    console.log("🧹 Cleaning up resources...");
+// ========== FUNGSI UPDATE UI MAINTENANCE ==========
+async function updateSolvedMaintenanceUI() {
+    const tableBody = document.getElementById('completedTableBody');
+    const tasksCount = document.getElementById('tasksCount');
+    const noTasks = document.getElementById('noTasks');
+    const pagination = document.getElementById('pagination');
     
-    // Hapus Firebase listener
+    console.log("🔄 Memperbarui UI dengan", solvedMaintenance.length, "tasks");
+    
+    if (solvedMaintenance.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="8" class="empty-state">
+                    <i class="fas fa-database"></i>
+                    <h3>No Completed Maintenance Found</h3>
+                    <p>There are no completed maintenance tasks in the database yet.</p>
+                </td>
+            </tr>
+        `;
+        noTasks.style.display = 'block';
+        pagination.style.display = 'none';
+        tasksCount.textContent = '0 tasks';
+        return;
+    }
+    
+    noTasks.style.display = 'none';
+    pagination.style.display = 'flex';
+    
+    const filteredMaintenance = filterMaintenance(solvedMaintenance);
+    
+    tasksCount.textContent = `${filteredMaintenance.length} tasks`;
+    
+    const totalPages = Math.ceil(filteredMaintenance.length / maintenancePerPage);
+    document.getElementById('currentPage').textContent = currentPage;
+    document.getElementById('totalPages').textContent = totalPages;
+    
+    document.getElementById('prevPage').disabled = currentPage === 1;
+    document.getElementById('nextPage').disabled = currentPage === totalPages || totalPages === 0;
+    
+    const startIndex = (currentPage - 1) * maintenancePerPage;
+    const endIndex = Math.min(startIndex + maintenancePerPage, filteredMaintenance.length);
+    const currentPageMaintenance = filteredMaintenance.slice(startIndex, endIndex);
+    
+    tableBody.innerHTML = '';
+    
+    if (currentPageMaintenance.length === 0) {
+        const emptyRow = document.createElement('tr');
+        emptyRow.innerHTML = `
+            <td colspan="8" style="text-align: center; padding: 40px 20px;">
+                <i class="fas fa-inbox" style="font-size: 3rem; color: var(--text-tertiary); margin-bottom: 15px; display: block;"></i>
+                <h3 style="color: var(--text-secondary); margin-bottom: 10px;">No completed maintenance found</h3>
+                <p style="color: var(--text-tertiary);">Try adjusting your filters or check back later.</p>
+            </td>
+        `;
+        tableBody.appendChild(emptyRow);
+        return;
+    }
+    
+    const isAdmin = await isSuperAdmin();
+    
+    currentPageMaintenance.forEach(maintenance => {
+        const row = document.createElement('tr');
+        
+        const createdDate = maintenance.dateCreated ? formatDate(convertToDate(maintenance.dateCreated)) : 'N/A';
+        const completedDate = maintenance.dateCompleted ? formatDate(convertToDate(maintenance.dateCompleted)) : 'N/A';
+        
+        let completionTime = 'N/A';
+        if (maintenance.dateCreated && maintenance.dateCompleted) {
+            const created = convertToDate(maintenance.dateCreated);
+            const completed = convertToDate(maintenance.dateCompleted);
+            const diffDays = Math.floor((completed - created) / (1000 * 60 * 60 * 24));
+            const diffHours = Math.floor(((completed - created) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            completionTime = `${diffDays}d ${diffHours}h`;
+        }
+        
+        const adminButtons = isAdmin ? `
+            <button class="btn-icon reopen" data-id="${maintenance.id}" title="Reopen Task">
+                <i class="fas fa-undo"></i>
+            </button>
+            <button class="btn-icon edit" data-id="${maintenance.id}" title="Edit Task">
+                <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn-icon delete" data-id="${maintenance.id}" title="Delete Task">
+                <i class="fas fa-trash"></i>
+            </button>
+        ` : '';
+        
+        row.innerHTML = `
+            <td>${maintenance.id.substring(0, 8)}...</td>
+            <td>${maintenance.title || 'N/A'}</td>
+            <td>${maintenance.category || 'N/A'}</td>
+            <td>${completedDate}</td>
+            <td>${completionTime}</td>
+            <td>${maintenance.assignedTo || 'N/A'}</td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn-icon view" data-id="${maintenance.id}" title="View Details">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    ${adminButtons}
+                </div>
+            </td>
+        `;
+        
+        tableBody.appendChild(row);
+    });
+    
+    // Add event listeners
+    document.querySelectorAll('.btn-icon.view').forEach(button => {
+        button.addEventListener('click', function() {
+            showMaintenanceDetails(this.getAttribute('data-id'));
+        });
+    });
+    
+    if (isAdmin) {
+        document.querySelectorAll('.btn-icon.reopen').forEach(button => {
+            button.addEventListener('click', function() {
+                showReopenConfirmation(this.getAttribute('data-id'));
+            });
+        });
+        
+        document.querySelectorAll('.btn-icon.edit').forEach(button => {
+            button.addEventListener('click', function() {
+                showEditModal(this.getAttribute('data-id'));
+            });
+        });
+        
+        document.querySelectorAll('.btn-icon.delete').forEach(button => {
+            button.addEventListener('click', function() {
+                showDeleteConfirmation(this.getAttribute('data-id'));
+            });
+        });
+    }
+}
+
+// ========== FUNGSI SETUP LISTENER SOLVED MAINTENANCE ==========
+function setupSolvedMaintenanceListener() {
+    if (dataListenerActive) {
+        console.log("📡 Listener sudah aktif, skip...");
+        return;
+    }
+    
     if (unsubscribeSolved) {
         unsubscribeSolved();
         unsubscribeSolved = null;
     }
     
-    // Destroy charts
-    if (trendsChart) {
-        trendsChart.destroy();
-        trendsChart = null;
+    console.log("📡 Menghubungkan ke solvedMaintenance...");
+    
+    const maintenanceRef = db.collection('solvedMaintenance')
+        .orderBy('dateCompleted', 'desc')
+        .limit(100);
+    
+    unsubscribeSolved = maintenanceRef.onSnapshot(snapshot => {
+        if (!snapshot) {
+            console.log("📭 Tidak ada data snapshot");
+            return;
+        }
+        
+        console.log(`📥 Menerima ${snapshot.size} dokumen dari solvedMaintenance`);
+        dataListenerActive = true;
+        
+        solvedMaintenance = [];
+        snapshot.forEach(doc => {
+            const maintenance = doc.data();
+            maintenance.id = doc.id;
+            solvedMaintenance.push(maintenance);
+        });
+
+        console.log("📊 Total maintenance:", solvedMaintenance.length);
+        updateSolvedMaintenanceUI();
+        updateAllCharts();
+    }, error => {
+        console.error("❌ Error fetching solved maintenance:", error);
+        dataListenerActive = false;
+        showToast("Error loading solved maintenance", "error");
+    });
+}
+
+// ========== FUNGSI INISIALISASI CHARTS ==========
+function initCharts() {
+    console.log("📊 Menginisialisasi charts...");
+    
+    if (trendsChart) trendsChart.destroy();
+    if (categoryChart) categoryChart.destroy();
+    if (monthlyChart) monthlyChart.destroy();
+    
+    // Completion Trends Chart
+    const trendsCtx = document.getElementById('completionTrendsChart')?.getContext('2d');
+    if (trendsCtx) {
+        trendsChart = new Chart(trendsCtx, {
+            type: 'bar',
+            data: { labels: [], datasets: [{ 
+                label: 'Tasks Completed',
+                data: [],
+                backgroundColor: 'rgba(67, 97, 238, 0.2)',
+                borderColor: 'rgba(67, 97, 238, 1)',
+                borderWidth: 2,
+                borderRadius: 6,
+                barPercentage: 0.7
+            }] },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        titleFont: { size: 14, family: "'Poppins', sans-serif" },
+                        bodyFont: { size: 13, family: "'Poppins', sans-serif" },
+                        callbacks: { label: (ctx) => `${ctx.raw} tasks completed` }
+                    }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { stepSize: 1 } },
+                    x: { grid: { display: false }, ticks: { maxRotation: 45, minRotation: 45 } }
+                }
+            }
+        });
     }
-    if (categoryChart) {
-        categoryChart.destroy();
-        categoryChart = null;
+
+    // Category Chart
+    const categoryCtx = document.getElementById('categoryPieChart')?.getContext('2d');
+    if (categoryCtx) {
+        categoryChart = new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: { 
+                labels: [], 
+                datasets: [{ 
+                    data: [],
+                    backgroundColor: [
+                        'rgba(67,97,238,0.8)', 'rgba(76,201,240,0.8)', 'rgba(247,37,133,0.8)',
+                        'rgba(58,12,163,0.8)', 'rgba(114,9,183,0.8)', 'rgba(245,158,11,0.8)'
+                    ],
+                    borderColor: 'white',
+                    borderWidth: 2,
+                    hoverOffset: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '65%',
+                plugins: {
+                    legend: { 
+                        position: 'bottom',
+                        labels: { font: { family: "'Poppins', sans-serif", size: 12 }, padding: 20, usePointStyle: true }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        callbacks: {
+                            label: (ctx) => {
+                                const total = ctx.dataset.data.reduce((a,b) => a + b, 0);
+                                const percent = ((ctx.raw / total) * 100).toFixed(1);
+                                return `${ctx.label}: ${ctx.raw} tasks (${percent}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
-    if (monthlyChart) {
-        monthlyChart.destroy();
-        monthlyChart = null;
+
+    // Monthly Chart
+    const monthlyCtx = document.getElementById('monthlyTrendChart')?.getContext('2d');
+    if (monthlyCtx) {
+        monthlyChart = new Chart(monthlyCtx, {
+            type: 'line',
+            data: { 
+                labels: [], 
+                datasets: [{ 
+                    label: 'Completed Tasks',
+                    data: [],
+                    backgroundColor: 'rgba(67,97,238,0.1)',
+                    borderColor: 'rgba(67,97,238,1)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: 'rgba(67,97,238,1)',
+                    pointBorderColor: 'white',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        callbacks: { label: (ctx) => `${ctx.raw} tasks completed` }
+                    }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { stepSize: 1 } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
     }
     
-    // Reset flags
-    chartsInitialized = false;
+    console.log("✅ Charts initialized");
+}
+
+// ========== FUNGSI UPDATE TRENDS CHART ==========
+function updateCompletionTrendsChart() {
+    if (!trendsChart) return;
+    
+    const timeRange = document.getElementById('trendsTimeRange')?.value || 'Last 7 Days';
+    let daysToShow = 7;
+    if (timeRange.includes('30')) daysToShow = 30;
+    if (timeRange.includes('90')) daysToShow = 90;
+    
+    const now = new Date();
+    const dateMap = {};
+    const sortedDates = [];
+    
+    for (let i = daysToShow - 1; i >= 0; i--) {
+        const date = new Date(now);
+        date.setDate(date.getDate() - i);
+        date.setHours(0,0,0,0);
+        
+        const dateString = date.toLocaleDateString('en-US', { 
+            month: 'short', day: 'numeric',
+            year: daysToShow > 30 ? 'numeric' : undefined
+        });
+        
+        sortedDates.push(dateString);
+        dateMap[dateString] = 0;
+    }
+    
+    if (solvedMaintenance?.length) {
+        solvedMaintenance.forEach(m => {
+            if (m.dateCompleted) {
+                const completedDate = convertToDate(m.dateCompleted);
+                completedDate.setHours(0,0,0,0);
+                
+                const daysDiff = Math.floor((now - completedDate) / (1000 * 60 * 60 * 24));
+                if (daysDiff <= daysToShow) {
+                    const dateString = completedDate.toLocaleDateString('en-US', { 
+                        month: 'short', day: 'numeric',
+                        year: daysToShow > 30 ? 'numeric' : undefined
+                    });
+                    
+                    if (dateMap.hasOwnProperty(dateString)) dateMap[dateString]++;
+                }
+            }
+        });
+    }
+    
+    trendsChart.data.labels = sortedDates;
+    trendsChart.data.datasets[0].data = sortedDates.map(date => dateMap[date] || 0);
+    trendsChart.update();
+}
+
+// ========== FUNGSI UPDATE CATEGORY CHART ==========
+function updateTasksByCategoryChart() {
+    if (!categoryChart) return;
+    
+    const timeRange = document.getElementById('categoryTimeRange')?.value || 'All Time';
+    const now = new Date();
+    
+    let filtered = solvedMaintenance || [];
+    
+    if (timeRange !== 'All Time' && timeRange !== 'Semua Waktu') {
+        filtered = filtered.filter(m => {
+            if (!m.dateCompleted) return false;
+            const completedDate = convertToDate(m.dateCompleted);
+            completedDate.setHours(0,0,0,0);
+            
+            if (timeRange.includes('Week') || timeRange.includes('Minggu')) {
+                const weekAgo = new Date(now); weekAgo.setDate(weekAgo.getDate() - 7);
+                return completedDate >= weekAgo;
+            } else if (timeRange.includes('Month') || timeRange.includes('Bulan')) {
+                return completedDate.getMonth() === now.getMonth() && 
+                       completedDate.getFullYear() === now.getFullYear();
+            }
+            return true;
+        });
+    }
+    
+    const counts = {};
+    filtered.forEach(m => {
+        const cat = m.category || 'Uncategorized';
+        counts[cat] = (counts[cat] || 0) + 1;
+    });
+    
+    let labels = Object.keys(counts);
+    let data = Object.values(counts);
+    
+    if (labels.length === 0) {
+        labels = ['No Data'];
+        data = [1];
+        categoryChart.data.datasets[0].backgroundColor = ['rgba(200,200,200,0.5)'];
+    } else {
+        categoryChart.data.datasets[0].backgroundColor = [
+            'rgba(67,97,238,0.8)', 'rgba(76,201,240,0.8)', 'rgba(247,37,133,0.8)',
+            'rgba(58,12,163,0.8)', 'rgba(114,9,183,0.8)', 'rgba(245,158,11,0.8)'
+        ];
+    }
+    
+    categoryChart.data.labels = labels;
+    categoryChart.data.datasets[0].data = data;
+    categoryChart.update();
+}
+
+// ========== FUNGSI UPDATE MONTHLY CHART ==========
+function updateMonthlyTrendChart() {
+    if (!monthlyChart) return;
+    
+    const timeRange = document.getElementById('monthlyTimeRange')?.value || 'Last 6 Months';
+    let monthsToShow = 6;
+    if (timeRange.includes('12')) monthsToShow = 12;
+    if (timeRange.includes('All') || timeRange.includes('Semua')) {
+        if (solvedMaintenance?.length) {
+            const monthsSet = new Set();
+            solvedMaintenance.forEach(m => {
+                if (m.dateCompleted) {
+                    const d = convertToDate(m.dateCompleted);
+                    monthsSet.add(`${d.getFullYear()}-${d.getMonth()}`);
+                }
+            });
+            monthsToShow = Math.min(monthsSet.size, 24);
+        }
+    }
+    
+    const now = new Date();
+    const monthMap = {};
+    const sortedMonths = [];
+    
+    for (let i = monthsToShow - 1; i >= 0; i--) {
+        const date = new Date(now);
+        date.setMonth(date.getMonth() - i);
+        date.setDate(1);
+        date.setHours(0,0,0,0);
+        
+        const monthYear = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+        sortedMonths.push(monthYear);
+        monthMap[monthYear] = 0;
+    }
+    
+    if (solvedMaintenance?.length) {
+        solvedMaintenance.forEach(m => {
+            if (m.dateCompleted) {
+                const completedDate = convertToDate(m.dateCompleted);
+                const monthYear = completedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+                if (monthMap.hasOwnProperty(monthYear)) monthMap[monthYear]++;
+            }
+        });
+    }
+    
+    monthlyChart.data.labels = sortedMonths;
+    monthlyChart.data.datasets[0].data = sortedMonths.map(month => monthMap[month] || 0);
+    monthlyChart.update();
+}
+
+// ========== FUNGSI UPDATE ALL CHARTS ==========
+function updateAllCharts() {
+    if (!solvedMaintenance?.length) {
+        if (trendsChart) {
+            trendsChart.data.labels = ['No Data'];
+            trendsChart.data.datasets[0].data = [0];
+            trendsChart.update();
+        }
+        if (categoryChart) {
+            categoryChart.data.labels = ['No Data'];
+            categoryChart.data.datasets[0].data = [1];
+            categoryChart.data.datasets[0].backgroundColor = ['rgba(200,200,200,0.5)'];
+            categoryChart.update();
+        }
+        if (monthlyChart) {
+            monthlyChart.data.labels = ['No Data'];
+            monthlyChart.data.datasets[0].data = [0];
+            monthlyChart.update();
+        }
+        return;
+    }
+    
+    updateCompletionTrendsChart();
+    updateTasksByCategoryChart();
+    updateMonthlyTrendChart();
+}
+
+// ========== FUNGSI SETUP CHART FILTER LISTENERS ==========
+function setupChartFilterListeners() {
+    const trendsFilter = document.getElementById('trendsTimeRange');
+    if (trendsFilter) {
+        const newFilter = trendsFilter.cloneNode(true);
+        trendsFilter.parentNode.replaceChild(newFilter, trendsFilter);
+        newFilter.addEventListener('change', updateCompletionTrendsChart);
+    }
+    
+    const categoryFilter = document.getElementById('categoryTimeRange');
+    if (categoryFilter) {
+        const newFilter = categoryFilter.cloneNode(true);
+        categoryFilter.parentNode.replaceChild(newFilter, categoryFilter);
+        newFilter.addEventListener('change', updateTasksByCategoryChart);
+    }
+    
+    const monthlyFilter = document.getElementById('monthlyTimeRange');
+    if (monthlyFilter) {
+        const newFilter = monthlyFilter.cloneNode(true);
+        monthlyFilter.parentNode.replaceChild(newFilter, monthlyFilter);
+        newFilter.addEventListener('change', updateMonthlyTrendChart);
+    }
+}
+
+// ========== FUNGSI SETUP EVENT LISTENERS ==========
+function setupEventListeners() {
+    console.log("🔧 Setting up event listeners...");
+    
+    document.getElementById('categoryFilter')?.addEventListener('change', () => {
+        currentPage = 1;
+        updateSolvedMaintenanceUI();
+    });
+    
+    document.getElementById('timeFilter')?.addEventListener('change', () => {
+        currentPage = 1;
+        updateSolvedMaintenanceUI();
+    });
+    
+    document.getElementById('sortFilter')?.addEventListener('change', () => {
+        currentPage = 1;
+        updateSolvedMaintenanceUI();
+    });
+    
+    setupChartFilterListeners();
+    
+    document.getElementById('prevPage')?.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            updateSolvedMaintenanceUI();
+        }
+    });
+    
+    document.getElementById('nextPage')?.addEventListener('click', () => {
+        const totalPages = Math.ceil(filterMaintenance(solvedMaintenance).length / maintenancePerPage);
+        if (currentPage < totalPages) {
+            currentPage++;
+            updateSolvedMaintenanceUI();
+        }
+    });
+    
+    document.getElementById('closeViewModal')?.addEventListener('click', () => {
+        document.getElementById('viewModal').classList.remove('active');
+    });
+    
+    document.getElementById('closeViewBtn')?.addEventListener('click', () => {
+        document.getElementById('viewModal').classList.remove('active');
+    });
+    
+    document.getElementById('closeConfirmModal')?.addEventListener('click', () => {
+        document.getElementById('confirmModal').classList.remove('active');
+    });
+    
+    document.getElementById('cancelConfirmBtn')?.addEventListener('click', () => {
+        document.getElementById('confirmModal').classList.remove('active');
+    });
+    
+    window.addEventListener('click', (event) => {
+        if (event.target === document.getElementById('viewModal')) {
+            document.getElementById('viewModal').classList.remove('active');
+        }
+        if (event.target === document.getElementById('confirmModal')) {
+            document.getElementById('confirmModal').classList.remove('active');
+        }
+    });
+    
+    document.getElementById('refreshBtn')?.addEventListener('click', () => {
+        showToast("Refreshing data...", "info");
+        setupSolvedMaintenanceListener();
+    });
+    
+    document.getElementById('completedSearch')?.addEventListener('input', () => {
+        currentPage = 1;
+        updateSolvedMaintenanceUI();
+    });
+    
+    document.getElementById('exportTaskBtn')?.addEventListener('click', () => {
+        const maintenance = solvedMaintenance.find(m => m.id === currentMaintenanceId);
+        if (maintenance) exportTaskDetails(maintenance);
+    });
+}
+
+// ========== MULTI-LANGUAGE SUPPORT ==========
+let currentLanguage = localStorage.getItem('language') || 'id';
+
+function getTranslation(key, language = null) {
+    const lang = language || currentLanguage;
+    if (typeof translations === 'undefined') return key;
+    return translations[lang]?.[key] || key;
+}
+
+function applyTranslations(language) {
+    const lang = translations[language] || translations['id'];
+    if (!lang) return;
+    
+    try {
+        const header = document.querySelector('.header h1');
+        if (header) header.innerHTML = `<i class="fas fa-check-double"></i> ${lang.completedMaintenance || 'Completed Maintenance'}`;
+        
+        const search = document.getElementById('completedSearch');
+        if (search) search.placeholder = lang.searchPlaceholder || 'Search completed tasks...';
+        
+        const chartTitles = document.querySelectorAll('.chart-title');
+        if (chartTitles[0]) chartTitles[0].textContent = lang.completionTrends || 'Completion Trends';
+        if (chartTitles[1]) chartTitles[1].textContent = lang.tasksByCategory || 'Tasks by Category';
+        if (chartTitles[2]) chartTitles[2].textContent = lang.monthlyCompletionRate || 'Monthly Completion Rate';
+        
+        const trends = document.getElementById('trendsTimeRange');
+        if (trends) trends.innerHTML = `
+            <option>${lang.last7Days || 'Last 7 Days'}</option>
+            <option>${lang.last30Days || 'Last 30 Days'}</option>
+            <option>${lang.last90Days || 'Last 90 Days'}</option>
+        `;
+        
+        const category = document.getElementById('categoryTimeRange');
+        if (category) category.innerHTML = `
+            <option>${lang.allTime || 'All Time'}</option>
+            <option>${lang.thisMonth || 'This Month'}</option>
+            <option>${lang.thisWeek || 'This Week'}</option>
+        `;
+        
+        const monthly = document.getElementById('monthlyTimeRange');
+        if (monthly) monthly.innerHTML = `
+            <option>${lang.last6Months || 'Last 6 Months'}</option>
+            <option>${lang.last12Months || 'Last 12 Months'}</option>
+            <option>${lang.allTime || 'All Time'}</option>
+        `;
+        
+        const filterLabels = document.querySelectorAll('.filter-group label');
+        if (filterLabels[0]) filterLabels[0].textContent = lang.categoryLabel || 'Category';
+        if (filterLabels[1]) filterLabels[1].textContent = lang.completionTime || 'Completion Time';
+        if (filterLabels[2]) filterLabels[2].textContent = lang.sortBy || 'Sort By';
+        
+        const refresh = document.getElementById('refreshBtn');
+        if (refresh) refresh.innerHTML = `<i class="fas fa-sync-alt"></i> ${lang.refresh || 'Refresh'}`;
+        
+        const sectionTitle = document.querySelector('.section-title');
+        if (sectionTitle) sectionTitle.innerHTML = `<i class="fas fa-list"></i> ${lang.completedTasks || 'Completed Tasks'}`;
+        
+        const th = document.querySelectorAll('.maintenance-table th');
+        if (th[0]) th[0].textContent = lang.taskId || 'Task ID';
+        if (th[1]) th[1].textContent = lang.title || 'Title';
+        if (th[2]) th[2].textContent = lang.category || 'Category';
+        if (th[3]) th[3].textContent = lang.completedDate || 'Completed Date';
+        if (th[4]) th[4].textContent = lang.completionTime || 'Completion Time';
+        if (th[5]) th[5].textContent = lang.assignedTo || 'Assigned To';
+        if (th[6]) th[6].textContent = lang.actions || 'Actions';
+        
+        const modalTitle = document.querySelector('#viewModal .modal-title');
+        if (modalTitle) modalTitle.textContent = lang.taskDetails || 'Task Details';
+        
+        const emptyState = document.getElementById('noTasks');
+        if (emptyState) {
+            const emptyTitle = emptyState.querySelector('h3');
+            const emptyDesc = emptyState.querySelector('p');
+            if (emptyTitle) emptyTitle.textContent = lang.noCompletedTasks || 'No Completed Tasks';
+            if (emptyDesc) emptyDesc.textContent = lang.noCompletedTasksDescription || 'You haven\'t completed any maintenance tasks yet.';
+        }
+        
+        const prev = document.querySelector('#prevPage');
+        if (prev) prev.innerHTML = `<i class="fas fa-chevron-left"></i> ${lang.previous || 'Previous'}`;
+        
+        const next = document.querySelector('#nextPage');
+        if (next) next.innerHTML = `${lang.next || 'Next'} <i class="fas fa-chevron-right"></i>`;
+        
+    } catch (error) {
+        console.error('Error applying translations:', error);
+    }
+}
+
+function changeLanguage(language) {
+    currentLanguage = language;
+    localStorage.setItem('language', language);
+    applyTranslations(language);
+    updateAllCharts();
+}
+
+function loadLanguageSettings() {
+    const savedLanguage = localStorage.getItem('language') || 'id';
+    changeLanguage(savedLanguage);
+}
+
+function setupLanguageListener() {
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'language') changeLanguage(e.newValue);
+    });
+    
+    setInterval(() => {
+        const current = localStorage.getItem('language') || 'id';
+        if (current !== currentLanguage) changeLanguage(current);
+    }, 1000);
+}
+
+// ========== FUNGSI LOAD SIDEBAR ==========
+function loadSidebar() {
+    console.log("Loading sidebar...");
+}
+
+// ========== FUNGSI CLEANUP ==========
+function cleanupResources() {
+    console.log("🧹 Cleaning up resources...");
+    
+    if (unsubscribeSolved) {
+        unsubscribeSolved();
+        unsubscribeSolved = null;
+    }
+    
+    if (trendsChart) { trendsChart.destroy(); trendsChart = null; }
+    if (categoryChart) { categoryChart.destroy(); categoryChart = null; }
+    if (monthlyChart) { monthlyChart.destroy(); monthlyChart = null; }
+    
     dataListenerActive = false;
     initializationCompleted = false;
 }
 
 // ========== INITIALIZATION ==========
-
-// Initialize the page dengan pencegahan multiple initialization
 document.addEventListener('DOMContentLoaded', function() {
     if (initializationCompleted) {
         console.log("⚠️ Page already initialized, skipping...");
@@ -2617,7 +2517,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log("🚀 DOM loaded, initializing page...");
     
-    // Setup auth state listener HANYA SEKALI
     if (!authListenerSetup) {
         authListenerSetup = true;
         
@@ -2625,31 +2524,21 @@ document.addEventListener('DOMContentLoaded', function() {
             if (user) {
                 console.log("✅ User logged in:", user.email);
                 
-                // Tunggu sebentar untuk memastikan DOM siap
                 setTimeout(async () => {
-                    // Load sidebar
                     await loadSidebar();
-                    
-                    // Cek role user
                     const isAdmin = await isSuperAdmin();
                     console.log("👑 Is super admin:", isAdmin);
                     
-                    // Initialize components
                     initCharts();
                     setupSolvedMaintenanceListener();
-                    
-                    // Setup language functionality
                     loadLanguageSettings();
                     setupLanguageListener();
-                    
-                    // Setup event listeners
                     setupEventListeners();
                     
                     initializationCompleted = true;
                 }, 100);
             } else {
                 console.log("❌ No user logged in");
-                // Tetap load sidebar meski tidak login
                 loadSidebar();
                 initCharts();
                 setupEventListeners();
@@ -2658,7 +2547,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Setup cleanup saat page unload
     window.addEventListener('beforeunload', cleanupResources);
     window.addEventListener('pagehide', cleanupResources);
 });

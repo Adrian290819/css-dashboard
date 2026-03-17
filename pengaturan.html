@@ -284,17 +284,30 @@ const DEFAULT_PROFILE = {
 };
 
 // Fungsi untuk memperbarui profil di Firestore
+// Fungsi untuk memperbarui profil di Firestore
 async function updateProfileInFirestore(profile) {
     try {
         const user = auth.currentUser;
         if (user) {
-            await db.collection('users').doc(user.uid).set({
-                name: profile.name,
-                role: profile.role,
-                image: profile.image,
-                email: profile.email,
+            // Ambil data yang sudah ada dari Firestore
+            const currentDoc = await db.collection('users').doc(user.uid).get();
+            const currentData = currentDoc.exists ? currentDoc.data() : {};
+            
+            // Buat data yang akan diupdate
+            const updatedData = {
                 lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-            }, { merge: true });
+            };
+            
+            // Hanya update field yang dikirim, sisanya pertahankan nilai lama
+            if (profile.name !== undefined) updatedData.name = profile.name;
+            if (profile.email !== undefined) updatedData.email = profile.email;
+            if (profile.image !== undefined) updatedData.image = profile.image;
+            
+            // PENTING: Role TIDAK PERNAH diupdate dari parameter profile
+            // Gunakan role yang sudah ada atau default
+            updatedData.role = currentData.role || 'Customer Service Support';
+            
+            await db.collection('users').doc(user.uid).set(updatedData, { merge: true });
             return true;
         }
     } catch (error) {
@@ -318,9 +331,10 @@ async function getProfileFromFirestore() {
                     email: data.email || ''
                 };
             } else {
+                // Buat dokumen baru dengan role SUPER ADMIN
                 const defaultProfile = {
                     name: 'Admin',
-                    role: 'Customer Service Support',
+                    role: 'Super Admin', // <-- Ubah sesuai role yang Anda inginkan
                     image: 'https://ui-avatars.com/api/?name=Admin&background=4361ee&color=fff',
                     email: ''
                 };
@@ -580,11 +594,13 @@ async function loadSavedSettings() {
         document.getElementById('adminName').value = savedName || 'Admin';
         document.getElementById('adminEmail').value = savedEmail || '';
         
-        updateProfileDisplay(
-            savedName || 'Admin',
-            savedRole || 'Customer Service Support',
-            savedImage || 'https://ui-avatars.com/api/?name=Admin&background=4361ee&color=fff'
-        );
+        // Di dalam fungsi loadSavedSettings, ganti dengan:
+const roleToDisplay = savedRole || 'Super Admin'; // <-- Sesuaikan dengan role yang diinginkan
+updateProfileDisplay(
+    savedName || 'Admin',
+    roleToDisplay,
+    savedImage || 'https://ui-avatars.com/api/?name=Admin&background=4361ee&color=fff'
+);
     }
     
     // Load pengaturan aplikasi
@@ -881,43 +897,61 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Simpan pengaturan profil
-    document.getElementById('saveProfileBtn').addEventListener('click', async function() {
-        const adminName = document.getElementById('adminName').value;
-        const adminEmail = document.getElementById('adminEmail').value;
-        const adminRole = "Customer Service Support";
+document.getElementById('saveProfileBtn').addEventListener('click', async function() {
+    const adminName = document.getElementById('adminName').value;
+    const adminEmail = document.getElementById('adminEmail').value;
+    
+    if (adminName.trim() === '') {
+        showToast('Nama admin tidak boleh kosong', 'error');
+        return;
+    }
+    
+    const user = auth.currentUser;
+    
+    if (user) {
+        // Ambil data profil yang sudah ada dari Firestore
+        const currentProfile = await getProfileFromFirestore() || {};
         
-        if (adminName.trim() === '') {
-            showToast('Nama admin tidak boleh kosong', 'error');
-            return;
-        }
+        // PENTING: Gunakan role yang sudah ada, jangan diganti
+        const existingRole = currentProfile.role || 'Super Admin';
         
-        const user = auth.currentUser;
-        if (user) {
-            const currentProfile = await getProfileFromFirestore() || {};
-            const success = await updateProfileInFirestore({
-                ...currentProfile,
-                name: adminName,
-                role: adminRole,
-                email: adminEmail
-            });
-            
-            if (success) {
-                showToast('Profil berhasil diperbarui di cloud');
-            } else {
-                localStorage.setItem('adminName', adminName);
-                localStorage.setItem('adminEmail', adminEmail);
-                localStorage.setItem('adminRole', adminRole);
-                showToast('Profil berhasil diperbarui (offline)');
-            }
-        } else {
+        // Update hanya name, email, dan image
+        const success = await updateProfileInFirestore({
+            name: adminName,
+            email: adminEmail,
+            image: currentProfile.image // Pertahankan image yang sudah ada
+            // role TIDAK dikirim, akan dipertahankan oleh fungsi updateProfileInFirestore
+        });
+        
+        if (success) {
+            showToast('Profil berhasil diperbarui di cloud');
+            // Simpan ke localStorage untuk cadangan
             localStorage.setItem('adminName', adminName);
             localStorage.setItem('adminEmail', adminEmail);
-            localStorage.setItem('adminRole', adminRole);
-            showToast('Profil berhasil diperbarui');
+            // Jangan simpan role ke localStorage agar tidak berubah
+        } else {
+            // Fallback ke localStorage jika Firestore gagal
+            localStorage.setItem('adminName', adminName);
+            localStorage.setItem('adminEmail', adminEmail);
+            showToast('Profil berhasil diperbarui (offline)');
         }
         
-        updateProfileDisplay(adminName, adminRole);
-    });
+        // Update tampilan dengan role yang sudah ada
+        updateProfileDisplay(adminName, existingRole, currentProfile.image);
+        
+    } else {
+        // Jika tidak login (offline mode)
+        const existingRole = localStorage.getItem('adminRole') || 'Super Admin';
+        const existingImage = localStorage.getItem('adminProfileImage') || 'https://ui-avatars.com/api/?name=Admin&background=4361ee&color=fff';
+        
+        localStorage.setItem('adminName', adminName);
+        localStorage.setItem('adminEmail', adminEmail);
+        // Jangan ubah role di localStorage
+        
+        showToast('Profil berhasil diperbarui (offline)');
+        updateProfileDisplay(adminName, existingRole, existingImage);
+    }
+});
 
     // Simpan pengaturan aplikasi
     document.getElementById('saveAppSettingsBtn').addEventListener('click', function() {

@@ -541,12 +541,12 @@ body.user-mode .admin-only { display: none; }
                     <i class="fas fa-search"></i>
                     <input type="text" placeholder="Cari karyawan..." id="employeeSearch">
                 </div>
-                <div class="user-profile">
-                    <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
-                    <div class="user-info">
-                        <h4 id="userName">Nama Masing Masing</h4>
-                        <p id="userRole">Customer Service Support</p>
-                    </div>
+<div class="user-profile">
+    <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
+    <div class="user-info">
+        <h4 id="userName">Nama Masing Masing</h4> <!-- Tambahkan id="userName" -->
+        <p id="userRole">Customer Service Support</p> <!-- Tambahkan id="userRole" -->
+    </div>
                 </div>
             </div>
         </div>
@@ -654,97 +654,145 @@ body.user-mode .admin-only { display: none; }
 
         // Fungsi untuk memeriksa dan setup super admin
         async function checkAndSetupSuperAdmin() {
-            try {
-                const currentUser = firebase.auth().currentUser;
-                if (!currentUser) {
-                    console.log('No user logged in');
-                    setupAdminUI(false);
-                    return false;
-                }
-                
-                console.log('🔄 Checking admin role for user:', currentUser.uid, currentUser.email);
-                
-                const userDoc = await db.collection('users').doc(currentUser.uid).get();
-                
-                if (userDoc.exists) {
-                    const userData = userDoc.data();
-                    console.log('📊 User data from Firestore:', userData);
-                    
-                    // Update profil juga di sini
-                    const displayName = userData.name || userData.displayName || userData.email || 'User';
-                    const role = userData.role || 'Customer Service Support';
-                    
-                    userNameElement.textContent = displayName;
-                    userRoleElement.textContent = role;
-                    
-                    // Check role dengan berbagai kemungkinan field
-                    const isAdmin = userData.role === 'super_admin' || 
-                                  userData.isSuperAdmin === true ||
-                                  userData.isAdmin === true ||
-                                  (userData.email && userData.email.includes('admin')) ||
-                                  userData.email === 'superadmin@gachaengine.com';
-                    
-                    console.log('✅ Final admin determination:', isAdmin);
-                    
-                    if (isAdmin) {
-                        setupAdminUI(true);
-                        isSuperAdminUser = true;
-                        return true;
-                    }
-                }
-                
-                // Jika bukan admin, setup UI user biasa
-                setupAdminUI(false);
-                isSuperAdminUser = false;
-                return false;
-                
-            } catch (error) {
-                console.error('❌ Error checking super admin:', error);
-                setupAdminUI(false);
-                isSuperAdminUser = false;
-                return false;
-            }
+    try {
+        const currentUser = firebase.auth().currentUser;
+        if (!currentUser) {
+            console.log('No user logged in');
+            setupAdminUI(false);
+            return false;
         }
+        
+        console.log('🔄 Checking admin role for user:', currentUser.uid, currentUser.email);
+        
+        // AMBIL ELEMEN DENGAN PENGECEKAN NULL
+        const userNameElement = document.getElementById('userName');
+        const userRoleElement = document.getElementById('userRole');
+        
+        const userDoc = await db.collection('users').doc(currentUser.uid).get();
+        
+        if (userDoc.exists) {
+            const userData = userDoc.data();
+            console.log('📊 User data from Firestore:', userData);
+            
+            // Update profil - CEK APAKAH ELEMEN ADA
+            const displayName = userData.name || userData.displayName || userData.email || 'User';
+            const role = userData.role || 'Customer Service Support';
+            
+            // HANYA UPDATE JIKA ELEMEN ADA
+            if (userNameElement) {
+                userNameElement.textContent = displayName;
+            }
+            
+            if (userRoleElement) {
+                userRoleElement.textContent = role;
+            }
+            
+            // Check role
+            const isAdmin = userData.role === 'super_admin' || 
+                          userData.role === 'admin' ||
+                          userData.isSuperAdmin === true ||
+                          userData.isAdmin === true ||
+                          (userData.email && userData.email.includes('admin')) ||
+                          userData.email === 'superadmin@gachaengine.com';
+            
+            console.log('✅ Final admin determination:', isAdmin);
+            
+            // PANGGIL SETUP UI
+            setupAdminUI(isAdmin);
+            return isAdmin;
+        } else {
+            console.log('User document not found in Firestore');
+            
+            // TETAP UPDATE DENGAN DATA DEFAULT
+            if (userNameElement) {
+                userNameElement.textContent = currentUser.email || 'User';
+            }
+            
+            setupAdminUI(false);
+            return false;
+        }
+        
+    } catch (error) {
+        console.error('❌ Error checking super admin:', error);
+        setupAdminUI(false);
+        return false;
+    }
+}
 
         // Fungsi untuk setup UI admin
         function setupAdminUI(isAdmin) {
-            console.log('Setting up admin UI for shift, isAdmin:', isAdmin);
-            
-            // Tambahkan class pada body untuk kontrol CSS
-            if (isAdmin) {
-                document.body.classList.add('admin-mode');
-                document.body.classList.remove('user-mode');
-                
-                // Aktifkan tombol save
-                saveChangesBtn.disabled = false;
-                saveChangesBtn.style.cursor = 'pointer';
-                saveChangesBtn.style.backgroundColor = 'var(--primary)';
-                
-                // Aktifkan tombol add
-                addEmployeeBtn.disabled = false;
-                addEmployeeBtn.style.cursor = 'pointer';
-                addEmployeeBtn.style.backgroundColor = 'var(--success)';
-                
-                isSuperAdminUser = true;
-                console.log('Admin UI setup completed - Edit enabled');
-            } else {
-                document.body.classList.add('user-mode');
-                document.body.classList.remove('admin-mode');
-                
-                // Nonaktifkan tombol save untuk user biasa
-                saveChangesBtn.disabled = true;
-                saveChangesBtn.style.cursor = 'not-allowed';
-                saveChangesBtn.style.backgroundColor = 'var(--text-tertiary)';
-                
-                // Nonaktifkan tombol add untuk user biasa
-                addEmployeeBtn.disabled = true;
-                addEmployeeBtn.style.cursor = 'not-allowed';
-                addEmployeeBtn.style.backgroundColor = 'var(--text-tertiary)';
-                
-                isSuperAdminUser = false;
-                console.log('Regular user UI setup completed - Edit disabled');
-            }
+    console.log('Setting up admin UI for shift, isAdmin:', isAdmin);
+    
+    // Hapus class yang mungkin bertentangan
+    document.body.classList.remove('admin-mode', 'user-mode');
+    
+    // Cari elemen tombol
+    const shiftActions = document.querySelector('.shift-actions');
+    const addBtn = document.getElementById('addEmployeeBtn');
+    const saveBtn = document.getElementById('saveChangesBtn');
+    
+    if (isAdmin) {
+        // SUPER ADMIN - TAMPILKAN SEMUA
+        document.body.classList.add('admin-mode');
+        
+        // Tampilkan shift actions
+        if (shiftActions) {
+            shiftActions.style.display = 'flex';
+            shiftActions.style.opacity = '1';
+            shiftActions.style.transform = 'translateY(0)';
         }
+        
+        // Aktifkan tombol add
+        if (addBtn) {
+            addBtn.disabled = false;
+            addBtn.style.cursor = 'pointer';
+            addBtn.style.opacity = '1';
+            addBtn.style.pointerEvents = 'auto';
+        }
+        
+        // Aktifkan tombol save
+        if (saveBtn) {
+            saveBtn.disabled = false;
+            saveBtn.style.cursor = 'pointer';
+            saveBtn.style.opacity = '1';
+            saveBtn.style.pointerEvents = 'auto';
+        }
+        
+        isSuperAdminUser = true;
+        console.log('✅ Admin mode enabled - All buttons visible');
+        
+    } else {
+        // USER BIASA - SEMBUNYIKAN SEMUA TOMBOL ADMIN
+        document.body.classList.add('user-mode');
+        
+        // Sembunyikan shift actions
+        if (shiftActions) {
+            shiftActions.style.display = 'none';
+        }
+        
+        // Nonaktifkan tombol add
+        if (addBtn) {
+            addBtn.disabled = true;
+            addBtn.style.cursor = 'not-allowed';
+            addBtn.style.opacity = '0.5';
+        }
+        
+        // Nonaktifkan tombol save
+        if (saveBtn) {
+            saveBtn.disabled = true;
+            saveBtn.style.cursor = 'not-allowed';
+            saveBtn.style.opacity = '0.5';
+        }
+        
+        isSuperAdminUser = false;
+        console.log('❌ User mode enabled - Admin buttons hidden');
+    }
+    
+    // Re-render table untuk menampilkan/menyembunyikan tombol delete
+    if (typeof renderShiftTable === 'function') {
+        renderShiftTable();
+    }
+}
 
         // ========== FUNGSI FIRESTORE ==========
 

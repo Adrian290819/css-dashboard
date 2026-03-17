@@ -101,7 +101,7 @@
             font-weight: var(--font-semibold);
             color: var(--text-primary);
         }
-
+        
         .user-info p {
             margin: 0;
             font-size: var(--text-xs);
@@ -496,6 +496,91 @@
             opacity: 0.9;
         }
 
+      /* ========== PAGINATION STYLES - TOMBOL DI TENGAH ========== */
+.pagination-container {
+    display: flex;
+    justify-content: center; /* Pusatkan container */
+    align-items: center;
+    padding: var(--space-md) 0;
+    margin-top: var(--space-md);
+    border-top: 1px solid var(--border-color);
+    width: 100%;
+}
+
+.pagination-buttons {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap; /* Agar responsif di layar kecil */
+}
+
+.pagination-page {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.page-btn {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 8px;
+    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.page-btn:hover {
+    background: var(--hover-color);
+    border-color: var(--primary);
+}
+
+.page-btn.active {
+    background: var(--primary-gradient);
+    color: white;
+    border-color: var(--primary);
+}
+
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.page-dots {
+    color: var(--text-secondary);
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive untuk mobile */
+@media (max-width: 768px) {
+    .pagination-buttons {
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
+    
+    .pagination-page {
+        justify-content: center;
+    }
+    
+    .page-btn {
+        min-width: 32px;
+        height: 32px;
+        font-size: var(--text-xs);
+    }
+}
+
         /* ========== EMPTY STATE ========== */
         .empty-state {
             text-align: center;
@@ -839,18 +924,17 @@
                 width: 100%;
                 justify-content: center;
             }
-        }
-        .screenshot-link {
-    color: var(--primary);
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-}
 
-.screenshot-link:hover {
-    text-decoration: underline;
-}
+            .pagination-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .pagination-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -871,6 +955,7 @@
                 <div class="user-profile">
                     <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
                     <div class="user-info">
+                        <!-- PERBAIKAN: Tambah ID untuk menghindari error -->
                         <h4 id="userName">Loading...</h4>
                         <p id="userRole">Customer Service Support</p>
                     </div>
@@ -973,7 +1058,6 @@
                         <!-- Data akan dimuat secara dinamis -->
                     </tbody>
                 </table>
-            </div>
             
             <div id="noLeads" class="empty-state" style="display: none;">
                 <i class="fas fa-users"></i>
@@ -1096,7 +1180,20 @@
             </div>
         </div>
     </div>
-
+<!-- Pagination Controls - ONLY BUTTONS -->
+<div class="pagination-container" id="paginationContainer" style="display: none;">
+    <div class="pagination-buttons">
+        <button class="btn btn-outline btn-sm" id="prevPage" disabled>
+            <i class="fas fa-chevron-left"></i> Previous
+        </button>
+        <span class="pagination-page" id="pageNumbers">
+            <!-- Akan diisi JavaScript -->
+        </span>
+        <button class="btn btn-outline btn-sm" id="nextPage" disabled>
+            Next <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+</div>
     <!-- View Image Modal -->
     <div class="modal-overlay" id="imageModal">
         <div class="modal" style="max-width: 800px;">
@@ -1157,11 +1254,17 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Variabel global
+        // ========== GLOBAL VARIABLES ==========
         let currentUser = null;
         let currentLeadId = null;
         let leadsData = [];
+        let filteredLeadsData = []; // Untuk menyimpan data setelah filter
         let cssList = [];
+
+        // ===== VARIABEL PAGINATION =====
+        let currentPage = 1;
+        let itemsPerPage = 10; // Jumlah data per halaman
+        let totalPages = 1;
 
         // ========== FUNGSI UTAMA ==========
         
@@ -1171,7 +1274,18 @@
                 if (user) {
                     currentUser = user;
                     console.log("User is signed in:", user.uid);
-                    document.getElementById('userName').textContent = user.displayName || user.email;
+                    
+                    // PERBAIKAN: Set user name ke element yang sudah diberi ID
+                    const userNameElement = document.getElementById('userName');
+                    if (userNameElement) {
+                        userNameElement.textContent = user.displayName || user.email || 'User';
+                    }
+                    
+                    const userRoleElement = document.getElementById('userRole');
+                    if (userRoleElement) {
+                        userRoleElement.textContent = 'Customer Service Support';
+                    }
+                    
                     ensureCollectionExists();
                     loadCSSData();
                     loadLeadsData();
@@ -1205,6 +1319,7 @@
                 cssSelects.forEach(selectId => {
                     const select = document.getElementById(selectId);
                     if (select) {
+                        // Hapus opsi selain yang pertama
                         while (select.options.length > 1) {
                             select.remove(1);
                         }
@@ -1222,6 +1337,7 @@
                 
             } catch (error) {
                 console.error("Error loading CSS data:", error);
+                // Fallback ke default CSS
                 const cssSelects = ['namaCSS', 'cssFilter'];
                 cssSelects.forEach(selectId => {
                     const select = document.getElementById(selectId);
@@ -1249,6 +1365,7 @@
             }
         }
 
+        // Fungsi untuk memuat data leads
         async function loadLeadsData() {
             try {
                 const snapshot = await db.collection('promosiLeads')
@@ -1256,8 +1373,13 @@
                     .get();
                 
                 leadsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                filteredLeadsData = [...leadsData]; // Salin ke filtered data
                 
-                renderLeadsTable();
+                // Reset ke halaman 1
+                currentPage = 1;
+                
+                // Render tabel dengan pagination
+                renderLeadsTableWithPagination();
                 
             } catch (error) {
                 console.error("Error loading leads:", error);
@@ -1265,21 +1387,55 @@
             }
         }
         
-        // Fungsi untuk menampilkan tabel leads
-        function renderLeadsTable() {
+        // ========== FUNGSI PAGINATION & RENDER TABLE ==========
+        
+        // Fungsi untuk render tabel dengan pagination
+        function renderLeadsTableWithPagination() {
             const tableBody = document.getElementById('leadsTableBody');
             const noLeads = document.getElementById('noLeads');
+            const paginationContainer = document.getElementById('paginationContainer');
             
-            if (leadsData.length === 0) {
+            if (!tableBody) return;
+            
+            // Hitung total halaman
+            totalPages = Math.ceil(filteredLeadsData.length / itemsPerPage);
+            if (totalPages === 0) totalPages = 1;
+            
+            // Validasi current page
+            if (currentPage < 1) currentPage = 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            
+            // Hitung index data untuk halaman saat ini
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, filteredLeadsData.length);
+            const currentPageData = filteredLeadsData.slice(startIndex, endIndex);
+            
+            // Tampilkan atau sembunyikan pagination container
+            if (paginationContainer) {
+                paginationContainer.style.display = filteredLeadsData.length > 0 ? 'flex' : 'none';
+            }
+            
+            // Update info pagination
+            updatePaginationInfo();
+            
+            // Render tombol halaman
+            renderPageButtons();
+            
+            if (filteredLeadsData.length === 0) {
                 if (tableBody) tableBody.innerHTML = '';
-                if (noLeads) noLeads.style.display = 'block';
+                if (noLeads) {
+                    noLeads.style.display = 'block';
+                    noLeads.querySelector('h3').textContent = 'Tidak Ada Leads';
+                    noLeads.querySelector('p').textContent = 'Tidak ada leads yang sesuai dengan filter.';
+                }
                 return;
             }
             
             if (noLeads) noLeads.style.display = 'none';
             if (tableBody) tableBody.innerHTML = '';
             
-            leadsData.forEach(lead => {
+            // Render data untuk halaman saat ini
+            currentPageData.forEach(lead => {
                 const row = document.createElement('tr');
                 
                 const tanggalMasuk = lead.tanggalMasuk ? new Date(lead.tanggalMasuk).toLocaleDateString('id-ID') : '-';
@@ -1310,12 +1466,12 @@
                     <td>${lead.platform || '-'}</td>
                     <td>${lead.contactUsername || '-'}</td>
                     <td>
-    ${lead.screenshotUrl ? 
-        `<a href="${lead.screenshotUrl}" target="_blank" class="screenshot-link">
-            <i class="fas fa-image"></i> Lihat
-        </a>` : 
-        '-'}
-</td>
+                        ${lead.screenshotUrl ? 
+                            `<a href="${lead.screenshotUrl}" target="_blank" class="screenshot-link">
+                                <i class="fas fa-image"></i> Lihat
+                            </a>` : 
+                            '-'}
+                    </td>
                     <td>${lead.namaCSS || '-'}</td>
                     <td>
                         <span class="status-badge ${qualificationClass}">${lead.leadQualification || '-'}</span>
@@ -1339,6 +1495,7 @@
                 tableBody.appendChild(row);
             });
             
+            // Tambahkan event listener untuk tombol edit dan delete
             document.querySelectorAll('.edit-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const leadId = this.getAttribute('data-id');
@@ -1356,6 +1513,169 @@
             });
         }
 
+        // Fungsi untuk update info pagination
+        function updatePaginationInfo() {
+            const paginationInfo = document.getElementById('paginationInfo');
+            if (!paginationInfo) return;
+            
+            const start = filteredLeadsData.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0;
+            const end = Math.min(currentPage * itemsPerPage, filteredLeadsData.length);
+            
+            paginationInfo.innerHTML = `Menampilkan ${start} - ${end} dari ${filteredLeadsData.length} data`;
+        }
+
+        // Fungsi untuk render tombol halaman
+        function renderPageButtons() {
+            const pageNumbers = document.getElementById('pageNumbers');
+            const prevBtn = document.getElementById('prevPage');
+            const nextBtn = document.getElementById('nextPage');
+            
+            if (!pageNumbers) return;
+            
+            // Set status prev/next buttons
+            if (prevBtn) {
+                prevBtn.disabled = currentPage === 1;
+            }
+            if (nextBtn) {
+                nextBtn.disabled = currentPage === totalPages || filteredLeadsData.length === 0;
+            }
+            
+            // Render page buttons
+            let buttonsHTML = '';
+            
+            if (filteredLeadsData.length === 0) {
+                pageNumbers.innerHTML = '';
+                return;
+            }
+            
+            // Selalu tampilkan halaman pertama
+            buttonsHTML += `<button class="page-btn ${currentPage === 1 ? 'active' : ''}" data-page="1">1</button>`;
+            
+            if (totalPages > 7) {
+                // Logika untuk banyak halaman
+                if (currentPage > 3) {
+                    buttonsHTML += '<span class="page-dots">...</span>';
+                }
+                
+                // Halaman sekitar current page
+                for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
+                    if (i > 1 && i < totalPages) {
+                        buttonsHTML += `<button class="page-btn ${currentPage === i ? 'active' : ''}" data-page="${i}">${i}</button>`;
+                    }
+                }
+                
+                if (currentPage < totalPages - 2) {
+                    buttonsHTML += '<span class="page-dots">...</span>';
+                }
+                
+                // Halaman terakhir
+                if (totalPages > 1) {
+                    buttonsHTML += `<button class="page-btn ${currentPage === totalPages ? 'active' : ''}" data-page="${totalPages}">${totalPages}</button>`;
+                }
+            } else {
+                // Tampilkan semua halaman jika total <= 7
+                for (let i = 2; i <= totalPages; i++) {
+                    buttonsHTML += `<button class="page-btn ${currentPage === i ? 'active' : ''}" data-page="${i}">${i}</button>`;
+                }
+            }
+            
+            pageNumbers.innerHTML = buttonsHTML;
+            
+            // Tambahkan event listener untuk setiap tombol halaman
+            document.querySelectorAll('.page-btn[data-page]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const page = parseInt(this.getAttribute('data-page'));
+                    if (page !== currentPage) {
+                        currentPage = page;
+                        renderLeadsTableWithPagination();
+                    }
+                });
+            });
+        }
+
+        // Fungsi untuk navigasi ke halaman sebelumnya
+        function goToPreviousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderLeadsTableWithPagination();
+            }
+        }
+
+        // Fungsi untuk navigasi ke halaman berikutnya
+        function goToNextPage() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderLeadsTableWithPagination();
+            }
+        }
+
+        // ========== FUNGSI FILTER ==========
+        
+        // Fungsi untuk memfilter leads
+        function filterLeads() {
+            const searchTerm = document.getElementById('leadsSearch')?.value.toLowerCase() || '';
+            const platformFilter = document.getElementById('platformFilter')?.value || '';
+            const qualificationFilter = document.getElementById('qualificationFilter')?.value || '';
+            const leadsFollowFilter = document.getElementById('leadsFollowFilter')?.value || '';
+            const cssFilter = document.getElementById('cssFilter')?.value || '';
+            const dateFilter = document.getElementById('dateFilter')?.value || '';
+            
+            filteredLeadsData = [...leadsData];
+            
+            if (searchTerm) {
+                filteredLeadsData = filteredLeadsData.filter(lead => 
+                    (lead.contactUsername && lead.contactUsername.toLowerCase().includes(searchTerm)) ||
+                    (lead.leads && lead.leads.toLowerCase().includes(searchTerm)) ||
+                    (lead.notesFU && lead.notesFU.toLowerCase().includes(searchTerm)) ||
+                    (lead.reason && lead.reason.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            if (platformFilter) {
+                filteredLeadsData = filteredLeadsData.filter(lead => lead.platform === platformFilter);
+            }
+            
+            if (qualificationFilter) {
+                filteredLeadsData = filteredLeadsData.filter(lead => lead.leadQualification === qualificationFilter);
+            }
+            
+            if (leadsFollowFilter) {
+                filteredLeadsData = filteredLeadsData.filter(lead => lead.leads === leadsFollowFilter);
+            }
+            
+            if (cssFilter) {
+                filteredLeadsData = filteredLeadsData.filter(lead => lead.namaCSS === cssFilter);
+            }
+            
+            if (dateFilter) {
+                filteredLeadsData = filteredLeadsData.filter(lead => lead.tanggalMasuk === dateFilter);
+            }
+            
+            // Reset ke halaman 1 setelah filter
+            currentPage = 1;
+            
+            // Render ulang tabel dengan pagination
+            renderLeadsTableWithPagination();
+        }
+
+        // Fungsi untuk mereset filter
+        function resetFilters() {
+            document.getElementById('leadsSearch').value = '';
+            document.getElementById('platformFilter').value = '';
+            document.getElementById('qualificationFilter').value = '';
+            document.getElementById('leadsFollowFilter').value = '';
+            document.getElementById('cssFilter').value = '';
+            document.getElementById('dateFilter').value = '';
+            
+            filteredLeadsData = [...leadsData];
+            currentPage = 1;
+            
+            renderLeadsTableWithPagination();
+            showToast('Filter direset', 'success');
+        }
+
+        // ========== FUNGSI MODAL ==========
+        
         // Fungsi untuk membuka modal tambah
         function openAddModal() {
             document.getElementById('modalTitle').innerHTML = '<i class="fas fa-plus"></i> Tambah Lead Baru';
@@ -1447,7 +1767,7 @@
                 document.getElementById('screenshotPreview').classList.remove('show');
                 document.body.style.overflow = '';
                 
-                loadLeadsData();
+                loadLeadsData(); // Reload data
                 
             } catch (error) {
                 console.error("Error saving lead:", error);
@@ -1467,7 +1787,7 @@
                 document.getElementById('deleteModal').classList.remove('active');
                 document.body.style.overflow = '';
                 
-                loadLeadsData();
+                loadLeadsData(); // Reload data
                 
             } catch (error) {
                 console.error("Error deleting lead:", error);
@@ -1475,194 +1795,39 @@
             }
         }
 
-        // Fungsi untuk memfilter leads
-        function filterLeads() {
-            const searchTerm = document.getElementById('leadsSearch')?.value.toLowerCase() || '';
-            const platformFilter = document.getElementById('platformFilter')?.value || '';
-            const qualificationFilter = document.getElementById('qualificationFilter')?.value || '';
-            const leadsFollowFilter = document.getElementById('leadsFollowFilter')?.value || '';
-            const cssFilter = document.getElementById('cssFilter')?.value || '';
-            const dateFilter = document.getElementById('dateFilter')?.value || '';
+        // Fungsi untuk test URL screenshot
+        function testScreenshotUrl() {
+            const url = document.getElementById('screenshotUrl').value.trim();
+            const preview = document.getElementById('screenshotPreview');
+            const previewImage = document.getElementById('previewImage');
             
-            let filteredLeads = leadsData;
-            
-            if (searchTerm) {
-                filteredLeads = filteredLeads.filter(lead => 
-                    (lead.contactUsername && lead.contactUsername.toLowerCase().includes(searchTerm)) ||
-                    (lead.leads && lead.leads.toLowerCase().includes(searchTerm)) ||
-                    (lead.notesFU && lead.notesFU.toLowerCase().includes(searchTerm)) ||
-                    (lead.reason && lead.reason.toLowerCase().includes(searchTerm))
-                );
-            }
-            
-            if (platformFilter) {
-                filteredLeads = filteredLeads.filter(lead => lead.platform === platformFilter);
-            }
-            
-            if (qualificationFilter) {
-                filteredLeads = filteredLeads.filter(lead => lead.leadQualification === qualificationFilter);
-            }
-            
-            if (leadsFollowFilter) {
-                filteredLeads = filteredLeads.filter(lead => lead.leads === leadsFollowFilter);
-            }
-            
-            if (cssFilter) {
-                filteredLeads = filteredLeads.filter(lead => lead.namaCSS === cssFilter);
-            }
-            
-            if (dateFilter) {
-                filteredLeads = filteredLeads.filter(lead => lead.tanggalMasuk === dateFilter);
-            }
-            
-            const tableBody = document.getElementById('leadsTableBody');
-            const noLeads = document.getElementById('noLeads');
-            
-            if (filteredLeads.length === 0) {
-                if (tableBody) tableBody.innerHTML = '';
-                if (noLeads) {
-                    noLeads.style.display = 'block';
-                    noLeads.querySelector('h3').textContent = 'Tidak Ada Leads';
-                    noLeads.querySelector('p').textContent = 'Tidak ada leads yang sesuai dengan filter.';
-                }
+            if (!url) {
+                preview.classList.remove('show');
+                showToast('Masukkan URL screenshot terlebih dahulu', 'info');
                 return;
             }
             
-            if (noLeads) noLeads.style.display = 'none';
-            if (tableBody) tableBody.innerHTML = '';
-            
-            filteredLeads.forEach(lead => {
-                const row = document.createElement('tr');
-                
-                const tanggalMasuk = lead.tanggalMasuk ? new Date(lead.tanggalMasuk).toLocaleDateString('id-ID') : '-';
-                
-                let qualificationClass = '';
-                switch(lead.leadQualification) {
-                    case 'Hot':
-                        qualificationClass = 'status-converted';
-                        break;
-                    case 'Warm':
-                        qualificationClass = 'status-contacted';
-                        break;
-                    case 'Cold':
-                        qualificationClass = 'status-new';
-                        break;
-                    case 'Qualified':
-                        qualificationClass = 'status-converted';
-                        break;
-                    case 'Not Qualified':
-                        qualificationClass = 'status-lost';
-                        break;
-                    default:
-                        qualificationClass = 'status-new';
-                }
-                
-                row.innerHTML = `
-                    <td>${tanggalMasuk}</td>
-                    <td>${lead.platform || '-'}</td>
-                    <td>${lead.contactUsername || '-'}</td>
-                    <td>
-    ${lead.screenshotUrl ? 
-        `<a href="${lead.screenshotUrl}" target="_blank" class="screenshot-link">
-            <i class="fas fa-image"></i> Lihat
-        </a>` : 
-        '-'}
-</td>
-                    <td>${lead.namaCSS || '-'}</td>
-                    <td>
-                        <span class="status-badge ${qualificationClass}">${lead.leadQualification || '-'}</span>
-                    </td>
-                    <td>${lead.reason || '-'}</td>
-                    <td>${lead.notesFU || '-'}</td>
-                    <td>${lead.requestLeads || '-'}</td>
-                    <td>${lead.leads || '-'}</td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn btn-edit btn-sm edit-btn" data-id="${lead.id}">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn btn-danger btn-sm delete-btn" data-id="${lead.id}">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                `;
-                
-                tableBody.appendChild(row);
-            });
-            
-            document.querySelectorAll('.edit-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const leadId = this.getAttribute('data-id');
-                    openEditModal(leadId);
-                });
-            });
-            
-            document.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const leadId = this.getAttribute('data-id');
-                    currentLeadId = leadId;
-                    document.getElementById('deleteModal').classList.add('active');
-                    document.body.style.overflow = 'hidden';
-                });
-            });
-        }
-
-        // Fungsi untuk memastikan collection promosiLeads ada
-        async function ensureCollectionExists() {
+            // Validasi URL
             try {
-                const snapshot = await db.collection('promosiLeads').limit(1).get();
-                console.log("Collection promosiLeads exists or is ready");
-            } catch (error) {
-                console.log("Collection might not exist yet, but will be created on first add");
+                new URL(url); // Cek apakah URL valid
+            } catch (e) {
+                showToast('URL tidak valid', 'error');
+                return;
             }
-        }
-
-        // Fungsi untuk mereset filter
-        function resetFilters() {
-            document.getElementById('leadsSearch').value = '';
-            document.getElementById('platformFilter').value = '';
-            document.getElementById('qualificationFilter').value = '';
-            document.getElementById('leadsFollowFilter').value = '';
-            document.getElementById('cssFilter').value = '';
-            document.getElementById('dateFilter').value = '';
             
-            renderLeadsTable();
+            // Test load gambar
+            const img = new Image();
+            img.onload = function() {
+                previewImage.src = url;
+                preview.classList.add('show');
+                showToast('Gambar berhasil dimuat', 'success');
+            };
+            img.onerror = function() {
+                preview.classList.remove('show');
+                showToast('Gagal memuat gambar. Cek URL atau CORS policy', 'error');
+            };
+            img.src = url;
         }
-
-     // Fungsi untuk test URL screenshot dengan validasi lebih baik
-function testScreenshotUrl() {
-    const url = document.getElementById('screenshotUrl').value.trim();
-    const preview = document.getElementById('screenshotPreview');
-    const previewImage = document.getElementById('previewImage');
-    
-    if (!url) {
-        preview.classList.remove('show');
-        showToast('Masukkan URL screenshot terlebih dahulu', 'info');
-        return;
-    }
-    
-    // Validasi URL
-    try {
-        new URL(url); // Cek apakah URL valid
-    } catch (e) {
-        showToast('URL tidak valid', 'error');
-        return;
-    }
-    
-    // Test load gambar
-    const img = new Image();
-    img.onload = function() {
-        previewImage.src = url;
-        preview.classList.add('show');
-        showToast('Gambar berhasil dimuat', 'success');
-    };
-    img.onerror = function() {
-        preview.classList.remove('show');
-        showToast('Gagal memuat gambar. Cek URL atau CORS policy', 'error');
-    };
-    img.src = url;
-}
 
         // Fungsi untuk export ke Excel (CSV)
         function exportToExcel() {
@@ -1698,7 +1863,7 @@ function testScreenshotUrl() {
                 csvContent += row.join(',') + '\n';
             });
             
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
@@ -1708,6 +1873,16 @@ function testScreenshotUrl() {
             document.body.removeChild(link);
             
             showToast('Data berhasil diexport!', 'success');
+        }
+
+        // Fungsi untuk memastikan collection promosiLeads ada
+        async function ensureCollectionExists() {
+            try {
+                const snapshot = await db.collection('promosiLeads').limit(1).get();
+                console.log("Collection promosiLeads exists or is ready");
+            } catch (error) {
+                console.log("Collection might not exist yet, but will be created on first add");
+            }
         }
 
         // Fungsi untuk menampilkan toast
@@ -1794,6 +1969,7 @@ function testScreenshotUrl() {
                 document.body.style.overflow = '';
             });
             
+            // Event listener untuk filter
             document.getElementById('leadsSearch').addEventListener('input', filterLeads);
             document.getElementById('platformFilter').addEventListener('change', filterLeads);
             document.getElementById('qualificationFilter').addEventListener('change', filterLeads);
@@ -1802,6 +1978,10 @@ function testScreenshotUrl() {
             document.getElementById('dateFilter').addEventListener('change', filterLeads);
             
             document.getElementById('resetFilters').addEventListener('click', resetFilters);
+            
+            // TAMBAHAN: Event listener untuk tombol previous dan next
+            document.getElementById('prevPage').addEventListener('click', goToPreviousPage);
+            document.getElementById('nextPage').addEventListener('click', goToNextPage);
             
             document.querySelectorAll('.modal').forEach(modal => {
                 modal.addEventListener('click', (e) => e.stopPropagation());

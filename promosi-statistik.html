@@ -807,9 +807,6 @@
                     <button class="btn btn-outline" id="refreshStats">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
-                    <button class="btn btn-primary" id="viewDetails">
-                        <i class="fas fa-chart-line"></i> Detail Leads
-                    </button>
                 </div>
             </div>
             
@@ -1612,9 +1609,6 @@
             
             document.getElementById('exportExcel').addEventListener('click', exportToExcel);
             
-            document.getElementById('viewDetails').addEventListener('click', () => {
-                window.location.href = 'promosi-leads.html';
-            });
             
             document.getElementById('cssSearch').addEventListener('input', filterBySearch);
             

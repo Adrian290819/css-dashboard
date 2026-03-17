@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="global.css">
-            <script src="global-time.js"></script>
+    <script src="global-time.js"></script>
     
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -24,47 +24,47 @@
             min-height: 100vh;
         }
 
-       .header {
-    background: var(--card-bg);
-    border-radius: 16px;
-    padding: var(--space-xl);
-    margin-bottom: var(--space-lg);
-    box-shadow: var(--card-shadow);
-    border: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-}
+        .header {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: var(--space-xl);
+            margin-bottom: var(--space-lg);
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
 
-.header::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 6px;
-    height: 100%;
-    background: var(--primary-gradient);
-}
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: var(--primary-gradient);
+        }
 
-.header h1 {
-    font-size: var(--text-2xl);
-    font-weight: var(--font-bold);
-    color: var(--text-primary);
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    margin: 0;
-}
+        .header h1 {
+            font-size: var(--text-2xl);
+            font-weight: var(--font-bold);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin: 0;
+        }
 
-.header h1 i {
-    background: var(--primary-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
+        .header h1 i {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
         /* Search bar */
         .search-bar {
@@ -102,8 +102,6 @@
         .search-bar input::placeholder {
             color: var(--text-tertiary);
         }
-
-       
 
         /* Staff container */
         .staff-container {
@@ -181,7 +179,7 @@
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
 
-        /* Button styles - sesuai dengan global */
+        /* Button styles */
         .btn {
             padding: var(--space-sm) var(--space-lg);
             border-radius: var(--radius-md);
@@ -239,7 +237,7 @@
             height: 36px;
         }
 
-        /* Staff list - menggunakan grid untuk tampilan yang lebih rapi */
+        /* Staff list - menggunakan grid */
         .staff-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
@@ -269,6 +267,11 @@
         .staff-item.suspended {
             background-color: rgba(107, 114, 128, 0.03);
             border-left: 4px solid var(--text-tertiary);
+        }
+
+        .staff-item.super-admin {
+            border-left: 4px solid #f59e0b;
+            background: linear-gradient(to right, rgba(245, 158, 11, 0.02), transparent);
         }
 
         /* Staff header */
@@ -339,6 +342,12 @@
             background: rgba(245, 158, 11, 0.1);
             color: var(--warning);
             border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .status-super-admin {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
         }
 
         /* Staff meta information */
@@ -416,8 +425,7 @@
             margin-right: auto;
         }
 
-        /* ===== PERBAIKAN MODAL ACTIONS ===== */
-        /* Container untuk tombol-tombol di modal */
+        /* Modal actions */
         .modal-actions {
             display: flex !important;
             gap: 16px !important;
@@ -427,17 +435,14 @@
             width: 100% !important;
         }
 
-        /* Posisi di kanan */
         .modal-actions-right {
             justify-content: flex-end !important;
         }
 
-        /* Posisi di tengah */
         .modal-actions-center {
             justify-content: center !important;
         }
 
-        /* Style untuk tombol di modal */
         .modal-actions .btn {
             display: inline-flex !important;
             align-items: center !important;
@@ -455,7 +460,6 @@
             box-sizing: border-box !important;
         }
 
-        /* Tombol primary */
         .modal-actions .btn-primary {
             background: var(--primary-gradient) !important;
             color: white !important;
@@ -467,7 +471,6 @@
             box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3) !important;
         }
 
-        /* Tombol outline */
         .modal-actions .btn-outline {
             background: transparent !important;
             color: var(--text-secondary) !important;
@@ -479,13 +482,11 @@
             color: var(--text-primary) !important;
         }
 
-        /* Tombol danger */
         .modal-actions .btn-danger {
             background: linear-gradient(135deg, #ef4444, #dc2626) !important;
             color: white !important;
         }
 
-        /* Untuk modal konfirmasi, beri jarak antar tombol */
         .modal-actions-center {
             gap: 24px !important;
         }
@@ -716,6 +717,19 @@
             animation: slideOutRight 0.3s ease forwards;
         }
 
+        /* Super Admin Badge */
+        .super-admin-badge {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            font-size: 10px;
+            font-weight: 600;
+            margin-left: 8px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
         /* Animations */
         @keyframes fadeIn {
             from {
@@ -906,8 +920,8 @@
                 <div class="user-profile">
                     <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iMjAiIGZpbGw9IiM0MzYxRUUiLz4KPHN2ZyB4PSI4IiB5PSI4IiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDExQzE0LjIwOTEgMTEgMTYgOS4yMDkxIDE2IDdDMTYgNC43OTA4NiAxNC4yMDkxIDMgMTIgM0M5Ljc5MDg2IDMgOCA0Ljc5MDg2IDggN0M4IDkuMjA5MSA5Ljc5MDg2IDExIDEyIDExWiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTYgMTlDNiAxNi43OTA5IDcuNzkwODYgMTUgMTAgMTVIMTVDMTcuMjA5MSAxNSAxOSAxNi43OTA5IDE5IDE5VjIwQzE5IDIxLjEwNDYgMTguMTA0NiAyMiAxNyAyMkg4QzYuODk1NDMgMjIgNiAyMS4xMDQ2IDYgMjBWMTlaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4KPC9zdmc+'">
                     <div class="user-info">
-                        <h4>Nama Masing Masing</h4>
-                        <p>Customer Service Support</p>
+                        <h4>Loading...</h4>
+                        <p>Loading...</p>
                     </div>
                 </div>
             </div>
@@ -946,6 +960,11 @@
                         <i class="fas fa-plus"></i>
                         Tambah Staff
                     </button>
+                    
+                    <button class="btn btn-warning" id="addSuperAdminBtn">
+                        <i class="fas fa-crown"></i>
+                        Tambah Super Admin
+                    </button>
                 </div>
             </div>
             
@@ -971,7 +990,7 @@
     <div class="modal" id="addStaffModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">
+                <h3 class="modal-title" id="addModalTitle">
                     <i class="fas fa-user-plus"></i>
                     Tambah Staff Baru
                 </h3>
@@ -980,6 +999,7 @@
                 </button>
             </div>
             <form id="addStaffForm">
+                <input type="hidden" id="staffRoleType" value="staff">
                 <div class="form-group">
                     <label class="form-label" for="staffName">Nama Lengkap</label>
                     <input type="text" id="staffName" class="form-input" required placeholder="Masukkan nama lengkap">
@@ -994,6 +1014,7 @@
                         <option value="staff">Staff</option>
                         <option value="admin">Admin</option>
                         <option value="support">Support</option>
+                        <option value="super_admin">Super Admin</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -1001,7 +1022,6 @@
                     <input type="password" id="staffPassword" class="form-input" required minlength="6" placeholder="Minimal 6 karakter">
                 </div>
                 
-                <!-- PERBAIKAN: Tombol di kanan -->
                 <div class="modal-actions modal-actions-right">
                     <button type="button" class="btn btn-outline" onclick="closeModal('addStaffModal')">Batal</button>
                     <button type="submit" class="btn btn-primary">Simpan</button>
@@ -1033,7 +1053,6 @@
                     <input type="password" id="confirmPassword" class="form-input" required minlength="6" placeholder="Konfirmasi password">
                 </div>
                 
-                <!-- PERBAIKAN: Tombol di kanan -->
                 <div class="modal-actions modal-actions-right">
                     <button type="button" class="btn btn-outline" onclick="closeModal('resetPasswordModal')">Batal</button>
                     <button type="submit" class="btn btn-primary">Reset Password</button>
@@ -1060,7 +1079,6 @@
                 </p>
             </div>
             
-            <!-- PERBAIKAN: Tombol di tengah -->
             <div class="modal-actions modal-actions-center">
                 <button type="button" class="btn btn-outline" onclick="closeModal('suspendModal')">Batal</button>
                 <button type="button" class="btn btn-danger" id="confirmSuspendBtn">Konfirmasi</button>
@@ -1084,10 +1102,87 @@
                 <!-- Content will be filled dynamically -->
             </div>
             
-            <!-- PERBAIKAN: Tombol di tengah -->
             <div class="modal-actions modal-actions-center">
                 <button type="button" class="btn btn-primary" onclick="closeModal('staffDetailsModal')">Tutup</button>
             </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL SUPER ADMIN VERIFICATION ===== -->
+    <div class="modal" id="superAdminVerificationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-crown" style="color: #f59e0b;"></i>
+                    Verifikasi Super Admin
+                </h3>
+                <button class="modal-close" onclick="closeModal('superAdminVerificationModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="superAdminVerificationForm">
+                <div class="form-group">
+                    <p style="margin-bottom: 20px; color: var(--text-secondary);">
+                        Untuk menambahkan Super Admin, diperlukan verifikasi keamanan. 
+                        Masukkan password Super Admin Anda untuk melanjutkan.
+                    </p>
+                    <label class="form-label" for="superAdminPassword">Password Super Admin</label>
+                    <input type="password" id="superAdminPassword" class="form-input" required placeholder="Masukkan password Anda">
+                </div>
+                
+                <div class="modal-actions modal-actions-right">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('superAdminVerificationModal')">Batal</button>
+                    <button type="submit" class="btn btn-warning">Verifikasi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== MODAL EDIT STAFF ===== -->
+    <div class="modal" id="editStaffModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-edit"></i>
+                    Edit Staff
+                </h3>
+                <button class="modal-close" onclick="closeModal('editStaffModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="editStaffForm">
+                <input type="hidden" id="editStaffId">
+                <div class="form-group">
+                    <label class="form-label" for="editStaffName">Nama Lengkap</label>
+                    <input type="text" id="editStaffName" class="form-input" required placeholder="Masukkan nama lengkap">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="editStaffEmail">Email</label>
+                    <input type="email" id="editStaffEmail" class="form-input" required placeholder="Masukkan email">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="editStaffRole">Role</label>
+                    <select id="editStaffRole" class="form-input" required>
+                        <option value="staff">Staff</option>
+                        <option value="admin">Admin</option>
+                        <option value="support">Support</option>
+                        <option value="super_admin">Super Admin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="editStaffStatus">Status</label>
+                    <select id="editStaffStatus" class="form-input" required>
+                        <option value="active">Aktif</option>
+                        <option value="suspended">Suspended</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                </div>
+                
+                <div class="modal-actions modal-actions-right">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('editStaffModal')">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -1117,18 +1212,18 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // ===== STAFF ACCOUNT MANAGER =====
-        class StaffAccountManager {
+        // ===== SUPER ADMIN MANAGER =====
+        class SuperAdminManager {
             constructor() {
-                this.staffData = [];
                 this.currentUser = null;
-                this.currentAction = null;
+                this.isSuperAdmin = false;
+                this.staffData = [];
+                this.pendingAction = null;
                 
                 this.initializeElements();
                 this.initializeEventListeners();
-                this.loadStaffData();
-                this.loadCurrentUserProfile();
-                this.setupRealTimeListener();
+                this.checkCurrentUser();
+                this.setupAuthListener();
             }
 
             initializeElements() {
@@ -1138,20 +1233,111 @@
                 this.filterRole = document.getElementById('filterRole');
                 this.filterStatus = document.getElementById('filterStatus');
                 this.addStaffBtn = document.getElementById('addStaffBtn');
+                this.addSuperAdminBtn = document.getElementById('addSuperAdminBtn');
                 this.addFirstStaffBtn = document.getElementById('addFirstStaffBtn');
                 this.addStaffForm = document.getElementById('addStaffForm');
                 this.resetPasswordForm = document.getElementById('resetPasswordForm');
                 this.confirmSuspendBtn = document.getElementById('confirmSuspendBtn');
+                this.superAdminVerificationForm = document.getElementById('superAdminVerificationForm');
+                this.editStaffForm = document.getElementById('editStaffForm');
             }
 
-            setupRealTimeListener() {
-                if (!db) return;
+            initializeEventListeners() {
+                if (this.searchInput) {
+                    this.searchInput.addEventListener('input', () => this.filterStaff());
+                }
                 
-                db.collection('users').onSnapshot(() => {
-                    this.loadStaffData();
-                }, (error) => {
-                    console.error("Error in real-time listener:", error);
+                if (this.filterRole) {
+                    this.filterRole.addEventListener('change', () => this.filterStaff());
+                }
+                
+                if (this.filterStatus) {
+                    this.filterStatus.addEventListener('change', () => this.filterStaff());
+                }
+                
+                if (this.addStaffBtn) {
+                    this.addStaffBtn.addEventListener('click', () => this.openAddStaffModal('staff'));
+                }
+                
+                if (this.addSuperAdminBtn) {
+                    this.addSuperAdminBtn.addEventListener('click', () => this.openSuperAdminVerification());
+                }
+                
+                if (this.addFirstStaffBtn) {
+                    this.addFirstStaffBtn.addEventListener('click', () => this.openAddStaffModal('staff'));
+                }
+                
+                if (this.addStaffForm) {
+                    this.addStaffForm.addEventListener('submit', (e) => this.handleAddStaff(e));
+                }
+                
+                if (this.resetPasswordForm) {
+                    this.resetPasswordForm.addEventListener('submit', (e) => this.handleResetPassword(e));
+                }
+                
+                if (this.confirmSuspendBtn) {
+                    this.confirmSuspendBtn.addEventListener('click', () => this.handleConfirmAction());
+                }
+                
+                if (this.superAdminVerificationForm) {
+                    this.superAdminVerificationForm.addEventListener('submit', (e) => this.handleSuperAdminVerification(e));
+                }
+                
+                if (this.editStaffForm) {
+                    this.editStaffForm.addEventListener('submit', (e) => this.handleEditStaff(e));
+                }
+            }
+
+            setupAuthListener() {
+                auth.onAuthStateChanged((user) => {
+                    this.currentUser = user;
+                    if (user) {
+                        this.checkSuperAdminStatus(user.uid);
+                    } else {
+                        this.isSuperAdmin = false;
+                        this.loadStaffData();
+                    }
                 });
+            }
+
+            async checkSuperAdminStatus(uid) {
+                try {
+                    const userDoc = await db.collection('users').doc(uid).get();
+                    if (userDoc.exists) {
+                        const userData = userDoc.data();
+                        this.isSuperAdmin = userData.role === 'Super Admin' || userData.role === 'super_admin';
+                        
+                        // Update UI based on super admin status
+                        this.updateUIForSuperAdmin();
+                    }
+                    this.loadStaffData();
+                } catch (error) {
+                    console.error("Error checking super admin status:", error);
+                    this.isSuperAdmin = false;
+                    this.loadStaffData();
+                }
+            }
+
+            updateUIForSuperAdmin() {
+                // Show/hide super admin specific elements
+                const addSuperAdminBtn = document.getElementById('addSuperAdminBtn');
+                if (addSuperAdminBtn) {
+                    addSuperAdminBtn.style.display = this.isSuperAdmin ? 'inline-flex' : 'none';
+                }
+            }
+
+            async checkCurrentUser() {
+                try {
+                    const savedUid = localStorage.getItem('currentUserId');
+                    if (savedUid) {
+                        await this.checkSuperAdminStatus(savedUid);
+                    }
+                    
+                    // Load user profile from localStorage
+                    this.loadCurrentUserProfile();
+                } catch (error) {
+                    console.error("Error checking current user:", error);
+                }
             }
 
             loadCurrentUserProfile() {
@@ -1176,43 +1362,15 @@
                         document.querySelectorAll('.user-info p').forEach(el => {
                             el.textContent = savedRole;
                         });
+                        
+                        // Check if current user is super admin
+                        if (savedRole === 'Super Admin') {
+                            this.isSuperAdmin = true;
+                            this.updateUIForSuperAdmin();
+                        }
                     }
                 } catch (error) {
                     console.error("Error loading current user profile:", error);
-                }
-            }
-
-            initializeEventListeners() {
-                if (this.searchInput) {
-                    this.searchInput.addEventListener('input', () => this.filterStaff());
-                }
-                
-                if (this.filterRole) {
-                    this.filterRole.addEventListener('change', () => this.filterStaff());
-                }
-                
-                if (this.filterStatus) {
-                    this.filterStatus.addEventListener('change', () => this.filterStaff());
-                }
-                
-                if (this.addStaffBtn) {
-                    this.addStaffBtn.addEventListener('click', () => this.openAddStaffModal());
-                }
-                
-                if (this.addFirstStaffBtn) {
-                    this.addFirstStaffBtn.addEventListener('click', () => this.openAddStaffModal());
-                }
-                
-                if (this.addStaffForm) {
-                    this.addStaffForm.addEventListener('submit', (e) => this.handleAddStaff(e));
-                }
-                
-                if (this.resetPasswordForm) {
-                    this.resetPasswordForm.addEventListener('submit', (e) => this.handleResetPassword(e));
-                }
-                
-                if (this.confirmSuspendBtn) {
-                    this.confirmSuspendBtn.addEventListener('click', () => this.handleConfirmAction());
                 }
             }
 
@@ -1257,6 +1415,51 @@
                 }
             }
 
+            loadFromLocalStorage() {
+                const savedData = localStorage.getItem('staffAccounts');
+                if (savedData) {
+                    this.staffData = JSON.parse(savedData);
+                } else {
+                    this.staffData = [
+                        {
+                            id: 'super-admin-1',
+                            name: 'Adrian Abdul Arif',
+                            email: 'superadmin@company.com',
+                            role: 'super_admin',
+                            status: 'active',
+                            avatar: 'https://iili.io/Fpiva7S.png',
+                            joinDate: '2024-01-01',
+                            lastLogin: new Date().toISOString()
+                        },
+                        {
+                            id: '2',
+                            name: 'Jane Smith',
+                            email: 'jane@company.com',
+                            role: 'admin',
+                            status: 'active',
+                            avatar: 'https://iili.io/KfDh0EN.png',
+                            joinDate: '2024-01-05',
+                            lastLogin: new Date(Date.now() - 86400000).toISOString()
+                        },
+                        {
+                            id: '3',
+                            name: 'John Doe',
+                            email: 'john@company.com',
+                            role: 'staff',
+                            status: 'suspended',
+                            avatar: 'https://iili.io/KfDh0EN.png',
+                            joinDate: '2024-01-10',
+                            lastLogin: new Date(Date.now() - 172800000).toISOString()
+                        }
+                    ];
+                    this.saveToLocalStorage();
+                }
+            }
+
+            saveToLocalStorage() {
+                localStorage.setItem('staffAccounts', JSON.stringify(this.staffData));
+            }
+
             normalizeRole(role) {
                 const roleMap = {
                     'Super Admin': 'super_admin',
@@ -1297,51 +1500,6 @@
                 } catch (error) {
                     return new Date().toISOString().split('T')[0];
                 }
-            }
-
-            loadFromLocalStorage() {
-                const savedData = localStorage.getItem('staffAccounts');
-                if (savedData) {
-                    this.staffData = JSON.parse(savedData);
-                } else {
-                    this.staffData = [
-                        {
-                            id: '1',
-                            name: 'Adrian Abdul Arif',
-                            email: 'adrian@company.com',
-                            role: 'super_admin',
-                            status: 'active',
-                            avatar: 'https://iili.io/Fpiva7S.png',
-                            joinDate: '2024-01-01',
-                            lastLogin: new Date().toISOString()
-                        },
-                        {
-                            id: '2',
-                            name: 'Jane Smith',
-                            email: 'jane@company.com',
-                            role: 'admin',
-                            status: 'active',
-                            avatar: 'https://iili.io/KfDh0EN.png',
-                            joinDate: '2024-01-05',
-                            lastLogin: new Date(Date.now() - 86400000).toISOString()
-                        },
-                        {
-                            id: '3',
-                            name: 'John Doe',
-                            email: 'john@company.com',
-                            role: 'staff',
-                            status: 'suspended',
-                            avatar: 'https://iili.io/KfDh0EN.png',
-                            joinDate: '2024-01-10',
-                            lastLogin: new Date(Date.now() - 172800000).toISOString()
-                        }
-                    ];
-                    this.saveToLocalStorage();
-                }
-            }
-
-            saveToLocalStorage() {
-                localStorage.setItem('staffAccounts', JSON.stringify(this.staffData));
             }
 
             renderStaffList() {
@@ -1392,25 +1550,26 @@
 
             createStaffItem(staffMember) {
                 const staffItem = document.createElement('div');
-                staffItem.className = `staff-item ${staffMember.status === 'suspended' ? 'suspended' : ''}`;
+                staffItem.className = `staff-item ${staffMember.status === 'suspended' ? 'suspended' : ''} ${staffMember.role === 'super_admin' ? 'super-admin' : ''}`;
                 
                 const statusText = this.getStatusText(staffMember.status);
                 const roleText = this.getRoleText(staffMember.role);
                 const formattedDate = this.formatDate(staffMember.joinDate);
                 const lastLogin = this.formatLastLogin(staffMember.lastLogin);
+                const isSuperAdmin = staffMember.role === 'super_admin';
                 
                 staffItem.innerHTML = `
                     <div class="staff-header">
                         <div class="staff-info">
                             <img class="staff-avatar" src="${staffMember.avatar}" alt="${staffMember.name}" onerror="this.src='https://iili.io/KfDh0EN.png'">
                             <div class="staff-details">
-                                <h3>${staffMember.name}</h3>
+                                <h3>${staffMember.name} ${isSuperAdmin ? '<span class="super-admin-badge"><i class="fas fa-crown"></i> Super Admin</span>' : ''}</h3>
                                 <p>${staffMember.email}</p>
                             </div>
                         </div>
-                        <span class="staff-status status-${staffMember.status}">
-                            <i class="fas ${this.getStatusIcon(staffMember.status)}"></i>
-                            ${statusText}
+                        <span class="staff-status ${isSuperAdmin ? 'status-super-admin' : `status-${staffMember.status}`}">
+                            <i class="fas ${this.getStatusIcon(staffMember.status, isSuperAdmin)}"></i>
+                            ${isSuperAdmin ? 'Super Admin' : statusText}
                         </span>
                     </div>
                     
@@ -1430,27 +1589,38 @@
                     </div>
                     
                     <div class="staff-actions">
-                        ${staffMember.role !== 'super_admin' ? `
+                        ${this.isSuperAdmin ? `
                             <button class="btn btn-outline btn-sm reset-password-btn" data-staff-id="${staffMember.id}">
                                 <i class="fas fa-key"></i>
                                 Reset
                             </button>
-                            <button class="btn ${staffMember.status === 'suspended' ? 'btn-success' : 'btn-warning'} btn-sm suspend-btn" 
-                                    data-staff-id="${staffMember.id}">
-                                <i class="fas ${staffMember.status === 'suspended' ? 'fa-play' : 'fa-pause'}"></i>
-                                ${staffMember.status === 'suspended' ? 'Aktifkan' : 'Suspend'}
+                            ${!isSuperAdmin ? `
+                                <button class="btn ${staffMember.status === 'suspended' ? 'btn-success' : 'btn-warning'} btn-sm suspend-btn" 
+                                        data-staff-id="${staffMember.id}">
+                                    <i class="fas ${staffMember.status === 'suspended' ? 'fa-play' : 'fa-pause'}"></i>
+                                    ${staffMember.status === 'suspended' ? 'Aktifkan' : 'Suspend'}
+                                </button>
+                            ` : ''}
+                            <button class="btn btn-primary btn-sm view-details-btn" data-staff-id="${staffMember.id}">
+                                <i class="fas fa-eye"></i>
+                                Detail
                             </button>
-                        ` : ''}
-                        <button class="btn btn-primary btn-sm view-details-btn" data-staff-id="${staffMember.id}">
-                            <i class="fas fa-eye"></i>
-                            Detail
-                        </button>
-                        ${staffMember.role !== 'super_admin' ? `
-                            <button class="btn btn-danger btn-sm delete-btn" data-staff-id="${staffMember.id}">
-                                <i class="fas fa-trash"></i>
-                                Hapus
+                            <button class="btn btn-info btn-sm edit-btn" data-staff-id="${staffMember.id}" style="background: #3b82f6; color: white;">
+                                <i class="fas fa-edit"></i>
+                                Edit
                             </button>
-                        ` : ''}
+                            ${!isSuperAdmin ? `
+                                <button class="btn btn-danger btn-sm delete-btn" data-staff-id="${staffMember.id}">
+                                    <i class="fas fa-trash"></i>
+                                    Hapus
+                                </button>
+                            ` : ''}
+                        ` : `
+                            <button class="btn btn-primary btn-sm view-details-btn" data-staff-id="${staffMember.id}">
+                                <i class="fas fa-eye"></i>
+                                Detail
+                            </button>
+                        `}
                     </div>
                 `;
                 
@@ -1464,6 +1634,7 @@
                 const suspendBtn = staffItem.querySelector('.suspend-btn');
                 const viewDetailsBtn = staffItem.querySelector('.view-details-btn');
                 const deleteBtn = staffItem.querySelector('.delete-btn');
+                const editBtn = staffItem.querySelector('.edit-btn');
                 
                 if (resetPasswordBtn) {
                     resetPasswordBtn.addEventListener('click', () => this.openResetPasswordModal(staffId));
@@ -1480,11 +1651,47 @@
                 if (deleteBtn) {
                     deleteBtn.addEventListener('click', () => this.deleteStaff(staffId));
                 }
+                
+                if (editBtn) {
+                    editBtn.addEventListener('click', () => this.openEditStaffModal(staffId));
+                }
             }
 
-            openAddStaffModal() {
+            openAddStaffModal(roleType = 'staff') {
+                const modalTitle = document.getElementById('addModalTitle');
+                const roleSelect = document.getElementById('staffRole');
+                
+                if (roleType === 'super_admin') {
+                    modalTitle.innerHTML = '<i class="fas fa-crown"></i> Tambah Super Admin Baru';
+                    roleSelect.value = 'super_admin';
+                } else {
+                    modalTitle.innerHTML = '<i class="fas fa-user-plus"></i> Tambah Staff Baru';
+                    roleSelect.value = 'staff';
+                }
+                
                 document.getElementById('addStaffModal').classList.add('active');
                 document.getElementById('addStaffForm').reset();
+            }
+
+            openSuperAdminVerification() {
+                document.getElementById('superAdminVerificationModal').classList.add('active');
+                document.getElementById('superAdminVerificationForm').reset();
+            }
+
+            async handleSuperAdminVerification(e) {
+                e.preventDefault();
+                
+                const password = document.getElementById('superAdminPassword').value;
+                
+                if (!password) {
+                    this.showNotification('Password harus diisi', 'error');
+                    return;
+                }
+                
+                // For demo purposes, we'll accept any password
+                // In production, this should verify against Firebase
+                this.closeModal('superAdminVerificationModal');
+                this.openAddStaffModal('super_admin');
             }
 
             openResetPasswordModal(staffId) {
@@ -1496,13 +1703,72 @@
                 }
             }
 
+            openEditStaffModal(staffId) {
+                const staff = this.staffData.find(s => s.id === staffId);
+                if (staff && this.isSuperAdmin) {
+                    document.getElementById('editStaffId').value = staffId;
+                    document.getElementById('editStaffName').value = staff.name;
+                    document.getElementById('editStaffEmail').value = staff.email;
+                    document.getElementById('editStaffRole').value = staff.role;
+                    document.getElementById('editStaffStatus').value = staff.status;
+                    
+                    document.getElementById('editStaffModal').classList.add('active');
+                }
+            }
+
+            async handleEditStaff(e) {
+                e.preventDefault();
+                
+                const staffId = document.getElementById('editStaffId').value;
+                const staff = this.staffData.find(s => s.id === staffId);
+                
+                if (!staff) {
+                    this.showNotification('Staff tidak ditemukan', 'error');
+                    return;
+                }
+                
+                const updatedData = {
+                    name: document.getElementById('editStaffName').value,
+                    email: document.getElementById('editStaffEmail').value,
+                    role: document.getElementById('editStaffRole').value,
+                    status: document.getElementById('editStaffStatus').value
+                };
+                
+                try {
+                    if (db) {
+                        const firestoreRole = this.denormalizeRole(updatedData.role);
+                        const firestoreStatus = this.denormalizeStatus(updatedData.status);
+                        
+                        await db.collection('users').doc(staffId).update({
+                            name: updatedData.name,
+                            email: updatedData.email,
+                            role: firestoreRole,
+                            status: firestoreStatus,
+                            lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
+                    
+                    // Update local data
+                    Object.assign(staff, updatedData);
+                    this.saveToLocalStorage();
+                    
+                    this.closeModal('editStaffModal');
+                    this.renderStaffList();
+                    this.showNotification('Staff berhasil diperbarui', 'success');
+                    
+                } catch (error) {
+                    console.error('Error updating staff:', error);
+                    this.showNotification('Gagal memperbarui staff: ' + error.message, 'error');
+                }
+            }
+
             toggleSuspend(staffId) {
                 const staff = this.staffData.find(s => s.id === staffId);
-                if (staff && staff.role !== 'super_admin') {
+                if (staff && staff.role !== 'super_admin' && this.isSuperAdmin) {
                     const newStatus = staff.status === 'suspended' ? 'active' : 'suspended';
                     const action = newStatus === 'suspended' ? 'suspend' : 'activate';
                     
-                    this.currentAction = { type: 'suspend', staffId, newStatus };
+                    this.pendingAction = { type: 'suspend', staffId, newStatus };
                     
                     document.getElementById('suspendModalTitle').innerHTML = `
                         <i class="fas ${action === 'suspend' ? 'fa-pause-circle' : 'fa-play-circle'}"></i>
@@ -1522,8 +1788,8 @@
             deleteStaff(staffId) {
                 const staff = this.staffData.find(s => s.id === staffId);
                 
-                if (staff && staff.role !== 'super_admin') {
-                    this.currentAction = { type: 'delete', staffId };
+                if (staff && staff.role !== 'super_admin' && this.isSuperAdmin) {
+                    this.pendingAction = { type: 'delete', staffId };
                     
                     document.getElementById('suspendModalTitle').innerHTML = `
                         <i class="fas fa-trash-alt"></i>
@@ -1539,15 +1805,15 @@
             }
 
             async handleConfirmAction() {
-                if (!this.currentAction) return;
+                if (!this.pendingAction) return;
                 
-                const { type, staffId, newStatus } = this.currentAction;
+                const { type, staffId, newStatus } = this.pendingAction;
                 const staff = this.staffData.find(s => s.id === staffId);
                 
                 if (!staff) {
                     this.showNotification('Staff tidak ditemukan', 'error');
                     this.closeModal('suspendModal');
-                    this.currentAction = null;
+                    this.pendingAction = null;
                     return;
                 }
                 
@@ -1559,7 +1825,7 @@
                     }
                     
                     this.closeModal('suspendModal');
-                    this.currentAction = null;
+                    this.pendingAction = null;
                     
                 } catch (error) {
                     console.error(`Error in ${type} action:`, error);
@@ -1590,15 +1856,6 @@
                     
                     this.renderStaffList();
                 }
-            }
-
-            denormalizeStatus(status) {
-                const statusMap = {
-                    'active': 'Active',
-                    'suspended': 'Suspended',
-                    'pending': 'Pending'
-                };
-                return statusMap[status] || 'Active';
             }
 
             async deleteStaffFromSystem(staffId) {
@@ -1635,10 +1892,17 @@
                     return;
                 }
                 
+                // Check if trying to add super admin without being super admin
+                if (formData.role === 'super_admin' && !this.isSuperAdmin) {
+                    this.showNotification('Anda tidak memiliki izin untuk menambahkan Super Admin', 'error');
+                    this.closeModal('addStaffModal');
+                    return;
+                }
+                
                 try {
                     let newStaff;
                     
-                    if (auth) {
+                    if (auth && db) {
                         const userCredential = await auth.createUserWithEmailAndPassword(
                             formData.email, 
                             formData.password
@@ -1681,22 +1945,14 @@
                     
                     this.closeModal('addStaffModal');
                     this.renderStaffList();
-                    this.showNotification('Staff berhasil ditambahkan', 'success');
+                    
+                    const roleText = formData.role === 'super_admin' ? 'Super Admin' : 'Staff';
+                    this.showNotification(`${roleText} berhasil ditambahkan`, 'success');
                     
                 } catch (error) {
                     console.error('Error adding staff:', error);
                     this.showNotification('Gagal menambahkan staff: ' + error.message, 'error');
                 }
-            }
-
-            denormalizeRole(role) {
-                const roleMap = {
-                    'staff': 'Customer Service Support',
-                    'admin': 'Admin',
-                    'support': 'Support',
-                    'super_admin': 'Super Admin'
-                };
-                return roleMap[role] || 'Customer Service Support';
             }
 
             async handleResetPassword(e) {
@@ -1741,6 +1997,25 @@
                 }
             }
 
+            denormalizeRole(role) {
+                const roleMap = {
+                    'staff': 'Customer Service Support',
+                    'admin': 'Admin',
+                    'support': 'Support',
+                    'super_admin': 'super_admin'
+                };
+                return roleMap[role] || 'Customer Service Support';
+            }
+
+            denormalizeStatus(status) {
+                const statusMap = {
+                    'active': 'Active',
+                    'suspended': 'Suspended',
+                    'pending': 'Pending'
+                };
+                return statusMap[status] || 'Active';
+            }
+
             viewStaffDetails(staffId) {
                 const staff = this.staffData.find(s => s.id === staffId);
                 if (staff) {
@@ -1751,17 +2026,18 @@
             showStaffDetailsModal(staff) {
                 const content = document.getElementById('staffDetailsContent');
                 const lastLogin = this.formatLastLogin(staff.lastLogin);
+                const isSuperAdmin = staff.role === 'super_admin';
                 
                 content.innerHTML = `
                     <div class="staff-detail-view">
                         <div class="staff-detail-header">
                             <img src="${staff.avatar}" alt="${staff.name}" class="staff-detail-avatar" onerror="this.src='https://iili.io/KfDh0EN.png'">
                             <div class="staff-detail-info">
-                                <h3>${staff.name}</h3>
+                                <h3>${staff.name} ${isSuperAdmin ? '<span class="super-admin-badge"><i class="fas fa-crown"></i> Super Admin</span>' : ''}</h3>
                                 <p>${staff.email}</p>
-                                <span class="staff-status status-${staff.status}">
-                                    <i class="fas ${this.getStatusIcon(staff.status)}"></i>
-                                    ${this.getStatusText(staff.status)}
+                                <span class="staff-status ${isSuperAdmin ? 'status-super-admin' : `status-${staff.status}`}">
+                                    <i class="fas ${this.getStatusIcon(staff.status, isSuperAdmin)}"></i>
+                                    ${isSuperAdmin ? 'Super Admin' : this.getStatusText(staff.status)}
                                 </span>
                             </div>
                         </div>
@@ -1812,7 +2088,9 @@
                 return roleMap[role] || role;
             }
 
-            getStatusIcon(status) {
+            getStatusIcon(status, isSuperAdmin = false) {
+                if (isSuperAdmin) return 'fa-crown';
+                
                 const iconMap = {
                     'active': 'fa-check-circle',
                     'suspended': 'fa-pause-circle',
@@ -1928,7 +2206,7 @@
         let staffManager;
 
         document.addEventListener('DOMContentLoaded', function() {
-            staffManager = new StaffAccountManager();
+            staffManager = new SuperAdminManager();
             window.staffManager = staffManager;
             
             document.addEventListener('click', function(e) {

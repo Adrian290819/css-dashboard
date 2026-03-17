@@ -1257,16 +1257,12 @@ async function refreshAllUsersKpiFromModules(selectedMonth) {
   }
 }
 
-    // ========== FUNGSI FILTER & USER MANAGEMENT ==========
-
     async function loadKpiData(filter = 'current', specificUserId = null, selectedMonth = null) {
   try {
     const currentUser = firebase.auth().currentUser;
     if (!currentUser) return;
 
     const targetMonth = selectedMonth || getCurrentMonthYear().display;
-
-    // ✅ TAMBAHKAN INI (WAJIB)
     const isCurrentMonth = targetMonth === getCurrentMonthYear().display;
 
     updateMonthDisplay(targetMonth);
@@ -1280,7 +1276,8 @@ async function refreshAllUsersKpiFromModules(selectedMonth) {
 
       if (isCurrentMonth) {
         await checkAndResetForNewMonthForUser(userId);
-        await loadRealTimeUserData(userId);
+        // 🔥 PANGGIL DENGAN PARAMETER BULAN
+        await loadRealTimeUserData(userId, targetMonth);
       } else {
         await loadHistoricalData(userId, targetMonth);
       }
@@ -1631,126 +1628,69 @@ document.getElementById('refresh-all-data').addEventListener('click', async func
 }
 
 
-    async function loadRealTimeUserData(userId) {
-        try {
-            console.log('🔄 Loading real-time data for user:', userId);
-            
-            const db = firebase.firestore();
-            
-            // 1. PERTAMA, LOAD DATA YANG SUDAH ADA DI KPI DATA
-            const kpiDoc = await db.collection('kpiData').doc(userId).get();
-            let existingKpiData = null;
-            
-            if (kpiDoc.exists) {
-                existingKpiData = kpiDoc.data();
-                console.log('📁 Existing kpiData found:', existingKpiData);
-                
-                // Load existing data ke kpiData array
-                if (existingKpiData.kpiData && Array.isArray(existingKpiData.kpiData)) {
-                    kpiData.length = 0; // Clear existing data
-                    existingKpiData.kpiData.forEach(savedItem => {
-                        kpiData.push({
-                            id: savedItem.id || 0,
-                            area: savedItem.area || '',
-                            target: savedItem.target || 0,
-                            weight: savedItem.weight || 0,
-                            description: savedItem.description || '',
-                            note: savedItem.note || '',
-                            realization: savedItem.realization || 0,
-                            score: savedItem.score || 0
-                        });
-                    });
-                }
-            }
-            
-            // 2. KEDUA, UPDATE DENGAN DATA REAL-TIME DARI COLLECTIONS (JIKA ADA)
-            console.log('🔄 Checking real-time data from collections...');
-            
-            // Ideas - update jika ada data baru
-            const ideasSnapshot = await db.collection('ideas')
-                .where('userId', '==', userId)
-                .get();
-            if (ideasSnapshot.size > 0) {
-                kpiData[2].realization = ideasSnapshot.size;
-                console.log('✅ Updated Ideas realization:', ideasSnapshot.size);
-            }
-            
-            // Research - update jika ada data baru
-            const researchSnapshot = await db.collection('research')
-                .where('userId', '==', userId)
-                .get();
-            if (researchSnapshot.size > 0) {
-                kpiData[4].realization = researchSnapshot.size;
-                console.log('✅ Updated Research realization:', researchSnapshot.size);
-            }
-            
-            // Chat Response - update jika ada data baru
-            const chatSnapshot = await db.collection('chats')
-                .where('userId', '==', userId)
-                .get();
-            if (chatSnapshot.size > 0) {
-                kpiData[3].realization = chatSnapshot.size;
-                console.log('✅ Updated Chat realization:', chatSnapshot.size);
-            }
-            
-            // Problem Solving - update jika ada data baru
-            const problemSnapshot = await db.collection('problems')
-                .where('userId', '==', userId)
-                .get();
-            if (problemSnapshot.size > 0) {
-                kpiData[1].realization = problemSnapshot.size;
-                console.log('✅ Updated Problem Solving realization:', problemSnapshot.size);
-            }
-            
-            // B2B & B2C - update jika ada data baru
-            const b2bSnapshot = await db.collection('b2b')
-                .where('userId', '==', userId)
-                .get();
-            if (b2bSnapshot.size > 0) {
-                kpiData[0].realization = b2bSnapshot.size;
-                console.log('✅ Updated B2B realization:', b2bSnapshot.size);
-            }
-            
-            // Attitude - update jika ada data baru
-            const attitudeSnapshot = await db.collection('attitude')
-                .where('userId', '==', userId)
-                .get();
-            if (attitudeSnapshot.size > 0) {
-                const attitudeScores = attitudeSnapshot.docs.map(doc => parseFloat(doc.data().score) || 0);
-                const attitudeAverage = attitudeScores.length > 0 ? 
-                    attitudeScores.reduce((a, b) => a + b, 0) / attitudeScores.length : 0;
-                kpiData[5].realization = attitudeAverage;
-                console.log('✅ Updated Attitude realization:', attitudeAverage);
-            }
-            
-            // Discipline - update jika ada data baru
-            const disciplineSnapshot = await db.collection('discipline')
-                .where('userId', '==', userId)
-                .get();
-            if (disciplineSnapshot.size > 0) {
-                kpiData[6].realization = disciplineSnapshot.size;
-                console.log('✅ Updated Discipline realization:', disciplineSnapshot.size);
-            }
-            
-            console.log('📊 Final kpiData after real-time update:', kpiData);
-            
-            // 3. HITUNG ULANG SEMUA SCORE
-            kpiData.forEach((item, index) => {
-                const isSmallerBetter = item.note.includes("Semakin Kecil");
-                item.score = calculateScore(item.target, item.realization, isSmallerBetter, index);
-            });
-            
-            // 4. UPDATE DISPLAY DAN SIMPAN KE FIRESTORE
-            updateDisplay();
-            await saveKpiDataToFirestore();
-            
-            showNotification('✅ Data user berhasil dimuat', 'success');
-            
-        } catch (error) {
-            console.error('❌ Error loading real-time user data:', error);
-            showNotification('Error memuat data user: ' + error.message, 'error');
+    // ========== FUNGSI SAVE DENGAN PERIOD ==========
+async function saveKpiDataToFirestoreWithPeriod(period) {
+    try {
+        const currentUser = firebase.auth().currentUser;
+        if (!currentUser) {
+            console.error('❌ No user logged in');
+            return false;
         }
+
+        const db = firebase.firestore();
+        
+        // Tentukan target user ID
+        let targetUserId = currentUser.uid;
+        let targetUserName = currentUser.displayName || currentUser.email;
+        
+        if (isSuperAdminUser && window.currentViewingUserId) {
+            targetUserId = window.currentViewingUserId;
+            const userDoc = await db.collection('users').doc(targetUserId).get();
+            if (userDoc.exists) {
+                targetUserName = userDoc.data().name || userDoc.data().email || 'Unknown User';
+            }
+        }
+
+        console.log(`💾 Saving KPI data for period: ${period} to user: ${targetUserId}`);
+
+        isLocalChange = true;
+        lastLocalChangeTime = Date.now();
+
+        const kpiDoc = {
+            kpiData: kpiData.map(item => ({
+                id: item.id,
+                area: item.area,
+                target: item.target,
+                weight: item.weight,
+                description: item.description,
+                note: item.note,
+                realization: item.realization,
+                score: item.score
+            })),
+            userId: targetUserId,
+            userName: targetUserName,
+            userEmail: currentUser.email,
+            period: period, // 🔥 PERIOD DISIMPAN
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            totalScore: calculateTotalScore(kpiData),
+            lastUpdatedBy: currentUser.uid,
+            updatedByAdmin: isSuperAdminUser
+        };
+
+        await db.collection('kpiData').doc(targetUserId).set(kpiDoc, { merge: true });
+        
+        console.log('✅ Data saved with period:', period);
+        
+        setTimeout(() => { isLocalChange = false; }, 5000);
+        return true;
+        
+    } catch (error) {
+        console.error('❌ ERROR saving to Firestore:', error);
+        isLocalChange = false;
+        showNotification('Gagal menyimpan data: ' + error.message, 'error');
+        return false;
     }
+}
 
     async function loadHistoricalData(userId, monthYear) {
         try {

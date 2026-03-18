@@ -1301,23 +1301,53 @@
             }
 
             async checkSuperAdminStatus(uid) {
-                try {
-                    const userDoc = await db.collection('users').doc(uid).get();
-                    if (userDoc.exists) {
-                        const userData = userDoc.data();
-                        this.isSuperAdmin = userData.role === 'Super Admin' || userData.role === 'super_admin';
-                        
-                        // Update UI based on super admin status
-                        this.updateUIForSuperAdmin();
-                    }
-                    this.loadStaffData();
-                } catch (error) {
-                    console.error("Error checking super admin status:", error);
-                    this.isSuperAdmin = false;
-                    this.loadStaffData();
-                }
+    try {
+        const userDoc = await db.collection('users').doc(uid).get();
+        if (userDoc.exists) {
+            const userData = userDoc.data();
+            // CEK ROLE DAN FIELD permissions
+            this.isSuperAdmin = userData.role === 'super_admin' || 
+                               (userData.permissions && userData.permissions.includes('all_access'));
+            
+            this.updateUIForSuperAdmin();
+        }
+        this.loadStaffData();
+    } catch (error) {
+        console.error("Error checking super admin status:", error);
+        this.isSuperAdmin = false;
+        this.loadStaffData();
+    }
+}
+async fixSuperAdminPermissions() {
+    try {
+        // Cari semua user dengan role super_admin
+        const snapshot = await db.collection('users')
+            .where('role', '==', 'super_admin')
+            .get();
+        
+        const batch = db.batch();
+        
+        snapshot.docs.forEach(doc => {
+            const userData = doc.data();
+            
+            // Update dengan permissions lengkap jika belum ada
+            if (!userData.permissions || !userData.permissions.includes('all_access')) {
+                batch.update(doc.ref, {
+                    permissions: ["read", "write", "delete", "manage_users", "manage_roles", "all_access"],
+                    Language: userData.Language || "id",
+                    LastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                });
             }
-
+        });
+        
+        await batch.commit();
+        this.showNotification('Permissions Super Admin telah diperbaiki', 'success');
+        
+    } catch (error) {
+        console.error('Error fixing permissions:', error);
+        this.showNotification('Gagal memperbaiki permissions', 'error');
+    }
+}
             updateUIForSuperAdmin() {
                 // Show/hide super admin specific elements
                 const addSuperAdminBtn = document.getElementById('addSuperAdminBtn');
@@ -1873,87 +1903,79 @@
             }
 
             async handleAddStaff(e) {
-                e.preventDefault();
-                
-                const formData = {
-                    name: document.getElementById('staffName').value,
-                    email: document.getElementById('staffEmail').value,
-                    role: document.getElementById('staffRole').value,
-                    password: document.getElementById('staffPassword').value
-                };
-                
-                if (!formData.name || !formData.email || !formData.password) {
-                    this.showNotification('Semua field harus diisi', 'error');
-                    return;
-                }
-                
-                if (formData.password.length < 6) {
-                    this.showNotification('Password minimal 6 karakter', 'error');
-                    return;
-                }
-                
-                // Check if trying to add super admin without being super admin
-                if (formData.role === 'super_admin' && !this.isSuperAdmin) {
-                    this.showNotification('Anda tidak memiliki izin untuk menambahkan Super Admin', 'error');
-                    this.closeModal('addStaffModal');
-                    return;
-                }
-                
-                try {
-                    let newStaff;
-                    
-                    if (auth && db) {
-                        const userCredential = await auth.createUserWithEmailAndPassword(
-                            formData.email, 
-                            formData.password
-                        );
-                        
-                        const firestoreRole = this.denormalizeRole(formData.role);
-                        
-                        newStaff = {
-                            id: userCredential.user.uid,
-                            name: formData.name,
-                            email: formData.email,
-                            role: formData.role,
-                            status: 'active',
-                            avatar: 'https://iili.io/KfDh0EN.png',
-                            joinDate: new Date().toISOString().split('T')[0],
-                            lastLogin: null
-                        };
-                        
-                        await db.collection('users').doc(newStaff.id).set({
-                            name: formData.name,
-                            email: formData.email,
-                            role: firestoreRole,
-                            status: 'Active',
-                            image: 'https://iili.io/KfDh0EN.png',
-                            createdate: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                    } else {
-                        newStaff = {
-                            id: 'staff-' + Date.now(),
-                            ...formData,
-                            status: 'active',
-                            avatar: 'https://iili.io/KfDh0EN.png',
-                            joinDate: new Date().toISOString().split('T')[0],
-                            lastLogin: null
-                        };
-                    }
-                    
-                    this.staffData.push(newStaff);
-                    this.saveToLocalStorage();
-                    
-                    this.closeModal('addStaffModal');
-                    this.renderStaffList();
-                    
-                    const roleText = formData.role === 'super_admin' ? 'Super Admin' : 'Staff';
-                    this.showNotification(`${roleText} berhasil ditambahkan`, 'success');
-                    
-                } catch (error) {
-                    console.error('Error adding staff:', error);
-                    this.showNotification('Gagal menambahkan staff: ' + error.message, 'error');
-                }
+    e.preventDefault();
+    
+    const formData = {
+        name: document.getElementById('staffName').value,
+        email: document.getElementById('staffEmail').value,
+        role: document.getElementById('staffRole').value,
+        password: document.getElementById('staffPassword').value
+    };
+    
+    // ... validasi ...
+    
+    try {
+        let newStaff;
+        
+        if (auth && db) {
+            const userCredential = await auth.createUserWithEmailAndPassword(
+                formData.email, 
+                formData.password
+            );
+            
+            // TENTUKAN PERMISSIONS BERDASARKAN ROLE
+            let permissions = [];
+            if (formData.role === 'super_admin') {
+                permissions = ["read", "write", "delete", "manage_users", "manage_roles", "all_access"];
+            } else if (formData.role === 'admin') {
+                permissions = ["read", "write", "delete", "manage_users"];
+            } else if (formData.role === 'support') {
+                permissions = ["read", "write"];
+            } else {
+                permissions = ["read"];
             }
+            
+            // BUAT DATA LENGKAP SEPERTI SUPER ADMIN MANUAL
+            await db.collection('users').doc(userCredential.user.uid).set({
+                name: formData.name,
+                email: formData.email,
+                role: formData.role === 'super_admin' ? 'super_admin' : this.denormalizeRole(formData.role),
+                status: 'Active',
+                image: 'https://iili.io/KfDh0EN.png',
+                createdate: firebase.firestore.FieldValue.serverTimestamp(),
+                LastLogin: null,
+                LastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
+                Language: "id",
+                permissions: permissions  // ✅ TAMBAHKAN PERMISSIONS
+            });
+            
+            // Data untuk ditampilkan di UI
+            newStaff = {
+                id: userCredential.user.uid,
+                name: formData.name,
+                email: formData.email,
+                role: formData.role,
+                status: 'active',
+                avatar: 'https://iili.io/KfDh0EN.png',
+                joinDate: new Date().toISOString().split('T')[0],
+                lastLogin: null
+            };
+        }
+        
+        this.staffData.push(newStaff);
+        this.saveToLocalStorage();
+        
+        this.closeModal('addStaffModal');
+        this.renderStaffList();
+        
+        const roleText = formData.role === 'super_admin' ? 'Super Admin' : 'Staff';
+        this.showNotification(`${roleText} berhasil ditambahkan`, 'success');
+        
+    } catch (error) {
+        console.error('Error adding staff:', error);
+        this.showNotification('Gagal menambahkan staff: ' + error.message, 'error');
+    }
+}
 
             async handleResetPassword(e) {
                 e.preventDefault();

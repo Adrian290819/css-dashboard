@@ -1627,7 +1627,42 @@ document.getElementById('refresh-all-data').addEventListener('click', async func
   showNotification(`Memuat data user: ${userName}`, 'info');
 }
 
-
+async function loadRealTimeUserData(userId, selectedMonth = null) {
+    try {
+        console.log('📊 Loading real-time data for user:', userId, 'month:', selectedMonth);
+        
+        const targetMonth = selectedMonth || getCurrentMonthYear().display;
+        const isCurrentMonth = targetMonth === getCurrentMonthYear().display;
+        
+        if (isCurrentMonth) {
+            // Load data real-time dari Firestore
+            const loaded = await loadKpiDataFromFirestore(userId);
+            
+            if (!loaded) {
+                // Jika tidak ada data, inisialisasi dengan data kosong
+                kpiData.forEach(item => {
+                    item.realization = 0;
+                    item.score = 0;
+                });
+            }
+        } else {
+            // Load data historical
+            await loadHistoricalData(userId, targetMonth);
+        }
+        
+        // Update tampilan
+        updateDisplay();
+        
+        // Setup listeners real-time untuk user ini
+        setupRealTimeListeners();
+        
+        return true;
+    } catch (error) {
+        console.error('❌ Error loading real-time user data:', error);
+        showNotification('Error memuat data user: ' + error.message, 'error');
+        return false;
+    }
+}
     // ========== FUNGSI SAVE DENGAN PERIOD ==========
 async function saveKpiDataToFirestoreWithPeriod(period) {
     try {
@@ -3333,11 +3368,14 @@ function updateKpiFromFirestore(firestoreData) {
         return;
     }
     
+    // Skip jika sedang dalam mode edit
+    if (isEditingMode || preventRealTimeUpdate) {
+        console.log('⚠️ Skipping real-time update (edit mode)');
+        return;
+    }
+    
     // Simpan bahasa saat ini sebelum update
     const currentLang = localStorage.getItem('language') || 'id';
-    const wasTranslated = document.querySelectorAll('.translated-element').length > 0;
-    
-    console.log('📊 Before update - Language:', currentLang, 'Translated:', wasTranslated);
     
     // Update data
     firestoreData.kpiData.forEach((savedItem, index) => {
@@ -3348,14 +3386,13 @@ function updateKpiFromFirestore(firestoreData) {
         }
     });
     
-    // Update display TANPA mengubah bahasa
+    // Update display
     updateDisplay();
     
     // RESTORE bahasa jika diperlukan
     setTimeout(() => {
         const newLang = localStorage.getItem('language') || 'id';
         if (newLang !== currentLang && window.applyKpiTranslations) {
-            console.log('🌐 Restoring language after firestore update:', newLang);
             window.applyKpiTranslations(newLang);
         }
     }, 100);

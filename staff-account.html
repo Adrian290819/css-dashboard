@@ -1305,10 +1305,17 @@
         const userDoc = await db.collection('users').doc(uid).get();
         if (userDoc.exists) {
             const userData = userDoc.data();
-            // CEK ROLE DAN FIELD permissions
-            this.isSuperAdmin = userData.role === 'super_admin' || 
-                               (userData.permissions && userData.permissions.includes('all_access'));
             
+            // CEK SEMUA KEMUNGKINAN FIELD Super Admin
+            this.isSuperAdmin = 
+                userData.role === 'super_admin' || 
+                userData.role === 'Super Admin' ||
+                userData.isSuperAdmin === true ||
+                (userData.permissions && userData.permissions.includes('all_access')) ||
+                (userData.permissions && userData.permissions.includes('all')) ||
+                userData.superAdmin === true;
+            
+            console.log('Super Admin Status:', this.isSuperAdmin, userData);
             this.updateUIForSuperAdmin();
         }
         this.loadStaffData();
@@ -1422,29 +1429,39 @@ async fixSuperAdminPermissions() {
             }
 
             async loadFromFirebase() {
-                try {
-                    const snapshot = await db.collection('users').get();
-                    this.staffData = snapshot.docs.map(doc => {
-                        const data = doc.data();
-                        
-                        return {
-                            id: doc.id,
-                            name: data.name || data.displayName || data.email || 'Unknown User',
-                            email: data.email || '',
-                            role: this.normalizeRole(data.role),
-                            status: this.normalizeStatus(data.status),
-                            avatar: data.image || data.avatar || 'https://iili.io/KfDh0EN.png',
-                            joinDate: data.createdate ? this.formatFirestoreDate(data.createdate) : new Date().toISOString().split('T')[0],
-                            lastLogin: data.lastLogin || null,
-                        };
-                    });
-                    
-                } catch (error) {
-                    console.error("Error loading from Firebase:", error);
-                    throw error;
-                }
+    try {
+        const snapshot = await db.collection('users').get();
+        this.staffData = snapshot.docs.map(doc => {
+            const data = doc.data();
+            
+            // Tentukan role dengan cerdas
+            let role = 'staff';
+            if (data.role === 'super_admin' || data.isSuperAdmin === true || data.superAdmin === true) {
+                role = 'super_admin';
+            } else if (data.role === 'Admin' || data.role === 'admin') {
+                role = 'admin';
+            } else if (data.role === 'Support' || data.role === 'support') {
+                role = 'support';
             }
-
+            
+            return {
+                id: doc.id,
+                name: data.name || data.displayName || data.email || 'Unknown User',
+                email: data.email || '',
+                role: role,
+                status: this.normalizeStatus(data.status),
+                avatar: data.image || data.avatar || 'https://iili.io/KfDh0EN.png',
+                joinDate: data.createdate ? this.formatFirestoreDate(data.createdate) : new Date().toISOString().split('T')[0],
+                lastLogin: data.LastLogin || data.lastLogin || null,
+                isSuperAdmin: data.isSuperAdmin === true || role === 'super_admin'
+            };
+        });
+        
+    } catch (error) {
+        console.error("Error loading from Firebase:", error);
+        throw error;
+    }
+}
             loadFromLocalStorage() {
                 const savedData = localStorage.getItem('staffAccounts');
                 if (savedData) {
@@ -1912,55 +1929,70 @@ async fixSuperAdminPermissions() {
         password: document.getElementById('staffPassword').value
     };
     
-    // ... validasi ...
-    
     try {
-        let newStaff;
+        const userCredential = await auth.createUserWithEmailAndPassword(
+            formData.email, 
+            formData.password
+        );
         
-        if (auth && db) {
-            const userCredential = await auth.createUserWithEmailAndPassword(
-                formData.email, 
-                formData.password
-            );
-            
-            // TENTUKAN PERMISSIONS BERDASARKAN ROLE
-            let permissions = [];
-            if (formData.role === 'super_admin') {
-                permissions = ["read", "write", "delete", "manage_users", "manage_roles", "all_access"];
-            } else if (formData.role === 'admin') {
-                permissions = ["read", "write", "delete", "manage_users"];
-            } else if (formData.role === 'support') {
-                permissions = ["read", "write"];
-            } else {
-                permissions = ["read"];
-            }
-            
-            // BUAT DATA LENGKAP SEPERTI SUPER ADMIN MANUAL
-            await db.collection('users').doc(userCredential.user.uid).set({
-                name: formData.name,
-                email: formData.email,
-                role: formData.role === 'super_admin' ? 'super_admin' : this.denormalizeRole(formData.role),
-                status: 'Active',
-                image: 'https://iili.io/KfDh0EN.png',
-                createdate: firebase.firestore.FieldValue.serverTimestamp(),
-                LastLogin: null,
-                LastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
-                Language: "id",
-                permissions: permissions  // ✅ TAMBAHKAN PERMISSIONS
-            });
-            
-            // Data untuk ditampilkan di UI
-            newStaff = {
-                id: userCredential.user.uid,
-                name: formData.name,
-                email: formData.email,
-                role: formData.role,
-                status: 'active',
-                avatar: 'https://iili.io/KfDh0EN.png',
-                joinDate: new Date().toISOString().split('T')[0],
-                lastLogin: null
-            };
+        // Tentukan permissions berdasarkan role
+        let permissions = [];
+        let isSuperAdmin = false;
+        
+        if (formData.role === 'super_admin') {
+            permissions = ["read", "write", "delete", "manage_users", "manage_roles", "all_access"];
+            isSuperAdmin = true;  // Set flag isSuperAdmin
+        } else if (formData.role === 'admin') {
+            permissions = ["read", "write", "delete", "manage_users"];
+        } else if (formData.role === 'support') {
+            permissions = ["read", "write"];
+        } else {
+            permissions = ["read"];
         }
+        
+        // Data LENGKAP untuk Firestore
+        const userData = {
+            // Field untuk display
+            name: formData.name,
+            displayName: formData.name,
+            email: formData.email,
+            image: 'https://iili.io/KfDh0EN.png',
+            
+            // Field untuk role & permissions
+            role: formData.role === 'super_admin' ? 'super_admin' : this.denormalizeRole(formData.role),
+            roleType: formData.role, // Simpan role asli
+            isSuperAdmin: isSuperAdmin, // ✅ TAMBAHKAN FIELD INI
+            permissions: permissions,
+            
+            // Field status
+            status: 'Active',
+            active: true,
+            
+            // Timestamps
+            createdate: firebase.firestore.FieldValue.serverTimestamp(),
+            LastLogin: null,
+            LastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
+            Language: "id",
+            
+            // Metadata
+            uid: userCredential.user.uid
+        };
+        
+        // Simpan ke Firestore
+        await db.collection('users').doc(userCredential.user.uid).set(userData);
+        
+        // Data untuk UI
+        const newStaff = {
+            id: userCredential.user.uid,
+            name: formData.name,
+            email: formData.email,
+            role: formData.role,
+            status: 'active',
+            avatar: 'https://iili.io/KfDh0EN.png',
+            joinDate: new Date().toISOString().split('T')[0],
+            lastLogin: null,
+            isSuperAdmin: isSuperAdmin
+        };
         
         this.staffData.push(newStaff);
         this.saveToLocalStorage();

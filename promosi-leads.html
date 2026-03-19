@@ -15,7 +15,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-storage-compat.js"></script>
 
     <style>
         :root {
@@ -474,6 +473,29 @@
             text-decoration: underline;
         }
 
+        .url-input-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .url-input-group .form-control {
+            flex: 1;
+        }
+
+        .btn-test-url {
+            background: var(--info-gradient);
+            color: white;
+            padding: 0 12px;
+            border-radius: var(--radius-md);
+            border: none;
+            cursor: pointer;
+            font-size: var(--text-sm);
+        }
+
+        .btn-test-url:hover {
+            opacity: 0.9;
+        }
+
         /* ========== EMPTY STATE ========== */
         .empty-state {
             text-align: center;
@@ -653,36 +675,23 @@
             min-height: 80px;
         }
 
-        .file-upload {
-            border: 2px dashed var(--border-color);
+        .image-preview {
+            margin-top: var(--space-sm);
+            max-width: 200px;
             border-radius: var(--radius-md);
-            padding: var(--space-lg);
-            text-align: center;
-            cursor: pointer;
-            transition: all var(--transition-fast);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            display: none;
         }
 
-        .file-upload:hover {
-            border-color: var(--primary);
-            background-color: var(--hover-color);
+        .image-preview img {
+            width: 100%;
+            height: auto;
+            display: block;
         }
 
-        .file-upload i {
-            font-size: 2rem;
-            color: var(--text-secondary);
-            margin-bottom: var(--space-sm);
-        }
-
-        .file-upload p {
-            font-size: var(--text-sm);
-            color: var(--text-secondary);
-            margin: 0;
-        }
-
-        .file-name {
-            margin-top: var(--space-xs);
-            font-size: var(--text-xs);
-            color: var(--primary);
+        .image-preview.show {
+            display: block;
         }
 
         /* ========== TOAST NOTIFICATION ========== */
@@ -1053,14 +1062,16 @@
                         </div>
                         
                         <div class="form-group">
-                            <label>Screenshot Chat</label>
-                            <div class="file-upload" id="screenshotUpload">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                                <p>Klik untuk upload screenshot</p>
-                                <input type="file" id="screenshotFile" accept="image/*" style="display: none;">
+                            <label>Screenshot Chat (URL)</label>
+                            <div class="url-input-group">
+                                <input type="url" class="form-control" id="screenshotUrl" placeholder="https://example.com/image.jpg">
+                                <button type="button" class="btn-test-url" id="testScreenshotUrl">
+                                    <i class="fas fa-eye"></i> Test
+                                </button>
                             </div>
-                            <div class="file-name" id="screenshotName"></div>
-                            <input type="hidden" id="screenshotUrl">
+                            <div class="image-preview" id="screenshotPreview">
+                                <img src="" alt="Preview Screenshot" id="previewImage">
+                            </div>
                         </div>
                         
                         <div class="form-group">
@@ -1199,14 +1210,12 @@
         const app = firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
-        const storage = firebase.storage();
 
         // Variabel global
         let currentUser = null;
         let currentLeadId = null;
         let leadsData = [];
         let cssList = [];
-        let screenshotFile = null;
 
         // ========== FUNGSI UTAMA ==========
         
@@ -1411,8 +1420,7 @@
             document.getElementById('modalTitle').innerHTML = '<i class="fas fa-plus"></i> Tambah Lead Baru';
             document.getElementById('leadForm').reset();
             document.getElementById('leadId').value = '';
-            document.getElementById('screenshotName').innerHTML = '';
-            screenshotFile = null;
+            document.getElementById('screenshotPreview').classList.remove('show');
             
             // Set default tanggal hari ini
             const today = new Date().toISOString().split('T')[0];
@@ -1442,7 +1450,15 @@
                 document.getElementById('platform').value = lead.platform || '';
                 document.getElementById('contactUsername').value = lead.contactUsername || '';
                 document.getElementById('screenshotUrl').value = lead.screenshotUrl || '';
-                document.getElementById('screenshotName').innerHTML = lead.screenshotUrl ? 'File sudah diupload' : '';
+                
+                // Tampilkan preview jika ada URL
+                if (lead.screenshotUrl) {
+                    document.getElementById('previewImage').src = lead.screenshotUrl;
+                    document.getElementById('screenshotPreview').classList.add('show');
+                } else {
+                    document.getElementById('screenshotPreview').classList.remove('show');
+                }
+                
                 document.getElementById('namaCSS').value = lead.namaCSS || '';
                 document.getElementById('leadQualification').value = lead.leadQualification || '';
                 document.getElementById('reason').value = lead.reason || '';
@@ -1454,8 +1470,6 @@
                 document.getElementById('followUp5').value = lead.followUp5 || '';
                 document.getElementById('requestLeads').value = lead.requestLeads || '';
                 document.getElementById('leads').value = lead.leads || '';
-                
-                screenshotFile = null;
                 
                 document.getElementById('leadModal').classList.add('active');
                 document.body.style.overflow = 'hidden';
@@ -1480,21 +1494,11 @@
             }
             
             try {
-                let screenshotUrl = document.getElementById('screenshotUrl').value;
-                
-                // Upload screenshot jika ada file baru
-                if (screenshotFile) {
-                    const storageRef = storage.ref();
-                    const fileRef = storageRef.child(`screenshots/${Date.now()}_${screenshotFile.name}`);
-                    await fileRef.put(screenshotFile);
-                    screenshotUrl = await fileRef.getDownloadURL();
-                }
-                
                 const leadData = {
                     tanggalMasuk,
                     platform,
                     contactUsername,
-                    screenshotUrl: screenshotUrl || null,
+                    screenshotUrl: document.getElementById('screenshotUrl').value || null,
                     namaCSS,
                     leadQualification: document.getElementById('leadQualification').value || null,
                     reason: document.getElementById('reason').value || null,
@@ -1526,6 +1530,7 @@
                 // Tutup modal dan reset form
                 document.getElementById('leadModal').classList.remove('active');
                 document.getElementById('leadForm').reset();
+                document.getElementById('screenshotPreview').classList.remove('show');
                 document.body.style.overflow = '';
                 
                 // Perbarui data
@@ -1710,6 +1715,17 @@
             document.body.style.overflow = 'hidden';
         }
 
+        // Fungsi untuk test URL screenshot
+        function testScreenshotUrl() {
+            const url = document.getElementById('screenshotUrl').value;
+            if (url) {
+                document.getElementById('previewImage').src = url;
+                document.getElementById('screenshotPreview').classList.add('show');
+            } else {
+                document.getElementById('screenshotPreview').classList.remove('show');
+            }
+        }
+
         // Fungsi untuk export ke Excel (CSV)
         function exportToExcel() {
             // Header CSV sesuai dengan kolom tabel
@@ -1816,13 +1832,25 @@
             document.getElementById('cancelModal').addEventListener('click', () => {
                 document.getElementById('leadModal').classList.remove('active');
                 document.getElementById('leadForm').reset();
+                document.getElementById('screenshotPreview').classList.remove('show');
                 document.body.style.overflow = '';
             });
             
             document.getElementById('closeModal').addEventListener('click', () => {
                 document.getElementById('leadModal').classList.remove('active');
                 document.getElementById('leadForm').reset();
+                document.getElementById('screenshotPreview').classList.remove('show');
                 document.body.style.overflow = '';
+            });
+            
+            // Test URL button
+            document.getElementById('testScreenshotUrl').addEventListener('click', testScreenshotUrl);
+            
+            // Preview on URL change
+            document.getElementById('screenshotUrl').addEventListener('input', function() {
+                if (!this.value) {
+                    document.getElementById('screenshotPreview').classList.remove('show');
+                }
             });
             
             // Image modal
@@ -1847,19 +1875,6 @@
             document.getElementById('closeDeleteModal').addEventListener('click', () => {
                 document.getElementById('deleteModal').classList.remove('active');
                 document.body.style.overflow = '';
-            });
-            
-            // File upload
-            document.getElementById('screenshotUpload').addEventListener('click', function() {
-                document.getElementById('screenshotFile').click();
-            });
-            
-            document.getElementById('screenshotFile').addEventListener('change', function(e) {
-                if (e.target.files.length > 0) {
-                    screenshotFile = e.target.files[0];
-                    document.getElementById('screenshotName').innerHTML = 
-                        `<i class="fas fa-check-circle" style="color: var(--success);"></i> ${screenshotFile.name}`;
-                }
             });
             
             // Filter events

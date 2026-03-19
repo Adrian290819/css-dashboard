@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Statistik Promosi - Dashboard CSS</title>
+    <title>Promosi Leads - Manajemen Leads Terintegrasi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
@@ -23,8 +23,6 @@
             --warning-gradient: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
             --info-gradient: linear-gradient(135deg, #4895ef 0%, #3f37c9 100%);
             --purple-gradient: linear-gradient(135deg, #7209b7 0%, #b5179e 100%);
-            --orange-gradient: linear-gradient(135deg, #f8961e 0%, #f3722c 100%);
-            --teal-gradient: linear-gradient(135deg, #4cc9f0 0%, #06d6a0 100%);
         }
 
         /* ========== LAYOUT UTAMA ========== */
@@ -103,7 +101,7 @@
             font-weight: var(--font-semibold);
             color: var(--text-primary);
         }
-
+        
         .user-info p {
             margin: 0;
             font-size: var(--text-xs);
@@ -111,14 +109,14 @@
         }
 
         /* ========== STATISTIC CARDS ========== */
-        .stats-container {
+        .promosi-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: var(--space-md);
             margin-bottom: var(--space-xl);
         }
 
-        .stat-card {
+        .promosi-stat-card {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
             padding: var(--space-lg);
@@ -129,12 +127,12 @@
             overflow: hidden;
         }
 
-        .stat-card:hover {
+        .promosi-stat-card:hover {
             transform: translateY(-4px);
             box-shadow: var(--shadow-md);
         }
 
-        .stat-card::before {
+        .promosi-stat-card::before {
             content: '';
             position: absolute;
             top: 0;
@@ -144,24 +142,20 @@
             background: var(--primary-gradient);
         }
 
-        .stat-card.total-promosi::before {
+        .promosi-stat-card.total-leads::before {
             background: var(--primary-gradient);
         }
 
-        .stat-card.total-leads::before {
+        .promosi-stat-card.converted::before {
             background: var(--success-gradient);
         }
 
-        .stat-card.follow-up::before {
+        .promosi-stat-card.pending::before {
             background: var(--warning-gradient);
         }
 
-        .stat-card.closingan::before {
+        .promosi-stat-card.conversion-rate::before {
             background: var(--purple-gradient);
-        }
-
-        .stat-card.avg-qualification::before {
-            background: var(--orange-gradient);
         }
 
         .stat-header {
@@ -206,11 +200,6 @@
         .stat-icon.purple {
             background-color: rgba(114, 9, 183, 0.1);
             color: #7209b7;
-        }
-
-        .stat-icon.orange {
-            background-color: rgba(248, 150, 30, 0.1);
-            color: #f8961e;
         }
 
         .stat-value {
@@ -306,8 +295,8 @@
             box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
         }
 
-        /* ========== STATISTICS TABLE ========== */
-        .stats-section {
+        /* ========== LEADS TABLE ========== */
+        .leads-section {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
             padding: var(--space-lg);
@@ -378,6 +367,16 @@
             color: white;
         }
 
+        .btn-edit {
+            background: var(--info-gradient);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--warning-gradient);
+            color: white;
+        }
+
         .btn-sm {
             padding: var(--space-xs) var(--space-sm);
             font-size: var(--text-xs);
@@ -390,165 +389,197 @@
             border: 1px solid var(--border-color);
         }
 
-        .stats-table {
+        .leads-table {
             width: 100%;
             border-collapse: collapse;
             font-size: var(--text-sm);
-            min-width: 1400px;
+            min-width: 2000px;
         }
 
-        .stats-table th {
+        .leads-table th {
             background: var(--bg-secondary);
             color: var(--text-primary);
             font-weight: var(--font-semibold);
             padding: var(--space-md);
-            text-align: center;
+            text-align: left;
             border-bottom: 2px solid var(--border-color);
             position: sticky;
             top: 0;
             z-index: 10;
         }
 
-        .stats-table td {
+        .leads-table td {
             padding: var(--space-md);
             border-bottom: 1px solid var(--border-color);
             color: var(--text-secondary);
             vertical-align: middle;
-            text-align: center;
         }
 
-        .stats-table tbody tr:hover {
+        .leads-table tbody tr:hover {
             background-color: var(--hover-color);
         }
 
-        .stats-table tbody tr.total-row {
-            background-color: rgba(67, 97, 238, 0.05);
-            font-weight: var(--font-semibold);
-            border-top: 2px solid var(--border-color);
-        }
-
-        .stats-table tbody tr.total-row td {
-            color: var(--text-primary);
-            font-weight: var(--font-semibold);
-        }
-
-        .css-name {
-            font-weight: var(--font-semibold);
-            color: var(--primary);
-            text-align: left;
-        }
-
-        .badge {
+        .status-badge {
             padding: 4px 8px;
             border-radius: var(--radius-full);
             font-size: var(--text-xs);
             font-weight: var(--font-semibold);
             display: inline-block;
-            min-width: 60px;
         }
 
-        .badge-cold {
+        .status-new {
             background-color: rgba(67, 97, 238, 0.1);
             color: var(--primary);
         }
 
-        .badge-warm {
+        .status-contacted {
             background-color: rgba(245, 158, 11, 0.1);
             color: var(--warning);
         }
 
-        .badge-hot {
-            background-color: rgba(245, 39, 133, 0.1);
-            color: #f72585;
-        }
-
-        .badge-followup {
-            background-color: rgba(76, 201, 240, 0.1);
-            color: #4cc9f0;
-        }
-
-        .badge-closing {
+        .status-converted {
             background-color: rgba(16, 185, 129, 0.1);
             color: var(--success);
         }
 
-        .qualification-summary {
+        .status-lost {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .qualification-badge {
+            padding: 2px 6px;
+            border-radius: var(--radius-full);
+            font-size: var(--text-xs);
+            background-color: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+        }
+
+        .action-buttons {
             display: flex;
             gap: 4px;
-            justify-content: center;
             flex-wrap: wrap;
         }
 
-        /* ========== CHART SECTION ========== */
-        .charts-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: var(--space-lg);
-            margin-bottom: var(--space-xl);
-        }
-
-        .chart-card {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: var(--space-lg);
-            border: 1px solid var(--border-color);
-        }
-
-        .chart-title {
-            font-size: var(--text-lg);
-            font-weight: var(--font-semibold);
-            color: var(--text-primary);
-            margin-bottom: var(--space-md);
-            padding-bottom: var(--space-sm);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .chart-container {
-            height: 300px;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            gap: var(--space-md);
-            padding: var(--space-md) 0;
-        }
-
-        .bar-chart {
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            gap: 20px;
-            height: 250px;
-            width: 100%;
-        }
-
-        .bar-item {
-            display: flex;
-            flex-direction: column;
+        .screenshot-link {
+            color: var(--primary);
+            text-decoration: none;
+            display: inline-flex;
             align-items: center;
-            width: 60px;
+            gap: 4px;
         }
 
-        .bar {
-            width: 40px;
-            background: var(--primary-gradient);
-            border-radius: var(--radius-md) var(--radius-md) 0 0;
-            transition: height 0.3s ease;
-            min-height: 4px;
+        .screenshot-link:hover {
+            text-decoration: underline;
         }
 
-        .bar-label {
-            margin-top: var(--space-xs);
-            font-size: var(--text-xs);
-            color: var(--text-secondary);
-            text-align: center;
+        .url-input-group {
+            display: flex;
+            gap: 8px;
         }
 
-        .bar-value {
-            font-size: var(--text-xs);
-            font-weight: var(--font-semibold);
-            color: var(--text-primary);
-            margin-bottom: 4px;
+        .url-input-group .form-control {
+            flex: 1;
         }
+
+        .btn-test-url {
+            background: var(--info-gradient);
+            color: white;
+            padding: 0 12px;
+            border-radius: var(--radius-md);
+            border: none;
+            cursor: pointer;
+            font-size: var(--text-sm);
+        }
+
+        .btn-test-url:hover {
+            opacity: 0.9;
+        }
+
+      /* ========== PAGINATION STYLES - TOMBOL DI TENGAH ========== */
+.pagination-container {
+    display: flex;
+    justify-content: center; /* Pusatkan container */
+    align-items: center;
+    padding: var(--space-md) 0;
+    margin-top: var(--space-md);
+    border-top: 1px solid var(--border-color);
+    width: 100%;
+}
+
+.pagination-buttons {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap; /* Agar responsif di layar kecil */
+}
+
+.pagination-page {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.page-btn {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 8px;
+    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.page-btn:hover {
+    background: var(--hover-color);
+    border-color: var(--primary);
+}
+
+.page-btn.active {
+    background: var(--primary-gradient);
+    color: white;
+    border-color: var(--primary);
+}
+
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.page-dots {
+    color: var(--text-secondary);
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive untuk mobile */
+@media (max-width: 768px) {
+    .pagination-buttons {
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
+    
+    .pagination-page {
+        justify-content: center;
+    }
+    
+    .page-btn {
+        min-width: 32px;
+        height: 32px;
+        font-size: var(--text-xs);
+    }
+}
 
         /* ========== EMPTY STATE ========== */
         .empty-state {
@@ -577,6 +608,175 @@
             font-size: var(--text-sm);
             color: var(--text-secondary);
             margin-bottom: var(--space-lg);
+        }
+
+        /* ========== MODAL STYLES ========== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: var(--z-modal);
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-normal);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--card-bg);
+            border-radius: var(--radius-xl);
+            width: 95%;
+            max-width: 1400px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-2xl);
+            transform: translateY(20px);
+            transition: transform var(--transition-normal);
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: var(--space-xl) var(--space-xl) var(--space-md);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+
+        .modal-title {
+            font-size: var(--text-2xl);
+            font-weight: var(--font-bold);
+            color: white;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .modal-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: white;
+            padding: 0;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-full);
+            transition: all var(--transition-fast);
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: var(--space-xl);
+            max-height: calc(90vh - 180px);
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            padding: var(--space-lg) var(--space-xl);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--space-sm);
+            background: var(--bg-secondary);
+            border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+            position: sticky;
+            bottom: 0;
+            z-index: 20;
+        }
+
+        /* ========== FORM STYLES ========== */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--space-md);
+            margin-bottom: var(--space-xl);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+        }
+
+        .form-group label {
+            font-size: var(--text-xs);
+            font-weight: var(--font-semibold);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 4;
+        }
+
+        .form-control {
+            padding: var(--space-sm) var(--space-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            font-size: var(--text-sm);
+            transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .image-preview {
+            margin-top: var(--space-sm);
+            max-width: 200px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            display: none;
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .image-preview.show {
+            display: block;
         }
 
         /* ========== TOAST NOTIFICATION ========== */
@@ -657,8 +857,12 @@
 
         /* ========== RESPONSIVE ========== */
         @media (max-width: 1024px) {
-            .charts-section {
-                grid-template-columns: 1fr;
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .form-group.full-width {
+                grid-column: span 2;
             }
         }
 
@@ -686,7 +890,7 @@
                 width: 100%;
             }
             
-            .stats-container {
+            .promosi-stats {
                 grid-template-columns: 1fr;
             }
             
@@ -700,12 +904,35 @@
                 gap: var(--space-sm);
             }
             
-            .bar-item {
-                width: 40px;
+            .form-grid {
+                grid-template-columns: 1fr;
             }
             
-            .bar {
-                width: 30px;
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+            
+            .modal {
+                width: 95%;
+            }
+            
+            .modal-footer {
+                flex-direction: column;
+            }
+            
+            .modal-footer .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .pagination-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .pagination-buttons {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
@@ -716,11 +943,11 @@
     <!-- Main Content -->
     <div class="main-content">
         <div class="header">
-            <h1><i class="fas fa-chart-bar"></i> Statistik Promosi</h1>
+            <h1><i class="fas fa-bullhorn"></i> Promosi Leads Management</h1>
             <div class="header-actions">
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Cari CSS..." id="cssSearch">
+                    <input type="text" placeholder="Cari leads (nama, username, notes)..." id="leadsSearch">
                 </div>
                 <button class="menu-toggle">
                     <i class="fas fa-bars"></i>
@@ -728,45 +955,23 @@
                 <div class="user-profile">
                     <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
                     <div class="user-info">
+                        <!-- PERBAIKAN: Tambah ID untuk menghindari error -->
                         <h4 id="userName">Loading...</h4>
-                        <p id="userRole">Statistik Promosi</p>
+                        <p id="userRole">Customer Service Support</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Statistic Cards -->
-        <div class="stats-container fade-in" id="statCards">
-            <!-- Akan diisi oleh JavaScript -->
-        </div>
-
         <!-- Filter Panel -->
         <div class="filter-panel fade-in">
             <div class="filter-header">
-                <h3 class="filter-title">Filter Statistik</h3>
+                <h3 class="filter-title">Filter Leads</h3>
                 <button class="filter-reset" id="resetFilters">
                     <i class="fas fa-sync-alt"></i> Reset Filters
                 </button>
             </div>
             <div class="filter-grid">
-                <div class="filter-group">
-                    <label>Periode</label>
-                    <select class="filter-select" id="periodFilter">
-                        <option value="all">Semua Waktu</option>
-                        <option value="today">Hari Ini</option>
-                        <option value="week">Minggu Ini</option>
-                        <option value="month">Bulan Ini</option>
-                        <option value="year">Tahun Ini</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>Tanggal Mulai</label>
-                    <input type="date" class="filter-input" id="startDateFilter">
-                </div>
-                <div class="filter-group">
-                    <label>Tanggal Akhir</label>
-                    <input type="date" class="filter-input" id="endDateFilter">
-                </div>
                 <div class="filter-group">
                     <label>Platform</label>
                     <select class="filter-select" id="platformFilter">
@@ -780,98 +985,250 @@
                         <option value="Referral">Referral</option>
                     </select>
                 </div>
+                <div class="filter-group">
+                    <label>Lead Qualification</label>
+                    <select class="filter-select" id="qualificationFilter">
+                        <option value="">Semua</option>
+                        <option value="Hot">Hot</option>
+                        <option value="Warm">Warm</option>
+                        <option value="Cold">Cold</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Leads / Follow</label>
+                    <select class="filter-select" id="leadsFollowFilter">
+                        <option value="">Semua</option>
+                        <option value="Leads">Leads</option>
+                        <option value="Follow Up">Follow Up</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Nama CSS</label>
+                    <select class="filter-select" id="cssFilter">
+                        <option value="">Pilih Nama CSS</option>
+                        <option value="DANEL">DANEL</option>
+                        <option value="ADRIAN ABDUL ARIF">ADRIAN ABDUL ARIF</option>
+                        <option value="ANDRI FIRMANSYAH">ANDRI FIRMANSYAH</option>
+                        <option value="AHMAD BAIHAQI">AHMAD BAIHAQI</option>
+                        <option value="DICKY ADE CHANDRA">DICKY ADE CHANDRA</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Tanggal Masuk</label>
+                    <input type="date" class="filter-input" id="dateFilter">
+                </div>
             </div>
         </div>
 
-        <!-- Statistics Table -->
-        <div class="stats-section fade-in">
+        <!-- Leads Section -->
+        <div class="leads-section fade-in">
             <div class="section-header">
-                <h2 class="section-title"><i class="fas fa-table"></i> Rekapitulasi Promosi per CSS</h2>
+                <h2 class="section-title"><i class="fas fa-table"></i> Data Leads Promosi</h2>
                 <div class="section-actions">
                     <button class="btn btn-outline" id="exportExcel">
                         <i class="fas fa-file-excel"></i> Export Excel
                     </button>
-                    <button class="btn btn-outline" id="refreshStats">
+                    <button class="btn btn-outline" id="refreshLeads">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
-                    <button class="btn btn-primary" id="viewDetails">
-                        <i class="fas fa-chart-line"></i> Detail Leads
+                    <button class="btn btn-primary" id="addLeadBtn">
+                        <i class="fas fa-plus"></i> Tambah Lead
                     </button>
                 </div>
             </div>
             
             <div class="table-container">
-                <table class="stats-table" id="statsTable">
+                <table class="leads-table" id="leadsTable">
                     <thead>
                         <tr>
-                            <th rowspan="2">NAMA CSS</th>
-                            <th rowspan="2">JUMLAH PROMOSI</th>
-                            <th rowspan="2">JUMLAH LEADS</th>
-                            <th rowspan="2">LEADS FOLLOW UP</th>
-                            <th colspan="3">KUALIFIKASI</th>
-                            <th colspan="5">FOLLOW UP</th>
-                            <th rowspan="2">CLOSINGAN</th>
-                        </tr>
-                        <tr>
-                            <th>Cold</th>
-                            <th>Warm</th>
-                            <th>Hot</th>
-                            <th>FU 1</th>
-                            <th>FU 2</th>
-                            <th>FU 3</th>
-                            <th>FU 4</th>
-                            <th>FU 5</th>
+                            <th>Tanggal Masuk</th>
+                            <th>Platform</th>
+                            <th>Contact Username</th>
+                            <th>Screenshot Chat</th>
+                            <th>Nama CSS</th>
+                            <th>Lead Qualification</th>
+                            <th>Reason</th>
+                            <th>Notes FU</th>
+                            <th>Request Leads</th>
+                            <th>Leads / Follow</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="statsTableBody">
-                        <!-- Akan diisi oleh JavaScript -->
+                    <tbody id="leadsTableBody">
+                        <!-- Data akan dimuat secara dinamis -->
                     </tbody>
                 </table>
-            </div>
             
-            <div id="noData" class="empty-state" style="display: none;">
-                <i class="fas fa-chart-pie"></i>
-                <h3>Tidak Ada Data Statistik</h3>
-                <p>Belum ada data promosi untuk ditampilkan.</p>
+            <div id="noLeads" class="empty-state" style="display: none;">
+                <i class="fas fa-users"></i>
+                <h3>Tidak Ada Data Leads</h3>
+                <p>Belum ada data leads promosi saat ini.</p>
+                <button class="btn btn-primary" id="addFirstLead">
+                    <i class="fas fa-plus"></i> Tambah Lead Pertama
+                </button>
             </div>
         </div>
+    </div>
 
-        <!-- Charts Section -->
-        <div class="charts-section fade-in">
-            <div class="chart-card">
-                <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Top 5 CSS by Total Promosi</h3>
-                <div class="chart-container" id="promosiChart">
-                    <div class="bar-chart" id="promosiBarChart">
-                        <!-- Akan diisi JavaScript -->
-                    </div>
-                </div>
+    <!-- Add/Edit Lead Modal -->
+    <div class="modal-overlay" id="leadModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle"><i class="fas fa-plus"></i> Tambah Lead Baru</h3>
+                <button class="modal-close" id="closeModal">&times;</button>
             </div>
-            
-            <div class="chart-card">
-                <h3 class="chart-title"><i class="fas fa-chart-pie"></i> Distribusi Kualifikasi Lead</h3>
-                <div class="chart-container" id="qualificationChart">
-                    <div class="bar-chart" id="qualificationBarChart">
-                        <!-- Akan diisi JavaScript -->
+            <div class="modal-body">
+                <form id="leadForm">
+                    <input type="hidden" id="leadId">
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Tanggal Masuk</label>
+                            <input type="date" class="form-control" id="tanggalMasuk">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Platform</label>
+                            <select class="form-control" id="platform">
+                                <option value="">Pilih Platform</option>
+                                <option value="WhatsApp">WhatsApp</option>
+                                <option value="Telegram">Telegram</option>
+                                <option value="Facebook">Facebook</option>
+                                <option value="Instagram">Instagram</option>
+                                <option value="Website">Website</option>
+                                <option value="Direct">Direct</option>
+                                <option value="Referral">Referral</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Contact Username</label>
+                            <input type="text" class="form-control" id="contactUsername" placeholder="@username atau nomor">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Screenshot Chat (URL)</label>
+                            <div class="url-input-group">
+                                <input type="url" class="form-control" id="screenshotUrl" placeholder="https://example.com/image.jpg">
+                                <button type="button" class="btn-test-url" id="testScreenshotUrl">
+                                    <i class="fas fa-eye"></i> Test
+                                </button>
+                            </div>
+                            <div class="image-preview" id="screenshotPreview">
+                                <img src="" alt="Preview Screenshot" id="previewImage">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Nama CSS</label>
+                            <select class="form-control" id="namaCSS">
+                                <option value="">Pilih CSS</option>
+                                <option value="DANEL">DANEL</option>
+                                <option value="ADRIAN ABDUL ARIF">ADRIAN ABDUL ARIF</option>
+                                <option value="ANDRI FIRMANSYAH">ANDRI FIRMANSYAH</option>
+                                <option value="AHMAD BAIHAQI">AHMAD BAIHAQI</option>
+                                <option value="DICKY ADE CHANDRA">DICKY ADE CHANDRA</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Lead Qualification</label>
+                            <select class="form-control" id="leadQualification">
+                                <option value="">Pilih Kualifikasi</option>
+                                <option value="Hot">Hot</option>
+                                <option value="Warm">Warm</option>
+                                <option value="Cold">Cold</option>
+                                <option value="Qualified">Qualified</option>
+                                <option value="Not Qualified">Not Qualified</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Leads / Follow</label>
+                            <select class="form-control" id="leadsFollowModal">
+                                <option value="">Pilih Status</option>
+                                <option value="Leads">Leads</option>
+                                <option value="Follow Up">Follow Up</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label>Reason</label>
+                            <textarea class="form-control" id="reason" rows="2" placeholder="Alasan kualifikasi..."></textarea>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label>Notes FU</label>
+                            <textarea class="form-control" id="notesFU" rows="2" placeholder="Catatan follow up..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Request Leads</label>
+                            <input type="text" class="form-control" id="requestLeads" placeholder="Jenis request">
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
-            
-            <div class="chart-card">
-                <h3 class="chart-title"><i class="fas fa-chart-line"></i> Follow Up Progress</h3>
-                <div class="chart-container" id="followupChart">
-                    <div class="bar-chart" id="followupBarChart">
-                        <!-- Akan diisi JavaScript -->
-                    </div>
-                </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelModal">
+                    <i class="fas fa-times"></i> Batal
+                </button>
+                <button class="btn btn-primary" id="saveLead">
+                    <i class="fas fa-save"></i> Simpan Lead
+                </button>
             </div>
-            
-            <div class="chart-card">
-                <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Closingan per CSS</h3>
-                <div class="chart-container" id="closingChart">
-                    <div class="bar-chart" id="closingBarChart">
-                        <!-- Akan diisi JavaScript -->
-                    </div>
-                </div>
+        </div>
+    </div>
+<!-- Pagination Controls - ONLY BUTTONS -->
+<div class="pagination-container" id="paginationContainer" style="display: none;">
+    <div class="pagination-buttons">
+        <button class="btn btn-outline btn-sm" id="prevPage" disabled>
+            <i class="fas fa-chevron-left"></i> Previous
+        </button>
+        <span class="pagination-page" id="pageNumbers">
+            <!-- Akan diisi JavaScript -->
+        </span>
+        <button class="btn btn-outline btn-sm" id="nextPage" disabled>
+            Next <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+</div>
+    <!-- View Image Modal -->
+    <div class="modal-overlay" id="imageModal">
+        <div class="modal" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-image"></i> Screenshot Chat</h3>
+                <button class="modal-close" id="closeImageModal">&times;</button>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <img id="modalImage" src="" alt="Screenshot" style="max-width: 100%; max-height: 70vh;">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="closeImageBtn">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal" style="max-width: 400px;">
+            <div class="modal-header" style="background: var(--warning-gradient);">
+                <h3 class="modal-title"><i class="fas fa-exclamation-triangle"></i> Konfirmasi Hapus</h3>
+                <button class="modal-close" id="closeDeleteModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="text-align: center; font-size: var(--text-lg); margin: var(--space-lg) 0;">
+                    Apakah Anda yakin ingin menghapus data ini?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelDelete">
+                    <i class="fas fa-times"></i> Batal
+                </button>
+                <button class="btn btn-danger" id="confirmDelete">
+                    <i class="fas fa-trash"></i> Hapus
+                </button>
             </div>
         </div>
     </div>
@@ -897,18 +1254,17 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Variabel global
+        // ========== GLOBAL VARIABLES ==========
         let currentUser = null;
+        let currentLeadId = null;
         let leadsData = [];
-        let filteredLeadsData = [];
-        let cssStats = {};
-        let cssList = [
-            "DANEL",
-            "ADRIAN ABDUL ARIF", 
-            "ANDRI FIRMANSYAH",
-            "AHMAD BAIHAQI",
-            "DICKY ADE CHANDRA"
-        ];
+        let filteredLeadsData = []; // Untuk menyimpan data setelah filter
+        let cssList = [];
+
+        // ===== VARIABEL PAGINATION =====
+        let currentPage = 1;
+        let itemsPerPage = 10; // Jumlah data per halaman
+        let totalPages = 1;
 
         // ========== FUNGSI UTAMA ==========
         
@@ -918,7 +1274,20 @@
                 if (user) {
                     currentUser = user;
                     console.log("User is signed in:", user.uid);
-                    document.getElementById('userName').textContent = user.displayName || user.email;
+                    
+                    // PERBAIKAN: Set user name ke element yang sudah diberi ID
+                    const userNameElement = document.getElementById('userName');
+                    if (userNameElement) {
+                        userNameElement.textContent = user.displayName || user.email || 'User';
+                    }
+                    
+                    const userRoleElement = document.getElementById('userRole');
+                    if (userRoleElement) {
+                        userRoleElement.textContent = 'Customer Service Support';
+                    }
+                    
+                    ensureCollectionExists();
+                    loadCSSData();
                     loadLeadsData();
                     setupEventListeners();
                 } else {
@@ -928,7 +1297,75 @@
             });
         }
 
-        // Fungsi untuk memuat data leads dari Firestore
+        // Fungsi untuk memuat data CSS dari koleksi users
+        async function loadCSSData() {
+            try {
+                const defaultCSS = [
+                    "DANEL",
+                    "ADRIAN ABDUL ARIF", 
+                    "ANDRI FIRMANSYAH",
+                    "AHMAD BAIHAQI",
+                    "DICKY ADE CHANDRA"
+                ];
+                
+                const snapshot = await db.collection('users')
+                    .where('role', '==', 'css')
+                    .get();
+                
+                const dbCSS = snapshot.docs.map(doc => doc.data().name || doc.data().email);
+                const allCSS = [...new Set([...defaultCSS, ...dbCSS])];
+                
+                const cssSelects = ['namaCSS', 'cssFilter'];
+                cssSelects.forEach(selectId => {
+                    const select = document.getElementById(selectId);
+                    if (select) {
+                        // Hapus opsi selain yang pertama
+                        while (select.options.length > 1) {
+                            select.remove(1);
+                        }
+                        
+                        allCSS.forEach(cssName => {
+                            if (cssName) {
+                                const option = document.createElement('option');
+                                option.value = cssName;
+                                option.textContent = cssName;
+                                select.appendChild(option);
+                            }
+                        });
+                    }
+                });
+                
+            } catch (error) {
+                console.error("Error loading CSS data:", error);
+                // Fallback ke default CSS
+                const cssSelects = ['namaCSS', 'cssFilter'];
+                cssSelects.forEach(selectId => {
+                    const select = document.getElementById(selectId);
+                    if (select) {
+                        while (select.options.length > 1) {
+                            select.remove(1);
+                        }
+                        
+                        const defaultCSS = [
+                            "DANEL",
+                            "ADRIAN ABDUL ARIF", 
+                            "ANDRI FIRMANSYAH",
+                            "AHMAD BAIHAQI",
+                            "DICKY ADE CHANDRA"
+                        ];
+                        
+                        defaultCSS.forEach(cssName => {
+                            const option = document.createElement('option');
+                            option.value = cssName;
+                            option.textContent = cssName;
+                            select.appendChild(option);
+                        });
+                    }
+                });
+            }
+        }
+
+        // Fungsi untuk memuat data leads
         async function loadLeadsData() {
             try {
                 const snapshot = await db.collection('promosiLeads')
@@ -936,618 +1373,516 @@
                     .get();
                 
                 leadsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                filteredLeadsData = [...leadsData];
+                filteredLeadsData = [...leadsData]; // Salin ke filtered data
                 
-                processStatistics();
-                renderStatCards();
-                renderStatsTable();
-                renderCharts();
+                // Reset ke halaman 1
+                currentPage = 1;
+                
+                // Render tabel dengan pagination
+                renderLeadsTableWithPagination();
                 
             } catch (error) {
                 console.error("Error loading leads:", error);
                 showToast('Gagal memuat data leads', 'error');
             }
         }
-
-        // Fungsi untuk memproses statistik dari data leads
-        function processStatistics() {
-            // Inisialisasi statistik untuk setiap CSS
-            cssStats = {};
-            
-            // Inisialisasi dengan CSS default
-            cssList.forEach(css => {
-                cssStats[css] = {
-                    nama: css,
-                    totalPromosi: 0,
-                    jumlahLeads: 0,
-                    leadsFollowUp: 0,
-                    cold: 0,
-                    warm: 0,
-                    hot: 0,
-                    followUp1: 0,
-                    followUp2: 0,
-                    followUp3: 0,
-                    followUp4: 0,
-                    followUp5: 0,
-                    closingan: 0
-                };
-            });
-            
-            // Proses setiap lead
-            filteredLeadsData.forEach(lead => {
-                const cssName = lead.namaCSS ? lead.namaCSS.toUpperCase() : '';
-                let found = false;
-                
-                // Cari CSS yang sesuai
-                for (let key in cssStats) {
-                    if (cssName.includes(key) || key.includes(cssName)) {
-                        cssStats[key].totalPromosi++;
-                        
-                        // Hitung leads (jika ada leads atau follow)
-                        if (lead.leads) {
-                            cssStats[key].jumlahLeads++;
-                            
-                            if (lead.leads === 'Follow Up') {
-                                cssStats[key].leadsFollowUp++;
-                            }
-                        }
-                        
-                        // Hitung kualifikasi
-                        if (lead.leadQualification) {
-                            switch(lead.leadQualification.toLowerCase()) {
-                                case 'cold':
-                                    cssStats[key].cold++;
-                                    break;
-                                case 'warm':
-                                    cssStats[key].warm++;
-                                    break;
-                                case 'hot':
-                                    cssStats[key].hot++;
-                                    break;
-                            }
-                        }
-                        
-                        // Hitung follow up dari notesFU
-                        if (lead.notesFU) {
-                            const notes = lead.notesFU.toLowerCase();
-                            if (notes.includes('follow up 1') || notes.includes('fu 1') || notes.includes('follow up 1')) {
-                                cssStats[key].followUp1++;
-                            }
-                            if (notes.includes('follow up 2') || notes.includes('fu 2') || notes.includes('follow up 2')) {
-                                cssStats[key].followUp2++;
-                            }
-                            if (notes.includes('follow up 3') || notes.includes('fu 3') || notes.includes('follow up 3')) {
-                                cssStats[key].followUp3++;
-                            }
-                            if (notes.includes('follow up 4') || notes.includes('fu 4') || notes.includes('follow up 4')) {
-                                cssStats[key].followUp4++;
-                            }
-                            if (notes.includes('follow up 5') || notes.includes('fu 5') || notes.includes('follow up 5')) {
-                                cssStats[key].followUp5++;
-                            }
-                            
-                            // Deteksi closingan
-                            if (notes.includes('closing') || notes.includes('deal') || notes.includes('berhasil')) {
-                                cssStats[key].closingan++;
-                            }
-                        }
-                        
-                        found = true;
-                        break;
-                    }
-                }
-                
-                // Jika CSS tidak ditemukan dalam daftar, buat entri baru
-                if (!found && lead.namaCSS) {
-                    const newCss = lead.namaCSS.toUpperCase();
-                    if (!cssStats[newCss]) {
-                        cssStats[newCss] = {
-                            nama: lead.namaCSS,
-                            totalPromosi: 1,
-                            jumlahLeads: lead.leads ? 1 : 0,
-                            leadsFollowUp: lead.leads === 'Follow Up' ? 1 : 0,
-                            cold: lead.leadQualification === 'Cold' ? 1 : 0,
-                            warm: lead.leadQualification === 'Warm' ? 1 : 0,
-                            hot: lead.leadQualification === 'Hot' ? 1 : 0,
-                            followUp1: 0,
-                            followUp2: 0,
-                            followUp3: 0,
-                            followUp4: 0,
-                            followUp5: 0,
-                            closingan: 0
-                        };
-                        
-                        // Hitung follow up
-                        if (lead.notesFU) {
-                            const notes = lead.notesFU.toLowerCase();
-                            if (notes.includes('follow up 1') || notes.includes('fu 1')) cssStats[newCss].followUp1++;
-                            if (notes.includes('follow up 2') || notes.includes('fu 2')) cssStats[newCss].followUp2++;
-                            if (notes.includes('follow up 3') || notes.includes('fu 3')) cssStats[newCss].followUp3++;
-                            if (notes.includes('follow up 4') || notes.includes('fu 4')) cssStats[newCss].followUp4++;
-                            if (notes.includes('follow up 5') || notes.includes('fu 5')) cssStats[newCss].followUp5++;
-                            if (notes.includes('closing') || notes.includes('deal')) cssStats[newCss].closingan++;
-                        }
-                    }
-                }
-            });
-        }
-
-        // Fungsi untuk merender statistik cards
-        function renderStatCards() {
-            const container = document.getElementById('statCards');
-            if (!container) return;
-            
-            const totalPromosi = filteredLeadsData.length;
-            const totalLeads = filteredLeadsData.filter(lead => lead.leads).length;
-            const totalFollowUp = filteredLeadsData.filter(lead => lead.leads === 'Follow Up').length;
-            const totalClosing = filteredLeadsData.filter(lead => 
-                lead.notesFU && (lead.notesFU.toLowerCase().includes('closing') || 
-                lead.notesFU.toLowerCase().includes('deal'))
-            ).length;
-            
-            const coldCount = filteredLeadsData.filter(lead => lead.leadQualification === 'Cold').length;
-            const warmCount = filteredLeadsData.filter(lead => lead.leadQualification === 'Warm').length;
-            const hotCount = filteredLeadsData.filter(lead => lead.leadQualification === 'Hot').length;
-            
-            container.innerHTML = `
-                <div class="stat-card total-promosi">
-                    <div class="stat-header">
-                        <h3 class="stat-title">Total Promosi</h3>
-                        <div class="stat-icon primary">
-                            <i class="fas fa-bullhorn"></i>
-                        </div>
-                    </div>
-                    <div class="stat-value">${totalPromosi}</div>
-                    <div class="stat-description">Total seluruh promosi</div>
-                </div>
-                
-                <div class="stat-card total-leads">
-                    <div class="stat-header">
-                        <h3 class="stat-title">Total Leads</h3>
-                        <div class="stat-icon success">
-                            <i class="fas fa-users"></i>
-                        </div>
-                    </div>
-                    <div class="stat-value">${totalLeads}</div>
-                    <div class="stat-description">${((totalLeads/totalPromosi)*100 || 0).toFixed(1)}% dari total promosi</div>
-                </div>
-                
-                <div class="stat-card follow-up">
-                    <div class="stat-header">
-                        <h3 class="stat-title">Follow Up</h3>
-                        <div class="stat-icon warning">
-                            <i class="fas fa-phone-alt"></i>
-                        </div>
-                    </div>
-                    <div class="stat-value">${totalFollowUp}</div>
-                    <div class="stat-description">${((totalFollowUp/totalLeads)*100 || 0).toFixed(1)}% dari total leads</div>
-                </div>
-                
-                <div class="stat-card closingan">
-                    <div class="stat-header">
-                        <h3 class="stat-title">Closingan</h3>
-                        <div class="stat-icon purple">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                    </div>
-                    <div class="stat-value">${totalClosing}</div>
-                    <div class="stat-description">${((totalClosing/totalLeads)*100 || 0).toFixed(1)}% dari total leads</div>
-                </div>
-                
-                <div class="stat-card avg-qualification">
-                    <div class="stat-header">
-                        <h3 class="stat-title">Kualifikasi</h3>
-                        <div class="stat-icon orange">
-                            <i class="fas fa-chart-pie"></i>
-                        </div>
-                    </div>
-                    <div class="stat-value">${coldCount} / ${warmCount} / ${hotCount}</div>
-                    <div class="stat-description">Cold / Warm / Hot</div>
-                </div>
-            `;
-        }
-
-        // Fungsi untuk merender tabel statistik
-        function renderStatsTable() {
-            const tableBody = document.getElementById('statsTableBody');
-            const noData = document.getElementById('noData');
+        
+        // ========== FUNGSI PAGINATION & RENDER TABLE ==========
+        
+        // Fungsi untuk render tabel dengan pagination
+        function renderLeadsTableWithPagination() {
+            const tableBody = document.getElementById('leadsTableBody');
+            const noLeads = document.getElementById('noLeads');
+            const paginationContainer = document.getElementById('paginationContainer');
             
             if (!tableBody) return;
             
-            const statsArray = Object.values(cssStats).filter(stat => stat.totalPromosi > 0);
+            // Hitung total halaman
+            totalPages = Math.ceil(filteredLeadsData.length / itemsPerPage);
+            if (totalPages === 0) totalPages = 1;
             
-            if (statsArray.length === 0) {
-                tableBody.innerHTML = '';
-                if (noData) noData.style.display = 'block';
+            // Validasi current page
+            if (currentPage < 1) currentPage = 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            
+            // Hitung index data untuk halaman saat ini
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, filteredLeadsData.length);
+            const currentPageData = filteredLeadsData.slice(startIndex, endIndex);
+            
+            // Tampilkan atau sembunyikan pagination container
+            if (paginationContainer) {
+                paginationContainer.style.display = filteredLeadsData.length > 0 ? 'flex' : 'none';
+            }
+            
+            // Update info pagination
+            updatePaginationInfo();
+            
+            // Render tombol halaman
+            renderPageButtons();
+            
+            if (filteredLeadsData.length === 0) {
+                if (tableBody) tableBody.innerHTML = '';
+                if (noLeads) {
+                    noLeads.style.display = 'block';
+                    noLeads.querySelector('h3').textContent = 'Tidak Ada Leads';
+                    noLeads.querySelector('p').textContent = 'Tidak ada leads yang sesuai dengan filter.';
+                }
                 return;
             }
             
-            if (noData) noData.style.display = 'none';
-            tableBody.innerHTML = '';
+            if (noLeads) noLeads.style.display = 'none';
+            if (tableBody) tableBody.innerHTML = '';
             
-            // Urutkan berdasarkan total promosi terbanyak
-            statsArray.sort((a, b) => b.totalPromosi - a.totalPromosi);
-            
-            let totalPromosi = 0, totalLeads = 0, totalFollowUp = 0;
-            let totalCold = 0, totalWarm = 0, totalHot = 0;
-            let totalFU1 = 0, totalFU2 = 0, totalFU3 = 0, totalFU4 = 0, totalFU5 = 0;
-            let totalClosing = 0;
-            
-            statsArray.forEach(stat => {
+            // Render data untuk halaman saat ini
+            currentPageData.forEach(lead => {
                 const row = document.createElement('tr');
                 
-                totalPromosi += stat.totalPromosi;
-                totalLeads += stat.jumlahLeads;
-                totalFollowUp += stat.leadsFollowUp;
-                totalCold += stat.cold;
-                totalWarm += stat.warm;
-                totalHot += stat.hot;
-                totalFU1 += stat.followUp1;
-                totalFU2 += stat.followUp2;
-                totalFU3 += stat.followUp3;
-                totalFU4 += stat.followUp4;
-                totalFU5 += stat.followUp5;
-                totalClosing += stat.closingan;
+                const tanggalMasuk = lead.tanggalMasuk ? new Date(lead.tanggalMasuk).toLocaleDateString('id-ID') : '-';
+                
+                let qualificationClass = '';
+                switch(lead.leadQualification) {
+                    case 'Hot':
+                        qualificationClass = 'status-converted';
+                        break;
+                    case 'Warm':
+                        qualificationClass = 'status-contacted';
+                        break;
+                    case 'Cold':
+                        qualificationClass = 'status-new';
+                        break;
+                    case 'Qualified':
+                        qualificationClass = 'status-converted';
+                        break;
+                    case 'Not Qualified':
+                        qualificationClass = 'status-lost';
+                        break;
+                    default:
+                        qualificationClass = 'status-new';
+                }
                 
                 row.innerHTML = `
-                    <td class="css-name">${stat.nama}</td>
-                    <td><strong>${stat.totalPromosi}</strong></td>
-                    <td>${stat.jumlahLeads}</td>
-                    <td>${stat.leadsFollowUp}</td>
-                    <td><span class="badge badge-cold">${stat.cold}</span></td>
-                    <td><span class="badge badge-warm">${stat.warm}</span></td>
-                    <td><span class="badge badge-hot">${stat.hot}</span></td>
-                    <td>${stat.followUp1}</td>
-                    <td>${stat.followUp2}</td>
-                    <td>${stat.followUp3}</td>
-                    <td>${stat.followUp4}</td>
-                    <td>${stat.followUp5}</td>
-                    <td><span class="badge badge-closing">${stat.closingan}</span></td>
+                    <td>${tanggalMasuk}</td>
+                    <td>${lead.platform || '-'}</td>
+                    <td>${lead.contactUsername || '-'}</td>
+                    <td>
+                        ${lead.screenshotUrl ? 
+                            `<a href="${lead.screenshotUrl}" target="_blank" class="screenshot-link">
+                                <i class="fas fa-image"></i> Lihat
+                            </a>` : 
+                            '-'}
+                    </td>
+                    <td>${lead.namaCSS || '-'}</td>
+                    <td>
+                        <span class="status-badge ${qualificationClass}">${lead.leadQualification || '-'}</span>
+                    </td>
+                    <td>${lead.reason || '-'}</td>
+                    <td>${lead.notesFU || '-'}</td>
+                    <td>${lead.requestLeads || '-'}</td>
+                    <td>${lead.leads || '-'}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-edit btn-sm edit-btn" data-id="${lead.id}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm delete-btn" data-id="${lead.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
                 `;
                 
                 tableBody.appendChild(row);
             });
             
-            // Tambahkan baris total
-            const totalRow = document.createElement('tr');
-            totalRow.className = 'total-row';
-            totalRow.innerHTML = `
-                <td><strong>TOTAL KESELURUHAN</strong></td>
-                <td><strong>${totalPromosi}</strong></td>
-                <td><strong>${totalLeads}</strong></td>
-                <td><strong>${totalFollowUp}</strong></td>
-                <td><strong>${totalCold}</strong></td>
-                <td><strong>${totalWarm}</strong></td>
-                <td><strong>${totalHot}</strong></td>
-                <td><strong>${totalFU1}</strong></td>
-                <td><strong>${totalFU2}</strong></td>
-                <td><strong>${totalFU3}</strong></td>
-                <td><strong>${totalFU4}</strong></td>
-                <td><strong>${totalFU5}</strong></td>
-                <td><strong>${totalClosing}</strong></td>
-            `;
-            tableBody.appendChild(totalRow);
-        }
-
-        // Fungsi untuk merender charts
-        function renderCharts() {
-            renderPromosiChart();
-            renderQualificationChart();
-            renderFollowupChart();
-            renderClosingChart();
-        }
-
-        function renderPromosiChart() {
-            const chartContainer = document.getElementById('promosiBarChart');
-            if (!chartContainer) return;
-            
-            const statsArray = Object.values(cssStats)
-                .filter(stat => stat.totalPromosi > 0)
-                .sort((a, b) => b.totalPromosi - a.totalPromosi)
-                .slice(0, 5); // Top 5
-            
-            if (statsArray.length === 0) {
-                chartContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Tidak ada data</p>';
-                return;
-            }
-            
-            const maxValue = Math.max(...statsArray.map(s => s.totalPromosi));
-            
-            chartContainer.innerHTML = statsArray.map(stat => {
-                const height = (stat.totalPromosi / maxValue) * 200;
-                return `
-                    <div class="bar-item">
-                        <div class="bar-value">${stat.totalPromosi}</div>
-                        <div class="bar" style="height: ${height}px; background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);"></div>
-                        <div class="bar-label">${stat.nama.split(' ')[0]}</div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function renderQualificationChart() {
-            const chartContainer = document.getElementById('qualificationBarChart');
-            if (!chartContainer) return;
-            
-            const cold = filteredLeadsData.filter(l => l.leadQualification === 'Cold').length;
-            const warm = filteredLeadsData.filter(l => l.leadQualification === 'Warm').length;
-            const hot = filteredLeadsData.filter(l => l.leadQualification === 'Hot').length;
-            
-            const maxValue = Math.max(cold, warm, hot, 1);
-            
-            chartContainer.innerHTML = `
-                <div class="bar-item">
-                    <div class="bar-value">${cold}</div>
-                    <div class="bar" style="height: ${(cold/maxValue)*200}px; background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);"></div>
-                    <div class="bar-label">Cold</div>
-                </div>
-                <div class="bar-item">
-                    <div class="bar-value">${warm}</div>
-                    <div class="bar" style="height: ${(warm/maxValue)*200}px; background: linear-gradient(135deg, #f8961e 0%, #f3722c 100%);"></div>
-                    <div class="bar-label">Warm</div>
-                </div>
-                <div class="bar-item">
-                    <div class="bar-value">${hot}</div>
-                    <div class="bar" style="height: ${(hot/maxValue)*200}px; background: linear-gradient(135deg, #f72585 0%, #7209b7 100%);"></div>
-                    <div class="bar-label">Hot</div>
-                </div>
-            `;
-        }
-
-        function renderFollowupChart() {
-            const chartContainer = document.getElementById('followupBarChart');
-            if (!chartContainer) return;
-            
-            const statsArray = Object.values(cssStats);
-            const totalFU1 = statsArray.reduce((sum, stat) => sum + stat.followUp1, 0);
-            const totalFU2 = statsArray.reduce((sum, stat) => sum + stat.followUp2, 0);
-            const totalFU3 = statsArray.reduce((sum, stat) => sum + stat.followUp3, 0);
-            const totalFU4 = statsArray.reduce((sum, stat) => sum + stat.followUp4, 0);
-            const totalFU5 = statsArray.reduce((sum, stat) => sum + stat.followUp5, 0);
-            
-            const maxValue = Math.max(totalFU1, totalFU2, totalFU3, totalFU4, totalFU5, 1);
-            
-            chartContainer.innerHTML = `
-                <div class="bar-item">
-                    <div class="bar-value">${totalFU1}</div>
-                    <div class="bar" style="height: ${(totalFU1/maxValue)*200}px; background: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);"></div>
-                    <div class="bar-label">FU 1</div>
-                </div>
-                <div class="bar-item">
-                    <div class="bar-value">${totalFU2}</div>
-                    <div class="bar" style="height: ${(totalFU2/maxValue)*200}px; background: linear-gradient(135deg, #4895ef 0%, #3f37c9 100%);"></div>
-                    <div class="bar-label">FU 2</div>
-                </div>
-                <div class="bar-item">
-                    <div class="bar-value">${totalFU3}</div>
-                    <div class="bar" style="height: ${(totalFU3/maxValue)*200}px; background: linear-gradient(135deg, #7209b7 0%, #b5179e 100%);"></div>
-                    <div class="bar-label">FU 3</div>
-                </div>
-                <div class="bar-item">
-                    <div class="bar-value">${totalFU4}</div>
-                    <div class="bar" style="height: ${(totalFU4/maxValue)*200}px; background: linear-gradient(135deg, #f72585 0%, #7209b7 100%);"></div>
-                    <div class="bar-label">FU 4</div>
-                </div>
-                <div class="bar-item">
-                    <div class="bar-value">${totalFU5}</div>
-                    <div class="bar" style="height: ${(totalFU5/maxValue)*200}px; background: linear-gradient(135deg, #f8961e 0%, #f3722c 100%);"></div>
-                    <div class="bar-label">FU 5</div>
-                </div>
-            `;
-        }
-
-        function renderClosingChart() {
-            const chartContainer = document.getElementById('closingBarChart');
-            if (!chartContainer) return;
-            
-            const statsArray = Object.values(cssStats)
-                .filter(stat => stat.closingan > 0)
-                .sort((a, b) => b.closingan - a.closingan)
-                .slice(0, 5);
-            
-            if (statsArray.length === 0) {
-                chartContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Belum ada closingan</p>';
-                return;
-            }
-            
-            const maxValue = Math.max(...statsArray.map(s => s.closingan));
-            
-            chartContainer.innerHTML = statsArray.map(stat => {
-                const height = (stat.closingan / maxValue) * 200;
-                return `
-                    <div class="bar-item">
-                        <div class="bar-value">${stat.closingan}</div>
-                        <div class="bar" style="height: ${height}px; background: linear-gradient(135deg, #4cc9f0 0%, #06d6a0 100%);"></div>
-                        <div class="bar-label">${stat.nama.split(' ')[0]}</div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // Fungsi untuk filter berdasarkan pencarian CSS
-        function filterBySearch() {
-            const searchTerm = document.getElementById('cssSearch')?.value.toLowerCase() || '';
-            
-            if (!searchTerm) {
-                // Tampilkan semua data
-                renderStatsTable();
-                return;
-            }
-            
-            const filteredStats = {};
-            
-            Object.keys(cssStats).forEach(key => {
-                if (key.toLowerCase().includes(searchTerm)) {
-                    filteredStats[key] = cssStats[key];
-                }
+            // Tambahkan event listener untuk tombol edit dan delete
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const leadId = this.getAttribute('data-id');
+                    openEditModal(leadId);
+                });
             });
             
-            // Simpan sementara dan render ulang
-            const originalStats = {...cssStats};
-            cssStats = filteredStats;
-            renderStatsTable();
-            cssStats = originalStats;
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const leadId = this.getAttribute('data-id');
+                    currentLeadId = leadId;
+                    document.getElementById('deleteModal').classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
         }
 
-        // Fungsi untuk filter berdasarkan periode
-        async function filterByPeriod() {
-            const period = document.getElementById('periodFilter').value;
-            const startDate = document.getElementById('startDateFilter').value;
-            const endDate = document.getElementById('endDateFilter').value;
-            const platform = document.getElementById('platformFilter').value;
+        // Fungsi untuk update info pagination
+        function updatePaginationInfo() {
+            const paginationInfo = document.getElementById('paginationInfo');
+            if (!paginationInfo) return;
             
-            let filtered = [...leadsData];
+            const start = filteredLeadsData.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0;
+            const end = Math.min(currentPage * itemsPerPage, filteredLeadsData.length);
             
-            // Filter berdasarkan platform
-            if (platform) {
-                filtered = filtered.filter(lead => lead.platform === platform);
+            paginationInfo.innerHTML = `Menampilkan ${start} - ${end} dari ${filteredLeadsData.length} data`;
+        }
+
+        // Fungsi untuk render tombol halaman
+        function renderPageButtons() {
+            const pageNumbers = document.getElementById('pageNumbers');
+            const prevBtn = document.getElementById('prevPage');
+            const nextBtn = document.getElementById('nextPage');
+            
+            if (!pageNumbers) return;
+            
+            // Set status prev/next buttons
+            if (prevBtn) {
+                prevBtn.disabled = currentPage === 1;
+            }
+            if (nextBtn) {
+                nextBtn.disabled = currentPage === totalPages || filteredLeadsData.length === 0;
             }
             
-            // Filter berdasarkan tanggal
-            if (startDate && endDate) {
-                filtered = filtered.filter(lead => 
-                    lead.tanggalMasuk >= startDate && lead.tanggalMasuk <= endDate
-                );
-            } else if (period !== 'all') {
-                const today = new Date();
-                let start = new Date();
-                
-                switch(period) {
-                    case 'today':
-                        start = today;
-                        break;
-                    case 'week':
-                        start.setDate(today.getDate() - 7);
-                        break;
-                    case 'month':
-                        start.setMonth(today.getMonth() - 1);
-                        break;
-                    case 'year':
-                        start.setFullYear(today.getFullYear() - 1);
-                        break;
+            // Render page buttons
+            let buttonsHTML = '';
+            
+            if (filteredLeadsData.length === 0) {
+                pageNumbers.innerHTML = '';
+                return;
+            }
+            
+            // Selalu tampilkan halaman pertama
+            buttonsHTML += `<button class="page-btn ${currentPage === 1 ? 'active' : ''}" data-page="1">1</button>`;
+            
+            if (totalPages > 7) {
+                // Logika untuk banyak halaman
+                if (currentPage > 3) {
+                    buttonsHTML += '<span class="page-dots">...</span>';
                 }
                 
-                const startStr = start.toISOString().split('T')[0];
-                const todayStr = today.toISOString().split('T')[0];
+                // Halaman sekitar current page
+                for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
+                    if (i > 1 && i < totalPages) {
+                        buttonsHTML += `<button class="page-btn ${currentPage === i ? 'active' : ''}" data-page="${i}">${i}</button>`;
+                    }
+                }
                 
-                filtered = filtered.filter(lead => 
-                    lead.tanggalMasuk >= startStr && lead.tanggalMasuk <= todayStr
+                if (currentPage < totalPages - 2) {
+                    buttonsHTML += '<span class="page-dots">...</span>';
+                }
+                
+                // Halaman terakhir
+                if (totalPages > 1) {
+                    buttonsHTML += `<button class="page-btn ${currentPage === totalPages ? 'active' : ''}" data-page="${totalPages}">${totalPages}</button>`;
+                }
+            } else {
+                // Tampilkan semua halaman jika total <= 7
+                for (let i = 2; i <= totalPages; i++) {
+                    buttonsHTML += `<button class="page-btn ${currentPage === i ? 'active' : ''}" data-page="${i}">${i}</button>`;
+                }
+            }
+            
+            pageNumbers.innerHTML = buttonsHTML;
+            
+            // Tambahkan event listener untuk setiap tombol halaman
+            document.querySelectorAll('.page-btn[data-page]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const page = parseInt(this.getAttribute('data-page'));
+                    if (page !== currentPage) {
+                        currentPage = page;
+                        renderLeadsTableWithPagination();
+                    }
+                });
+            });
+        }
+
+        // Fungsi untuk navigasi ke halaman sebelumnya
+        function goToPreviousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderLeadsTableWithPagination();
+            }
+        }
+
+        // Fungsi untuk navigasi ke halaman berikutnya
+        function goToNextPage() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderLeadsTableWithPagination();
+            }
+        }
+
+        // ========== FUNGSI FILTER ==========
+        
+        // Fungsi untuk memfilter leads
+        function filterLeads() {
+            const searchTerm = document.getElementById('leadsSearch')?.value.toLowerCase() || '';
+            const platformFilter = document.getElementById('platformFilter')?.value || '';
+            const qualificationFilter = document.getElementById('qualificationFilter')?.value || '';
+            const leadsFollowFilter = document.getElementById('leadsFollowFilter')?.value || '';
+            const cssFilter = document.getElementById('cssFilter')?.value || '';
+            const dateFilter = document.getElementById('dateFilter')?.value || '';
+            
+            filteredLeadsData = [...leadsData];
+            
+            if (searchTerm) {
+                filteredLeadsData = filteredLeadsData.filter(lead => 
+                    (lead.contactUsername && lead.contactUsername.toLowerCase().includes(searchTerm)) ||
+                    (lead.leads && lead.leads.toLowerCase().includes(searchTerm)) ||
+                    (lead.notesFU && lead.notesFU.toLowerCase().includes(searchTerm)) ||
+                    (lead.reason && lead.reason.toLowerCase().includes(searchTerm))
                 );
             }
             
-            filteredLeadsData = filtered;
-            processStatistics();
-            renderStatCards();
-            renderStatsTable();
-            renderCharts();
+            if (platformFilter) {
+                filteredLeadsData = filteredLeadsData.filter(lead => lead.platform === platformFilter);
+            }
+            
+            if (qualificationFilter) {
+                filteredLeadsData = filteredLeadsData.filter(lead => lead.leadQualification === qualificationFilter);
+            }
+            
+            if (leadsFollowFilter) {
+                filteredLeadsData = filteredLeadsData.filter(lead => lead.leads === leadsFollowFilter);
+            }
+            
+            if (cssFilter) {
+                filteredLeadsData = filteredLeadsData.filter(lead => lead.namaCSS === cssFilter);
+            }
+            
+            if (dateFilter) {
+                filteredLeadsData = filteredLeadsData.filter(lead => lead.tanggalMasuk === dateFilter);
+            }
+            
+            // Reset ke halaman 1 setelah filter
+            currentPage = 1;
+            
+            // Render ulang tabel dengan pagination
+            renderLeadsTableWithPagination();
         }
 
         // Fungsi untuk mereset filter
         function resetFilters() {
-            document.getElementById('cssSearch').value = '';
-            document.getElementById('periodFilter').value = 'all';
-            document.getElementById('startDateFilter').value = '';
-            document.getElementById('endDateFilter').value = '';
+            document.getElementById('leadsSearch').value = '';
             document.getElementById('platformFilter').value = '';
+            document.getElementById('qualificationFilter').value = '';
+            document.getElementById('leadsFollowFilter').value = '';
+            document.getElementById('cssFilter').value = '';
+            document.getElementById('dateFilter').value = '';
             
             filteredLeadsData = [...leadsData];
-            processStatistics();
-            renderStatCards();
-            renderStatsTable();
-            renderCharts();
+            currentPage = 1;
             
+            renderLeadsTableWithPagination();
             showToast('Filter direset', 'success');
         }
 
-        // Fungsi untuk export ke Excel
+        // ========== FUNGSI MODAL ==========
+        
+        // Fungsi untuk membuka modal tambah
+        function openAddModal() {
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-plus"></i> Tambah Lead Baru';
+            document.getElementById('leadForm').reset();
+            document.getElementById('leadId').value = '';
+            document.getElementById('screenshotPreview').classList.remove('show');
+            
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('tanggalMasuk').value = today;
+            
+            document.getElementById('leadModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Fungsi untuk membuka modal edit
+        async function openEditModal(leadId) {
+            try {
+                const doc = await db.collection('promosiLeads').doc(leadId).get();
+                
+                if (!doc.exists) {
+                    showToast('Lead tidak ditemukan!', 'error');
+                    return;
+                }
+                
+                const lead = doc.data();
+                
+                document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Lead';
+                document.getElementById('leadId').value = leadId;
+                
+                document.getElementById('tanggalMasuk').value = lead.tanggalMasuk || '';
+                document.getElementById('platform').value = lead.platform || '';
+                document.getElementById('contactUsername').value = lead.contactUsername || '';
+                document.getElementById('screenshotUrl').value = lead.screenshotUrl || '';
+                
+                if (lead.screenshotUrl) {
+                    document.getElementById('previewImage').src = lead.screenshotUrl;
+                    document.getElementById('screenshotPreview').classList.add('show');
+                } else {
+                    document.getElementById('screenshotPreview').classList.remove('show');
+                }
+                
+                document.getElementById('namaCSS').value = lead.namaCSS || '';
+                document.getElementById('leadQualification').value = lead.leadQualification || '';
+                document.getElementById('leadsFollowModal').value = lead.leads || '';
+                document.getElementById('reason').value = lead.reason || '';
+                document.getElementById('notesFU').value = lead.notesFU || '';
+                document.getElementById('requestLeads').value = lead.requestLeads || '';
+                
+                document.getElementById('leadModal').classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+            } catch (error) {
+                console.error("Error opening edit modal:", error);
+                showToast('Gagal memuat data lead', 'error');
+            }
+        }
+
+        // Fungsi untuk menyimpan lead
+        async function saveLead() {
+            try {
+                const leadData = {
+                    tanggalMasuk: document.getElementById('tanggalMasuk').value || null,
+                    platform: document.getElementById('platform').value || null,
+                    contactUsername: document.getElementById('contactUsername').value || null,
+                    screenshotUrl: document.getElementById('screenshotUrl').value || null,
+                    namaCSS: document.getElementById('namaCSS').value || null,
+                    leadQualification: document.getElementById('leadQualification').value || null,
+                    reason: document.getElementById('reason').value || null,
+                    notesFU: document.getElementById('notesFU').value || null,
+                    requestLeads: document.getElementById('requestLeads').value || null,
+                    leads: document.getElementById('leadsFollowModal').value || null,
+                    userId: currentUser ? currentUser.uid : null,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                const leadId = document.getElementById('leadId').value;
+                
+                if (leadId) {
+                    await db.collection('promosiLeads').doc(leadId).update(leadData);
+                    showToast('Lead berhasil diperbarui!', 'success');
+                } else {
+                    leadData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                    await db.collection('promosiLeads').add(leadData);
+                    showToast('Lead berhasil ditambahkan!', 'success');
+                }
+                
+                document.getElementById('leadModal').classList.remove('active');
+                document.getElementById('leadForm').reset();
+                document.getElementById('screenshotPreview').classList.remove('show');
+                document.body.style.overflow = '';
+                
+                loadLeadsData(); // Reload data
+                
+            } catch (error) {
+                console.error("Error saving lead:", error);
+                showToast('Gagal menyimpan lead: ' + error.message, 'error');
+            }
+        }
+
+        // Fungsi untuk menghapus lead
+        async function deleteLead() {
+            if (!currentLeadId) return;
+            
+            try {
+                await db.collection('promosiLeads').doc(currentLeadId).delete();
+                
+                showToast('Lead berhasil dihapus!', 'success');
+                
+                document.getElementById('deleteModal').classList.remove('active');
+                document.body.style.overflow = '';
+                
+                loadLeadsData(); // Reload data
+                
+            } catch (error) {
+                console.error("Error deleting lead:", error);
+                showToast('Gagal menghapus lead', 'error');
+            }
+        }
+
+        // Fungsi untuk test URL screenshot
+        function testScreenshotUrl() {
+            const url = document.getElementById('screenshotUrl').value.trim();
+            const preview = document.getElementById('screenshotPreview');
+            const previewImage = document.getElementById('previewImage');
+            
+            if (!url) {
+                preview.classList.remove('show');
+                showToast('Masukkan URL screenshot terlebih dahulu', 'info');
+                return;
+            }
+            
+            // Validasi URL
+            try {
+                new URL(url); // Cek apakah URL valid
+            } catch (e) {
+                showToast('URL tidak valid', 'error');
+                return;
+            }
+            
+            // Test load gambar
+            const img = new Image();
+            img.onload = function() {
+                previewImage.src = url;
+                preview.classList.add('show');
+                showToast('Gambar berhasil dimuat', 'success');
+            };
+            img.onerror = function() {
+                preview.classList.remove('show');
+                showToast('Gagal memuat gambar. Cek URL atau CORS policy', 'error');
+            };
+            img.src = url;
+        }
+
+        // Fungsi untuk export ke Excel (CSV)
         function exportToExcel() {
             const headers = [
-                'NAMA CSS',
-                'JUMLAH PROMOSI',
-                'JUMLAH LEADS',
-                'LEADS FOLLOW UP',
-                'Cold',
-                'Warm',
-                'Hot',
-                'FOLLOW UP 1',
-                'FOLLOW UP 2',
-                'FOLLOW UP 3',
-                'FOLLOW UP 4',
-                'FOLLOW UP 5',
-                'CLOSINGAN'
+                'Tanggal Masuk',
+                'Platform',
+                'Contact Username',
+                'Screenshot Chat',
+                'Nama CSS',
+                'Lead Qualification',
+                'Reason',
+                'Notes FU',
+                'Request Leads',
+                'Leads'
             ];
             
             let csvContent = headers.join(',') + '\n';
             
-            const statsArray = Object.values(cssStats).filter(stat => stat.totalPromosi > 0);
-            statsArray.sort((a, b) => b.totalPromosi - a.totalPromosi);
-            
-            let totalPromosi = 0, totalLeads = 0, totalFollowUp = 0;
-            let totalCold = 0, totalWarm = 0, totalHot = 0;
-            let totalFU1 = 0, totalFU2 = 0, totalFU3 = 0, totalFU4 = 0, totalFU5 = 0;
-            let totalClosing = 0;
-            
-            statsArray.forEach(stat => {
+            leadsData.forEach(lead => {
                 const row = [
-                    stat.nama,
-                    stat.totalPromosi,
-                    stat.jumlahLeads,
-                    stat.leadsFollowUp,
-                    stat.cold,
-                    stat.warm,
-                    stat.hot,
-                    stat.followUp1,
-                    stat.followUp2,
-                    stat.followUp3,
-                    stat.followUp4,
-                    stat.followUp5,
-                    stat.closingan
+                    lead.tanggalMasuk || '',
+                    lead.platform || '',
+                    lead.contactUsername || '',
+                    lead.screenshotUrl || '',
+                    lead.namaCSS || '',
+                    lead.leadQualification || '',
+                    (lead.reason || '').replace(/,/g, ';'),
+                    (lead.notesFU || '').replace(/,/g, ';'),
+                    lead.requestLeads || '',
+                    lead.leads || ''
                 ];
-                
-                totalPromosi += stat.totalPromosi;
-                totalLeads += stat.jumlahLeads;
-                totalFollowUp += stat.leadsFollowUp;
-                totalCold += stat.cold;
-                totalWarm += stat.warm;
-                totalHot += stat.hot;
-                totalFU1 += stat.followUp1;
-                totalFU2 += stat.followUp2;
-                totalFU3 += stat.followUp3;
-                totalFU4 += stat.followUp4;
-                totalFU5 += stat.followUp5;
-                totalClosing += stat.closingan;
                 
                 csvContent += row.join(',') + '\n';
             });
             
-            // Tambah baris total
-            const totalRow = [
-                'TOTAL KESELURUHAN',
-                totalPromosi,
-                totalLeads,
-                totalFollowUp,
-                totalCold,
-                totalWarm,
-                totalHot,
-                totalFU1,
-                totalFU2,
-                totalFU3,
-                totalFU4,
-                totalFU5,
-                totalClosing
-            ];
-            csvContent += totalRow.join(',') + '\n';
-            
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
-            link.setAttribute('download', `statistik_promosi_${new Date().toISOString().split('T')[0]}.csv`);
+            link.setAttribute('download', `promosi_leads_${new Date().toISOString().split('T')[0]}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             
             showToast('Data berhasil diexport!', 'success');
+        }
+
+        // Fungsi untuk memastikan collection promosiLeads ada
+        async function ensureCollectionExists() {
+            try {
+                const snapshot = await db.collection('promosiLeads').limit(1).get();
+                console.log("Collection promosiLeads exists or is ready");
+            } catch (error) {
+                console.log("Collection might not exist yet, but will be created on first add");
+            }
         }
 
         // Fungsi untuk menampilkan toast
@@ -1578,25 +1913,79 @@
 
         // ========== EVENT LISTENERS ==========
         function setupEventListeners() {
-            document.getElementById('refreshStats').addEventListener('click', () => {
+            document.getElementById('refreshLeads').addEventListener('click', () => {
                 loadLeadsData();
-                showToast('Data statistik diperbarui!', 'success');
+                showToast('Data leads diperbarui!', 'success');
             });
             
             document.getElementById('exportExcel').addEventListener('click', exportToExcel);
             
-            document.getElementById('viewDetails').addEventListener('click', () => {
-                window.location.href = 'promosi-leads.html';
+            document.getElementById('addLeadBtn').addEventListener('click', openAddModal);
+            document.getElementById('addFirstLead').addEventListener('click', openAddModal);
+            
+            document.getElementById('saveLead').addEventListener('click', saveLead);
+            
+            document.getElementById('cancelModal').addEventListener('click', () => {
+                document.getElementById('leadModal').classList.remove('active');
+                document.getElementById('leadForm').reset();
+                document.getElementById('screenshotPreview').classList.remove('show');
+                document.body.style.overflow = '';
             });
             
-            document.getElementById('cssSearch').addEventListener('input', filterBySearch);
+            document.getElementById('closeModal').addEventListener('click', () => {
+                document.getElementById('leadModal').classList.remove('active');
+                document.getElementById('leadForm').reset();
+                document.getElementById('screenshotPreview').classList.remove('show');
+                document.body.style.overflow = '';
+            });
             
-            document.getElementById('periodFilter').addEventListener('change', filterByPeriod);
-            document.getElementById('startDateFilter').addEventListener('change', filterByPeriod);
-            document.getElementById('endDateFilter').addEventListener('change', filterByPeriod);
-            document.getElementById('platformFilter').addEventListener('change', filterByPeriod);
+            document.getElementById('testScreenshotUrl').addEventListener('click', testScreenshotUrl);
+            
+            document.getElementById('screenshotUrl').addEventListener('input', function() {
+                if (!this.value) {
+                    document.getElementById('screenshotPreview').classList.remove('show');
+                }
+            });
+            
+            document.getElementById('closeImageModal').addEventListener('click', () => {
+                document.getElementById('imageModal').classList.remove('active');
+                document.body.style.overflow = '';
+            });
+            
+            document.getElementById('closeImageBtn').addEventListener('click', () => {
+                document.getElementById('imageModal').classList.remove('active');
+                document.body.style.overflow = '';
+            });
+            
+            document.getElementById('confirmDelete').addEventListener('click', deleteLead);
+            
+            document.getElementById('cancelDelete').addEventListener('click', () => {
+                document.getElementById('deleteModal').classList.remove('active');
+                document.body.style.overflow = '';
+            });
+            
+            document.getElementById('closeDeleteModal').addEventListener('click', () => {
+                document.getElementById('deleteModal').classList.remove('active');
+                document.body.style.overflow = '';
+            });
+            
+            // Event listener untuk filter
+            document.getElementById('leadsSearch').addEventListener('input', filterLeads);
+            document.getElementById('platformFilter').addEventListener('change', filterLeads);
+            document.getElementById('qualificationFilter').addEventListener('change', filterLeads);
+            document.getElementById('leadsFollowFilter').addEventListener('change', filterLeads);
+            document.getElementById('cssFilter').addEventListener('change', filterLeads);
+            document.getElementById('dateFilter').addEventListener('change', filterLeads);
             
             document.getElementById('resetFilters').addEventListener('click', resetFilters);
+            
+            // TAMBAHAN: Event listener untuk tombol previous dan next
+            document.getElementById('prevPage').addEventListener('click', goToPreviousPage);
+            document.getElementById('nextPage').addEventListener('click', goToNextPage);
+            
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', (e) => e.stopPropagation());
+            });
         }
 
         // ========== INISIALISASI ==========

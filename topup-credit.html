@@ -3578,6 +3578,263 @@ document.addEventListener('DOMContentLoaded', function() {
 window.addEventListener('load', function() {
     integrateTopupCreditWithLanguageSupport();
 });
+// ========== FITUR FILTER TANGGAL ==========
+let startDateFilter = '';
+let endDateFilter = '';
+
+// Inisialisasi elemen filter tanggal
+function initDateFilter() {
+    const historySections = document.querySelectorAll('.history-section');
+    
+    historySections.forEach((section, index) => {
+        // Buat container filter
+        const filterContainer = document.createElement('div');
+        filterContainer.className = 'date-filter-container';
+        filterContainer.style.marginBottom = 'var(--space-md)';
+        filterContainer.style.display = 'flex';
+        filterContainer.style.flexWrap = 'wrap';
+        filterContainer.style.gap = 'var(--space-sm)';
+        filterContainer.style.alignItems = 'center';
+        
+        filterContainer.innerHTML = `
+            <label style="font-size: var(--text-sm); color: var(--text-secondary);">Filter Tanggal:</label>
+            <input type="date" id="startDate${index}" class="form-input" style="width: auto; flex: 1 1 150px;" placeholder="Tanggal Mulai">
+            <span style="color: var(--text-secondary);">s/d</span>
+            <input type="date" id="endDate${index}" class="form-input" style="width: auto; flex: 1 1 150px;" placeholder="Tanggal Akhir">
+            <button class="btn btn-primary btn-sm" id="applyDateFilter${index}"><i class="fas fa-filter"></i> Filter</button>
+            <button class="btn btn-outline btn-sm" id="resetDateFilter${index}"><i class="fas fa-undo"></i> Reset</button>
+        `;
+        
+        // Sisipkan di atas tabel
+        const header = section.querySelector('.section-header');
+        if (header) {
+            header.insertAdjacentElement('afterend', filterContainer);
+        }
+    });
+    
+    // Event listener untuk filter
+    document.getElementById('applyDateFilter0')?.addEventListener('click', () => applyDateFilter('regular'));
+    document.getElementById('resetDateFilter0')?.addEventListener('click', () => resetDateFilter('regular'));
+    
+    document.getElementById('applyDateFilter1')?.addEventListener('click', () => applyDateFilter('masteragent'));
+    document.getElementById('resetDateFilter1')?.addEventListener('click', () => resetDateFilter('masteragent'));
+}
+
+// Fungsi untuk menerapkan filter tanggal
+function applyDateFilter(type) {
+    const index = type === 'regular' ? 0 : 1;
+    const startInput = document.getElementById(`startDate${index}`);
+    const endInput = document.getElementById(`endDate${index}`);
+    
+    if (!startInput || !endInput) return;
+    
+    startDateFilter = startInput.value;
+    endDateFilter = endInput.value;
+    
+    if (!startDateFilter || !endDateFilter) {
+        showToast('Harap pilih tanggal mulai dan tanggal akhir', 'error');
+        return;
+    }
+    
+    if (new Date(startDateFilter) > new Date(endDateFilter)) {
+        showToast('Tanggal mulai tidak boleh lebih besar dari tanggal akhir', 'error');
+        return;
+    }
+    
+    // Reset ke halaman pertama
+    if (type === 'regular') {
+        currentRegularPage = 1;
+        updateHistoryTable();
+    } else {
+        currentMasteragentPage = 1;
+        updateMasteragentHistoryTable();
+    }
+    
+    showToast(`Filter diterapkan: ${startDateFilter} s/d ${endDateFilter}`, 'info');
+}
+
+// Fungsi untuk mereset filter tanggal
+function resetDateFilter(type) {
+    const index = type === 'regular' ? 0 : 1;
+    const startInput = document.getElementById(`startDate${index}`);
+    const endInput = document.getElementById(`endDate${index}`);
+    
+    if (startInput) startInput.value = '';
+    if (endInput) endInput.value = '';
+    
+    startDateFilter = '';
+    endDateFilter = '';
+    
+    // Reset ke halaman pertama
+    if (type === 'regular') {
+        currentRegularPage = 1;
+        updateHistoryTable();
+    } else {
+        currentMasteragentPage = 1;
+        updateMasteragentHistoryTable();
+    }
+    
+    showToast('Filter tanggal direset', 'info');
+}
+
+// Fungsi untuk memfilter data berdasarkan tanggal
+function filterDataByDate(data) {
+    if (!startDateFilter || !endDateFilter) return data;
+    
+    return data.filter(item => {
+        if (!item.date) return false;
+        
+        // Ekstrak tanggal dari string (format: "DD/MM/YYYY, HH:MM:SS")
+        const datePart = item.date.split(',')[0].trim();
+        const [day, month, year] = datePart.split('/');
+        if (!day || !month || !year) return false;
+        
+        const itemDate = new Date(`${year}-${month}-${day}`).getTime();
+        const start = new Date(startDateFilter).getTime();
+        const end = new Date(endDateFilter).getTime();
+        
+        return itemDate >= start && itemDate <= end;
+    });
+}
+
+// Override fungsi updateHistoryTable untuk menyertakan filter tanggal
+const originalUpdateHistoryTable = updateHistoryTable;
+updateHistoryTable = function() {
+    const historyTableBody = document.getElementById('historyTableBody');
+    const noHistory = document.getElementById('noHistory');
+    const searchTerm = document.getElementById('dashboardSearch')?.value.toLowerCase().trim() || '';
+    
+    filteredRegularHistory = [];
+    
+    // Terapkan filter tanggal terlebih dahulu
+    let dataToDisplay = filterDataByDate(topupHistory);
+    
+    if (dataToDisplay.length === 0 && searchTerm === '') {
+        if (noHistory) noHistory.style.display = 'block';
+        if (historyTableBody) historyTableBody.innerHTML = '';
+        updatePaginationUI('regular');
+        return;
+    }
+    
+    if (noHistory) noHistory.style.display = 'none';
+    
+    // Terapkan filter pencarian
+    if (searchTerm !== '') {
+        filteredRegularHistory = dataToDisplay.filter(history => {
+            return Object.values(history).some(value => 
+                value && value.toString().toLowerCase().includes(searchTerm)
+            );
+        });
+        dataToDisplay = filteredRegularHistory;
+    }
+    
+    // Pagination
+    if (historyTableBody) {
+        const startIndex = (currentRegularPage - 1) * itemsPerPage;
+        const endIndex = Math.min(startIndex + itemsPerPage, dataToDisplay.length);
+        const paginatedData = dataToDisplay.slice(startIndex, endIndex);
+        
+        historyTableBody.innerHTML = paginatedData.map(history => `
+            <tr>
+                <td>${history.date || 'N/A'}</td>
+                <td>${history.user || 'Unknown User'}</td>
+                <td>${history.brand || 'N/A'}</td>
+                <td>${formatNumber(history.amount)}</td>
+                <td>${formatNumber(history.before)}</td>
+                <td>${formatNumber(history.after)}</td>
+                <td>
+                    ${isSuperAdminUser ? `
+                    <div class="action-buttons">
+                        <button class="btn btn-sm btn-outline edit-history-btn" data-id="${history.id}" data-type="regular">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger delete-history-btn" data-id="${history.id}" data-type="regular">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
+                    </div>
+                    ` : ''}
+                </td>
+            </tr>
+        `).join('');
+        
+        setupHistoryActionListeners();
+    }
+    
+    updatePaginationUI('regular');
+};
+
+// Override fungsi updateMasteragentHistoryTable
+const originalUpdateMasteragentHistoryTable = updateMasteragentHistoryTable;
+updateMasteragentHistoryTable = function() {
+    const historyTableBody = document.getElementById('masteragentHistoryTableBody');
+    const noHistory = document.getElementById('noMasteragentHistory');
+    const searchTerm = document.getElementById('dashboardSearch')?.value.toLowerCase().trim() || '';
+    
+    filteredMasteragentHistory = [];
+    
+    // Terapkan filter tanggal terlebih dahulu
+    let dataToDisplay = filterDataByDate(masteragentHistory);
+    
+    if (dataToDisplay.length === 0 && searchTerm === '') {
+        if (noHistory) noHistory.style.display = 'block';
+        if (historyTableBody) historyTableBody.innerHTML = '';
+        updatePaginationUI('masteragent');
+        return;
+    }
+    
+    if (noHistory) noHistory.style.display = 'none';
+    
+    // Terapkan filter pencarian
+    if (searchTerm !== '') {
+        filteredMasteragentHistory = dataToDisplay.filter(history => {
+            return Object.values(history).some(value => 
+                value && value.toString().toLowerCase().includes(searchTerm)
+            );
+        });
+        dataToDisplay = filteredMasteragentHistory;
+    }
+    
+    // Pagination
+    if (historyTableBody) {
+        const startIndex = (currentMasteragentPage - 1) * itemsPerPage;
+        const endIndex = Math.min(startIndex + itemsPerPage, dataToDisplay.length);
+        const paginatedData = dataToDisplay.slice(startIndex, endIndex);
+        
+        historyTableBody.innerHTML = paginatedData.map(history => `
+            <tr>
+                <td>${history.date || 'N/A'}</td>
+                <td>${history.user || 'Unknown User'}</td>
+                <td>${history.category || 'N/A'}</td>
+                <td>${formatNumber(history.amount)}</td>
+                <td>${formatNumber(history.before)}</td>
+                <td>${formatNumber(history.after)}</td>
+                <td>
+                    ${isSuperAdminUser ? `
+                    <div class="action-buttons">
+                        <button class="btn btn-sm btn-outline edit-history-btn" data-id="${history.id}" data-type="masteragent">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger delete-history-btn" data-id="${history.id}" data-type="masteragent">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
+                    </div>
+                    ` : ''}
+                </td>
+            </tr>
+        `).join('');
+        
+        setupHistoryActionListeners();
+    }
+    
+    updatePaginationUI('masteragent');
+};
+
+// Inisialisasi filter tanggal setelah DOM siap
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        initDateFilter();
+    }, 200);
+});
 </script>
 </body>
 </html>

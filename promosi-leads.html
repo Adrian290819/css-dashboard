@@ -840,6 +840,20 @@
                 justify-content: center;
             }
         }
+        .leads-follow-select {
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: var(--text-xs);
+}
+
+.leads-follow-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+}
     </style>
 </head>
 <body>
@@ -1496,8 +1510,9 @@ async function updateLeadsFollow(selectElement) {
                 
                 document.getElementById('namaCSS').value = lead.namaCSS || '';
                 document.getElementById('leadQualification').value = lead.leadQualification || '';
-                // PERUBAHAN: Tambahkan pengisian untuk followUp1-5
+document.getElementById('leadsFollow').value = lead.leadsFollow || ''; // KOLOM BARU
 document.getElementById('reason').value = lead.reason || '';
+document.getElementById('requestLeads').value = lead.requestLeads || ''; // DIPINDAHKAN
 document.getElementById('followUp1').value = lead.followUp1 || '';
 document.getElementById('followUp2').value = lead.followUp2 || '';
 document.getElementById('followUp3').value = lead.followUp3 || '';
@@ -1536,19 +1551,17 @@ document.getElementById('requestLeads').value = lead.requestLeads || '';
     screenshotUrl: document.getElementById('screenshotUrl').value || null,
     namaCSS: document.getElementById('namaCSS').value || null,
     leadQualification: document.getElementById('leadQualification').value || null,
+    leadsFollow: document.getElementById('leadsFollow').value || null, // KOLOM BARU
     reason: document.getElementById('reason').value || null,
-    // PERUBAHAN: Tambahkan data follow up
+    requestLeads: document.getElementById('requestLeads').value || null, // DIPINDAHKAN
     followUp1: document.getElementById('followUp1').value || null,
     followUp2: document.getElementById('followUp2').value || null,
     followUp3: document.getElementById('followUp3').value || null,
     followUp4: document.getElementById('followUp4').value || null,
     followUp5: document.getElementById('followUp5').value || null,
-    requestLeads: document.getElementById('requestLeads').value || null,
-    leads: document.getElementById('leadsFollowModal').value || null,
     userId: currentUser ? currentUser.uid : null,
     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-};
-                
+};         
                 const leadId = document.getElementById('leadId').value;
                 
                 if (leadId) {
@@ -1674,46 +1687,42 @@ document.getElementById('requestLeads').value = lead.requestLeads || '';
         // Fungsi untuk export ke Excel (CSV)
         function exportToExcel() {
     const headers = [
-        'Tanggal Masuk',
-        'Platform',
-        'Contact Username',
-        'Screenshot Chat',
-        'Nama CSS',
-        'Lead Qualification',
-        'Reason',
-        // PERUBAHAN: Ganti Notes FU dengan Follow Up 1-5
-        'Follow Up 1',
-        'Follow Up 2',
-        'Follow Up 3',
-        'Follow Up 4',
-        'Follow Up 5',
-        'Request Leads',
-        'Leads'
+    'Tanggal Masuk',
+    'Platform',
+    'Contact Username',
+    'Screenshot Chat',
+    'Nama CSS',
+    'Lead Qualification',
+    'Leads / Follow', // KOLOM BARU
+    'Reason',
+    'Request Leads', // DIPINDAHKAN KE SINI
+    'Follow Up 1',
+    'Follow Up 2',
+    'Follow Up 3',
+    'Follow Up 4',
+    'Follow Up 5'
+];
+
+leadsData.forEach(lead => {
+    const row = [
+        lead.tanggalMasuk || '',
+        lead.platform || '',
+        lead.contactUsername || '',
+        lead.screenshotUrl || '',
+        lead.namaCSS || '',
+        lead.leadQualification || '',
+        lead.leadsFollow || '', // KOLOM BARU
+        (lead.reason || '').replace(/,/g, ';'),
+        (lead.requestLeads || '').replace(/,/g, ';'), // DIPINDAHKAN
+        (lead.followUp1 || '').replace(/,/g, ';'),
+        (lead.followUp2 || '').replace(/,/g, ';'),
+        (lead.followUp3 || '').replace(/,/g, ';'),
+        (lead.followUp4 || '').replace(/,/g, ';'),
+        (lead.followUp5 || '').replace(/,/g, ';')
     ];
     
-    let csvContent = headers.join(',') + '\n';
-    
-    leadsData.forEach(lead => {
-        const row = [
-            lead.tanggalMasuk || '',
-            lead.platform || '',
-            lead.contactUsername || '',
-            lead.screenshotUrl || '',
-            lead.namaCSS || '',
-            lead.leadQualification || '',
-            (lead.reason || '').replace(/,/g, ';'),
-            // PERUBAHAN: Tambahkan data follow up 1-5
-            (lead.followUp1 || '').replace(/,/g, ';'),
-            (lead.followUp2 || '').replace(/,/g, ';'),
-            (lead.followUp3 || '').replace(/,/g, ';'),
-            (lead.followUp4 || '').replace(/,/g, ';'),
-            (lead.followUp5 || '').replace(/,/g, ';'),
-            lead.requestLeads || '',
-            lead.leads || ''
-        ];
-        
-        csvContent += row.join(',') + '\n';
-    });
+    csvContent += row.join(',') + '\n';
+});
             
             // Buat dan download file
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });

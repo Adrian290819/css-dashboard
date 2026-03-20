@@ -988,25 +988,25 @@
             <div class="table-container">
                 <table class="leads-table" id="leadsTable">
                     <thead>
-                        <tr>
-                            <th>Tanggal Masuk</th>
-                            <th>Platform</th>
-                            <th>Contact Username</th>
-                            <th>Screenshot Chat</th>
-                            <th>Nama CSS</th>
-                            <th>Lead Qualification</th>
-                            <th>Reason</th>
-                            <th>Notes FU</th>
-                            <th>Follow Up 1</th>
-                            <th>Follow Up 2</th>
-                            <th>Follow Up 3</th>
-                            <th>Follow Up 4</th>
-                            <th>Follow Up 5</th>
-                            <th>Request Leads</th>
-                            <th>Leads</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
+    <tr>
+        <th>Tanggal Masuk</th>
+                        <th>Platform</th>
+                        <th>Contact Username</th>
+                        <th>Screenshot Chat</th>
+                        <th>Nama CSS</th>
+                        <th>Lead Qualification</th>
+                        <th>Reason</th>
+                        <!-- PERUBAHAN: Ubah dari "Notes FU" menjadi beberapa kolom deskripsi -->
+                        <th>Follow Up 1</th>
+                        <th>Follow Up 2</th>
+                        <th>Follow Up 3</th>
+                        <th>Follow Up 4</th>
+                        <th>Follow Up 5</th>
+                        <th>Request Leads</th>
+                        <th>Leads / Follow</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
                     <tbody id="leadsTableBody">
                         <!-- Data akan dimuat secara dinamis -->
                     </tbody>
@@ -1094,44 +1094,40 @@
                         </div>
                         
                         <div class="form-group full-width">
-                            <label>Reason</label>
-                            <textarea class="form-control" id="reason" rows="2" placeholder="Alasan kualifikasi..."></textarea>
-                        </div>
-                        
-                        <div class="form-group full-width">
-                            <label>Notes FU</label>
-                            <textarea class="form-control" id="notesFU" rows="2" placeholder="Catatan follow up..."></textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Follow Up 1</label>
-                            <input type="datetime-local" class="form-control" id="followUp1">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Follow Up 2</label>
-                            <input type="datetime-local" class="form-control" id="followUp2">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Follow Up 3</label>
-                            <input type="datetime-local" class="form-control" id="followUp3">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Follow Up 4</label>
-                            <input type="datetime-local" class="form-control" id="followUp4">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Follow Up 5</label>
-                            <input type="datetime-local" class="form-control" id="followUp5">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Request Leads</label>
-                            <input type="text" class="form-control" id="requestLeads" placeholder="Jenis request">
-                        </div>
+    <label>Reason</label>
+    <textarea class="form-control" id="reason" rows="2" placeholder="Alasan kualifikasi..."></textarea>
+</div>
+
+<!-- PERUBAHAN: Hapus Notes FU, ganti dengan Follow Up 1-5 -->
+<div class="form-group full-width">
+    <label>Follow Up 1</label>
+    <textarea class="form-control" id="followUp1" rows="2" placeholder="Deskripsi follow up 1..."></textarea>
+</div>
+
+<div class="form-group full-width">
+    <label>Follow Up 2</label>
+    <textarea class="form-control" id="followUp2" rows="2" placeholder="Deskripsi follow up 2..."></textarea>
+</div>
+
+<div class="form-group full-width">
+    <label>Follow Up 3</label>
+    <textarea class="form-control" id="followUp3" rows="2" placeholder="Deskripsi follow up 3..."></textarea>
+</div>
+
+<div class="form-group full-width">
+    <label>Follow Up 4</label>
+    <textarea class="form-control" id="followUp4" rows="2" placeholder="Deskripsi follow up 4..."></textarea>
+</div>
+
+<div class="form-group full-width">
+    <label>Follow Up 5</label>
+    <textarea class="form-control" id="followUp5" rows="2" placeholder="Deskripsi follow up 5..."></textarea>
+</div>
+
+<div class="form-group">
+    <label>Request Leads</label>
+    <input type="text" class="form-control" id="requestLeads" placeholder="Jenis request">
+</div>
                         
                         <div class="form-group">
                             <label>Leads</label>
@@ -1359,40 +1355,40 @@
                 }
                 
                 row.innerHTML = `
-                    <td>${tanggalMasuk}</td>
-                    <td>${lead.platform || '-'}</td>
-                    <td>${lead.contactUsername || '-'}</td>
-                    <td>
-                        ${lead.screenshotUrl ? 
-                            `<a href="#" class="screenshot-link" onclick="viewImage('${lead.screenshotUrl}')">
-                                <i class="fas fa-image"></i> Lihat
-                            </a>` : 
-                            '-'}
-                    </td>
-                    <td>${lead.namaCSS || '-'}</td>
-                    <td>
-                        <span class="status-badge ${qualificationClass}">${lead.leadQualification || '-'}</span>
-                    </td>
-                    <td>${lead.reason || '-'}</td>
-                    <td>${lead.notesFU || '-'}</td>
-                    <td>${lead.followUp1 ? new Date(lead.followUp1).toLocaleString('id-ID') : '-'}</td>
-                    <td>${lead.followUp2 ? new Date(lead.followUp2).toLocaleString('id-ID') : '-'}</td>
-                    <td>${lead.followUp3 ? new Date(lead.followUp3).toLocaleString('id-ID') : '-'}</td>
-                    <td>${lead.followUp4 ? new Date(lead.followUp4).toLocaleString('id-ID') : '-'}</td>
-                    <td>${lead.followUp5 ? new Date(lead.followUp5).toLocaleString('id-ID') : '-'}</td>
-                    <td>${lead.requestLeads || '-'}</td>
-                    <td>${lead.leads || '-'}</td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn btn-edit btn-sm edit-btn" data-id="${lead.id}">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn btn-danger btn-sm delete-btn" data-id="${lead.id}">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                `;
+    <td>${tanggalMasuk}</td>
+    <td>${lead.platform || '-'}</td>
+    <td>${lead.contactUsername || '-'}</td>
+    <td>
+        ${lead.screenshotUrl ? 
+            `<a href="${lead.screenshotUrl}" target="_blank" class="screenshot-link">
+                <i class="fas fa-image"></i> Lihat
+            </a>` : 
+            '-'}
+    </td>
+    <td>${lead.namaCSS || '-'}</td>
+    <td>
+        <span class="status-badge ${qualificationClass}">${lead.leadQualification || '-'}</span>
+    </td>
+    <td>${lead.reason || '-'}</td>
+    <!-- PERUBAHAN: Tampilkan deskripsi follow up 1-5 -->
+    <td>${lead.followUp1 || '-'}</td>
+    <td>${lead.followUp2 || '-'}</td>
+    <td>${lead.followUp3 || '-'}</td>
+    <td>${lead.followUp4 || '-'}</td>
+    <td>${lead.followUp5 || '-'}</td>
+    <td>${lead.requestLeads || '-'}</td>
+    <td>${lead.leads || '-'}</td>
+    <td>
+        <div class="action-buttons">
+            <button class="btn btn-edit btn-sm edit-btn" data-id="${lead.id}">
+                <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn btn-danger btn-sm delete-btn" data-id="${lead.id}">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    </td>
+`;
                 
                 tableBody.appendChild(row);
             });
@@ -1461,14 +1457,14 @@
                 
                 document.getElementById('namaCSS').value = lead.namaCSS || '';
                 document.getElementById('leadQualification').value = lead.leadQualification || '';
-                document.getElementById('reason').value = lead.reason || '';
-                document.getElementById('notesFU').value = lead.notesFU || '';
-                document.getElementById('followUp1').value = lead.followUp1 || '';
-                document.getElementById('followUp2').value = lead.followUp2 || '';
-                document.getElementById('followUp3').value = lead.followUp3 || '';
-                document.getElementById('followUp4').value = lead.followUp4 || '';
-                document.getElementById('followUp5').value = lead.followUp5 || '';
-                document.getElementById('requestLeads').value = lead.requestLeads || '';
+                // PERUBAHAN: Tambahkan pengisian untuk followUp1-5
+document.getElementById('reason').value = lead.reason || '';
+document.getElementById('followUp1').value = lead.followUp1 || '';
+document.getElementById('followUp2').value = lead.followUp2 || '';
+document.getElementById('followUp3').value = lead.followUp3 || '';
+document.getElementById('followUp4').value = lead.followUp4 || '';
+document.getElementById('followUp5').value = lead.followUp5 || '';
+document.getElementById('requestLeads').value = lead.requestLeads || '';
                 document.getElementById('leads').value = lead.leads || '';
                 
                 document.getElementById('leadModal').classList.add('active');
@@ -1495,24 +1491,24 @@
             
             try {
                 const leadData = {
-                    tanggalMasuk,
-                    platform,
-                    contactUsername,
-                    screenshotUrl: document.getElementById('screenshotUrl').value || null,
-                    namaCSS,
-                    leadQualification: document.getElementById('leadQualification').value || null,
-                    reason: document.getElementById('reason').value || null,
-                    notesFU: document.getElementById('notesFU').value || null,
-                    followUp1: document.getElementById('followUp1').value || null,
-                    followUp2: document.getElementById('followUp2').value || null,
-                    followUp3: document.getElementById('followUp3').value || null,
-                    followUp4: document.getElementById('followUp4').value || null,
-                    followUp5: document.getElementById('followUp5').value || null,
-                    requestLeads: document.getElementById('requestLeads').value || null,
-                    leads: document.getElementById('leads').value || null,
-                    userId: currentUser.uid,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
+    tanggalMasuk: document.getElementById('tanggalMasuk').value || null,
+    platform: document.getElementById('platform').value || null,
+    contactUsername: document.getElementById('contactUsername').value || null,
+    screenshotUrl: document.getElementById('screenshotUrl').value || null,
+    namaCSS: document.getElementById('namaCSS').value || null,
+    leadQualification: document.getElementById('leadQualification').value || null,
+    reason: document.getElementById('reason').value || null,
+    // PERUBAHAN: Tambahkan data follow up
+    followUp1: document.getElementById('followUp1').value || null,
+    followUp2: document.getElementById('followUp2').value || null,
+    followUp3: document.getElementById('followUp3').value || null,
+    followUp4: document.getElementById('followUp4').value || null,
+    followUp5: document.getElementById('followUp5').value || null,
+    requestLeads: document.getElementById('requestLeads').value || null,
+    leads: document.getElementById('leadsFollowModal').value || null,
+    userId: currentUser ? currentUser.uid : null,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+};
                 
                 const leadId = document.getElementById('leadId').value;
                 
@@ -1568,6 +1564,7 @@
             const platformFilter = document.getElementById('platformFilter')?.value || '';
             const qualificationFilter = document.getElementById('qualificationFilter')?.value || '';
             const cssFilter = document.getElementById('cssFilter')?.value || '';
+            const followUpFilter = document.getElementById('followUpFilter')?.value || '';
             const dateFilter = document.getElementById('dateFilter')?.value || '';
             
             let filteredLeads = leadsData;
@@ -1580,7 +1577,15 @@
                     (lead.reason && lead.reason.toLowerCase().includes(searchTerm))
                 );
             }
-            
+            if (followUpFilter === 'hasFollowUp') {
+    filteredLeadsData = filteredLeadsData.filter(lead => 
+        lead.followUp1 || lead.followUp2 || lead.followUp3 || lead.followUp4 || lead.followUp5
+    );
+} else if (followUpFilter === 'noFollowUp') {
+    filteredLeadsData = filteredLeadsData.filter(lead => 
+        !lead.followUp1 && !lead.followUp2 && !lead.followUp3 && !lead.followUp4 && !lead.followUp5
+    );
+}
             if (platformFilter) {
                 filteredLeads = filteredLeads.filter(lead => lead.platform === platformFilter);
             }
@@ -1597,106 +1602,7 @@
                 filteredLeads = filteredLeads.filter(lead => lead.tanggalMasuk === dateFilter);
             }
             
-            // Render ulang dengan data yang sudah difilter
-            const tableBody = document.getElementById('leadsTableBody');
-            const noLeads = document.getElementById('noLeads');
-            
-            if (filteredLeads.length === 0) {
-                if (tableBody) tableBody.innerHTML = '';
-                if (noLeads) {
-                    noLeads.style.display = 'block';
-                    noLeads.querySelector('h3').textContent = 'Tidak Ada Leads';
-                    noLeads.querySelector('p').textContent = 'Tidak ada leads yang sesuai dengan filter.';
-                }
-                return;
-            }
-            
-            if (noLeads) noLeads.style.display = 'none';
-            if (tableBody) tableBody.innerHTML = '';
-            
-            filteredLeads.forEach(lead => {
-                const row = document.createElement('tr');
-                
-                const tanggalMasuk = lead.tanggalMasuk ? new Date(lead.tanggalMasuk).toLocaleDateString('id-ID') : '-';
-                
-                let qualificationClass = '';
-                switch(lead.leadQualification) {
-                    case 'Hot':
-                        qualificationClass = 'status-converted';
-                        break;
-                    case 'Warm':
-                        qualificationClass = 'status-contacted';
-                        break;
-                    case 'Cold':
-                        qualificationClass = 'status-new';
-                        break;
-                    case 'Qualified':
-                        qualificationClass = 'status-converted';
-                        break;
-                    case 'Not Qualified':
-                        qualificationClass = 'status-lost';
-                        break;
-                    default:
-                        qualificationClass = 'status-new';
-                }
-                
-                row.innerHTML = `
-                    <td>${tanggalMasuk}</td>
-                    <td>${lead.platform || '-'}</td>
-                    <td>${lead.contactUsername || '-'}</td>
-                    <td>
-                        ${lead.screenshotUrl ? 
-                            `<a href="#" class="screenshot-link" onclick="viewImage('${lead.screenshotUrl}')">
-                                <i class="fas fa-image"></i> Lihat
-                            </a>` : 
-                            '-'}
-                    </td>
-                    <td>${lead.namaCSS || '-'}</td>
-                    <td>
-                        <span class="status-badge ${qualificationClass}">${lead.leadQualification || '-'}</span>
-                    </td>
-                    <td>${lead.reason || '-'}</td>
-                    <td>${lead.notesFU || '-'}</td>
-                    <td>${lead.followUp1 ? new Date(lead.followUp1).toLocaleString('id-ID') : '-'}</td>
-                    <td>${lead.followUp2 ? new Date(lead.followUp2).toLocaleString('id-ID') : '-'}</td>
-                    <td>${lead.followUp3 ? new Date(lead.followUp3).toLocaleString('id-ID') : '-'}</td>
-                    <td>${lead.followUp4 ? new Date(lead.followUp4).toLocaleString('id-ID') : '-'}</td>
-                    <td>${lead.followUp5 ? new Date(lead.followUp5).toLocaleString('id-ID') : '-'}</td>
-                    <td>${lead.requestLeads || '-'}</td>
-                    <td>${lead.leads || '-'}</td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn btn-edit btn-sm edit-btn" data-id="${lead.id}">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn btn-danger btn-sm delete-btn" data-id="${lead.id}">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                `;
-                
-                tableBody.appendChild(row);
-            });
-            
-            // Tambahkan event listener untuk tombol
-            document.querySelectorAll('.edit-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const leadId = this.getAttribute('data-id');
-                    openEditModal(leadId);
-                });
-            });
-            
-            document.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const leadId = this.getAttribute('data-id');
-                    currentLeadId = leadId;
-                    document.getElementById('deleteModal').classList.add('active');
-                    document.body.style.overflow = 'hidden';
-                });
-            });
         }
-
         // Fungsi untuk mereset filter
         function resetFilters() {
             document.getElementById('leadsSearch').value = '';
@@ -1728,48 +1634,47 @@
 
         // Fungsi untuk export ke Excel (CSV)
         function exportToExcel() {
-            // Header CSV sesuai dengan kolom tabel
-            const headers = [
-                'Tanggal Masuk',
-                'Platform',
-                'Contact Username',
-                'Screenshot Chat',
-                'Nama CSS',
-                'Lead Qualification',
-                'Reason',
-                'Notes FU',
-                'Follow Up 1',
-                'Follow Up 2',
-                'Follow Up 3',
-                'Follow Up 4',
-                'Follow Up 5',
-                'Request Leads',
-                'Leads'
-            ];
-            
-            let csvContent = headers.join(',') + '\n';
-            
-            leadsData.forEach(lead => {
-                const row = [
-                    lead.tanggalMasuk || '',
-                    lead.platform || '',
-                    lead.contactUsername || '',
-                    lead.screenshotUrl || '',
-                    lead.namaCSS || '',
-                    lead.leadQualification || '',
-                    (lead.reason || '').replace(/,/g, ';'), // Replace koma untuk menghindari conflict CSV
-                    (lead.notesFU || '').replace(/,/g, ';'),
-                    lead.followUp1 || '',
-                    lead.followUp2 || '',
-                    lead.followUp3 || '',
-                    lead.followUp4 || '',
-                    lead.followUp5 || '',
-                    lead.requestLeads || '',
-                    lead.leads || ''
-                ];
-                
-                csvContent += row.join(',') + '\n';
-            });
+    const headers = [
+        'Tanggal Masuk',
+        'Platform',
+        'Contact Username',
+        'Screenshot Chat',
+        'Nama CSS',
+        'Lead Qualification',
+        'Reason',
+        // PERUBAHAN: Ganti Notes FU dengan Follow Up 1-5
+        'Follow Up 1',
+        'Follow Up 2',
+        'Follow Up 3',
+        'Follow Up 4',
+        'Follow Up 5',
+        'Request Leads',
+        'Leads'
+    ];
+    
+    let csvContent = headers.join(',') + '\n';
+    
+    leadsData.forEach(lead => {
+        const row = [
+            lead.tanggalMasuk || '',
+            lead.platform || '',
+            lead.contactUsername || '',
+            lead.screenshotUrl || '',
+            lead.namaCSS || '',
+            lead.leadQualification || '',
+            (lead.reason || '').replace(/,/g, ';'),
+            // PERUBAHAN: Tambahkan data follow up 1-5
+            (lead.followUp1 || '').replace(/,/g, ';'),
+            (lead.followUp2 || '').replace(/,/g, ';'),
+            (lead.followUp3 || '').replace(/,/g, ';'),
+            (lead.followUp4 || '').replace(/,/g, ';'),
+            (lead.followUp5 || '').replace(/,/g, ';'),
+            lead.requestLeads || '',
+            lead.leads || ''
+        ];
+        
+        csvContent += row.join(',') + '\n';
+    });
             
             // Buat dan download file
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });

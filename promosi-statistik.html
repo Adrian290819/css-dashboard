@@ -890,751 +890,730 @@
     <script src="user-profile.js"></script>
     
     <script>
-        // ========== FIREBASE INITIALIZATION ==========
-        // Cek apakah Firebase sudah diinisialisasi
-        if (!firebase.apps.length) {
-            const firebaseConfig = {
-                apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
-                authDomain: "dashboard-css.firebaseapp.com",
-                databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
-                projectId: "dashboard-css",
-                storageBucket: "dashboard-css.appspot.com",
-                messagingSenderId: "771131792881",
-                appId: "1:771131792881:web:ad634424225bd7de847850",
-                measurementId: "G-3CYBC5B101"
-            };
-            
-            firebase.initializeApp(firebaseConfig);
-        }
-
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-
-        // ========== GLOBAL VARIABLES ==========
-        let currentUser = null;
-        let promosiData = []; // Data dari koleksi promosi (untuk jumlah promosi)
-        let leadsData = [];    // Data dari koleksi promosiLeads (untuk leads, follow up, closingan)
-        let filteredLeadsData = [];
-        let cssStats = {};
-        let cssList = [
-            "DANEL",
-            "ADRIAN ABDUL ARIF", 
-            "ANDRI FIRMANSYAH",
-            "AHMAD BAIHAQI",
-            "DICKY ADE CHANDRA"
-        ];
-
-        // ========== FUNGSI UTAMA ==========
+    // ========== FIREBASE INITIALIZATION ==========
+    // Cek apakah Firebase sudah diinisialisasi
+    if (!firebase.apps.length) {
+        const firebaseConfig = {
+            apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
+            authDomain: "dashboard-css.firebaseapp.com",
+            databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "dashboard-css",
+            storageBucket: "dashboard-css.appspot.com",
+            messagingSenderId: "771131792881",
+            appId: "1:771131792881:web:ad634424225bd7de847850",
+            measurementId: "G-3CYBC5B101"
+        };
         
-        // Fungsi untuk memeriksa status autentikasi
-        function checkAuthState() {
-            auth.onAuthStateChanged((user) => {
-                if (user) {
-                    currentUser = user;
-                    console.log("User is signed in:", user.uid);
-                    document.getElementById('userName').textContent = user.displayName || user.email;
-                    loadAllData();
-                    setupEventListeners();
-                } else {
-                    console.log("User is signed out");
-                    window.location.href = "index.html";
-                }
-            });
-        }
+        firebase.initializeApp(firebaseConfig);
+    }
 
-        // Load semua data (promosi + leads)
-        async function loadAllData() {
-            try {
-                showLoading(true);
-                
-                // Load data promosi untuk jumlah promosi
-                await loadPromosiData();
-                
-                // Load data leads untuk leads, follow up, closingan
-                await loadLeadsData();
-                
-                // Proses statistik gabungan
-                processStatistics();
-                renderStatsTable();
-                renderCharts();
-                
-            } catch (error) {
-                console.error("Error loading data:", error);
-                showToast('Gagal memuat data', 'error');
-            } finally {
-                showLoading(false);
-            }
-        }
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-        // Load data promosi dari koleksi PROMOSI (untuk jumlah promosi)
-        async function loadPromosiData() {
-            try {
-                const snapshot = await db.collection('promosi').get();
-                promosiData = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                console.log(`Loaded ${promosiData.length} promosi data`);
-            } catch (error) {
-                console.error("Error loading promosi data:", error);
-                promosiData = [];
-            }
-        }
+    // ========== GLOBAL VARIABLES ==========
+    let currentUser = null;
+    let promosiData = []; // Data dari koleksi promosi (untuk jumlah promosi)
+    let leadsData = [];    // Data dari koleksi promosiLeads (untuk leads, follow up, closingan)
+    let filteredLeadsData = [];
+    let cssStats = {};
+    let cssList = [
+        "DANEL",
+        "ADRIAN ABDUL ARIF", 
+        "ANDRI FIRMANSYAH",
+        "AHMAD BAIHAQI",
+        "DICKY ADE CHANDRA"
+    ];
 
-        // Load data leads dari koleksi PROMOSILEADS (untuk leads, follow up, closingan)
-        async function loadLeadsData() {
-            try {
-                const snapshot = await db.collection('promosiLeads')
-                    .orderBy('tanggalMasuk', 'desc')
-                    .get();
-                
-                leadsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                filteredLeadsData = [...leadsData];
-                console.log(`Loaded ${leadsData.length} leads data`);
-                
-            } catch (error) {
-                console.error("Error loading leads data:", error);
-                leadsData = [];
-                filteredLeadsData = [];
-            }
-        }
-
-        // Fungsi untuk memproses statistik dari data leads + promosi
-        function processStatistics() {
-            // Inisialisasi statistik untuk setiap CSS
-            cssStats = {};
-            
-            // Inisialisasi dengan CSS default
-            cssList.forEach(css => {
-                cssStats[css] = {
-                    nama: css,
-                    totalPromosi: 0,
-                    jumlahLeads: 0,
-                    leadsFollowUp: 0,
-                    cold: 0,
-                    warm: 0,
-                    hot: 0,
-                    followUp1: 0,
-                    followUp2: 0,
-                    followUp3: 0,
-                    followUp4: 0,
-                    followUp5: 0,
-                    closingan: 0
-                };
-            });
-            
-            // HITUNG JUMLAH PROMOSI dari koleksi promosi
-            promosiData.forEach(promosi => {
-                const cssName = promosi.namaCSS ? promosi.namaCSS.toUpperCase() : '';
-                
-                // Cari CSS yang sesuai
-                for (let key in cssStats) {
-                    if (cssName.includes(key) || key.includes(cssName)) {
-                        cssStats[key].totalPromosi++;
-                        break;
-                    }
-                }
-            });
-            
-            // Proses setiap lead untuk data lainnya
-            filteredLeadsData.forEach(lead => {
-                const cssName = lead.namaCSS ? lead.namaCSS.toUpperCase() : '';
-                let found = false;
-                
-                // Cari CSS yang sesuai
-                for (let key in cssStats) {
-                    if (cssName.includes(key) || key.includes(cssName)) {
-                        // Hitung leads (jika ada leads atau follow)
-                        if (lead.leads) {
-                            cssStats[key].jumlahLeads++;
-                            
-                            if (lead.leads === 'Follow Up') {
-                                cssStats[key].leadsFollowUp++;
-                            }
-                        }
-                        
-                        // Hitung kualifikasi
-                        if (lead.leadQualification) {
-                            switch(lead.leadQualification.toLowerCase()) {
-                                case 'cold':
-                                    cssStats[key].cold++;
-                                    break;
-                                case 'warm':
-                                    cssStats[key].warm++;
-                                    break;
-                                case 'hot':
-                                    cssStats[key].hot++;
-                                    break;
-                            }
-                        }
-
-                        // ===== PERBAIKAN: Hitung follow up 1-5 dari field baru =====
-if (lead.followUp1 && lead.followUp1.trim() !== '') {
-    cssStats[key].followUp1++;
-}
-if (lead.followUp2 && lead.followUp2.trim() !== '') {
-    cssStats[key].followUp2++;
-}
-if (lead.followUp3 && lead.followUp3.trim() !== '') {
-    cssStats[key].followUp3++;
-}
-if (lead.followUp4 && lead.followUp4.trim() !== '') {
-    cssStats[key].followUp4++;
-}
-if (lead.followUp5 && lead.followUp5.trim() !== '') {
-    cssStats[key].followUp5++;
-}
-
-// ===== PERBAIKAN: Deteksi closingan dari follow up terakhir =====
-// Closingan terdeteksi jika follow up 5 terisi ATAU ada kata kunci di follow up mana pun
-let semuaFollowUp = [
-    lead.followUp1 || '',
-    lead.followUp2 || '',
-    lead.followUp3 || '',
-    lead.followUp4 || '',
-    lead.followUp5 || ''
-].join(' ').toLowerCase();
-
-if (lead.followUp5 || 
-    semuaFollowUp.includes('closing') || 
-    semuaFollowUp.includes('deal') || 
-    semuaFollowUp.includes('berhasil') ||
-    semuaFollowUp.includes('done') ||
-    semuaFollowUp.includes('sukses')) {
-    cssStats[key].closingan++;
-}
-                        
-                        found = true;
-                        break;
-                    }
-                }
-                
-                // Jika CSS tidak ditemukan dalam daftar, buat entri baru
-                if (!found && lead.namaCSS) {
-                    const newCss = lead.namaCSS.toUpperCase();
-                    if (!cssStats[newCss]) {
-                        cssStats[newCss] = {
-                            nama: lead.namaCSS,
-                            totalPromosi: 0, // Akan diisi dari data promosi nanti
-                            jumlahLeads: lead.leads ? 1 : 0,
-                            leadsFollowUp: lead.leads === 'Follow Up' ? 1 : 0,
-                            cold: lead.leadQualification === 'Cold' ? 1 : 0,
-                            warm: lead.leadQualification === 'Warm' ? 1 : 0,
-                            hot: lead.leadQualification === 'Hot' ? 1 : 0,
-                            followUp1: 0,
-                            followUp2: 0,
-                            followUp3: 0,
-                            followUp4: 0,
-                            followUp5: 0,
-                            closingan: 0
-                        };
-                        
-                        // Hitung follow up
-                        if (lead.notesFU) {
-                            const notes = lead.notesFU.toLowerCase();
-                            if (notes.includes('follow up 1') || notes.includes('fu 1')) cssStats[newCss].followUp1++;
-                            if (notes.includes('follow up 2') || notes.includes('fu 2')) cssStats[newCss].followUp2++;
-                            if (notes.includes('follow up 3') || notes.includes('fu 3')) cssStats[newCss].followUp3++;
-                            if (notes.includes('follow up 4') || notes.includes('fu 4')) cssStats[newCss].followUp4++;
-                            if (notes.includes('follow up 5') || notes.includes('fu 5')) cssStats[newCss].followUp5++;
-                            if (notes.includes('closing') || notes.includes('deal')) cssStats[newCss].closingan++;
-                        }
-                    }
-                }
-            });
-            
-            // Update total promosi untuk CSS yang mungkin hanya ada di leads
-            promosiData.forEach(promosi => {
-                const cssName = promosi.namaCSS ? promosi.namaCSS.toUpperCase() : '';
-                
-                for (let key in cssStats) {
-                    if (cssName.includes(key) || key.includes(cssName)) {
-                        // Sudah dihitung sebelumnya
-                        break;
-                    }
-                }
-            });
-        }
-
-
-        // Fungsi untuk merender tabel statistik
-        function renderStatsTable() {
-            const tableBody = document.getElementById('statsTableBody');
-            const noData = document.getElementById('noData');
-            
-            if (!tableBody) return;
-            
-            const statsArray = Object.values(cssStats).filter(stat => stat.totalPromosi > 0 || stat.jumlahLeads > 0);
-            
-            if (statsArray.length === 0) {
-                tableBody.innerHTML = '';
-                if (noData) noData.style.display = 'block';
-                return;
-            }
-            
-            if (noData) noData.style.display = 'none';
-            tableBody.innerHTML = '';
-            
-            // Urutkan berdasarkan total promosi terbanyak
-            statsArray.sort((a, b) => b.totalPromosi - a.totalPromosi);
-            
-            let totalPromosi = 0, totalLeads = 0, totalFollowUp = 0;
-            let totalCold = 0, totalWarm = 0, totalHot = 0;
-            let totalFU1 = 0, totalFU2 = 0, totalFU3 = 0, totalFU4 = 0, totalFU5 = 0;
-            let totalClosing = 0;
-            
-            statsArray.forEach(stat => {
-                const row = document.createElement('tr');
-                
-                totalPromosi += stat.totalPromosi;
-                totalLeads += stat.jumlahLeads;
-                totalFollowUp += stat.leadsFollowUp;
-                totalCold += stat.cold;
-                totalWarm += stat.warm;
-                totalHot += stat.hot;
-                totalFU1 += stat.followUp1;
-                totalFU2 += stat.followUp2;
-                totalFU3 += stat.followUp3;
-                totalFU4 += stat.followUp4;
-                totalFU5 += stat.followUp5;
-                totalClosing += stat.closingan;
-                
-               row.innerHTML = `
-    <td class="css-name">${stat.nama}</td>
-    <td><strong>${stat.totalPromosi}</strong></td>
-    <td>${stat.jumlahLeads}</td>
-    <td>${stat.leadsFollowUp}</td>
-    <td>${stat.cold}</td>
-    <td>${stat.warm}</td>
-    <td>${stat.hot}</td>
-    <td>${stat.followUp1}</td>
-    <td>${stat.followUp2}</td>
-    <td>${stat.followUp3}</td>
-    <td>${stat.followUp4}</td>
-    <td>${stat.followUp5}</td>
-    <td>${stat.closingan}</td>
-`;
-                
-                tableBody.appendChild(row);
-            });
-            
-            // Tambahkan baris total
-            const totalRow = document.createElement('tr');
-            totalRow.className = 'total-row';
-            totalRow.innerHTML = `
-                <td><strong>TOTAL KESELURUHAN</strong></td>
-                <td><strong>${totalPromosi}</strong></td>
-                <td><strong>${totalLeads}</strong></td>
-                <td><strong>${totalFollowUp}</strong></td>
-                <td><strong>${totalCold}</strong></td>
-                <td><strong>${totalWarm}</strong></td>
-                <td><strong>${totalHot}</strong></td>
-                <td><strong>${totalFU1}</strong></td>
-                <td><strong>${totalFU2}</strong></td>
-                <td><strong>${totalFU3}</strong></td>
-                <td><strong>${totalFU4}</strong></td>
-                <td><strong>${totalFU5}</strong></td>
-                <td><strong>${totalClosing}</strong></td>
-            `;
-            tableBody.appendChild(totalRow);
-        }
-
-        // Fungsi untuk merender charts
-        function renderCharts() {
-            renderPromosiChart();
-            renderQualificationChart();
-            renderFollowupChart();
-            renderClosingChart();
-        }
-
-        function renderPromosiChart() {
-            const chartContainer = document.getElementById('promosiBarChart');
-            if (!chartContainer) return;
-            
-            const statsArray = Object.values(cssStats)
-                .filter(stat => stat.totalPromosi > 0)
-                .sort((a, b) => b.totalPromosi - a.totalPromosi)
-                .slice(0, 5); // Top 5
-            
-            if (statsArray.length === 0) {
-                chartContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Tidak ada data</p>';
-                return;
-            }
-            
-            const maxValue = Math.max(...statsArray.map(s => s.totalPromosi));
-            
-            chartContainer.innerHTML = statsArray.map(stat => {
-                const height = (stat.totalPromosi / maxValue) * 200;
-                return `
-                    <div class="bar-item">
-                        <div class="bar-value">${stat.totalPromosi}</div>
-                        <div class="bar" style="height: ${height}px; background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);"></div>
-                        <div class="bar-label">${stat.nama.split(' ')[0]}</div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function renderQualificationChart() {
-            const chartContainer = document.getElementById('qualificationBarChart');
-            if (!chartContainer) return;
-            
-            const cold = filteredLeadsData.filter(l => l.leadQualification === 'Cold').length;
-            const warm = filteredLeadsData.filter(l => l.leadQualification === 'Warm').length;
-            const hot = filteredLeadsData.filter(l => l.leadQualification === 'Hot').length;
-            
-            const maxValue = Math.max(cold, warm, hot, 1);
-            
-            chartContainer.innerHTML = `
-                <div class="bar-item">
-                    <div class="bar-value">${cold}</div>
-                    <div class="bar" style="height: ${(cold/maxValue)*200}px; background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);"></div>
-                    <div class="bar-label">Cold</div>
-                </div>
-                <div class="bar-item">
-                    <div class="bar-value">${warm}</div>
-                    <div class="bar" style="height: ${(warm/maxValue)*200}px; background: linear-gradient(135deg, #f8961e 0%, #f3722c 100%);"></div>
-                    <div class="bar-label">Warm</div>
-                </div>
-                <div class="bar-item">
-                    <div class="bar-value">${hot}</div>
-                    <div class="bar" style="height: ${(hot/maxValue)*200}px; background: linear-gradient(135deg, #f72585 0%, #7209b7 100%);"></div>
-                    <div class="bar-label">Hot</div>
-                </div>
-            `;
-        }
-
-        function renderFollowupChart() {
-            const chartContainer = document.getElementById('followupBarChart');
-            if (!chartContainer) return;
-            
-            const statsArray = Object.values(cssStats);
-            const totalFU1 = statsArray.reduce((sum, stat) => sum + stat.followUp1, 0);
-            const totalFU2 = statsArray.reduce((sum, stat) => sum + stat.followUp2, 0);
-            const totalFU3 = statsArray.reduce((sum, stat) => sum + stat.followUp3, 0);
-            const totalFU4 = statsArray.reduce((sum, stat) => sum + stat.followUp4, 0);
-            const totalFU5 = statsArray.reduce((sum, stat) => sum + stat.followUp5, 0);
-            
-            const maxValue = Math.max(totalFU1, totalFU2, totalFU3, totalFU4, totalFU5, 1);
-            
-            chartContainer.innerHTML = `
-                <div class="bar-item">
-                    <div class="bar-value">${totalFU1}</div>
-                    <div class="bar" style="height: ${(totalFU1/maxValue)*200}px; background: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);"></div>
-                    <div class="bar-label">FU 1</div>
-                </div>
-                <div class="bar-item">
-                    <div class="bar-value">${totalFU2}</div>
-                    <div class="bar" style="height: ${(totalFU2/maxValue)*200}px; background: linear-gradient(135deg, #4895ef 0%, #3f37c9 100%);"></div>
-                    <div class="bar-label">FU 2</div>
-                </div>
-                <div class="bar-item">
-                    <div class="bar-value">${totalFU3}</div>
-                    <div class="bar" style="height: ${(totalFU3/maxValue)*200}px; background: linear-gradient(135deg, #7209b7 0%, #b5179e 100%);"></div>
-                    <div class="bar-label">FU 3</div>
-                </div>
-                <div class="bar-item">
-                    <div class="bar-value">${totalFU4}</div>
-                    <div class="bar" style="height: ${(totalFU4/maxValue)*200}px; background: linear-gradient(135deg, #f72585 0%, #7209b7 100%);"></div>
-                    <div class="bar-label">FU 4</div>
-                </div>
-                <div class="bar-item">
-                    <div class="bar-value">${totalFU5}</div>
-                    <div class="bar" style="height: ${(totalFU5/maxValue)*200}px; background: linear-gradient(135deg, #f8961e 0%, #f3722c 100%);"></div>
-                    <div class="bar-label">FU 5</div>
-                </div>
-            `;
-        }
-
-        function renderClosingChart() {
-            const chartContainer = document.getElementById('closingBarChart');
-            if (!chartContainer) return;
-            
-            const statsArray = Object.values(cssStats)
-                .filter(stat => stat.closingan > 0)
-                .sort((a, b) => b.closingan - a.closingan)
-                .slice(0, 5);
-            
-            if (statsArray.length === 0) {
-                chartContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Belum ada closingan</p>';
-                return;
-            }
-            
-            const maxValue = Math.max(...statsArray.map(s => s.closingan));
-            
-            chartContainer.innerHTML = statsArray.map(stat => {
-                const height = (stat.closingan / maxValue) * 200;
-                return `
-                    <div class="bar-item">
-                        <div class="bar-value">${stat.closingan}</div>
-                        <div class="bar" style="height: ${height}px; background: linear-gradient(135deg, #4cc9f0 0%, #06d6a0 100%);"></div>
-                        <div class="bar-label">${stat.nama.split(' ')[0]}</div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // Fungsi untuk filter berdasarkan pencarian CSS
-        function filterBySearch() {
-            const searchTerm = document.getElementById('cssSearch')?.value.toLowerCase() || '';
-            
-            if (!searchTerm) {
-                // Tampilkan semua data
-                renderStatsTable();
-                return;
-            }
-            
-            const filteredStats = {};
-            
-            Object.keys(cssStats).forEach(key => {
-                if (key.toLowerCase().includes(searchTerm)) {
-                    filteredStats[key] = cssStats[key];
-                }
-            });
-            
-            // Simpan sementara dan render ulang
-            const originalStats = {...cssStats};
-            cssStats = filteredStats;
-            renderStatsTable();
-            cssStats = originalStats;
-        }
-
-        // Fungsi untuk filter berdasarkan periode
-        async function filterByPeriod() {
-            const period = document.getElementById('periodFilter').value;
-            const startDate = document.getElementById('startDateFilter').value;
-            const endDate = document.getElementById('endDateFilter').value;
-            const platform = document.getElementById('platformFilter').value;
-            
-            let filtered = [...leadsData];
-            
-            // Filter berdasarkan platform
-            if (platform) {
-                filtered = filtered.filter(lead => lead.platform === platform);
-            }
-            
-            // Filter berdasarkan tanggal
-            if (startDate && endDate) {
-                filtered = filtered.filter(lead => 
-                    lead.tanggalMasuk >= startDate && lead.tanggalMasuk <= endDate
-                );
-            } else if (period !== 'all') {
-                const today = new Date();
-                let start = new Date();
-                
-                switch(period) {
-                    case 'today':
-                        start = today;
-                        break;
-                    case 'week':
-                        start.setDate(today.getDate() - 7);
-                        break;
-                    case 'month':
-                        start.setMonth(today.getMonth() - 1);
-                        break;
-                    case 'year':
-                        start.setFullYear(today.getFullYear() - 1);
-                        break;
-                }
-                
-                const startStr = start.toISOString().split('T')[0];
-                const todayStr = today.toISOString().split('T')[0];
-                
-                filtered = filtered.filter(lead => 
-                    lead.tanggalMasuk >= startStr && lead.tanggalMasuk <= todayStr
-                );
-            }
-            
-            filteredLeadsData = filtered;
-            processStatistics();
-            renderStatsTable();
-            renderCharts();
-        }
-
-        // Fungsi untuk mereset filter
-        function resetFilters() {
-            document.getElementById('cssSearch').value = '';
-            document.getElementById('periodFilter').value = 'all';
-            document.getElementById('startDateFilter').value = '';
-            document.getElementById('endDateFilter').value = '';
-            document.getElementById('platformFilter').value = '';
-            
-            filteredLeadsData = [...leadsData];
-            processStatistics();
-            renderStatsTable();
-            renderCharts();
-            
-            showToast('Filter direset', 'success');
-        }
-
-        // Fungsi untuk export ke Excel
-        function exportToExcel() {
-            const headers = [
-                'NAMA CSS',
-                'JUMLAH PROMOSI',
-                'JUMLAH LEADS',
-                'LEADS FOLLOW UP',
-                'Cold',
-                'Warm',
-                'Hot',
-                'FOLLOW UP 1',
-                'FOLLOW UP 2',
-                'FOLLOW UP 3',
-                'FOLLOW UP 4',
-                'FOLLOW UP 5',
-                'CLOSINGAN'
-            ];
-            
-            let csvContent = headers.join(',') + '\n';
-            
-            const statsArray = Object.values(cssStats).filter(stat => stat.totalPromosi > 0 || stat.jumlahLeads > 0);
-            statsArray.sort((a, b) => b.totalPromosi - a.totalPromosi);
-            
-            let totalPromosi = 0, totalLeads = 0, totalFollowUp = 0;
-            let totalCold = 0, totalWarm = 0, totalHot = 0;
-            let totalFU1 = 0, totalFU2 = 0, totalFU3 = 0, totalFU4 = 0, totalFU5 = 0;
-            let totalClosing = 0;
-            
-            statsArray.forEach(stat => {
-                const row = [
-                    `"${stat.nama}"`,
-                    stat.totalPromosi,
-                    stat.jumlahLeads,
-                    stat.leadsFollowUp,
-                    stat.cold,
-                    stat.warm,
-                    stat.hot,
-                    stat.followUp1,
-                    stat.followUp2,
-                    stat.followUp3,
-                    stat.followUp4,
-                    stat.followUp5,
-                    stat.closingan
-                ];
-                
-                totalPromosi += stat.totalPromosi;
-                totalLeads += stat.jumlahLeads;
-                totalFollowUp += stat.leadsFollowUp;
-                totalCold += stat.cold;
-                totalWarm += stat.warm;
-                totalHot += stat.hot;
-                totalFU1 += stat.followUp1;
-                totalFU2 += stat.followUp2;
-                totalFU3 += stat.followUp3;
-                totalFU4 += stat.followUp4;
-                totalFU5 += stat.followUp5;
-                totalClosing += stat.closingan;
-                
-                csvContent += row.join(',') + '\n';
-            });
-            
-            // Tambah baris total
-            const totalRow = [
-                'TOTAL KESELURUHAN',
-                totalPromosi,
-                totalLeads,
-                totalFollowUp,
-                totalCold,
-                totalWarm,
-                totalHot,
-                totalFU1,
-                totalFU2,
-                totalFU3,
-                totalFU4,
-                totalFU5,
-                totalClosing
-            ];
-            csvContent += totalRow.join(',') + '\n';
-            
-            const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `statistik_promosi_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-            
-            showToast('Data berhasil diexport!', 'success');
-        }
-
-        // Fungsi untuk menampilkan toast
-        function showToast(message, type = 'success', duration = 3000) {
-            const existingToast = document.querySelector('.toast-notification');
-            if (existingToast) {
-                existingToast.remove();
-            }
-            
-            const toast = document.createElement('div');
-            toast.className = `toast-notification ${type}`;
-            toast.innerHTML = `
-                <div class="toast-content">
-                    <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
-                    <span>${message}</span>
-                </div>
-            `;
-
-            document.body.appendChild(toast);
-
-            setTimeout(() => {
-                toast.classList.add('hide');
-                setTimeout(() => {
-                    toast.remove();
-                }, 400);
-            }, duration);
-        }
-
-        // Fungsi untuk menampilkan loading
-        let loadingTimeout;
-        function showLoading(show) {
-            if (show) {
-                loadingTimeout = setTimeout(() => {
-                    const existingOverlay = document.querySelector('.loading-overlay');
-                    if (!existingOverlay) {
-                        const overlay = document.createElement('div');
-                        overlay.className = 'loading-overlay';
-                        overlay.innerHTML = '<div class="loading-spinner"></div>';
-                        document.body.appendChild(overlay);
-                    }
-                }, 300);
-            } else {
-                if (loadingTimeout) {
-                    clearTimeout(loadingTimeout);
-                    loadingTimeout = null;
-                }
-                
-                const existingOverlay = document.querySelector('.loading-overlay');
-                if (existingOverlay) {
-                    existingOverlay.remove();
-                }
-            }
-        }
-
-        // ========== EVENT LISTENERS ==========
-        function setupEventListeners() {
-            document.getElementById('refreshStats').addEventListener('click', () => {
+    // ========== FUNGSI UTAMA ==========
+    
+    // Fungsi untuk memeriksa status autentikasi
+    function checkAuthState() {
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                console.log("User is signed in:", user.uid);
+                document.getElementById('userName').textContent = user.displayName || user.email;
                 loadAllData();
-                showToast('Data statistik diperbarui!', 'success');
-            });
-            
-            document.getElementById('exportExcel').addEventListener('click', exportToExcel);
-            
-            
-            document.getElementById('cssSearch').addEventListener('input', filterBySearch);
-            
-            document.getElementById('periodFilter').addEventListener('change', filterByPeriod);
-            document.getElementById('startDateFilter').addEventListener('change', filterByPeriod);
-            document.getElementById('endDateFilter').addEventListener('change', filterByPeriod);
-            document.getElementById('platformFilter').addEventListener('change', filterByPeriod);
-            
-            document.getElementById('resetFilters').addEventListener('click', resetFilters);
-        }
-
-        // ========== INISIALISASI ==========
-        document.addEventListener('DOMContentLoaded', function() {
-            checkAuthState();
+                setupEventListeners();
+            } else {
+                console.log("User is signed out");
+                window.location.href = "index.html";
+            }
         });
-    </script>
+    }
+
+    // Load semua data (promosi + leads)
+    async function loadAllData() {
+        try {
+            showLoading(true);
+            
+            // Load data promosi untuk jumlah promosi
+            await loadPromosiData();
+            
+            // Load data leads untuk leads, follow up, closingan
+            await loadLeadsData();
+            
+            // Proses statistik gabungan
+            processStatistics();
+            renderStatsTable();
+            renderCharts();
+            
+        } catch (error) {
+            console.error("Error loading data:", error);
+            showToast('Gagal memuat data', 'error');
+        } finally {
+            showLoading(false);
+        }
+    }
+
+    // Load data promosi dari koleksi PROMOSI (untuk jumlah promosi)
+    async function loadPromosiData() {
+        try {
+            const snapshot = await db.collection('promosi').get();
+            promosiData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            console.log(`Loaded ${promosiData.length} promosi data`);
+        } catch (error) {
+            console.error("Error loading promosi data:", error);
+            promosiData = [];
+        }
+    }
+
+    // Load data leads dari koleksi PROMOSILEADS (untuk leads, follow up, closingan)
+    async function loadLeadsData() {
+        try {
+            const snapshot = await db.collection('promosiLeads')
+                .orderBy('tanggalMasuk', 'desc')
+                .get();
+            
+            leadsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            filteredLeadsData = [...leadsData];
+            console.log(`Loaded ${leadsData.length} leads data`);
+            
+        } catch (error) {
+            console.error("Error loading leads data:", error);
+            leadsData = [];
+            filteredLeadsData = [];
+        }
+    }
+
+    // Fungsi untuk memproses statistik dari data leads + promosi
+    function processStatistics() {
+        // Inisialisasi statistik untuk setiap CSS
+        cssStats = {};
+        
+        // Inisialisasi dengan CSS default
+        cssList.forEach(css => {
+            cssStats[css] = {
+                nama: css,
+                totalPromosi: 0,
+                jumlahLeads: 0,
+                leadsFollowUp: 0,
+                cold: 0,
+                warm: 0,
+                hot: 0,
+                followUp1: 0,
+                followUp2: 0,
+                followUp3: 0,
+                followUp4: 0,
+                followUp5: 0,
+                closingan: 0
+            };
+        });
+        
+        // HITUNG JUMLAH PROMOSI dari koleksi promosi
+        promosiData.forEach(promosi => {
+            const cssName = promosi.namaCSS ? promosi.namaCSS.toUpperCase() : '';
+            
+            // Cari CSS yang sesuai
+            for (let key in cssStats) {
+                if (cssName.includes(key) || key.includes(cssName)) {
+                    cssStats[key].totalPromosi++;
+                    break;
+                }
+            }
+        });
+        
+        // Proses setiap lead untuk data lainnya
+        filteredLeadsData.forEach(lead => {
+            const cssName = lead.namaCSS ? lead.namaCSS.toUpperCase() : '';
+            let found = false;
+            
+            // Cari CSS yang sesuai
+            for (let key in cssStats) {
+                if (cssName.includes(key) || key.includes(cssName)) {
+                    // Hitung jumlah leads (hitung setiap record sebagai leads)
+                    cssStats[key].jumlahLeads++;
+                    
+                    // Hitung leadsFollowUp (jika leadsFollow = 'Follow')
+                    if (lead.leadsFollow && lead.leadsFollow === 'Follow') {
+                        cssStats[key].leadsFollowUp++;
+                    }
+                    
+                    // Hitung kualifikasi
+                    if (lead.leadQualification) {
+                        switch(lead.leadQualification.toLowerCase()) {
+                            case 'cold':
+                                cssStats[key].cold++;
+                                break;
+                            case 'warm':
+                                cssStats[key].warm++;
+                                break;
+                            case 'hot':
+                                cssStats[key].hot++;
+                                break;
+                        }
+                    }
+
+                    // Hitung follow up 1-5
+                    if (lead.followUp1 && lead.followUp1.trim() !== '') {
+                        cssStats[key].followUp1++;
+                    }
+                    if (lead.followUp2 && lead.followUp2.trim() !== '') {
+                        cssStats[key].followUp2++;
+                    }
+                    if (lead.followUp3 && lead.followUp3.trim() !== '') {
+                        cssStats[key].followUp3++;
+                    }
+                    if (lead.followUp4 && lead.followUp4.trim() !== '') {
+                        cssStats[key].followUp4++;
+                    }
+                    if (lead.followUp5 && lead.followUp5.trim() !== '') {
+                        cssStats[key].followUp5++;
+                    }
+
+                    // ===== PERBAIKAN: Hitung closingan dari field leadStatus =====
+                    // Jika leadStatus = "Closing", maka dihitung sebagai closingan
+                    if (lead.leadStatus && lead.leadStatus.toLowerCase() === 'closing') {
+                        cssStats[key].closingan++;
+                    } 
+                    // Fallback: jika tidak ada leadStatus, cek dari followUp5 atau kata kunci
+                    else {
+                        let semuaFollowUp = [
+                            lead.followUp1 || '',
+                            lead.followUp2 || '',
+                            lead.followUp3 || '',
+                            lead.followUp4 || '',
+                            lead.followUp5 || ''
+                        ].join(' ').toLowerCase();
+
+                        if (lead.followUp5 || 
+                            semuaFollowUp.includes('closing') || 
+                            semuaFollowUp.includes('deal') || 
+                            semuaFollowUp.includes('berhasil') ||
+                            semuaFollowUp.includes('done') ||
+                            semuaFollowUp.includes('sukses')) {
+                            cssStats[key].closingan++;
+                        }
+                    }
+                    
+                    found = true;
+                    break;
+                }
+            }
+            
+            // Jika CSS tidak ditemukan dalam daftar, buat entri baru
+            if (!found && lead.namaCSS) {
+                const newCss = lead.namaCSS.toUpperCase();
+                if (!cssStats[newCss]) {
+                    cssStats[newCss] = {
+                        nama: lead.namaCSS,
+                        totalPromosi: 0,
+                        jumlahLeads: 1,
+                        leadsFollowUp: (lead.leadsFollow === 'Follow') ? 1 : 0,
+                        cold: (lead.leadQualification === 'Cold') ? 1 : 0,
+                        warm: (lead.leadQualification === 'Warm') ? 1 : 0,
+                        hot: (lead.leadQualification === 'Hot') ? 1 : 0,
+                        followUp1: (lead.followUp1 && lead.followUp1.trim() !== '') ? 1 : 0,
+                        followUp2: (lead.followUp2 && lead.followUp2.trim() !== '') ? 1 : 0,
+                        followUp3: (lead.followUp3 && lead.followUp3.trim() !== '') ? 1 : 0,
+                        followUp4: (lead.followUp4 && lead.followUp4.trim() !== '') ? 1 : 0,
+                        followUp5: (lead.followUp5 && lead.followUp5.trim() !== '') ? 1 : 0,
+                        closingan: (lead.leadStatus && lead.leadStatus.toLowerCase() === 'closing') ? 1 : 0
+                    };
+                }
+            }
+        });
+    }
+
+    // Fungsi untuk merender tabel statistik
+    function renderStatsTable() {
+        const tableBody = document.getElementById('statsTableBody');
+        const noData = document.getElementById('noData');
+        
+        if (!tableBody) return;
+        
+        const statsArray = Object.values(cssStats).filter(stat => stat.totalPromosi > 0 || stat.jumlahLeads > 0);
+        
+        if (statsArray.length === 0) {
+            tableBody.innerHTML = '';
+            if (noData) noData.style.display = 'block';
+            return;
+        }
+        
+        if (noData) noData.style.display = 'none';
+        tableBody.innerHTML = '';
+        
+        // Urutkan berdasarkan total promosi terbanyak
+        statsArray.sort((a, b) => b.totalPromosi - a.totalPromosi);
+        
+        let totalPromosi = 0, totalLeads = 0, totalFollowUp = 0;
+        let totalCold = 0, totalWarm = 0, totalHot = 0;
+        let totalFU1 = 0, totalFU2 = 0, totalFU3 = 0, totalFU4 = 0, totalFU5 = 0;
+        let totalClosing = 0;
+        
+        statsArray.forEach(stat => {
+            const row = document.createElement('tr');
+            
+            totalPromosi += stat.totalPromosi;
+            totalLeads += stat.jumlahLeads;
+            totalFollowUp += stat.leadsFollowUp;
+            totalCold += stat.cold;
+            totalWarm += stat.warm;
+            totalHot += stat.hot;
+            totalFU1 += stat.followUp1;
+            totalFU2 += stat.followUp2;
+            totalFU3 += stat.followUp3;
+            totalFU4 += stat.followUp4;
+            totalFU5 += stat.followUp5;
+            totalClosing += stat.closingan;
+            
+            row.innerHTML = `
+                <td class="css-name">${stat.nama}</td>
+                <td><strong>${stat.totalPromosi}</strong></td>
+                <td>${stat.jumlahLeads}</td>
+                <td>${stat.leadsFollowUp}</td>
+                <td>${stat.cold}</td>
+                <td>${stat.warm}</td>
+                <td>${stat.hot}</td>
+                <td>${stat.followUp1}</td>
+                <td>${stat.followUp2}</td>
+                <td>${stat.followUp3}</td>
+                <td>${stat.followUp4}</td>
+                <td>${stat.followUp5}</td>
+                <td>${stat.closingan}</td>
+            `;
+            
+            tableBody.appendChild(row);
+        });
+        
+        // Tambahkan baris total
+        const totalRow = document.createElement('tr');
+        totalRow.className = 'total-row';
+        totalRow.innerHTML = `
+            <td><strong>TOTAL KESELURUHAN</strong></td>
+            <td><strong>${totalPromosi}</strong></td>
+            <td><strong>${totalLeads}</strong></td>
+            <td><strong>${totalFollowUp}</strong></td>
+            <td><strong>${totalCold}</strong></td>
+            <td><strong>${totalWarm}</strong></td>
+            <td><strong>${totalHot}</strong></td>
+            <td><strong>${totalFU1}</strong></td>
+            <td><strong>${totalFU2}</strong></td>
+            <td><strong>${totalFU3}</strong></td>
+            <td><strong>${totalFU4}</strong></td>
+            <td><strong>${totalFU5}</strong></td>
+            <td><strong>${totalClosing}</strong></td>
+        `;
+        tableBody.appendChild(totalRow);
+    }
+
+    // Fungsi untuk merender charts
+    function renderCharts() {
+        renderPromosiChart();
+        renderQualificationChart();
+        renderFollowupChart();
+        renderClosingChart();
+    }
+
+    function renderPromosiChart() {
+        const chartContainer = document.getElementById('promosiBarChart');
+        if (!chartContainer) return;
+        
+        const statsArray = Object.values(cssStats)
+            .filter(stat => stat.totalPromosi > 0)
+            .sort((a, b) => b.totalPromosi - a.totalPromosi)
+            .slice(0, 5);
+        
+        if (statsArray.length === 0) {
+            chartContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Tidak ada data</p>';
+            return;
+        }
+        
+        const maxValue = Math.max(...statsArray.map(s => s.totalPromosi));
+        
+        chartContainer.innerHTML = statsArray.map(stat => {
+            const height = (stat.totalPromosi / maxValue) * 200;
+            return `
+                <div class="bar-item">
+                    <div class="bar-value">${stat.totalPromosi}</div>
+                    <div class="bar" style="height: ${height}px; background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);"></div>
+                    <div class="bar-label">${stat.nama.split(' ')[0]}</div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderQualificationChart() {
+        const chartContainer = document.getElementById('qualificationBarChart');
+        if (!chartContainer) return;
+        
+        const cold = filteredLeadsData.filter(l => l.leadQualification === 'Cold').length;
+        const warm = filteredLeadsData.filter(l => l.leadQualification === 'Warm').length;
+        const hot = filteredLeadsData.filter(l => l.leadQualification === 'Hot').length;
+        
+        const maxValue = Math.max(cold, warm, hot, 1);
+        
+        chartContainer.innerHTML = `
+            <div class="bar-item">
+                <div class="bar-value">${cold}</div>
+                <div class="bar" style="height: ${(cold/maxValue)*200}px; background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);"></div>
+                <div class="bar-label">Cold</div>
+            </div>
+            <div class="bar-item">
+                <div class="bar-value">${warm}</div>
+                <div class="bar" style="height: ${(warm/maxValue)*200}px; background: linear-gradient(135deg, #f8961e 0%, #f3722c 100%);"></div>
+                <div class="bar-label">Warm</div>
+            </div>
+            <div class="bar-item">
+                <div class="bar-value">${hot}</div>
+                <div class="bar" style="height: ${(hot/maxValue)*200}px; background: linear-gradient(135deg, #f72585 0%, #7209b7 100%);"></div>
+                <div class="bar-label">Hot</div>
+            </div>
+        `;
+    }
+
+    function renderFollowupChart() {
+        const chartContainer = document.getElementById('followupBarChart');
+        if (!chartContainer) return;
+        
+        const statsArray = Object.values(cssStats);
+        const totalFU1 = statsArray.reduce((sum, stat) => sum + stat.followUp1, 0);
+        const totalFU2 = statsArray.reduce((sum, stat) => sum + stat.followUp2, 0);
+        const totalFU3 = statsArray.reduce((sum, stat) => sum + stat.followUp3, 0);
+        const totalFU4 = statsArray.reduce((sum, stat) => sum + stat.followUp4, 0);
+        const totalFU5 = statsArray.reduce((sum, stat) => sum + stat.followUp5, 0);
+        
+        const maxValue = Math.max(totalFU1, totalFU2, totalFU3, totalFU4, totalFU5, 1);
+        
+        chartContainer.innerHTML = `
+            <div class="bar-item">
+                <div class="bar-value">${totalFU1}</div>
+                <div class="bar" style="height: ${(totalFU1/maxValue)*200}px; background: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);"></div>
+                <div class="bar-label">FU 1</div>
+            </div>
+            <div class="bar-item">
+                <div class="bar-value">${totalFU2}</div>
+                <div class="bar" style="height: ${(totalFU2/maxValue)*200}px; background: linear-gradient(135deg, #4895ef 0%, #3f37c9 100%);"></div>
+                <div class="bar-label">FU 2</div>
+            </div>
+            <div class="bar-item">
+                <div class="bar-value">${totalFU3}</div>
+                <div class="bar" style="height: ${(totalFU3/maxValue)*200}px; background: linear-gradient(135deg, #7209b7 0%, #b5179e 100%);"></div>
+                <div class="bar-label">FU 3</div>
+            </div>
+            <div class="bar-item">
+                <div class="bar-value">${totalFU4}</div>
+                <div class="bar" style="height: ${(totalFU4/maxValue)*200}px; background: linear-gradient(135deg, #f72585 0%, #7209b7 100%);"></div>
+                <div class="bar-label">FU 4</div>
+            </div>
+            <div class="bar-item">
+                <div class="bar-value">${totalFU5}</div>
+                <div class="bar" style="height: ${(totalFU5/maxValue)*200}px; background: linear-gradient(135deg, #f8961e 0%, #f3722c 100%);"></div>
+                <div class="bar-label">FU 5</div>
+            </div>
+        `;
+    }
+
+    function renderClosingChart() {
+        const chartContainer = document.getElementById('closingBarChart');
+        if (!chartContainer) return;
+        
+        const statsArray = Object.values(cssStats)
+            .filter(stat => stat.closingan > 0)
+            .sort((a, b) => b.closingan - a.closingan)
+            .slice(0, 5);
+        
+        if (statsArray.length === 0) {
+            chartContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Belum ada closingan</p>';
+            return;
+        }
+        
+        const maxValue = Math.max(...statsArray.map(s => s.closingan));
+        
+        chartContainer.innerHTML = statsArray.map(stat => {
+            const height = (stat.closingan / maxValue) * 200;
+            return `
+                <div class="bar-item">
+                    <div class="bar-value">${stat.closingan}</div>
+                    <div class="bar" style="height: ${height}px; background: linear-gradient(135deg, #4cc9f0 0%, #06d6a0 100%);"></div>
+                    <div class="bar-label">${stat.nama.split(' ')[0]}</div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Fungsi untuk filter berdasarkan pencarian CSS
+    function filterBySearch() {
+        const searchTerm = document.getElementById('cssSearch')?.value.toLowerCase() || '';
+        
+        if (!searchTerm) {
+            renderStatsTable();
+            return;
+        }
+        
+        const filteredStats = {};
+        
+        Object.keys(cssStats).forEach(key => {
+            if (key.toLowerCase().includes(searchTerm)) {
+                filteredStats[key] = cssStats[key];
+            }
+        });
+        
+        // Simpan sementara dan render ulang
+        const originalStats = {...cssStats};
+        cssStats = filteredStats;
+        renderStatsTable();
+        cssStats = originalStats;
+    }
+
+    // Fungsi untuk filter berdasarkan periode
+    async function filterByPeriod() {
+        const period = document.getElementById('periodFilter').value;
+        const startDate = document.getElementById('startDateFilter').value;
+        const endDate = document.getElementById('endDateFilter').value;
+        const platform = document.getElementById('platformFilter').value;
+        
+        let filtered = [...leadsData];
+        
+        // Filter berdasarkan platform
+        if (platform) {
+            filtered = filtered.filter(lead => lead.platform === platform);
+        }
+        
+        // Filter berdasarkan tanggal
+        if (startDate && endDate) {
+            filtered = filtered.filter(lead => 
+                lead.tanggalMasuk >= startDate && lead.tanggalMasuk <= endDate
+            );
+        } else if (period !== 'all') {
+            const today = new Date();
+            let start = new Date();
+            
+            switch(period) {
+                case 'today':
+                    start = today;
+                    break;
+                case 'week':
+                    start.setDate(today.getDate() - 7);
+                    break;
+                case 'month':
+                    start.setMonth(today.getMonth() - 1);
+                    break;
+                case 'year':
+                    start.setFullYear(today.getFullYear() - 1);
+                    break;
+            }
+            
+            const startStr = start.toISOString().split('T')[0];
+            const todayStr = today.toISOString().split('T')[0];
+            
+            filtered = filtered.filter(lead => 
+                lead.tanggalMasuk >= startStr && lead.tanggalMasuk <= todayStr
+            );
+        }
+        
+        filteredLeadsData = filtered;
+        processStatistics();
+        renderStatsTable();
+        renderCharts();
+    }
+
+    // Fungsi untuk mereset filter
+    function resetFilters() {
+        document.getElementById('cssSearch').value = '';
+        document.getElementById('periodFilter').value = 'all';
+        document.getElementById('startDateFilter').value = '';
+        document.getElementById('endDateFilter').value = '';
+        document.getElementById('platformFilter').value = '';
+        
+        filteredLeadsData = [...leadsData];
+        processStatistics();
+        renderStatsTable();
+        renderCharts();
+        
+        showToast('Filter direset', 'success');
+    }
+
+    // Fungsi untuk export ke Excel
+    function exportToExcel() {
+        const headers = [
+            'NAMA CSS',
+            'JUMLAH PROMOSI',
+            'JUMLAH LEADS',
+            'LEADS FOLLOW UP',
+            'Cold',
+            'Warm',
+            'Hot',
+            'FOLLOW UP 1',
+            'FOLLOW UP 2',
+            'FOLLOW UP 3',
+            'FOLLOW UP 4',
+            'FOLLOW UP 5',
+            'CLOSINGAN'
+        ];
+        
+        let csvContent = headers.join(',') + '\n';
+        
+        const statsArray = Object.values(cssStats).filter(stat => stat.totalPromosi > 0 || stat.jumlahLeads > 0);
+        statsArray.sort((a, b) => b.totalPromosi - a.totalPromosi);
+        
+        let totalPromosi = 0, totalLeads = 0, totalFollowUp = 0;
+        let totalCold = 0, totalWarm = 0, totalHot = 0;
+        let totalFU1 = 0, totalFU2 = 0, totalFU3 = 0, totalFU4 = 0, totalFU5 = 0;
+        let totalClosing = 0;
+        
+        statsArray.forEach(stat => {
+            const row = [
+                `"${stat.nama}"`,
+                stat.totalPromosi,
+                stat.jumlahLeads,
+                stat.leadsFollowUp,
+                stat.cold,
+                stat.warm,
+                stat.hot,
+                stat.followUp1,
+                stat.followUp2,
+                stat.followUp3,
+                stat.followUp4,
+                stat.followUp5,
+                stat.closingan
+            ];
+            
+            totalPromosi += stat.totalPromosi;
+            totalLeads += stat.jumlahLeads;
+            totalFollowUp += stat.leadsFollowUp;
+            totalCold += stat.cold;
+            totalWarm += stat.warm;
+            totalHot += stat.hot;
+            totalFU1 += stat.followUp1;
+            totalFU2 += stat.followUp2;
+            totalFU3 += stat.followUp3;
+            totalFU4 += stat.followUp4;
+            totalFU5 += stat.followUp5;
+            totalClosing += stat.closingan;
+            
+            csvContent += row.join(',') + '\n';
+        });
+        
+        // Tambah baris total
+        const totalRow = [
+            'TOTAL KESELURUHAN',
+            totalPromosi,
+            totalLeads,
+            totalFollowUp,
+            totalCold,
+            totalWarm,
+            totalHot,
+            totalFU1,
+            totalFU2,
+            totalFU3,
+            totalFU4,
+            totalFU5,
+            totalClosing
+        ];
+        csvContent += totalRow.join(',') + '\n';
+        
+        const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `statistik_promosi_${new Date().toISOString().split('T')[0]}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        showToast('Data berhasil diexport!', 'success');
+    }
+
+    // Fungsi untuk menampilkan toast
+    function showToast(message, type = 'success', duration = 3000) {
+        const existingToast = document.querySelector('.toast-notification');
+        if (existingToast) {
+            existingToast.remove();
+        }
+        
+        const toast = document.createElement('div');
+        toast.className = `toast-notification ${type}`;
+        toast.innerHTML = `
+            <div class="toast-content">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add('hide');
+            setTimeout(() => {
+                toast.remove();
+            }, 400);
+        }, duration);
+    }
+
+    // Fungsi untuk menampilkan loading
+    let loadingTimeout;
+    function showLoading(show) {
+        if (show) {
+            loadingTimeout = setTimeout(() => {
+                const existingOverlay = document.querySelector('.loading-overlay');
+                if (!existingOverlay) {
+                    const overlay = document.createElement('div');
+                    overlay.className = 'loading-overlay';
+                    overlay.innerHTML = '<div class="loading-spinner"></div>';
+                    document.body.appendChild(overlay);
+                }
+            }, 300);
+        } else {
+            if (loadingTimeout) {
+                clearTimeout(loadingTimeout);
+                loadingTimeout = null;
+            }
+            
+            const existingOverlay = document.querySelector('.loading-overlay');
+            if (existingOverlay) {
+                existingOverlay.remove();
+            }
+        }
+    }
+
+    // ========== EVENT LISTENERS ==========
+    function setupEventListeners() {
+        document.getElementById('refreshStats').addEventListener('click', () => {
+            loadAllData();
+            showToast('Data statistik diperbarui!', 'success');
+        });
+        
+        document.getElementById('exportExcel').addEventListener('click', exportToExcel);
+        
+        document.getElementById('cssSearch').addEventListener('input', filterBySearch);
+        
+        document.getElementById('periodFilter').addEventListener('change', filterByPeriod);
+        document.getElementById('startDateFilter').addEventListener('change', filterByPeriod);
+        document.getElementById('endDateFilter').addEventListener('change', filterByPeriod);
+        document.getElementById('platformFilter').addEventListener('change', filterByPeriod);
+        
+        document.getElementById('resetFilters').addEventListener('click', resetFilters);
+    }
+
+    // ========== INISIALISASI ==========
+    document.addEventListener('DOMContentLoaded', function() {
+        checkAuthState();
+    });
+</script>
 </body>
 </html>

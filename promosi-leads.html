@@ -995,23 +995,22 @@
                     <thead>
     <tr>
         <th>Tanggal Masuk</th>
-                        <th>Platform</th>
-                        <th>Contact Username</th>
-                        <th>Screenshot Chat</th>
-                        <th>Nama CSS</th>
-                        <th>Lead Qualification</th>
-                        <th>Reason</th>
-                        <!-- PERUBAHAN: Ubah dari "Notes FU" menjadi beberapa kolom deskripsi -->
-                        <th>Follow Up 1</th>
-                        <th>Follow Up 2</th>
-                        <th>Follow Up 3</th>
-                        <th>Follow Up 4</th>
-                        <th>Follow Up 5</th>
-                        <th>Request Leads</th>
-                        <th>Leads / Follow</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
+        <th>Platform</th>
+        <th>Contact Username</th>
+        <th>Screenshot Chat</th>
+        <th>Nama CSS</th>
+        <th>Lead Qualification</th>
+        <th>Leads / Follow</th> <!-- KOLOM BARU -->
+        <th>Reason</th>
+        <th>Request Leads</th> <!-- DIPINDAHKAN KE SINI -->
+        <th>Follow Up 1</th>
+        <th>Follow Up 2</th>
+        <th>Follow Up 3</th>
+        <th>Follow Up 4</th>
+        <th>Follow Up 5</th>
+        <th>Aksi</th>
+    </tr>
+</thead>
                     <tbody id="leadsTableBody">
                         <!-- Data akan dimuat secara dinamis -->
                     </tbody>
@@ -1092,21 +1091,38 @@
 </div>
                         
                         <div class="form-group">
-                            <label>Lead Qualification</label>
-                            <select class="form-control" id="leadQualification">
-                                <option value="">Pilih Kualifikasi</option>
-                                <option value="Hot">Hot</option>
-                                <option value="Warm">Warm</option>
-                                <option value="Cold">Cold</option>
-                                <option value="Qualified">Qualified</option>
-                                <option value="Not Qualified">Not Qualified</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group full-width">
+    <label>Lead Qualification</label>
+    <select class="form-control" id="leadQualification">
+        <option value="">Pilih Kualifikasi</option>
+        <option value="Hot">Hot</option>
+        <option value="Warm">Warm</option>
+        <option value="Cold">Cold</option>
+        <option value="Qualified">Qualified</option>
+        <option value="Not Qualified">Not Qualified</option>
+    </select>
+</div>
+
+<!-- KOLOM BARU: Leads / Follow -->
+<div class="form-group">
+    <label>Leads / Follow</label>
+    <select class="form-control" id="leadsFollow">
+        <option value="">Pilih Status</option>
+        <option value="Leads">Leads</option>
+        <option value="Follow">Follow</option>
+    </select>
+</div>
+
+<div class="form-group full-width">
     <label>Reason</label>
     <textarea class="form-control" id="reason" rows="2" placeholder="Alasan kualifikasi..."></textarea>
 </div>
+
+<!-- REQUEST LEADS DIPINDAHKAN KE BAWAH REASON -->
+<div class="form-group full-width">
+    <label>Request Leads</label>
+    <textarea class="form-control" id="requestLeads" rows="2" placeholder="Jenis request..."></textarea>
+</div>
+
 
 <!-- PERUBAHAN: Hapus Notes FU, ganti dengan Follow Up 1-5 -->
 <div class="form-group full-width">
@@ -1134,15 +1150,6 @@
     <textarea class="form-control" id="followUp5" rows="2" placeholder="Deskripsi follow up 5..."></textarea>
 </div>
 
-<div class="form-group">
-    <label>Request Leads</label>
-    <input type="text" class="form-control" id="requestLeads" placeholder="Jenis request">
-</div>
-                        
-                        <div class="form-group">
-                            <label>Leads</label>
-                            <input type="text" class="form-control" id="leads" placeholder="Nama leads">
-                        </div>
                     </div>
                 </form>
             </div>
@@ -1364,7 +1371,7 @@
                         qualificationClass = 'status-new';
                 }
                 
-                row.innerHTML = `
+               row.innerHTML = `
     <td>${tanggalMasuk}</td>
     <td>${lead.platform || '-'}</td>
     <td>${lead.contactUsername || '-'}</td>
@@ -1379,15 +1386,20 @@
     <td>
         <span class="status-badge ${qualificationClass}">${lead.leadQualification || '-'}</span>
     </td>
+    <td>
+        <select class="filter-select leads-follow-select" data-id="${lead.id}" style="width: 130px; padding: 4px;" onchange="updateLeadsFollow(this)">
+            <option value="">Pilih Status</option>
+            <option value="Leads" ${lead.leadsFollow === 'Leads' ? 'selected' : ''}>Leads</option>
+            <option value="Follow" ${lead.leadsFollow === 'Follow' ? 'selected' : ''}>Follow</option>
+        </select>
+    </td>
     <td>${lead.reason || '-'}</td>
-    <!-- PERUBAHAN: Tampilkan deskripsi follow up 1-5 -->
+    <td>${lead.requestLeads || '-'}</td>
     <td>${lead.followUp1 || '-'}</td>
     <td>${lead.followUp2 || '-'}</td>
     <td>${lead.followUp3 || '-'}</td>
     <td>${lead.followUp4 || '-'}</td>
     <td>${lead.followUp5 || '-'}</td>
-    <td>${lead.requestLeads || '-'}</td>
-    <td>${lead.leads || '-'}</td>
     <td>
         <div class="action-buttons">
             <button class="btn btn-edit btn-sm edit-btn" data-id="${lead.id}">
@@ -1435,7 +1447,24 @@
             document.getElementById('leadModal').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
-
+// Fungsi untuk mengupdate Leads/Follow
+async function updateLeadsFollow(selectElement) {
+    const leadId = selectElement.getAttribute('data-id');
+    const value = selectElement.value;
+    
+    try {
+        await db.collection('promosiLeads').doc(leadId).update({
+            leadsFollow: value,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        showToast('Status Leads/Follow berhasil diperbarui!', 'success');
+        
+    } catch (error) {
+        console.error("Error updating leadsFollow:", error);
+        showToast('Gagal memperbarui status', 'error');
+    }
+}
         // Fungsi untuk membuka modal edit
         async function openEditModal(leadId) {
             try {

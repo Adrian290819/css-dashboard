@@ -1044,7 +1044,7 @@
             // Cari CSS yang sesuai
             for (let key in cssStats) {
                 if (cssName.includes(key) || key.includes(cssName)) {
-                    // Hitung jumlah leads (hitung setiap record sebagai leads)
+                    // Hitung jumlah leads (setiap record dihitung sebagai 1 leads)
                     cssStats[key].jumlahLeads++;
                     
                     // Hitung leadsFollowUp (jika leadsFollow = 'Follow')
@@ -1067,7 +1067,7 @@
                         }
                     }
 
-                    // Hitung follow up 1-5
+                    // Hitung follow up 1-5 (field terisi tidak kosong)
                     if (lead.followUp1 && lead.followUp1.trim() !== '') {
                         cssStats[key].followUp1++;
                     }
@@ -1084,30 +1084,12 @@
                         cssStats[key].followUp5++;
                     }
 
-                    // ===== PERBAIKAN: Hitung closingan dari field leadStatus =====
-                    // Jika leadStatus = "Closing", maka dihitung sebagai closingan
+                    // ===== PERBAIKAN: Hitung closingan HANYA dari field leadStatus =====
+                    // Closingan hanya dihitung jika leadStatus = "Closing"
                     if (lead.leadStatus && lead.leadStatus.toLowerCase() === 'closing') {
                         cssStats[key].closingan++;
-                    } 
-                    // Fallback: jika tidak ada leadStatus, cek dari followUp5 atau kata kunci
-                    else {
-                        let semuaFollowUp = [
-                            lead.followUp1 || '',
-                            lead.followUp2 || '',
-                            lead.followUp3 || '',
-                            lead.followUp4 || '',
-                            lead.followUp5 || ''
-                        ].join(' ').toLowerCase();
-
-                        if (lead.followUp5 || 
-                            semuaFollowUp.includes('closing') || 
-                            semuaFollowUp.includes('deal') || 
-                            semuaFollowUp.includes('berhasil') ||
-                            semuaFollowUp.includes('done') ||
-                            semuaFollowUp.includes('sukses')) {
-                            cssStats[key].closingan++;
-                        }
                     }
+                    // Selain itu (Progres atau undefined) TIDAK dihitung sebagai closingan
                     
                     found = true;
                     break;
@@ -1593,21 +1575,48 @@
 
     // ========== EVENT LISTENERS ==========
     function setupEventListeners() {
-        document.getElementById('refreshStats').addEventListener('click', () => {
-            loadAllData();
-            showToast('Data statistik diperbarui!', 'success');
-        });
+        const refreshBtn = document.getElementById('refreshStats');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', () => {
+                loadAllData();
+                showToast('Data statistik diperbarui!', 'success');
+            });
+        }
         
-        document.getElementById('exportExcel').addEventListener('click', exportToExcel);
+        const exportBtn = document.getElementById('exportExcel');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', exportToExcel);
+        }
         
-        document.getElementById('cssSearch').addEventListener('input', filterBySearch);
+        const cssSearch = document.getElementById('cssSearch');
+        if (cssSearch) {
+            cssSearch.addEventListener('input', filterBySearch);
+        }
         
-        document.getElementById('periodFilter').addEventListener('change', filterByPeriod);
-        document.getElementById('startDateFilter').addEventListener('change', filterByPeriod);
-        document.getElementById('endDateFilter').addEventListener('change', filterByPeriod);
-        document.getElementById('platformFilter').addEventListener('change', filterByPeriod);
+        const periodFilter = document.getElementById('periodFilter');
+        if (periodFilter) {
+            periodFilter.addEventListener('change', filterByPeriod);
+        }
         
-        document.getElementById('resetFilters').addEventListener('click', resetFilters);
+        const startDateFilter = document.getElementById('startDateFilter');
+        if (startDateFilter) {
+            startDateFilter.addEventListener('change', filterByPeriod);
+        }
+        
+        const endDateFilter = document.getElementById('endDateFilter');
+        if (endDateFilter) {
+            endDateFilter.addEventListener('change', filterByPeriod);
+        }
+        
+        const platformFilter = document.getElementById('platformFilter');
+        if (platformFilter) {
+            platformFilter.addEventListener('change', filterByPeriod);
+        }
+        
+        const resetFiltersBtn = document.getElementById('resetFilters');
+        if (resetFiltersBtn) {
+            resetFiltersBtn.addEventListener('click', resetFilters);
+        }
     }
 
     // ========== INISIALISASI ==========

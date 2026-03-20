@@ -1202,630 +1202,815 @@
     <script src="user-profile.js"></script>
     
     <script>
-        // ========== FIREBASE INITIALIZATION ==========
-        const firebaseConfig = {
-            apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
-            authDomain: "dashboard-css.firebaseapp.com",
-            databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "dashboard-css",
-            storageBucket: "dashboard-css.appspot.com",
-            messagingSenderId: "771131792881",
-            appId: "1:771131792881:web:ad634424225bd7de847850",
-            measurementId: "G-3CYBC5B101"
-        };
+    // ========== FIREBASE INITIALIZATION ==========
+    const firebaseConfig = {
+        apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
+        authDomain: "dashboard-css.firebaseapp.com",
+        databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "dashboard-css",
+        storageBucket: "dashboard-css.appspot.com",
+        messagingSenderId: "771131792881",
+        appId: "1:771131792881:web:ad634424225bd7de847850",
+        measurementId: "G-3CYBC5B101"
+    };
 
-        // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-        // Variabel global
-        let currentUser = null;
-        let currentLeadId = null;
-        let leadsData = [];
-        let cssList = [];
+    // Variabel global
+    let currentUser = null;
+    let currentLeadId = null;
+    let leadsData = [];
+    let cssList = [];
+    let allCSSUsers = []; // Menyimpan semua data CSS dari database
 
-        // ========== FUNGSI UTAMA ==========
+    // ========== FUNGSI UTAMA ==========
+    
+    // Fungsi untuk memeriksa status autentikasi
+    function checkAuthState() {
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                console.log("User is signed in:", user.uid);
+                
+                // Tampilkan informasi user
+                const userName = user.displayName || user.email;
+                document.getElementById('userName').textContent = userName;
+                
+                // Cek role user
+                checkUserRole(user.uid);
+                
+                // Load data
+                loadCSSData();
+                loadLeadsData();
+                setupEventListeners();
+            } else {
+                console.log("User is signed out");
+                window.location.href = "index.html";
+            }
+        });
+    }
+
+    // Fungsi untuk cek role user
+    async function checkUserRole(uid) {
+        try {
+            const userDoc = await db.collection('users').doc(uid).get();
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                document.getElementById('userRole').textContent = userData.role || 'User';
+            }
+        } catch (error) {
+            console.error("Error checking user role:", error);
+        }
+    }
+
+    // Fungsi untuk memuat data CSS dari koleksi users
+    async function loadCSSData() {
+        try {
+            console.log("Loading CSS data from Firebase...");
+            
+            const snapshot = await db.collection('users')
+                .where('role', '==', 'css')
+                .get();
+            
+            if (snapshot.empty) {
+                console.log("No CSS users found in database");
+                // Fallback ke data hardcoded jika database kosong
+                useHardcodedCSSData();
+                return;
+            }
+            
+            cssList = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            
+            allCSSUsers = [...cssList];
+            
+            console.log("CSS data loaded:", cssList.length, "users");
+            
+            // Populate semua dropdown CSS
+            populateCSSDropdowns();
+            
+        } catch (error) {
+            console.error("Error loading CSS data:", error);
+            // Fallback ke data hardcoded jika error
+            useHardcodedCSSData();
+        }
+    }
+
+    // Fungsi untuk menggunakan data CSS hardcoded sebagai fallback
+    function useHardcodedCSSData() {
+        console.log("Using hardcoded CSS data as fallback");
         
-        // Fungsi untuk memeriksa status autentikasi
-        function checkAuthState() {
-            auth.onAuthStateChanged((user) => {
-                if (user) {
-                    currentUser = user;
-                    console.log("User is signed in:", user.uid);
-                    document.getElementById('userName').textContent = user.displayName || user.email;
-                    loadCSSData();
-                    loadLeadsData();
-                    setupEventListeners();
-                } else {
-                    console.log("User is signed out");
-                    window.location.href = "index.html";
-                }
-            });
-        }
+        const hardcodedCSS = [
+            { name: "DANEL", email: "danel@example.com" },
+            { name: "ADRIAN ABDUL ARIF", email: "adrian@example.com" },
+            { name: "ANDRI FIRMANSYAH", email: "andri@example.com" },
+            { name: "AHMAD BAIHAQI", email: "baihaqi@example.com" },
+            { name: "DICKY ADE CHANDRA", email: "dicky@example.com" }
+        ];
+        
+        cssList = hardcodedCSS;
+        allCSSUsers = hardcodedCSS;
+        
+        populateCSSDropdowns();
+    }
 
-        // Fungsi untuk memuat data CSS dari koleksi users
-        async function loadCSSData() {
-            try {
-                const snapshot = await db.collection('users')
-                    .where('role', '==', 'css')
-                    .get();
-                
-                cssList = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                
-                // Populate CSS dropdowns
-                const cssSelects = ['namaCSS', 'cssFilter'];
-                cssSelects.forEach(selectId => {
-                    const select = document.getElementById(selectId);
-                    if (select) {
-                        // Clear existing options except first
-                        while (select.options.length > 1) {
-                            select.remove(1);
-                        }
-                        
-                        cssList.forEach(css => {
-                            const option = document.createElement('option');
-                            option.value = css.name || css.email;
-                            option.textContent = css.name || css.email;
-                            select.appendChild(option);
-                        });
-                    }
-                });
-                
-            } catch (error) {
-                console.error("Error loading CSS data:", error);
-            }
-        }
-
-        // Fungsi untuk memuat data leads
-        async function loadLeadsData() {
-            try {
-                const snapshot = await db.collection('promosiLeads')
-                    .orderBy('tanggalMasuk', 'desc')
-                    .get();
-                
-                leadsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                
-                renderLeadsTable();
-                updateStatistics();
-                
-            } catch (error) {
-                console.error("Error loading leads:", error);
-                showToast('Gagal memuat data leads', 'error');
-            }
-        }
-
-        // Fungsi untuk memperbarui statistik
-        function updateStatistics() {
-            const totalLeads = leadsData.length;
-            const qualifiedLeads = leadsData.filter(lead => 
-                lead.leadQualification === 'Qualified' || lead.leadQualification === 'Hot'
-            ).length;
-            const pendingFollowup = leadsData.filter(lead => {
-                const followUps = ['followUp1', 'followUp2', 'followUp3', 'followUp4', 'followUp5'];
-                return followUps.some(fu => lead[fu] && lead[fu].trim() !== '');
-            }).length;
-            const requestLeads = leadsData.filter(lead => lead.requestLeads && lead.requestLeads.trim() !== '').length;
-            
-            document.getElementById('totalLeads').textContent = totalLeads;
-            document.getElementById('qualifiedLeads').textContent = qualifiedLeads;
-            document.getElementById('pendingFollowup').textContent = pendingFollowup;
-            document.getElementById('requestLeads').textContent = requestLeads;
-        }
-
-        // Fungsi untuk merender tabel dengan data yang difilter
-        function renderFilteredTable(filteredData) {
-            const tableBody = document.getElementById('leadsTableBody');
-            const noLeads = document.getElementById('noLeads');
-            
-            if (filteredData.length === 0) {
-                if (tableBody) tableBody.innerHTML = '';
-                if (noLeads) {
-                    noLeads.style.display = 'block';
-                    noLeads.querySelector('h3').textContent = 'Tidak Ada Data Sesuai Filter';
-                    noLeads.querySelector('p').textContent = 'Coba ubah kriteria filter Anda.';
-                }
+    // Fungsi untuk mengisi semua dropdown CSS
+    function populateCSSDropdowns() {
+        // Daftar semua dropdown CSS
+        const cssDropdowns = [
+            'namaCSS',           // Dropdown di form modal
+            'cssFilter'          // Dropdown di panel filter
+        ];
+        
+        cssDropdowns.forEach(selectId => {
+            const select = document.getElementById(selectId);
+            if (!select) {
+                console.warn(`Dropdown with id "${selectId}" not found`);
                 return;
             }
             
-            if (noLeads) noLeads.style.display = 'none';
-            if (tableBody) tableBody.innerHTML = '';
+            // Simpan nilai yang sedang dipilih (jika ada)
+            const currentValue = select.value;
             
-            filteredData.forEach(lead => {
-                const row = document.createElement('tr');
-                
-                // Format tanggal
-                const tanggalMasuk = lead.tanggalMasuk ? new Date(lead.tanggalMasuk).toLocaleDateString('id-ID') : '-';
-                
-                // Status badge untuk qualification
-                let qualificationClass = '';
-                switch(lead.leadQualification) {
-                    case 'Hot':
-                        qualificationClass = 'status-converted';
-                        break;
-                    case 'Warm':
-                        qualificationClass = 'status-contacted';
-                        break;
-                    case 'Cold':
-                        qualificationClass = 'status-new';
-                        break;
-                    case 'Qualified':
-                        qualificationClass = 'status-converted';
-                        break;
-                    case 'Not Qualified':
-                        qualificationClass = 'status-lost';
-                        break;
-                    default:
-                        qualificationClass = 'status-new';
-                }
-                
-                // Badge untuk Leads/Follow
-                let leadsFollowClass = '';
-                let leadsFollowText = lead.leadsFollow || '-';
-                if (lead.leadsFollow === 'Leads') {
-                    leadsFollowClass = 'status-converted';
-                } else if (lead.leadsFollow === 'Follow') {
-                    leadsFollowClass = 'status-contacted';
-                }
-                
-                row.innerHTML = `
-                    <td>${tanggalMasuk}</td>
-                    <td>${lead.platform || '-'}</td>
-                    <td>${lead.contactUsername || '-'}</td>
-                    <td>
-                        ${lead.screenshotUrl ? 
-                            `<a href="${lead.screenshotUrl}" target="_blank" class="screenshot-link">
-                                <i class="fas fa-image"></i> Lihat
-                            </a>` : 
-                            '-'}
-                    </td>
-                    <td>${lead.namaCSS || '-'}</td>
-                    <td>
-                        <span class="status-badge ${qualificationClass}">${lead.leadQualification || '-'}</span>
-                    </td>
-                    <td>
-                        <span class="status-badge ${leadsFollowClass}">${leadsFollowText}</span>
-                    </td>
-                    <td>${lead.reason || '-'}</td>
-                    <td>${lead.requestLeads || '-'}</td>
-                    <td>${lead.followUp1 || '-'}</td>
-                    <td>${lead.followUp2 || '-'}</td>
-                    <td>${lead.followUp3 || '-'}</td>
-                    <td>${lead.followUp4 || '-'}</td>
-                    <td>${lead.followUp5 || '-'}</td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn btn-edit btn-sm edit-btn" data-id="${lead.id}">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn btn-danger btn-sm delete-btn" data-id="${lead.id}">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                `;
-                
-                tableBody.appendChild(row);
-            });
+            // Clear semua option kecuali yang pertama (placeholder)
+            while (select.options.length > 1) {
+                select.remove(1);
+            }
             
-            // Tambahkan event listener untuk tombol
-            document.querySelectorAll('.edit-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const leadId = this.getAttribute('data-id');
-                    openEditModal(leadId);
+            // Tambahkan option dari data CSS
+            if (cssList.length > 0) {
+                cssList.forEach(css => {
+                    const option = document.createElement('option');
+                    // Gunakan name jika ada, jika tidak gunakan email
+                    const optionValue = css.name || css.email || css.displayName || 'Unknown';
+                    const optionText = css.name || css.email || css.displayName || 'Unknown';
+                    
+                    option.value = optionValue;
+                    option.textContent = optionText;
+                    select.appendChild(option);
                 });
-            });
+                
+                console.log(`Populated ${selectId} with ${cssList.length} options`);
+            } else {
+                console.warn(`No CSS data available for ${selectId}`);
+            }
             
-            document.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const leadId = this.getAttribute('data-id');
-                    currentLeadId = leadId;
-                    document.getElementById('deleteModal').classList.add('active');
-                    document.body.style.overflow = 'hidden';
-                });
-            });
-        }
+            // Kembalikan nilai yang dipilih sebelumnya jika ada
+            if (currentValue) {
+                select.value = currentValue;
+            }
+        });
+        
+        // Debug: tampilkan isi dropdown setelah diisi
+        setTimeout(() => {
+            console.log("Dropdown namaCSS options:", 
+                Array.from(document.getElementById('namaCSS')?.options || []).map(opt => opt.value));
+            console.log("Dropdown cssFilter options:", 
+                Array.from(document.getElementById('cssFilter')?.options || []).map(opt => opt.value));
+        }, 500);
+    }
 
-        // Fungsi untuk menampilkan tabel leads
-        function renderLeadsTable() {
-            renderFilteredTable(leadsData);
-        }
-
-        // Fungsi untuk membuka modal tambah
-        function openAddModal() {
-            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-plus"></i> Tambah Lead Baru';
-            document.getElementById('leadForm').reset();
-            document.getElementById('leadId').value = '';
-            document.getElementById('screenshotPreview').classList.remove('show');
+    // Fungsi untuk memuat data leads
+    async function loadLeadsData() {
+        try {
+            console.log("Loading leads data from Firebase...");
             
-            // Set default tanggal hari ini
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('tanggalMasuk').value = today;
+            const snapshot = await db.collection('promosiLeads')
+                .orderBy('tanggalMasuk', 'desc')
+                .get();
             
-            document.getElementById('leadModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        // Fungsi untuk membuka modal edit
-        async function openEditModal(leadId) {
-            try {
-                const doc = await db.collection('promosiLeads').doc(leadId).get();
-                
-                if (!doc.exists) {
-                    showToast('Lead tidak ditemukan!', 'error');
-                    return;
-                }
-                
-                const lead = doc.data();
-                
-                document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Lead';
-                document.getElementById('leadId').value = leadId;
-                
-                // Isi form dengan data
-                document.getElementById('tanggalMasuk').value = lead.tanggalMasuk || '';
-                document.getElementById('platform').value = lead.platform || '';
-                document.getElementById('contactUsername').value = lead.contactUsername || '';
-                document.getElementById('screenshotUrl').value = lead.screenshotUrl || '';
-                
-                // Tampilkan preview jika ada URL
-                if (lead.screenshotUrl) {
-                    document.getElementById('previewImage').src = lead.screenshotUrl;
-                    document.getElementById('screenshotPreview').classList.add('show');
-                } else {
-                    document.getElementById('screenshotPreview').classList.remove('show');
-                }
-                
-                document.getElementById('namaCSS').value = lead.namaCSS || '';
-                document.getElementById('leadQualification').value = lead.leadQualification || '';
-                document.getElementById('leadsFollow').value = lead.leadsFollow || '';
-                document.getElementById('reason').value = lead.reason || '';
-                document.getElementById('requestLeads').value = lead.requestLeads || '';
-                document.getElementById('followUp1').value = lead.followUp1 || '';
-                document.getElementById('followUp2').value = lead.followUp2 || '';
-                document.getElementById('followUp3').value = lead.followUp3 || '';
-                document.getElementById('followUp4').value = lead.followUp4 || '';
-                document.getElementById('followUp5').value = lead.followUp5 || '';
-                
-                document.getElementById('leadModal').classList.add('active');
-                document.body.style.overflow = 'hidden';
-                
-            } catch (error) {
-                console.error("Error opening edit modal:", error);
-                showToast('Gagal memuat data lead', 'error');
-            }
-        }
-
-        // Fungsi untuk menyimpan lead
-        async function saveLead() {
-            // Validasi form
-            const tanggalMasuk = document.getElementById('tanggalMasuk').value;
-            const platform = document.getElementById('platform').value;
-            const contactUsername = document.getElementById('contactUsername').value;
-            const namaCSS = document.getElementById('namaCSS').value;
+            leadsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             
-            if (!tanggalMasuk || !platform || !contactUsername || !namaCSS) {
-                showToast('Harap isi semua field yang wajib!', 'error');
-                return;
-            }
-            
-            try {
-                const leadData = {
-                    tanggalMasuk: document.getElementById('tanggalMasuk').value || null,
-                    platform: document.getElementById('platform').value || null,
-                    contactUsername: document.getElementById('contactUsername').value || null,
-                    screenshotUrl: document.getElementById('screenshotUrl').value || null,
-                    namaCSS: document.getElementById('namaCSS').value || null,
-                    leadQualification: document.getElementById('leadQualification').value || null,
-                    leadsFollow: document.getElementById('leadsFollow').value || null,
-                    reason: document.getElementById('reason').value || null,
-                    requestLeads: document.getElementById('requestLeads').value || null,
-                    followUp1: document.getElementById('followUp1').value || null,
-                    followUp2: document.getElementById('followUp2').value || null,
-                    followUp3: document.getElementById('followUp3').value || null,
-                    followUp4: document.getElementById('followUp4').value || null,
-                    followUp5: document.getElementById('followUp5').value || null,
-                    userId: currentUser ? currentUser.uid : null,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
-                
-                const leadId = document.getElementById('leadId').value;
-                
-                if (leadId) {
-                    // Update existing lead
-                    await db.collection('promosiLeads').doc(leadId).update(leadData);
-                    showToast('Lead berhasil diperbarui!', 'success');
-                } else {
-                    // Add new lead
-                    leadData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-                    await db.collection('promosiLeads').add(leadData);
-                    showToast('Lead berhasil ditambahkan!', 'success');
-                }
-                
-                // Tutup modal dan reset form
-                document.getElementById('leadModal').classList.remove('active');
-                document.getElementById('leadForm').reset();
-                document.getElementById('screenshotPreview').classList.remove('show');
-                document.body.style.overflow = '';
-                
-                // Perbarui data
-                loadLeadsData();
-                
-            } catch (error) {
-                console.error("Error saving lead:", error);
-                showToast('Gagal menyimpan lead', 'error');
-            }
-        }
-
-        // Fungsi untuk menghapus lead
-        async function deleteLead() {
-            if (!currentLeadId) return;
-            
-            try {
-                await db.collection('promosiLeads').doc(currentLeadId).delete();
-                
-                showToast('Lead berhasil dihapus!', 'success');
-                
-                document.getElementById('deleteModal').classList.remove('active');
-                document.body.style.overflow = '';
-                
-                loadLeadsData();
-                
-            } catch (error) {
-                console.error("Error deleting lead:", error);
-                showToast('Gagal menghapus lead', 'error');
-            }
-        }
-
-        // Fungsi untuk memfilter leads
-        function filterLeads() {
-            const searchTerm = document.getElementById('leadsSearch')?.value.toLowerCase() || '';
-            const platformFilter = document.getElementById('platformFilter')?.value || '';
-            const qualificationFilter = document.getElementById('qualificationFilter')?.value || '';
-            const leadsFollowFilter = document.getElementById('leadsFollowFilter')?.value || '';
-            const cssFilter = document.getElementById('cssFilter')?.value || '';
-            const dateFilter = document.getElementById('dateFilter')?.value || '';
-            
-            let filteredLeads = [...leadsData];
-            
-            if (searchTerm) {
-                filteredLeads = filteredLeads.filter(lead => 
-                    (lead.contactUsername && lead.contactUsername.toLowerCase().includes(searchTerm)) ||
-                    (lead.reason && lead.reason.toLowerCase().includes(searchTerm)) ||
-                    (lead.requestLeads && lead.requestLeads.toLowerCase().includes(searchTerm)) ||
-                    (lead.leadsFollow && lead.leadsFollow.toLowerCase().includes(searchTerm)) ||
-                    (lead.followUp1 && lead.followUp1.toLowerCase().includes(searchTerm)) ||
-                    (lead.followUp2 && lead.followUp2.toLowerCase().includes(searchTerm)) ||
-                    (lead.followUp3 && lead.followUp3.toLowerCase().includes(searchTerm)) ||
-                    (lead.followUp4 && lead.followUp4.toLowerCase().includes(searchTerm)) ||
-                    (lead.followUp5 && lead.followUp5.toLowerCase().includes(searchTerm))
-                );
-            }
-            
-            if (platformFilter) {
-                filteredLeads = filteredLeads.filter(lead => lead.platform === platformFilter);
-            }
-            
-            if (qualificationFilter) {
-                filteredLeads = filteredLeads.filter(lead => lead.leadQualification === qualificationFilter);
-            }
-            
-            if (leadsFollowFilter) {
-                filteredLeads = filteredLeads.filter(lead => lead.leadsFollow === leadsFollowFilter);
-            }
-            
-            if (cssFilter) {
-                filteredLeads = filteredLeads.filter(lead => lead.namaCSS === cssFilter);
-            }
-            
-            if (dateFilter) {
-                filteredLeads = filteredLeads.filter(lead => lead.tanggalMasuk === dateFilter);
-            }
-            
-            renderFilteredTable(filteredLeads);
-        }
-
-        // Fungsi untuk mereset filter
-        function resetFilters() {
-            document.getElementById('leadsSearch').value = '';
-            document.getElementById('platformFilter').value = '';
-            document.getElementById('qualificationFilter').value = '';
-            document.getElementById('leadsFollowFilter').value = '';
-            document.getElementById('cssFilter').value = '';
-            document.getElementById('dateFilter').value = '';
+            console.log("Leads data loaded:", leadsData.length, "records");
             
             renderLeadsTable();
+            updateStatistics();
+            
+        } catch (error) {
+            console.error("Error loading leads:", error);
+            showToast('Gagal memuat data leads', 'error');
         }
+    }
 
-        // Fungsi untuk melihat gambar
-        window.viewImage = function(imageUrl) {
-            document.getElementById('modalImage').src = imageUrl;
-            document.getElementById('imageModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
+    // Fungsi untuk memperbarui statistik
+    function updateStatistics() {
+        const totalLeads = leadsData.length;
+        const qualifiedLeads = leadsData.filter(lead => 
+            lead.leadQualification === 'Qualified' || lead.leadQualification === 'Hot'
+        ).length;
+        const pendingFollowup = leadsData.filter(lead => {
+            const followUps = ['followUp1', 'followUp2', 'followUp3', 'followUp4', 'followUp5'];
+            return followUps.some(fu => lead[fu] && lead[fu].trim() !== '');
+        }).length;
+        const requestLeads = leadsData.filter(lead => lead.requestLeads && lead.requestLeads.trim() !== '').length;
+        
+        document.getElementById('totalLeads').textContent = totalLeads;
+        document.getElementById('qualifiedLeads').textContent = qualifiedLeads;
+        document.getElementById('pendingFollowup').textContent = pendingFollowup;
+        document.getElementById('requestLeads').textContent = requestLeads;
+    }
+
+    // Fungsi untuk merender tabel dengan data yang difilter
+    function renderFilteredTable(filteredData) {
+        const tableBody = document.getElementById('leadsTableBody');
+        const noLeads = document.getElementById('noLeads');
+        
+        if (filteredData.length === 0) {
+            if (tableBody) tableBody.innerHTML = '';
+            if (noLeads) {
+                noLeads.style.display = 'block';
+                noLeads.querySelector('h3').textContent = 'Tidak Ada Data Sesuai Filter';
+                noLeads.querySelector('p').textContent = 'Coba ubah kriteria filter Anda.';
+            }
+            return;
         }
+        
+        if (noLeads) noLeads.style.display = 'none';
+        if (tableBody) tableBody.innerHTML = '';
+        
+        filteredData.forEach(lead => {
+            const row = document.createElement('tr');
+            
+            // Format tanggal
+            const tanggalMasuk = lead.tanggalMasuk ? 
+                (lead.tanggalMasuk.includes('-') ? 
+                    new Date(lead.tanggalMasuk).toLocaleDateString('id-ID') : 
+                    lead.tanggalMasuk) : '-';
+            
+            // Status badge untuk qualification
+            let qualificationClass = '';
+            switch(lead.leadQualification) {
+                case 'Hot':
+                    qualificationClass = 'status-converted';
+                    break;
+                case 'Warm':
+                    qualificationClass = 'status-contacted';
+                    break;
+                case 'Cold':
+                    qualificationClass = 'status-new';
+                    break;
+                case 'Qualified':
+                    qualificationClass = 'status-converted';
+                    break;
+                case 'Not Qualified':
+                    qualificationClass = 'status-lost';
+                    break;
+                default:
+                    qualificationClass = 'status-new';
+            }
+            
+            // Badge untuk Leads/Follow
+            let leadsFollowClass = '';
+            let leadsFollowText = lead.leadsFollow || '-';
+            if (lead.leadsFollow === 'Leads') {
+                leadsFollowClass = 'status-converted';
+            } else if (lead.leadsFollow === 'Follow') {
+                leadsFollowClass = 'status-contacted';
+            }
+            
+            row.innerHTML = `
+                <td>${tanggalMasuk}</td>
+                <td>${lead.platform || '-'}</td>
+                <td>${lead.contactUsername || '-'}</td>
+                <td>
+                    ${lead.screenshotUrl ? 
+                        `<a href="${lead.screenshotUrl}" target="_blank" class="screenshot-link" onclick="event.preventDefault(); window.open(this.href, '_blank');">
+                            <i class="fas fa-image"></i> Lihat
+                        </a>` : 
+                        '-'}
+                </td>
+                <td>${lead.namaCSS || '-'}</td>
+                <td>
+                    <span class="status-badge ${qualificationClass}">${lead.leadQualification || '-'}</span>
+                </td>
+                <td>
+                    <span class="status-badge ${leadsFollowClass}">${leadsFollowText}</span>
+                </td>
+                <td>${lead.reason || '-'}</td>
+                <td>${lead.requestLeads || '-'}</td>
+                <td>${lead.followUp1 || '-'}</td>
+                <td>${lead.followUp2 || '-'}</td>
+                <td>${lead.followUp3 || '-'}</td>
+                <td>${lead.followUp4 || '-'}</td>
+                <td>${lead.followUp5 || '-'}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn btn-edit btn-sm edit-btn" data-id="${lead.id}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm delete-btn" data-id="${lead.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            `;
+            
+            tableBody.appendChild(row);
+        });
+        
+        // Tambahkan event listener untuk tombol
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const leadId = this.getAttribute('data-id');
+                openEditModal(leadId);
+            });
+        });
+        
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const leadId = this.getAttribute('data-id');
+                currentLeadId = leadId;
+                document.getElementById('deleteModal').classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+    }
 
-        // Fungsi untuk test URL screenshot
-        function testScreenshotUrl() {
-            const url = document.getElementById('screenshotUrl').value;
-            if (url) {
-                document.getElementById('previewImage').src = url;
+    // Fungsi untuk menampilkan tabel leads
+    function renderLeadsTable() {
+        renderFilteredTable(leadsData);
+    }
+
+    // Fungsi untuk membuka modal tambah
+    function openAddModal() {
+        document.getElementById('modalTitle').innerHTML = '<i class="fas fa-plus"></i> Tambah Lead Baru';
+        document.getElementById('leadForm').reset();
+        document.getElementById('leadId').value = '';
+        document.getElementById('screenshotPreview').classList.remove('show');
+        
+        // Set default tanggal hari ini
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('tanggalMasuk').value = today;
+        
+        // Pastikan dropdown CSS sudah terisi
+        if (document.getElementById('namaCSS').options.length <= 1) {
+            populateCSSDropdowns();
+        }
+        
+        document.getElementById('leadModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Fungsi untuk membuka modal edit
+    async function openEditModal(leadId) {
+        try {
+            const doc = await db.collection('promosiLeads').doc(leadId).get();
+            
+            if (!doc.exists) {
+                showToast('Lead tidak ditemukan!', 'error');
+                return;
+            }
+            
+            const lead = doc.data();
+            
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Lead';
+            document.getElementById('leadId').value = leadId;
+            
+            // Isi form dengan data
+            document.getElementById('tanggalMasuk').value = lead.tanggalMasuk || '';
+            document.getElementById('platform').value = lead.platform || '';
+            document.getElementById('contactUsername').value = lead.contactUsername || '';
+            document.getElementById('screenshotUrl').value = lead.screenshotUrl || '';
+            
+            // Tampilkan preview jika ada URL
+            if (lead.screenshotUrl) {
+                document.getElementById('previewImage').src = lead.screenshotUrl;
                 document.getElementById('screenshotPreview').classList.add('show');
             } else {
                 document.getElementById('screenshotPreview').classList.remove('show');
             }
-        }
-
-        // Fungsi untuk export ke Excel (CSV)
-        function exportToExcel() {
-            const headers = [
-                'Tanggal Masuk',
-                'Platform',
-                'Contact Username',
-                'Screenshot Chat',
-                'Nama CSS',
-                'Lead Qualification',
-                'Leads / Follow',
-                'Reason',
-                'Request Leads',
-                'Follow Up 1',
-                'Follow Up 2',
-                'Follow Up 3',
-                'Follow Up 4',
-                'Follow Up 5'
-            ];
             
-            let csvContent = headers.join(',') + '\n';
-            
-            leadsData.forEach(lead => {
-                const row = [
-                    lead.tanggalMasuk || '',
-                    lead.platform || '',
-                    lead.contactUsername || '',
-                    lead.screenshotUrl || '',
-                    lead.namaCSS || '',
-                    lead.leadQualification || '',
-                    lead.leadsFollow || '',
-                    (lead.reason || '').replace(/,/g, ';'),
-                    (lead.requestLeads || '').replace(/,/g, ';'),
-                    (lead.followUp1 || '').replace(/,/g, ';'),
-                    (lead.followUp2 || '').replace(/,/g, ';'),
-                    (lead.followUp3 || '').replace(/,/g, ';'),
-                    (lead.followUp4 || '').replace(/,/g, ';'),
-                    (lead.followUp5 || '').replace(/,/g, ';')
-                ];
-                
-                csvContent += row.join(',') + '\n';
-            });
-            
-            // Buat dan download file
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `promosi_leads_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showToast('Data berhasil diexport!', 'success');
-        }
-
-        // Fungsi untuk menampilkan toast
-        function showToast(message, type = 'success', duration = 3000) {
-            const existingToast = document.querySelector('.toast-notification');
-            if (existingToast) {
-                existingToast.remove();
+            // Pastikan dropdown CSS terisi sebelum set value
+            if (document.getElementById('namaCSS').options.length <= 1) {
+                await loadCSSData();
             }
             
-            const toast = document.createElement('div');
-            toast.className = `toast-notification ${type}`;
-            toast.innerHTML = `
-                <div class="toast-content">
-                    <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
-                    <span>${message}</span>
-                </div>
-            `;
-
-            document.body.appendChild(toast);
-
-            setTimeout(() => {
-                toast.classList.add('hide');
-                setTimeout(() => {
-                    toast.remove();
-                }, 400);
-            }, duration);
+            document.getElementById('namaCSS').value = lead.namaCSS || '';
+            document.getElementById('leadQualification').value = lead.leadQualification || '';
+            document.getElementById('leadsFollow').value = lead.leadsFollow || '';
+            document.getElementById('reason').value = lead.reason || '';
+            document.getElementById('requestLeads').value = lead.requestLeads || '';
+            document.getElementById('followUp1').value = lead.followUp1 || '';
+            document.getElementById('followUp2').value = lead.followUp2 || '';
+            document.getElementById('followUp3').value = lead.followUp3 || '';
+            document.getElementById('followUp4').value = lead.followUp4 || '';
+            document.getElementById('followUp5').value = lead.followUp5 || '';
+            
+            document.getElementById('leadModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+        } catch (error) {
+            console.error("Error opening edit modal:", error);
+            showToast('Gagal memuat data lead', 'error');
         }
+    }
 
-        // ========== EVENT LISTENERS ==========
-        function setupEventListeners() {
-            // Refresh button
-            document.getElementById('refreshLeads').addEventListener('click', () => {
+    // Fungsi untuk menyimpan lead
+    async function saveLead() {
+        // Validasi form
+        const tanggalMasuk = document.getElementById('tanggalMasuk').value;
+        const platform = document.getElementById('platform').value;
+        const contactUsername = document.getElementById('contactUsername').value;
+        const namaCSS = document.getElementById('namaCSS').value;
+        
+        if (!tanggalMasuk || !platform || !contactUsername || !namaCSS) {
+            showToast('Harap isi semua field yang wajib!', 'error');
+            return;
+        }
+        
+        try {
+            const leadData = {
+                tanggalMasuk: document.getElementById('tanggalMasuk').value || null,
+                platform: document.getElementById('platform').value || null,
+                contactUsername: document.getElementById('contactUsername').value || null,
+                screenshotUrl: document.getElementById('screenshotUrl').value || null,
+                namaCSS: document.getElementById('namaCSS').value || null,
+                leadQualification: document.getElementById('leadQualification').value || null,
+                leadsFollow: document.getElementById('leadsFollow').value || null,
+                reason: document.getElementById('reason').value || null,
+                requestLeads: document.getElementById('requestLeads').value || null,
+                followUp1: document.getElementById('followUp1').value || null,
+                followUp2: document.getElementById('followUp2').value || null,
+                followUp3: document.getElementById('followUp3').value || null,
+                followUp4: document.getElementById('followUp4').value || null,
+                followUp5: document.getElementById('followUp5').value || null,
+                userId: currentUser ? currentUser.uid : null,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            const leadId = document.getElementById('leadId').value;
+            
+            if (leadId) {
+                // Update existing lead
+                await db.collection('promosiLeads').doc(leadId).update(leadData);
+                showToast('Lead berhasil diperbarui!', 'success');
+            } else {
+                // Add new lead
+                leadData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                await db.collection('promosiLeads').add(leadData);
+                showToast('Lead berhasil ditambahkan!', 'success');
+            }
+            
+            // Tutup modal dan reset form
+            document.getElementById('leadModal').classList.remove('active');
+            document.getElementById('leadForm').reset();
+            document.getElementById('screenshotPreview').classList.remove('show');
+            document.body.style.overflow = '';
+            
+            // Perbarui data
+            loadLeadsData();
+            
+        } catch (error) {
+            console.error("Error saving lead:", error);
+            showToast('Gagal menyimpan lead', 'error');
+        }
+    }
+
+    // Fungsi untuk menghapus lead
+    async function deleteLead() {
+        if (!currentLeadId) return;
+        
+        try {
+            await db.collection('promosiLeads').doc(currentLeadId).delete();
+            
+            showToast('Lead berhasil dihapus!', 'success');
+            
+            document.getElementById('deleteModal').classList.remove('active');
+            document.body.style.overflow = '';
+            
+            loadLeadsData();
+            
+        } catch (error) {
+            console.error("Error deleting lead:", error);
+            showToast('Gagal menghapus lead', 'error');
+        }
+    }
+
+    // Fungsi untuk memfilter leads
+    function filterLeads() {
+        const searchTerm = document.getElementById('leadsSearch')?.value.toLowerCase() || '';
+        const platformFilter = document.getElementById('platformFilter')?.value || '';
+        const qualificationFilter = document.getElementById('qualificationFilter')?.value || '';
+        const leadsFollowFilter = document.getElementById('leadsFollowFilter')?.value || '';
+        const cssFilter = document.getElementById('cssFilter')?.value || '';
+        const dateFilter = document.getElementById('dateFilter')?.value || '';
+        
+        let filteredLeads = [...leadsData];
+        
+        if (searchTerm) {
+            filteredLeads = filteredLeads.filter(lead => 
+                (lead.contactUsername && lead.contactUsername.toLowerCase().includes(searchTerm)) ||
+                (lead.reason && lead.reason.toLowerCase().includes(searchTerm)) ||
+                (lead.requestLeads && lead.requestLeads.toLowerCase().includes(searchTerm)) ||
+                (lead.leadsFollow && lead.leadsFollow.toLowerCase().includes(searchTerm)) ||
+                (lead.followUp1 && lead.followUp1.toLowerCase().includes(searchTerm)) ||
+                (lead.followUp2 && lead.followUp2.toLowerCase().includes(searchTerm)) ||
+                (lead.followUp3 && lead.followUp3.toLowerCase().includes(searchTerm)) ||
+                (lead.followUp4 && lead.followUp4.toLowerCase().includes(searchTerm)) ||
+                (lead.followUp5 && lead.followUp5.toLowerCase().includes(searchTerm))
+            );
+        }
+        
+        if (platformFilter) {
+            filteredLeads = filteredLeads.filter(lead => lead.platform === platformFilter);
+        }
+        
+        if (qualificationFilter) {
+            filteredLeads = filteredLeads.filter(lead => lead.leadQualification === qualificationFilter);
+        }
+        
+        if (leadsFollowFilter) {
+            filteredLeads = filteredLeads.filter(lead => lead.leadsFollow === leadsFollowFilter);
+        }
+        
+        if (cssFilter) {
+            filteredLeads = filteredLeads.filter(lead => lead.namaCSS === cssFilter);
+        }
+        
+        if (dateFilter) {
+            filteredLeads = filteredLeads.filter(lead => lead.tanggalMasuk === dateFilter);
+        }
+        
+        renderFilteredTable(filteredLeads);
+    }
+
+    // Fungsi untuk mereset filter
+    function resetFilters() {
+        document.getElementById('leadsSearch').value = '';
+        document.getElementById('platformFilter').value = '';
+        document.getElementById('qualificationFilter').value = '';
+        document.getElementById('leadsFollowFilter').value = '';
+        document.getElementById('cssFilter').value = '';
+        document.getElementById('dateFilter').value = '';
+        
+        renderLeadsTable();
+    }
+
+    // Fungsi untuk test URL screenshot
+    function testScreenshotUrl() {
+        const url = document.getElementById('screenshotUrl').value;
+        if (url) {
+            document.getElementById('previewImage').src = url;
+            document.getElementById('screenshotPreview').classList.add('show');
+        } else {
+            document.getElementById('screenshotPreview').classList.remove('show');
+        }
+    }
+
+    // Fungsi untuk export ke Excel (CSV)
+    function exportToExcel() {
+        const headers = [
+            'Tanggal Masuk',
+            'Platform',
+            'Contact Username',
+            'Screenshot Chat',
+            'Nama CSS',
+            'Lead Qualification',
+            'Leads / Follow',
+            'Reason',
+            'Request Leads',
+            'Follow Up 1',
+            'Follow Up 2',
+            'Follow Up 3',
+            'Follow Up 4',
+            'Follow Up 5'
+        ];
+        
+        let csvContent = headers.join(',') + '\n';
+        
+        leadsData.forEach(lead => {
+            const row = [
+                lead.tanggalMasuk || '',
+                lead.platform || '',
+                lead.contactUsername || '',
+                lead.screenshotUrl || '',
+                lead.namaCSS || '',
+                lead.leadQualification || '',
+                lead.leadsFollow || '',
+                (lead.reason || '').replace(/,/g, ';').replace(/\n/g, ' '),
+                (lead.requestLeads || '').replace(/,/g, ';').replace(/\n/g, ' '),
+                (lead.followUp1 || '').replace(/,/g, ';').replace(/\n/g, ' '),
+                (lead.followUp2 || '').replace(/,/g, ';').replace(/\n/g, ' '),
+                (lead.followUp3 || '').replace(/,/g, ';').replace(/\n/g, ' '),
+                (lead.followUp4 || '').replace(/,/g, ';').replace(/\n/g, ' '),
+                (lead.followUp5 || '').replace(/,/g, ';').replace(/\n/g, ' ')
+            ];
+            
+            csvContent += row.join(',') + '\n';
+        });
+        
+        // Buat dan download file
+        const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' }); // Tambah BOM untuk UTF-8
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `promosi_leads_${new Date().toISOString().split('T')[0]}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        showToast('Data berhasil diexport!', 'success');
+    }
+
+    // Fungsi untuk menampilkan toast
+    function showToast(message, type = 'success', duration = 3000) {
+        const existingToast = document.querySelector('.toast-notification');
+        if (existingToast) {
+            existingToast.remove();
+        }
+        
+        const toast = document.createElement('div');
+        toast.className = `toast-notification ${type}`;
+        toast.innerHTML = `
+            <div class="toast-content">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add('hide');
+            setTimeout(() => {
+                toast.remove();
+            }, 400);
+        }, duration);
+    }
+
+    // ========== EVENT LISTENERS ==========
+    function setupEventListeners() {
+        console.log("Setting up event listeners...");
+        
+        // Refresh button
+        const refreshBtn = document.getElementById('refreshLeads');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', () => {
                 loadLeadsData();
                 showToast('Data leads diperbarui!', 'success');
             });
-            
-            // Export button
-            document.getElementById('exportExcel').addEventListener('click', exportToExcel);
-            
-            // Add lead button
-            document.getElementById('addLeadBtn').addEventListener('click', openAddModal);
-            document.getElementById('addFirstLead').addEventListener('click', openAddModal);
-            
-            // Save lead
-            document.getElementById('saveLead').addEventListener('click', saveLead);
-            
-            // Cancel modal
-            document.getElementById('cancelModal').addEventListener('click', () => {
+        }
+        
+        // Export button
+        const exportBtn = document.getElementById('exportExcel');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', exportToExcel);
+        }
+        
+        // Add lead button
+        const addBtn = document.getElementById('addLeadBtn');
+        if (addBtn) {
+            addBtn.addEventListener('click', openAddModal);
+        }
+        
+        const addFirstBtn = document.getElementById('addFirstLead');
+        if (addFirstBtn) {
+            addFirstBtn.addEventListener('click', openAddModal);
+        }
+        
+        // Save lead
+        const saveBtn = document.getElementById('saveLead');
+        if (saveBtn) {
+            saveBtn.addEventListener('click', saveLead);
+        }
+        
+        // Cancel modal
+        const cancelBtn = document.getElementById('cancelModal');
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', () => {
                 document.getElementById('leadModal').classList.remove('active');
                 document.getElementById('leadForm').reset();
                 document.getElementById('screenshotPreview').classList.remove('show');
                 document.body.style.overflow = '';
             });
-            
-            document.getElementById('closeModal').addEventListener('click', () => {
+        }
+        
+        const closeBtn = document.getElementById('closeModal');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
                 document.getElementById('leadModal').classList.remove('active');
                 document.getElementById('leadForm').reset();
                 document.getElementById('screenshotPreview').classList.remove('show');
                 document.body.style.overflow = '';
             });
-            
-            // Test URL button
-            document.getElementById('testScreenshotUrl').addEventListener('click', testScreenshotUrl);
-            
-            // Preview on URL change
-            document.getElementById('screenshotUrl').addEventListener('input', function() {
+        }
+        
+        // Test URL button
+        const testUrlBtn = document.getElementById('testScreenshotUrl');
+        if (testUrlBtn) {
+            testUrlBtn.addEventListener('click', testScreenshotUrl);
+        }
+        
+        // Preview on URL change
+        const screenshotUrl = document.getElementById('screenshotUrl');
+        if (screenshotUrl) {
+            screenshotUrl.addEventListener('input', function() {
                 if (!this.value) {
                     document.getElementById('screenshotPreview').classList.remove('show');
                 }
             });
-            
-            // Image modal
-            document.getElementById('closeImageModal').addEventListener('click', () => {
+        }
+        
+        // Image modal close
+        const closeImageModal = document.getElementById('closeImageModal');
+        if (closeImageModal) {
+            closeImageModal.addEventListener('click', () => {
                 document.getElementById('imageModal').classList.remove('active');
                 document.body.style.overflow = '';
-            });
-            
-            document.getElementById('closeImageBtn').addEventListener('click', () => {
-                document.getElementById('imageModal').classList.remove('active');
-                document.body.style.overflow = '';
-            });
-            
-            // Delete modal
-            document.getElementById('confirmDelete').addEventListener('click', deleteLead);
-            
-            document.getElementById('cancelDelete').addEventListener('click', () => {
-                document.getElementById('deleteModal').classList.remove('active');
-                document.body.style.overflow = '';
-            });
-            
-            document.getElementById('closeDeleteModal').addEventListener('click', () => {
-                document.getElementById('deleteModal').classList.remove('active');
-                document.body.style.overflow = '';
-            });
-            
-            // Filter events
-            document.getElementById('leadsSearch').addEventListener('input', filterLeads);
-            document.getElementById('platformFilter').addEventListener('change', filterLeads);
-            document.getElementById('qualificationFilter').addEventListener('change', filterLeads);
-            document.getElementById('leadsFollowFilter').addEventListener('change', filterLeads);
-            document.getElementById('cssFilter').addEventListener('change', filterLeads);
-            document.getElementById('dateFilter').addEventListener('change', filterLeads);
-            
-            // Reset filters
-            document.getElementById('resetFilters').addEventListener('click', resetFilters);
-            
-            // Prevent modal close when clicking inside
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.addEventListener('click', (e) => e.stopPropagation());
             });
         }
-
-        // ========== INISIALISASI ==========
-        document.addEventListener('DOMContentLoaded', function() {
-            checkAuthState();
+        
+        const closeImageBtn = document.getElementById('closeImageBtn');
+        if (closeImageBtn) {
+            closeImageBtn.addEventListener('click', () => {
+                document.getElementById('imageModal').classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        }
+        
+        // Delete modal
+        const confirmDelete = document.getElementById('confirmDelete');
+        if (confirmDelete) {
+            confirmDelete.addEventListener('click', deleteLead);
+        }
+        
+        const cancelDelete = document.getElementById('cancelDelete');
+        if (cancelDelete) {
+            cancelDelete.addEventListener('click', () => {
+                document.getElementById('deleteModal').classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        }
+        
+        const closeDeleteModal = document.getElementById('closeDeleteModal');
+        if (closeDeleteModal) {
+            closeDeleteModal.addEventListener('click', () => {
+                document.getElementById('deleteModal').classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        }
+        
+        // Filter events
+        const leadsSearch = document.getElementById('leadsSearch');
+        if (leadsSearch) {
+            leadsSearch.addEventListener('input', filterLeads);
+        }
+        
+        const platformFilter = document.getElementById('platformFilter');
+        if (platformFilter) {
+            platformFilter.addEventListener('change', filterLeads);
+        }
+        
+        const qualificationFilter = document.getElementById('qualificationFilter');
+        if (qualificationFilter) {
+            qualificationFilter.addEventListener('change', filterLeads);
+        }
+        
+        const leadsFollowFilter = document.getElementById('leadsFollowFilter');
+        if (leadsFollowFilter) {
+            leadsFollowFilter.addEventListener('change', filterLeads);
+        }
+        
+        const cssFilter = document.getElementById('cssFilter');
+        if (cssFilter) {
+            cssFilter.addEventListener('change', filterLeads);
+        }
+        
+        const dateFilter = document.getElementById('dateFilter');
+        if (dateFilter) {
+            dateFilter.addEventListener('change', filterLeads);
+        }
+        
+        // Reset filters
+        const resetFiltersBtn = document.getElementById('resetFilters');
+        if (resetFiltersBtn) {
+            resetFiltersBtn.addEventListener('click', resetFilters);
+        }
+        
+        // Prevent modal close when clicking inside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => e.stopPropagation());
         });
-    </script>
+    }
+
+    // ========== INISIALISASI ==========
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("DOM loaded, initializing...");
+        checkAuthState();
+        
+        // Debug: cek elemen dropdown setelah DOM siap
+        setTimeout(() => {
+            console.log("namaCSS element:", document.getElementById('namaCSS'));
+            console.log("cssFilter element:", document.getElementById('cssFilter'));
+        }, 1000);
+    });
+</script>
 </body>
 </html>

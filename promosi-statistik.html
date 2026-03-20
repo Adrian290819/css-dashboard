@@ -1067,31 +1067,42 @@
                                     break;
                             }
                         }
-                        
-                        // Hitung follow up dari notesFU
-                        if (lead.notesFU) {
-                            const notes = lead.notesFU.toLowerCase();
-                            if (notes.includes('follow up 1') || notes.includes('fu 1')) {
-                                cssStats[key].followUp1++;
-                            }
-                            if (notes.includes('follow up 2') || notes.includes('fu 2')) {
-                                cssStats[key].followUp2++;
-                            }
-                            if (notes.includes('follow up 3') || notes.includes('fu 3')) {
-                                cssStats[key].followUp3++;
-                            }
-                            if (notes.includes('follow up 4') || notes.includes('fu 4')) {
-                                cssStats[key].followUp4++;
-                            }
-                            if (notes.includes('follow up 5') || notes.includes('fu 5')) {
-                                cssStats[key].followUp5++;
-                            }
-                            
-                            // Deteksi closingan
-                            if (notes.includes('closing') || notes.includes('deal') || notes.includes('berhasil')) {
-                                cssStats[key].closingan++;
-                            }
-                        }
+
+                        // ===== PERBAIKAN: Hitung follow up 1-5 dari field baru =====
+if (lead.followUp1 && lead.followUp1.trim() !== '') {
+    cssStats[key].followUp1++;
+}
+if (lead.followUp2 && lead.followUp2.trim() !== '') {
+    cssStats[key].followUp2++;
+}
+if (lead.followUp3 && lead.followUp3.trim() !== '') {
+    cssStats[key].followUp3++;
+}
+if (lead.followUp4 && lead.followUp4.trim() !== '') {
+    cssStats[key].followUp4++;
+}
+if (lead.followUp5 && lead.followUp5.trim() !== '') {
+    cssStats[key].followUp5++;
+}
+
+// ===== PERBAIKAN: Deteksi closingan dari follow up terakhir =====
+// Closingan terdeteksi jika follow up 5 terisi ATAU ada kata kunci di follow up mana pun
+let semuaFollowUp = [
+    lead.followUp1 || '',
+    lead.followUp2 || '',
+    lead.followUp3 || '',
+    lead.followUp4 || '',
+    lead.followUp5 || ''
+].join(' ').toLowerCase();
+
+if (lead.followUp5 || 
+    semuaFollowUp.includes('closing') || 
+    semuaFollowUp.includes('deal') || 
+    semuaFollowUp.includes('berhasil') ||
+    semuaFollowUp.includes('done') ||
+    semuaFollowUp.includes('sukses')) {
+    cssStats[key].closingan++;
+}
                         
                         found = true;
                         break;

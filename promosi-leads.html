@@ -447,14 +447,6 @@
             color: var(--danger);
         }
 
-        .qualification-badge {
-            padding: 2px 6px;
-            border-radius: var(--radius-full);
-            font-size: var(--text-xs);
-            background-color: rgba(67, 97, 238, 0.1);
-            color: var(--primary);
-        }
-
         .action-buttons {
             display: flex;
             gap: 4px;
@@ -840,20 +832,6 @@
                 justify-content: center;
             }
         }
-        .leads-follow-select {
-    background-color: var(--input-bg);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    font-size: var(--text-xs);
-}
-
-.leads-follow-select:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
-}
     </style>
 </head>
 <body>
@@ -969,17 +947,25 @@
                         <option value="Not Qualified">Not Qualified</option>
                     </select>
                 </div>
-<div class="filter-group">
-    <label>Nama CSS</label>
-    <select class="filter-select" id="cssFilter">
-        <option value="">Semua CSS</option>
-        <option value="DANEL">DANEL</option>
-        <option value="ADRIAN ABDUL ARIF">ADRIAN</option>
-        <option value="ANDRI FIRMANSYAH">ANDRI</option>
-        <option value="AHMAD BAIHAQI">BAIHAQI</option>
-        <option value="DICKY ADE CHANDRA">DICKY</option>
-    </select>
-</div>
+                <div class="filter-group">
+                    <label>Leads / Follow</label>
+                    <select class="filter-select" id="leadsFollowFilter">
+                        <option value="">Semua</option>
+                        <option value="Leads">Leads</option>
+                        <option value="Follow">Follow</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Nama CSS</label>
+                    <select class="filter-select" id="cssFilter">
+                        <option value="">Semua CSS</option>
+                        <option value="DANEL">DANEL</option>
+                        <option value="ADRIAN ABDUL ARIF">ADRIAN</option>
+                        <option value="ANDRI FIRMANSYAH">ANDRI</option>
+                        <option value="AHMAD BAIHAQI">BAIHAQI</option>
+                        <option value="DICKY ADE CHANDRA">DICKY</option>
+                    </select>
+                </div>
                 <div class="filter-group">
                     <label>Tanggal Masuk</label>
                     <input type="date" class="filter-input" id="dateFilter">
@@ -1007,24 +993,24 @@
             <div class="table-container">
                 <table class="leads-table" id="leadsTable">
                     <thead>
-    <tr>
-        <th>Tanggal Masuk</th>
-        <th>Platform</th>
-        <th>Contact Username</th>
-        <th>Screenshot Chat</th>
-        <th>Nama CSS</th>
-        <th>Lead Qualification</th>
-        <th>Leads / Follow</th> <!-- KOLOM BARU -->
-        <th>Reason</th>
-        <th>Request Leads</th> <!-- DIPINDAHKAN KE SINI -->
-        <th>Follow Up 1</th>
-        <th>Follow Up 2</th>
-        <th>Follow Up 3</th>
-        <th>Follow Up 4</th>
-        <th>Follow Up 5</th>
-        <th>Aksi</th>
-    </tr>
-</thead>
+                        <tr>
+                            <th>Tanggal Masuk</th>
+                            <th>Platform</th>
+                            <th>Contact Username</th>
+                            <th>Screenshot Chat</th>
+                            <th>Nama CSS</th>
+                            <th>Lead Qualification</th>
+                            <th>Leads / Follow</th>
+                            <th>Reason</th>
+                            <th>Request Leads</th>
+                            <th>Follow Up 1</th>
+                            <th>Follow Up 2</th>
+                            <th>Follow Up 3</th>
+                            <th>Follow Up 4</th>
+                            <th>Follow Up 5</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
                     <tbody id="leadsTableBody">
                         <!-- Data akan dimuat secara dinamis -->
                     </tbody>
@@ -1092,78 +1078,73 @@
                             </div>
                         </div>
                         
-<div class="form-group">
-    <label>Nama CSS *</label>
-    <select class="form-control" id="namaCSS" required>
-        <option value="">Pilih CSS</option>
-        <option value="DANEL">DANEL</option>
-        <option value="ADRIAN ABDUL ARIF">ADRIAN</option>
-        <option value="ANDRI FIRMANSYAH">ANDRI</option>
-        <option value="AHMAD BAIHAQI">BAIHAQI</option>
-        <option value="DICKY ADE CHANDRA">DICKY</option>
-    </select>
-</div>
+                        <div class="form-group">
+                            <label>Nama CSS *</label>
+                            <select class="form-control" id="namaCSS" required>
+                                <option value="">Pilih CSS</option>
+                                <option value="DANEL">DANEL</option>
+                                <option value="ADRIAN ABDUL ARIF">ADRIAN</option>
+                                <option value="ANDRI FIRMANSYAH">ANDRI</option>
+                                <option value="AHMAD BAIHAQI">BAIHAQI</option>
+                                <option value="DICKY ADE CHANDRA">DICKY</option>
+                            </select>
+                        </div>
                         
                         <div class="form-group">
-    <label>Lead Qualification</label>
-    <select class="form-control" id="leadQualification">
-        <option value="">Pilih Kualifikasi</option>
-        <option value="Hot">Hot</option>
-        <option value="Warm">Warm</option>
-        <option value="Cold">Cold</option>
-        <option value="Qualified">Qualified</option>
-        <option value="Not Qualified">Not Qualified</option>
-    </select>
-</div>
+                            <label>Lead Qualification</label>
+                            <select class="form-control" id="leadQualification">
+                                <option value="">Pilih Kualifikasi</option>
+                                <option value="Hot">Hot</option>
+                                <option value="Warm">Warm</option>
+                                <option value="Cold">Cold</option>
+                                <option value="Qualified">Qualified</option>
+                                <option value="Not Qualified">Not Qualified</option>
+                            </select>
+                        </div>
 
-<!-- KOLOM BARU: Leads / Follow -->
-<div class="form-group">
-    <label>Leads / Follow</label>
-    <select class="form-control" id="leadsFollow">
-        <option value="">Pilih Status</option>
-        <option value="Leads">Leads</option>
-        <option value="Follow">Follow</option>
-    </select>
-</div>
+                        <div class="form-group">
+                            <label>Leads / Follow</label>
+                            <select class="form-control" id="leadsFollow">
+                                <option value="">Pilih Status</option>
+                                <option value="Leads">Leads</option>
+                                <option value="Follow">Follow</option>
+                            </select>
+                        </div>
 
-<div class="form-group full-width">
-    <label>Reason</label>
-    <textarea class="form-control" id="reason" rows="2" placeholder="Alasan kualifikasi..."></textarea>
-</div>
+                        <div class="form-group full-width">
+                            <label>Reason</label>
+                            <textarea class="form-control" id="reason" rows="2" placeholder="Alasan kualifikasi..."></textarea>
+                        </div>
 
-<!-- REQUEST LEADS DIPINDAHKAN KE BAWAH REASON -->
-<div class="form-group full-width">
-    <label>Request Leads</label>
-    <textarea class="form-control" id="requestLeads" rows="2" placeholder="Jenis request..."></textarea>
-</div>
+                        <div class="form-group full-width">
+                            <label>Request Leads</label>
+                            <textarea class="form-control" id="requestLeads" rows="2" placeholder="Jenis request..."></textarea>
+                        </div>
 
+                        <div class="form-group full-width">
+                            <label>Follow Up 1</label>
+                            <textarea class="form-control" id="followUp1" rows="2" placeholder="Deskripsi follow up 1..."></textarea>
+                        </div>
 
-<!-- PERUBAHAN: Hapus Notes FU, ganti dengan Follow Up 1-5 -->
-<div class="form-group full-width">
-    <label>Follow Up 1</label>
-    <textarea class="form-control" id="followUp1" rows="2" placeholder="Deskripsi follow up 1..."></textarea>
-</div>
+                        <div class="form-group full-width">
+                            <label>Follow Up 2</label>
+                            <textarea class="form-control" id="followUp2" rows="2" placeholder="Deskripsi follow up 2..."></textarea>
+                        </div>
 
-<div class="form-group full-width">
-    <label>Follow Up 2</label>
-    <textarea class="form-control" id="followUp2" rows="2" placeholder="Deskripsi follow up 2..."></textarea>
-</div>
+                        <div class="form-group full-width">
+                            <label>Follow Up 3</label>
+                            <textarea class="form-control" id="followUp3" rows="2" placeholder="Deskripsi follow up 3..."></textarea>
+                        </div>
 
-<div class="form-group full-width">
-    <label>Follow Up 3</label>
-    <textarea class="form-control" id="followUp3" rows="2" placeholder="Deskripsi follow up 3..."></textarea>
-</div>
+                        <div class="form-group full-width">
+                            <label>Follow Up 4</label>
+                            <textarea class="form-control" id="followUp4" rows="2" placeholder="Deskripsi follow up 4..."></textarea>
+                        </div>
 
-<div class="form-group full-width">
-    <label>Follow Up 4</label>
-    <textarea class="form-control" id="followUp4" rows="2" placeholder="Deskripsi follow up 4..."></textarea>
-</div>
-
-<div class="form-group full-width">
-    <label>Follow Up 5</label>
-    <textarea class="form-control" id="followUp5" rows="2" placeholder="Deskripsi follow up 5..."></textarea>
-</div>
-
+                        <div class="form-group full-width">
+                            <label>Follow Up 5</label>
+                            <textarea class="form-control" id="followUp5" rows="2" placeholder="Deskripsi follow up 5..."></textarea>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -1324,18 +1305,10 @@
                 lead.leadQualification === 'Qualified' || lead.leadQualification === 'Hot'
             ).length;
             const pendingFollowup = leadsData.filter(lead => {
-                // Cek apakah ada follow up yang belum dilakukan
-                const now = new Date();
                 const followUps = ['followUp1', 'followUp2', 'followUp3', 'followUp4', 'followUp5'];
-                return followUps.some(fu => {
-                    if (lead[fu]) {
-                        const fuDate = new Date(lead[fu]);
-                        return fuDate > now;
-                    }
-                    return false;
-                });
+                return followUps.some(fu => lead[fu] && lead[fu].trim() !== '');
             }).length;
-            const requestLeads = leadsData.filter(lead => lead.requestLeads).length;
+            const requestLeads = leadsData.filter(lead => lead.requestLeads && lead.requestLeads.trim() !== '').length;
             
             document.getElementById('totalLeads').textContent = totalLeads;
             document.getElementById('qualifiedLeads').textContent = qualifiedLeads;
@@ -1343,21 +1316,25 @@
             document.getElementById('requestLeads').textContent = requestLeads;
         }
 
-        // Fungsi untuk menampilkan tabel leads
-        function renderLeadsTable() {
+        // Fungsi untuk merender tabel dengan data yang difilter
+        function renderFilteredTable(filteredData) {
             const tableBody = document.getElementById('leadsTableBody');
             const noLeads = document.getElementById('noLeads');
             
-            if (leadsData.length === 0) {
+            if (filteredData.length === 0) {
                 if (tableBody) tableBody.innerHTML = '';
-                if (noLeads) noLeads.style.display = 'block';
+                if (noLeads) {
+                    noLeads.style.display = 'block';
+                    noLeads.querySelector('h3').textContent = 'Tidak Ada Data Sesuai Filter';
+                    noLeads.querySelector('p').textContent = 'Coba ubah kriteria filter Anda.';
+                }
                 return;
             }
             
             if (noLeads) noLeads.style.display = 'none';
             if (tableBody) tableBody.innerHTML = '';
             
-            leadsData.forEach(lead => {
+            filteredData.forEach(lead => {
                 const row = document.createElement('tr');
                 
                 // Format tanggal
@@ -1385,46 +1362,51 @@
                         qualificationClass = 'status-new';
                 }
                 
-               row.innerHTML = `
-    <td>${tanggalMasuk}</td>
-    <td>${lead.platform || '-'}</td>
-    <td>${lead.contactUsername || '-'}</td>
-    <td>
-        ${lead.screenshotUrl ? 
-            `<a href="${lead.screenshotUrl}" target="_blank" class="screenshot-link">
-                <i class="fas fa-image"></i> Lihat
-            </a>` : 
-            '-'}
-    </td>
-    <td>${lead.namaCSS || '-'}</td>
-    <td>
-        <span class="status-badge ${qualificationClass}">${lead.leadQualification || '-'}</span>
-    </td>
-    <td>
-        <select class="filter-select leads-follow-select" data-id="${lead.id}" style="width: 130px; padding: 4px;" onchange="updateLeadsFollow(this)">
-            <option value="">Pilih Status</option>
-            <option value="Leads" ${lead.leadsFollow === 'Leads' ? 'selected' : ''}>Leads</option>
-            <option value="Follow" ${lead.leadsFollow === 'Follow' ? 'selected' : ''}>Follow</option>
-        </select>
-    </td>
-    <td>${lead.reason || '-'}</td>
-    <td>${lead.requestLeads || '-'}</td>
-    <td>${lead.followUp1 || '-'}</td>
-    <td>${lead.followUp2 || '-'}</td>
-    <td>${lead.followUp3 || '-'}</td>
-    <td>${lead.followUp4 || '-'}</td>
-    <td>${lead.followUp5 || '-'}</td>
-    <td>
-        <div class="action-buttons">
-            <button class="btn btn-edit btn-sm edit-btn" data-id="${lead.id}">
-                <i class="fas fa-edit"></i>
-            </button>
-            <button class="btn btn-danger btn-sm delete-btn" data-id="${lead.id}">
-                <i class="fas fa-trash"></i>
-            </button>
-        </div>
-    </td>
-`;
+                // Badge untuk Leads/Follow
+                let leadsFollowClass = '';
+                let leadsFollowText = lead.leadsFollow || '-';
+                if (lead.leadsFollow === 'Leads') {
+                    leadsFollowClass = 'status-converted';
+                } else if (lead.leadsFollow === 'Follow') {
+                    leadsFollowClass = 'status-contacted';
+                }
+                
+                row.innerHTML = `
+                    <td>${tanggalMasuk}</td>
+                    <td>${lead.platform || '-'}</td>
+                    <td>${lead.contactUsername || '-'}</td>
+                    <td>
+                        ${lead.screenshotUrl ? 
+                            `<a href="${lead.screenshotUrl}" target="_blank" class="screenshot-link">
+                                <i class="fas fa-image"></i> Lihat
+                            </a>` : 
+                            '-'}
+                    </td>
+                    <td>${lead.namaCSS || '-'}</td>
+                    <td>
+                        <span class="status-badge ${qualificationClass}">${lead.leadQualification || '-'}</span>
+                    </td>
+                    <td>
+                        <span class="status-badge ${leadsFollowClass}">${leadsFollowText}</span>
+                    </td>
+                    <td>${lead.reason || '-'}</td>
+                    <td>${lead.requestLeads || '-'}</td>
+                    <td>${lead.followUp1 || '-'}</td>
+                    <td>${lead.followUp2 || '-'}</td>
+                    <td>${lead.followUp3 || '-'}</td>
+                    <td>${lead.followUp4 || '-'}</td>
+                    <td>${lead.followUp5 || '-'}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-edit btn-sm edit-btn" data-id="${lead.id}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm delete-btn" data-id="${lead.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
                 
                 tableBody.appendChild(row);
             });
@@ -1447,6 +1429,11 @@
             });
         }
 
+        // Fungsi untuk menampilkan tabel leads
+        function renderLeadsTable() {
+            renderFilteredTable(leadsData);
+        }
+
         // Fungsi untuk membuka modal tambah
         function openAddModal() {
             document.getElementById('modalTitle').innerHTML = '<i class="fas fa-plus"></i> Tambah Lead Baru';
@@ -1461,24 +1448,7 @@
             document.getElementById('leadModal').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
-// Fungsi untuk mengupdate Leads/Follow
-async function updateLeadsFollow(selectElement) {
-    const leadId = selectElement.getAttribute('data-id');
-    const value = selectElement.value;
-    
-    try {
-        await db.collection('promosiLeads').doc(leadId).update({
-            leadsFollow: value,
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        
-        showToast('Status Leads/Follow berhasil diperbarui!', 'success');
-        
-    } catch (error) {
-        console.error("Error updating leadsFollow:", error);
-        showToast('Gagal memperbarui status', 'error');
-    }
-}
+
         // Fungsi untuk membuka modal edit
         async function openEditModal(leadId) {
             try {
@@ -1510,16 +1480,14 @@ async function updateLeadsFollow(selectElement) {
                 
                 document.getElementById('namaCSS').value = lead.namaCSS || '';
                 document.getElementById('leadQualification').value = lead.leadQualification || '';
-document.getElementById('leadsFollow').value = lead.leadsFollow || ''; // KOLOM BARU
-document.getElementById('reason').value = lead.reason || '';
-document.getElementById('requestLeads').value = lead.requestLeads || ''; // DIPINDAHKAN
-document.getElementById('followUp1').value = lead.followUp1 || '';
-document.getElementById('followUp2').value = lead.followUp2 || '';
-document.getElementById('followUp3').value = lead.followUp3 || '';
-document.getElementById('followUp4').value = lead.followUp4 || '';
-document.getElementById('followUp5').value = lead.followUp5 || '';
-document.getElementById('requestLeads').value = lead.requestLeads || '';
-                document.getElementById('leads').value = lead.leads || '';
+                document.getElementById('leadsFollow').value = lead.leadsFollow || '';
+                document.getElementById('reason').value = lead.reason || '';
+                document.getElementById('requestLeads').value = lead.requestLeads || '';
+                document.getElementById('followUp1').value = lead.followUp1 || '';
+                document.getElementById('followUp2').value = lead.followUp2 || '';
+                document.getElementById('followUp3').value = lead.followUp3 || '';
+                document.getElementById('followUp4').value = lead.followUp4 || '';
+                document.getElementById('followUp5').value = lead.followUp5 || '';
                 
                 document.getElementById('leadModal').classList.add('active');
                 document.body.style.overflow = 'hidden';
@@ -1545,23 +1513,24 @@ document.getElementById('requestLeads').value = lead.requestLeads || '';
             
             try {
                 const leadData = {
-    tanggalMasuk: document.getElementById('tanggalMasuk').value || null,
-    platform: document.getElementById('platform').value || null,
-    contactUsername: document.getElementById('contactUsername').value || null,
-    screenshotUrl: document.getElementById('screenshotUrl').value || null,
-    namaCSS: document.getElementById('namaCSS').value || null,
-    leadQualification: document.getElementById('leadQualification').value || null,
-    leadsFollow: document.getElementById('leadsFollow').value || null, // KOLOM BARU
-    reason: document.getElementById('reason').value || null,
-    requestLeads: document.getElementById('requestLeads').value || null, // DIPINDAHKAN
-    followUp1: document.getElementById('followUp1').value || null,
-    followUp2: document.getElementById('followUp2').value || null,
-    followUp3: document.getElementById('followUp3').value || null,
-    followUp4: document.getElementById('followUp4').value || null,
-    followUp5: document.getElementById('followUp5').value || null,
-    userId: currentUser ? currentUser.uid : null,
-    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-};         
+                    tanggalMasuk: document.getElementById('tanggalMasuk').value || null,
+                    platform: document.getElementById('platform').value || null,
+                    contactUsername: document.getElementById('contactUsername').value || null,
+                    screenshotUrl: document.getElementById('screenshotUrl').value || null,
+                    namaCSS: document.getElementById('namaCSS').value || null,
+                    leadQualification: document.getElementById('leadQualification').value || null,
+                    leadsFollow: document.getElementById('leadsFollow').value || null,
+                    reason: document.getElementById('reason').value || null,
+                    requestLeads: document.getElementById('requestLeads').value || null,
+                    followUp1: document.getElementById('followUp1').value || null,
+                    followUp2: document.getElementById('followUp2').value || null,
+                    followUp3: document.getElementById('followUp3').value || null,
+                    followUp4: document.getElementById('followUp4').value || null,
+                    followUp5: document.getElementById('followUp5').value || null,
+                    userId: currentUser ? currentUser.uid : null,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
                 const leadId = document.getElementById('leadId').value;
                 
                 if (leadId) {
@@ -1615,35 +1584,36 @@ document.getElementById('requestLeads').value = lead.requestLeads || '';
             const searchTerm = document.getElementById('leadsSearch')?.value.toLowerCase() || '';
             const platformFilter = document.getElementById('platformFilter')?.value || '';
             const qualificationFilter = document.getElementById('qualificationFilter')?.value || '';
+            const leadsFollowFilter = document.getElementById('leadsFollowFilter')?.value || '';
             const cssFilter = document.getElementById('cssFilter')?.value || '';
-            const followUpFilter = document.getElementById('followUpFilter')?.value || '';
             const dateFilter = document.getElementById('dateFilter')?.value || '';
             
-            let filteredLeads = leadsData;
+            let filteredLeads = [...leadsData];
             
             if (searchTerm) {
                 filteredLeads = filteredLeads.filter(lead => 
                     (lead.contactUsername && lead.contactUsername.toLowerCase().includes(searchTerm)) ||
-                    (lead.leads && lead.leads.toLowerCase().includes(searchTerm)) ||
-                    (lead.notesFU && lead.notesFU.toLowerCase().includes(searchTerm)) ||
-                    (lead.reason && lead.reason.toLowerCase().includes(searchTerm))
+                    (lead.reason && lead.reason.toLowerCase().includes(searchTerm)) ||
+                    (lead.requestLeads && lead.requestLeads.toLowerCase().includes(searchTerm)) ||
+                    (lead.leadsFollow && lead.leadsFollow.toLowerCase().includes(searchTerm)) ||
+                    (lead.followUp1 && lead.followUp1.toLowerCase().includes(searchTerm)) ||
+                    (lead.followUp2 && lead.followUp2.toLowerCase().includes(searchTerm)) ||
+                    (lead.followUp3 && lead.followUp3.toLowerCase().includes(searchTerm)) ||
+                    (lead.followUp4 && lead.followUp4.toLowerCase().includes(searchTerm)) ||
+                    (lead.followUp5 && lead.followUp5.toLowerCase().includes(searchTerm))
                 );
             }
-            if (followUpFilter === 'hasFollowUp') {
-    filteredLeadsData = filteredLeadsData.filter(lead => 
-        lead.followUp1 || lead.followUp2 || lead.followUp3 || lead.followUp4 || lead.followUp5
-    );
-} else if (followUpFilter === 'noFollowUp') {
-    filteredLeadsData = filteredLeadsData.filter(lead => 
-        !lead.followUp1 && !lead.followUp2 && !lead.followUp3 && !lead.followUp4 && !lead.followUp5
-    );
-}
+            
             if (platformFilter) {
                 filteredLeads = filteredLeads.filter(lead => lead.platform === platformFilter);
             }
             
             if (qualificationFilter) {
                 filteredLeads = filteredLeads.filter(lead => lead.leadQualification === qualificationFilter);
+            }
+            
+            if (leadsFollowFilter) {
+                filteredLeads = filteredLeads.filter(lead => lead.leadsFollow === leadsFollowFilter);
             }
             
             if (cssFilter) {
@@ -1654,12 +1624,15 @@ document.getElementById('requestLeads').value = lead.requestLeads || '';
                 filteredLeads = filteredLeads.filter(lead => lead.tanggalMasuk === dateFilter);
             }
             
+            renderFilteredTable(filteredLeads);
         }
+
         // Fungsi untuk mereset filter
         function resetFilters() {
             document.getElementById('leadsSearch').value = '';
             document.getElementById('platformFilter').value = '';
             document.getElementById('qualificationFilter').value = '';
+            document.getElementById('leadsFollowFilter').value = '';
             document.getElementById('cssFilter').value = '';
             document.getElementById('dateFilter').value = '';
             
@@ -1686,43 +1659,45 @@ document.getElementById('requestLeads').value = lead.requestLeads || '';
 
         // Fungsi untuk export ke Excel (CSV)
         function exportToExcel() {
-    const headers = [
-    'Tanggal Masuk',
-    'Platform',
-    'Contact Username',
-    'Screenshot Chat',
-    'Nama CSS',
-    'Lead Qualification',
-    'Leads / Follow', // KOLOM BARU
-    'Reason',
-    'Request Leads', // DIPINDAHKAN KE SINI
-    'Follow Up 1',
-    'Follow Up 2',
-    'Follow Up 3',
-    'Follow Up 4',
-    'Follow Up 5'
-];
-
-leadsData.forEach(lead => {
-    const row = [
-        lead.tanggalMasuk || '',
-        lead.platform || '',
-        lead.contactUsername || '',
-        lead.screenshotUrl || '',
-        lead.namaCSS || '',
-        lead.leadQualification || '',
-        lead.leadsFollow || '', // KOLOM BARU
-        (lead.reason || '').replace(/,/g, ';'),
-        (lead.requestLeads || '').replace(/,/g, ';'), // DIPINDAHKAN
-        (lead.followUp1 || '').replace(/,/g, ';'),
-        (lead.followUp2 || '').replace(/,/g, ';'),
-        (lead.followUp3 || '').replace(/,/g, ';'),
-        (lead.followUp4 || '').replace(/,/g, ';'),
-        (lead.followUp5 || '').replace(/,/g, ';')
-    ];
-    
-    csvContent += row.join(',') + '\n';
-});
+            const headers = [
+                'Tanggal Masuk',
+                'Platform',
+                'Contact Username',
+                'Screenshot Chat',
+                'Nama CSS',
+                'Lead Qualification',
+                'Leads / Follow',
+                'Reason',
+                'Request Leads',
+                'Follow Up 1',
+                'Follow Up 2',
+                'Follow Up 3',
+                'Follow Up 4',
+                'Follow Up 5'
+            ];
+            
+            let csvContent = headers.join(',') + '\n';
+            
+            leadsData.forEach(lead => {
+                const row = [
+                    lead.tanggalMasuk || '',
+                    lead.platform || '',
+                    lead.contactUsername || '',
+                    lead.screenshotUrl || '',
+                    lead.namaCSS || '',
+                    lead.leadQualification || '',
+                    lead.leadsFollow || '',
+                    (lead.reason || '').replace(/,/g, ';'),
+                    (lead.requestLeads || '').replace(/,/g, ';'),
+                    (lead.followUp1 || '').replace(/,/g, ';'),
+                    (lead.followUp2 || '').replace(/,/g, ';'),
+                    (lead.followUp3 || '').replace(/,/g, ';'),
+                    (lead.followUp4 || '').replace(/,/g, ';'),
+                    (lead.followUp5 || '').replace(/,/g, ';')
+                ];
+                
+                csvContent += row.join(',') + '\n';
+            });
             
             // Buat dan download file
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -1834,6 +1809,7 @@ leadsData.forEach(lead => {
             document.getElementById('leadsSearch').addEventListener('input', filterLeads);
             document.getElementById('platformFilter').addEventListener('change', filterLeads);
             document.getElementById('qualificationFilter').addEventListener('change', filterLeads);
+            document.getElementById('leadsFollowFilter').addEventListener('change', filterLeads);
             document.getElementById('cssFilter').addEventListener('change', filterLeads);
             document.getElementById('dateFilter').addEventListener('change', filterLeads);
             

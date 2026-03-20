@@ -25,7 +25,9 @@
             --purple-gradient: linear-gradient(135deg, #7209b7 0%, #b5179e 100%);
             --orange-gradient: linear-gradient(135deg, #f8961e 0%, #f3722c 100%);
             --teal-gradient: linear-gradient(135deg, #4cc9f0 0%, #06d6a0 100%);
-            --red-gradient: linear-gradient(135deg, #ef476f 0%, #d90429 100%);
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --card-shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         /* ========== LAYOUT UTAMA ========== */
@@ -37,14 +39,19 @@
 
         .header {
             background: var(--card-bg);
-            border-radius: var(--radius-lg);
+            border-radius: 16px;
             padding: var(--space-lg);
             margin-bottom: var(--space-lg);
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--card-shadow);
             border: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: var(--transition-smooth);
+        }
+
+        .header:hover {
+            box-shadow: var(--card-shadow-hover);
         }
 
         .header h1 {
@@ -111,80 +118,57 @@
             color: var(--text-secondary);
         }
 
-        /* ========== STATISTIC CARDS - STYLE BARU DENGAN ANIMASI ========== */
-        .stats-container {
+        /* ========== STATISTIC CARDS STYLE (seperti completed-report) ========== */
+        .maintenance-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: var(--space-lg);
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: var(--space-md);
             margin-bottom: var(--space-xl);
         }
 
-        .stat-card {
+        .maintenance-stat-card {
             background: var(--card-bg);
-            border-radius: var(--radius-xl);
-            padding: var(--space-xl);
-            box-shadow: var(--shadow-md);
+            border-radius: 16px;
+            padding: var(--space-lg);
+            box-shadow: var(--card-shadow);
             border: 1px solid var(--border-color);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: var(--transition-smooth);
             position: relative;
             overflow: hidden;
-            cursor: pointer;
-            animation: fadeInUp 0.6s ease forwards;
-            opacity: 0;
-            transform: translateY(30px);
         }
 
-        .stat-card:nth-child(1) { animation-delay: 0.1s; }
-        .stat-card:nth-child(2) { animation-delay: 0.2s; }
-        .stat-card:nth-child(3) { animation-delay: 0.3s; }
-        .stat-card:nth-child(4) { animation-delay: 0.4s; }
-        .stat-card:nth-child(5) { animation-delay: 0.5s; }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .maintenance-stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-shadow-hover);
         }
 
-        .stat-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-xl);
-        }
-
-        .stat-card::before {
+        .maintenance-stat-card::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 5px;
-            background: var(--primary-gradient);
-            transition: height 0.3s ease;
+            height: 4px;
         }
 
-        .stat-card:hover::before {
-            height: 8px;
+        .maintenance-stat-card:nth-child(1)::before {
+            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
         }
 
-        .stat-card.total-promosi::before {
-            background: var(--primary-gradient);
+        .maintenance-stat-card:nth-child(2)::before {
+            background: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);
         }
 
-        .stat-card.total-leads::before {
-            background: var(--success-gradient);
+        .maintenance-stat-card:nth-child(3)::before {
+            background: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
         }
 
-        .stat-card.follow-up::before {
-            background: var(--warning-gradient);
+        .maintenance-stat-card:nth-child(4)::before {
+            background: linear-gradient(135deg, #7209b7 0%, #b5179e 100%);
         }
 
-        .stat-card.closingan::before {
-            background: var(--purple-gradient);
-        }
-
-        .stat-card.avg-qualification::before {
-            background: var(--orange-gradient);
+        .maintenance-stat-card:nth-child(5)::before {
+            background: linear-gradient(135deg, #f8961e 0%, #f3722c 100%);
         }
 
         .stat-header {
@@ -200,78 +184,60 @@
             color: var(--text-secondary);
             margin: 0;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
 
         .stat-icon {
-            width: 55px;
-            height: 55px;
-            border-radius: var(--radius-full);
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            transition: transform 0.3s ease;
+            font-size: 1.25rem;
+            transition: var(--transition-smooth);
         }
 
-        .stat-card:hover .stat-icon {
-            transform: scale(1.1) rotate(5deg);
+        .maintenance-stat-card:hover .stat-icon {
+            transform: scale(1.1);
         }
 
         .stat-icon.primary {
-            background: linear-gradient(135deg, rgba(67, 97, 238, 0.15), rgba(67, 97, 238, 0.05));
-            color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+            color: #4361ee;
         }
 
         .stat-icon.success {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
-            color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
         }
 
         .stat-icon.warning {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05));
-            color: var(--warning);
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
         }
 
         .stat-icon.purple {
-            background: linear-gradient(135deg, rgba(114, 9, 183, 0.15), rgba(114, 9, 183, 0.05));
+            background: rgba(114, 9, 183, 0.1);
             color: #7209b7;
         }
 
         .stat-icon.orange {
-            background: linear-gradient(135deg, rgba(248, 150, 30, 0.15), rgba(248, 150, 30, 0.05));
+            background: rgba(248, 150, 30, 0.1);
             color: #f8961e;
         }
 
         .stat-value {
-            font-size: 2.8rem;
+            font-size: 2rem;
             font-weight: var(--font-bold);
             color: var(--text-primary);
             margin-bottom: var(--space-xs);
             line-height: 1;
-            position: relative;
-            display: inline-block;
-        }
-
-        .stat-value::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 3px;
-            background: var(--primary-gradient);
-            transition: width 0.5s ease;
-        }
-
-        .stat-card:hover .stat-value::after {
-            width: 100%;
         }
 
         .stat-description {
             font-size: var(--text-xs);
             color: var(--text-secondary);
-            margin-top: var(--space-sm);
             display: flex;
             align-items: center;
             gap: 6px;
@@ -279,40 +245,32 @@
 
         .stat-description i {
             font-size: 0.75rem;
+            color: var(--primary);
         }
 
-        .stat-trend {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 2px 8px;
-            border-radius: var(--radius-full);
-            font-size: 0.7rem;
-            font-weight: var(--font-medium);
-            margin-left: 8px;
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .stat-trend.up {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-
-        .stat-trend.down {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
+        .counting {
+            animation: countUp 1s ease-out forwards;
         }
 
         /* ========== FILTER PANEL ========== */
         .filter-panel {
             background: var(--card-bg);
-            border-radius: var(--radius-lg);
+            border-radius: 16px;
             padding: var(--space-lg);
             margin-bottom: var(--space-lg);
             border: 1px solid var(--border-color);
-            animation: fadeInUp 0.6s ease forwards 0.6s;
-            opacity: 0;
-            transform: translateY(30px);
-            animation-fill-mode: forwards;
+            box-shadow: var(--card-shadow);
         }
 
         .filter-header {
@@ -373,7 +331,7 @@
         .filter-select, .filter-input {
             padding: var(--space-sm) var(--space-md);
             border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
+            border-radius: 8px;
             background-color: var(--input-bg);
             color: var(--text-primary);
             font-size: var(--text-sm);
@@ -391,15 +349,16 @@
         /* ========== STATISTICS TABLE ========== */
         .stats-section {
             background: var(--card-bg);
-            border-radius: var(--radius-lg);
+            border-radius: 16px;
             padding: var(--space-lg);
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--card-shadow);
             border: 1px solid var(--border-color);
             margin-bottom: var(--space-xl);
-            animation: fadeInUp 0.6s ease forwards 0.7s;
-            opacity: 0;
-            transform: translateY(30px);
-            animation-fill-mode: forwards;
+            transition: var(--transition-smooth);
+        }
+
+        .stats-section:hover {
+            box-shadow: var(--card-shadow-hover);
         }
 
         .section-header {
@@ -428,12 +387,12 @@
 
         .btn {
             padding: var(--space-sm) var(--space-md);
-            border-radius: var(--radius-md);
+            border-radius: 8px;
             font-size: var(--text-sm);
             font-weight: var(--font-medium);
             cursor: pointer;
             border: none;
-            transition: all var(--transition-fast);
+            transition: var(--transition-smooth);
             display: inline-flex;
             align-items: center;
             gap: 6px;
@@ -451,13 +410,14 @@
         }
 
         .btn-outline {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
         }
 
         .btn-outline:hover {
-            background: var(--hover-color);
+            background: var(--primary);
+            color: white;
             transform: translateY(-2px);
         }
 
@@ -475,6 +435,8 @@
             overflow-x: auto;
             margin-top: var(--space-md);
             background-color: transparent;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
         }
 
         .stats-table {
@@ -511,7 +473,6 @@
 
         .stats-table tbody tr:hover {
             background-color: var(--hover-color);
-            transform: scale(1.01);
         }
 
         .stats-table tbody tr.total-row {
@@ -538,23 +499,20 @@
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: var(--space-lg);
             margin-bottom: var(--space-xl);
-            animation: fadeInUp 0.6s ease forwards 0.8s;
-            opacity: 0;
-            transform: translateY(30px);
-            animation-fill-mode: forwards;
         }
 
         .chart-card {
             background: var(--card-bg);
-            border-radius: var(--radius-lg);
+            border-radius: 16px;
             padding: var(--space-lg);
             border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
+            transition: var(--transition-smooth);
+            box-shadow: var(--card-shadow);
         }
 
         .chart-card:hover {
             transform: translateY(-4px);
-            box-shadow: var(--shadow-md);
+            box-shadow: var(--card-shadow-hover);
         }
 
         .chart-title {
@@ -734,6 +692,33 @@
             }
         }
 
+        /* ========== LOADING OVERLAY ========== */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         /* ========== RESPONSIVE ========== */
         @media (max-width: 1024px) {
             .charts-section {
@@ -765,7 +750,7 @@
                 width: 100%;
             }
             
-            .stats-container {
+            .maintenance-stats {
                 grid-template-columns: 1fr;
             }
             
@@ -814,9 +799,9 @@
             </div>
         </div>
 
-        <!-- STATISTIC CARDS - DILETAKAN DI ATAS FILTER -->
-        <div class="stats-container">
-            <div class="stat-card total-promosi">
+        <!-- STATISTIC CARDS - DILETAKAN DI ATAS FILTER (style seperti completed-report) -->
+        <div class="maintenance-stats">
+            <div class="maintenance-stat-card">
                 <div class="stat-header">
                     <h3 class="stat-title">Total Promosi</h3>
                     <div class="stat-icon primary">
@@ -830,7 +815,7 @@
                 </div>
             </div>
 
-            <div class="stat-card total-leads">
+            <div class="maintenance-stat-card">
                 <div class="stat-header">
                     <h3 class="stat-title">Total Leads</h3>
                     <div class="stat-icon success">
@@ -844,7 +829,7 @@
                 </div>
             </div>
 
-            <div class="stat-card follow-up">
+            <div class="maintenance-stat-card">
                 <div class="stat-header">
                     <h3 class="stat-title">Follow Up</h3>
                     <div class="stat-icon warning">
@@ -858,7 +843,7 @@
                 </div>
             </div>
 
-            <div class="stat-card closingan">
+            <div class="maintenance-stat-card">
                 <div class="stat-header">
                     <h3 class="stat-title">Closingan</h3>
                     <div class="stat-icon purple">
@@ -872,7 +857,7 @@
                 </div>
             </div>
 
-            <div class="stat-card avg-qualification">
+            <div class="maintenance-stat-card">
                 <div class="stat-header">
                     <h3 class="stat-title">Hot Leads</h3>
                     <div class="stat-icon orange">
@@ -1122,35 +1107,6 @@
         }
     }
 
-    // Fungsi untuk update statistik cards
-    function updateStatisticCards() {
-        // Hitung total dari data leads
-        const totalLeads = filteredLeadsData.length;
-        const totalFollowUp = filteredLeadsData.filter(lead => lead.leadsFollow === 'Follow').length;
-        const totalClosing = filteredLeadsData.filter(lead => lead.leadStatus && lead.leadStatus.toLowerCase() === 'closing').length;
-        const totalHotLeads = filteredLeadsData.filter(lead => lead.leadQualification === 'Hot').length;
-        
-        // Hitung total promosi
-        let totalPromosi = 0;
-        promosiData.forEach(promosi => {
-            const cssName = promosi.namaCSS ? promosi.namaCSS.toUpperCase() : '';
-            for (let key in cssStats) {
-                if (cssName.includes(key) || key.includes(cssName)) {
-                    totalPromosi++;
-                    break;
-                }
-            }
-        });
-        
-        // Animate counter
-        animateValue('statTotalPromosi', 0, totalPromosi);
-        animateValue('statTotalLeads', 0, totalLeads);
-        animateValue('statFollowUp', 0, totalFollowUp);
-        animateValue('statClosingan', 0, totalClosing);
-        animateValue('statHotLeads', 0, totalHotLeads);
-    }
-
-    // Animasi angka
     function animateValue(elementId, start, end) {
         const element = document.getElementById(elementId);
         if (!element) return;
@@ -1169,6 +1125,30 @@
                 element.textContent = Math.floor(current);
             }
         }, step);
+    }
+
+    function updateStatisticCards() {
+        const totalLeads = filteredLeadsData.length;
+        const totalFollowUp = filteredLeadsData.filter(lead => lead.leadsFollow === 'Follow').length;
+        const totalClosing = filteredLeadsData.filter(lead => lead.leadStatus && lead.leadStatus.toLowerCase() === 'closing').length;
+        const totalHotLeads = filteredLeadsData.filter(lead => lead.leadQualification === 'Hot').length;
+        
+        let totalPromosi = 0;
+        promosiData.forEach(promosi => {
+            const cssName = promosi.namaCSS ? promosi.namaCSS.toUpperCase() : '';
+            for (let key in cssStats) {
+                if (cssName.includes(key) || key.includes(cssName)) {
+                    totalPromosi++;
+                    break;
+                }
+            }
+        });
+        
+        animateValue('statTotalPromosi', 0, totalPromosi);
+        animateValue('statTotalLeads', 0, totalLeads);
+        animateValue('statFollowUp', 0, totalFollowUp);
+        animateValue('statClosingan', 0, totalClosing);
+        animateValue('statHotLeads', 0, totalHotLeads);
     }
 
     function processStatistics() {
@@ -1217,35 +1197,19 @@
                     
                     if (lead.leadQualification) {
                         switch(lead.leadQualification.toLowerCase()) {
-                            case 'cold':
-                                cssStats[key].cold++;
-                                break;
-                            case 'warm':
-                                cssStats[key].warm++;
-                                break;
-                            case 'hot':
-                                cssStats[key].hot++;
-                                break;
+                            case 'cold': cssStats[key].cold++; break;
+                            case 'warm': cssStats[key].warm++; break;
+                            case 'hot': cssStats[key].hot++; break;
                         }
                     }
 
-                    if (lead.followUp1 && lead.followUp1.trim() !== '') {
-                        cssStats[key].followUp1++;
-                    }
-                    if (lead.followUp2 && lead.followUp2.trim() !== '') {
-                        cssStats[key].followUp2++;
-                    }
-                    if (lead.followUp3 && lead.followUp3.trim() !== '') {
-                        cssStats[key].followUp3++;
-                    }
-                    if (lead.followUp4 && lead.followUp4.trim() !== '') {
-                        cssStats[key].followUp4++;
-                    }
-                    if (lead.followUp5 && lead.followUp5.trim() !== '') {
-                        cssStats[key].followUp5++;
-                    }
+                    if (lead.followUp1 && lead.followUp1.trim() !== '') cssStats[key].followUp1++;
+                    if (lead.followUp2 && lead.followUp2.trim() !== '') cssStats[key].followUp2++;
+                    if (lead.followUp3 && lead.followUp3.trim() !== '') cssStats[key].followUp3++;
+                    if (lead.followUp4 && lead.followUp4.trim() !== '') cssStats[key].followUp4++;
+                    if (lead.followUp5 && lead.followUp5.trim() !== '') cssStats[key].followUp5++;
 
-                    // Hitung closingan HANYA dari field leadStatus
+                    // Closingan HANYA dari field leadStatus = "Closing"
                     if (lead.leadStatus && lead.leadStatus.toLowerCase() === 'closing') {
                         cssStats[key].closingan++;
                     }
@@ -1536,18 +1500,10 @@
             let start = new Date();
             
             switch(period) {
-                case 'today':
-                    start = today;
-                    break;
-                case 'week':
-                    start.setDate(today.getDate() - 7);
-                    break;
-                case 'month':
-                    start.setMonth(today.getMonth() - 1);
-                    break;
-                case 'year':
-                    start.setFullYear(today.getFullYear() - 1);
-                    break;
+                case 'today': start = today; break;
+                case 'week': start.setDate(today.getDate() - 7); break;
+                case 'month': start.setMonth(today.getMonth() - 1); break;
+                case 'year': start.setFullYear(today.getFullYear() - 1); break;
             }
             
             const startStr = start.toISOString().split('T')[0];
@@ -1583,19 +1539,9 @@
 
     function exportToExcel() {
         const headers = [
-            'NAMA CSS',
-            'JUMLAH PROMOSI',
-            'JUMLAH LEADS',
-            'LEADS FOLLOW UP',
-            'Cold',
-            'Warm',
-            'Hot',
-            'FOLLOW UP 1',
-            'FOLLOW UP 2',
-            'FOLLOW UP 3',
-            'FOLLOW UP 4',
-            'FOLLOW UP 5',
-            'CLOSINGAN'
+            'NAMA CSS', 'JUMLAH PROMOSI', 'JUMLAH LEADS', 'LEADS FOLLOW UP',
+            'Cold', 'Warm', 'Hot', 'FOLLOW UP 1', 'FOLLOW UP 2',
+            'FOLLOW UP 3', 'FOLLOW UP 4', 'FOLLOW UP 5', 'CLOSINGAN'
         ];
         
         let csvContent = headers.join(',') + '\n';
@@ -1610,19 +1556,9 @@
         
         statsArray.forEach(stat => {
             const row = [
-                `"${stat.nama}"`,
-                stat.totalPromosi,
-                stat.jumlahLeads,
-                stat.leadsFollowUp,
-                stat.cold,
-                stat.warm,
-                stat.hot,
-                stat.followUp1,
-                stat.followUp2,
-                stat.followUp3,
-                stat.followUp4,
-                stat.followUp5,
-                stat.closingan
+                `"${stat.nama}"`, stat.totalPromosi, stat.jumlahLeads, stat.leadsFollowUp,
+                stat.cold, stat.warm, stat.hot, stat.followUp1, stat.followUp2,
+                stat.followUp3, stat.followUp4, stat.followUp5, stat.closingan
             ];
             
             totalPromosi += stat.totalPromosi;
@@ -1642,19 +1578,9 @@
         });
         
         const totalRow = [
-            'TOTAL KESELURUHAN',
-            totalPromosi,
-            totalLeads,
-            totalFollowUp,
-            totalCold,
-            totalWarm,
-            totalHot,
-            totalFU1,
-            totalFU2,
-            totalFU3,
-            totalFU4,
-            totalFU5,
-            totalClosing
+            'TOTAL KESELURUHAN', totalPromosi, totalLeads, totalFollowUp,
+            totalCold, totalWarm, totalHot, totalFU1, totalFU2,
+            totalFU3, totalFU4, totalFU5, totalClosing
         ];
         csvContent += totalRow.join(',') + '\n';
         
@@ -1673,9 +1599,7 @@
 
     function showToast(message, type = 'success', duration = 3000) {
         const existingToast = document.querySelector('.toast-notification');
-        if (existingToast) {
-            existingToast.remove();
-        }
+        if (existingToast) existingToast.remove();
         
         const toast = document.createElement('div');
         toast.className = `toast-notification ${type}`;
@@ -1690,9 +1614,7 @@
 
         setTimeout(() => {
             toast.classList.add('hide');
-            setTimeout(() => {
-                toast.remove();
-            }, 400);
+            setTimeout(() => toast.remove(), 400);
         }, duration);
     }
 
@@ -1715,60 +1637,28 @@
             }
             
             const existingOverlay = document.querySelector('.loading-overlay');
-            if (existingOverlay) {
-                existingOverlay.remove();
-            }
+            if (existingOverlay) existingOverlay.remove();
         }
     }
 
     function setupEventListeners() {
-        const refreshBtn = document.getElementById('refreshStats');
-        if (refreshBtn) {
-            refreshBtn.addEventListener('click', () => {
-                loadAllData();
-                showToast('Data statistik diperbarui!', 'success');
-            });
-        }
+        document.getElementById('refreshStats')?.addEventListener('click', () => {
+            loadAllData();
+            showToast('Data statistik diperbarui!', 'success');
+        });
         
-        const exportBtn = document.getElementById('exportExcel');
-        if (exportBtn) {
-            exportBtn.addEventListener('click', exportToExcel);
-        }
-        
-        const cssSearch = document.getElementById('cssSearch');
-        if (cssSearch) {
-            cssSearch.addEventListener('input', filterBySearch);
-        }
-        
-        const periodFilter = document.getElementById('periodFilter');
-        if (periodFilter) {
-            periodFilter.addEventListener('change', filterByPeriod);
-        }
-        
-        const startDateFilter = document.getElementById('startDateFilter');
-        if (startDateFilter) {
-            startDateFilter.addEventListener('change', filterByPeriod);
-        }
-        
-        const endDateFilter = document.getElementById('endDateFilter');
-        if (endDateFilter) {
-            endDateFilter.addEventListener('change', filterByPeriod);
-        }
-        
-        const platformFilter = document.getElementById('platformFilter');
-        if (platformFilter) {
-            platformFilter.addEventListener('change', filterByPeriod);
-        }
-        
-        const resetFiltersBtn = document.getElementById('resetFilters');
-        if (resetFiltersBtn) {
-            resetFiltersBtn.addEventListener('click', resetFilters);
-        }
+        document.getElementById('exportExcel')?.addEventListener('click', exportToExcel);
+        document.getElementById('cssSearch')?.addEventListener('input', filterBySearch);
+        document.getElementById('periodFilter')?.addEventListener('change', filterByPeriod);
+        document.getElementById('startDateFilter')?.addEventListener('change', filterByPeriod);
+        document.getElementById('endDateFilter')?.addEventListener('change', filterByPeriod);
+        document.getElementById('platformFilter')?.addEventListener('change', filterByPeriod);
+        document.getElementById('resetFilters')?.addEventListener('click', resetFilters);
     }
 
     document.addEventListener('DOMContentLoaded', function() {
         checkAuthState();
     });
-</script>
+    </script>
 </body>
 </html>

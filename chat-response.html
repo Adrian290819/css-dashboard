@@ -667,11 +667,11 @@
 <button class="menu-toggle">
                     <i class="fas fa-bars"></i>
                 </button>
-                <div class="user-profile">
+<div class="user-profile">
                     <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
                     <div class="user-info">
-                        <h4>Nama Masing Masing</h4>
-                        <p>Customer Service Support</p>
+                        <h4 id="userName">Loading...</h4>
+                        <p id="userRole">Chat Response</p>
                     </div>
                 </div>
             </div>
@@ -858,9 +858,14 @@ if (!connectionStatus) {
 
 // Fungsi untuk menampilkan notifikasi
 function showNotification(message, type = 'info') {
+    // 🔥 TAMBAHKAN: Buat container jika belum ada
+    let notificationContainer = document.getElementById('notificationContainer');
     if (!notificationContainer) {
-        console.error('Notification container not found');
-        return;
+        notificationContainer = document.createElement('div');
+        notificationContainer.id = 'notificationContainer';
+        notificationContainer.className = 'notification-container';
+        document.body.appendChild(notificationContainer);
+        console.log('✅ Notification container created dynamically');
     }
     
     const notification = document.createElement('div');
@@ -888,6 +893,9 @@ function showNotification(message, type = 'info') {
 }
 
 function closeNotification(notification) {
+    const notificationContainer = document.getElementById('notificationContainer');
+    if (!notificationContainer) return;
+    
     if (notification.dataset.timeoutId) {
         clearTimeout(parseInt(notification.dataset.timeoutId));
     }

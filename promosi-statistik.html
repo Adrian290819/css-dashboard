@@ -6,10 +6,9 @@
     <title>Statistik Promosi - Dashboard CSS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
     <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="stylemobile.css">
     <script src="global-time.js"></script>
-    <script src="translations.js"></script>
     
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-app-compat.js"></script>
@@ -17,15 +16,13 @@
     <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-auth-compat.js"></script>
 
     <style>
+        /* Reset dan Variabel */
         :root {
             --primary-gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
             --success-gradient: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);
             --warning-gradient: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
             --info-gradient: linear-gradient(135deg, #4895ef 0%, #3f37c9 100%);
             --purple-gradient: linear-gradient(135deg, #7209b7 0%, #b5179e 100%);
-            --orange-gradient: linear-gradient(135deg, #f8961e 0%, #f3722c 100%);
-            --teal-gradient: linear-gradient(135deg, #4cc9f0 0%, #06d6a0 100%);
-            --red-gradient: linear-gradient(135deg, #ef476f 0%, #d90429 100%);
         }
 
         /* ========== LAYOUT UTAMA ========== */
@@ -111,208 +108,28 @@
             color: var(--text-secondary);
         }
 
-        /* ========== STATISTIC CARDS - STYLE BARU DENGAN ANIMASI ========== */
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: var(--space-lg);
-            margin-bottom: var(--space-xl);
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            border-radius: var(--radius-xl);
-            padding: var(--space-xl);
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--border-color);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
+        .menu-toggle {
+            background: transparent;
+            border: none;
             cursor: pointer;
-            animation: fadeInUp 0.6s ease forwards;
-            opacity: 0;
-            transform: translateY(30px);
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            display: none;
         }
 
-        .stat-card:nth-child(1) { animation-delay: 0.1s; }
-        .stat-card:nth-child(2) { animation-delay: 0.2s; }
-        .stat-card:nth-child(3) { animation-delay: 0.3s; }
-        .stat-card:nth-child(4) { animation-delay: 0.4s; }
-        .stat-card:nth-child(5) { animation-delay: 0.5s; }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
             }
         }
 
-        .stat-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-xl);
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: var(--primary-gradient);
-            transition: height 0.3s ease;
-        }
-
-        .stat-card:hover::before {
-            height: 8px;
-        }
-
-        .stat-card.total-promosi::before {
-            background: var(--primary-gradient);
-        }
-
-        .stat-card.total-leads::before {
-            background: var(--success-gradient);
-        }
-
-        .stat-card.follow-up::before {
-            background: var(--warning-gradient);
-        }
-
-        .stat-card.closingan::before {
-            background: var(--purple-gradient);
-        }
-
-        .stat-card.avg-qualification::before {
-            background: var(--orange-gradient);
-        }
-
-        .stat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: var(--space-md);
-        }
-
-        .stat-title {
-            font-size: var(--text-sm);
-            font-weight: var(--font-medium);
-            color: var(--text-secondary);
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .stat-icon {
-            width: 55px;
-            height: 55px;
-            border-radius: var(--radius-full);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            transition: transform 0.3s ease;
-        }
-
-        .stat-card:hover .stat-icon {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        .stat-icon.primary {
-            background: linear-gradient(135deg, rgba(67, 97, 238, 0.15), rgba(67, 97, 238, 0.05));
-            color: var(--primary);
-        }
-
-        .stat-icon.success {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
-            color: var(--success);
-        }
-
-        .stat-icon.warning {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05));
-            color: var(--warning);
-        }
-
-        .stat-icon.purple {
-            background: linear-gradient(135deg, rgba(114, 9, 183, 0.15), rgba(114, 9, 183, 0.05));
-            color: #7209b7;
-        }
-
-        .stat-icon.orange {
-            background: linear-gradient(135deg, rgba(248, 150, 30, 0.15), rgba(248, 150, 30, 0.05));
-            color: #f8961e;
-        }
-
-        .stat-value {
-            font-size: 2.8rem;
-            font-weight: var(--font-bold);
-            color: var(--text-primary);
-            margin-bottom: var(--space-xs);
-            line-height: 1;
-            position: relative;
-            display: inline-block;
-        }
-
-        .stat-value::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 3px;
-            background: var(--primary-gradient);
-            transition: width 0.5s ease;
-        }
-
-        .stat-card:hover .stat-value::after {
-            width: 100%;
-        }
-
-        .stat-description {
-            font-size: var(--text-xs);
-            color: var(--text-secondary);
-            margin-top: var(--space-sm);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .stat-description i {
-            font-size: 0.75rem;
-        }
-
-        .stat-trend {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 2px 8px;
-            border-radius: var(--radius-full);
-            font-size: 0.7rem;
-            font-weight: var(--font-medium);
-            margin-left: 8px;
-        }
-
-        .stat-trend.up {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-
-        .stat-trend.down {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-        }
-
-        /* ========== FILTER PANEL ========== */
+        /* Filter Panel */
         .filter-panel {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
             padding: var(--space-lg);
             margin-bottom: var(--space-lg);
             border: 1px solid var(--border-color);
-            animation: fadeInUp 0.6s ease forwards 0.6s;
-            opacity: 0;
-            transform: translateY(30px);
-            animation-fill-mode: forwards;
         }
 
         .filter-header {
@@ -347,7 +164,6 @@
 
         .filter-reset:hover {
             background: var(--hover-color);
-            transform: scale(1.05);
         }
 
         .filter-grid {
@@ -377,7 +193,6 @@
             background-color: var(--input-bg);
             color: var(--text-primary);
             font-size: var(--text-sm);
-            transition: all var(--transition-fast);
             height: 42px;
         }
 
@@ -385,10 +200,9 @@
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
-            transform: translateY(-1px);
         }
 
-        /* ========== STATISTICS TABLE ========== */
+        /* Statistics Table */
         .stats-section {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
@@ -396,10 +210,6 @@
             box-shadow: var(--shadow-sm);
             border: 1px solid var(--border-color);
             margin-bottom: var(--space-xl);
-            animation: fadeInUp 0.6s ease forwards 0.7s;
-            opacity: 0;
-            transform: translateY(30px);
-            animation-fill-mode: forwards;
         }
 
         .section-header {
@@ -439,17 +249,6 @@
             gap: 6px;
         }
 
-        .btn-primary {
-            background: var(--primary-gradient);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
         .btn-outline {
             background: var(--bg-secondary);
             color: var(--text-primary);
@@ -458,23 +257,11 @@
 
         .btn-outline:hover {
             background: var(--hover-color);
-            transform: translateY(-2px);
-        }
-
-        .btn-success {
-            background: var(--success-gradient);
-            color: white;
-        }
-
-        .btn-sm {
-            padding: var(--space-xs) var(--space-sm);
-            font-size: var(--text-xs);
         }
 
         .table-container {
             overflow-x: auto;
             margin-top: var(--space-md);
-            background-color: transparent;
         }
 
         .stats-table {
@@ -490,9 +277,6 @@
             font-weight: var(--font-semibold);
             padding: var(--space-md);
             text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 10;
             border-bottom: 2px solid var(--border-color);
         }
 
@@ -502,16 +286,10 @@
             vertical-align: middle;
             text-align: center;
             border-bottom: 1px solid var(--border-color-light);
-            transition: all 0.3s ease;
-        }
-
-        .stats-table tbody tr:last-child td {
-            border-bottom: none;
         }
 
         .stats-table tbody tr:hover {
             background-color: var(--hover-color);
-            transform: scale(1.01);
         }
 
         .stats-table tbody tr.total-row {
@@ -523,7 +301,6 @@
         .stats-table tbody tr.total-row td {
             color: var(--text-primary);
             font-weight: var(--font-semibold);
-            border-bottom: none;
         }
 
         .css-name {
@@ -532,104 +309,6 @@
             text-align: left;
         }
 
-        /* ========== CHART SECTION ========== */
-        .charts-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: var(--space-lg);
-            margin-bottom: var(--space-xl);
-            animation: fadeInUp 0.6s ease forwards 0.8s;
-            opacity: 0;
-            transform: translateY(30px);
-            animation-fill-mode: forwards;
-        }
-
-        .chart-card {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: var(--space-lg);
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-        }
-
-        .chart-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .chart-title {
-            font-size: var(--text-lg);
-            font-weight: var(--font-semibold);
-            color: var(--text-primary);
-            margin-bottom: var(--space-md);
-            padding-bottom: var(--space-sm);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .chart-container {
-            height: 300px;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            gap: var(--space-md);
-            padding: var(--space-md) 0;
-        }
-
-        .bar-chart {
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            gap: 20px;
-            height: 250px;
-            width: 100%;
-        }
-
-        .bar-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 60px;
-            animation: barRise 0.8s ease forwards;
-            opacity: 0;
-            transform: scaleY(0);
-            transform-origin: bottom;
-        }
-
-        @keyframes barRise {
-            to {
-                opacity: 1;
-                transform: scaleY(1);
-            }
-        }
-
-        .bar {
-            width: 40px;
-            background: var(--primary-gradient);
-            border-radius: var(--radius-md) var(--radius-md) 0 0;
-            transition: all 0.3s ease;
-            min-height: 4px;
-        }
-
-        .bar-item:hover .bar {
-            transform: scaleX(1.1);
-            filter: brightness(1.1);
-        }
-
-        .bar-label {
-            margin-top: var(--space-xs);
-            font-size: var(--text-xs);
-            color: var(--text-secondary);
-            text-align: center;
-        }
-
-        .bar-value {
-            font-size: var(--text-xs);
-            font-weight: var(--font-semibold);
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-
-        /* ========== EMPTY STATE ========== */
         .empty-state {
             text-align: center;
             padding: var(--space-xl) var(--space-lg);
@@ -639,26 +318,8 @@
             margin: var(--space-lg) 0;
         }
 
-        .empty-state i {
-            font-size: 3rem;
-            color: var(--text-tertiary);
-            margin-bottom: var(--space-md);
-        }
-
-        .empty-state h3 {
-            font-size: var(--text-lg);
-            font-weight: var(--font-semibold);
-            color: var(--text-primary);
-            margin-bottom: var(--space-xs);
-        }
-
-        .empty-state p {
-            font-size: var(--text-sm);
-            color: var(--text-secondary);
-            margin-bottom: var(--space-lg);
-        }
-
-        /* ========== TOAST NOTIFICATION ========== */
+        
+        /* Toast Notification */
         .toast-notification {
             position: fixed;
             bottom: 20px;
@@ -671,7 +332,6 @@
             z-index: 9999;
             animation: slideIn 0.3s ease;
             box-shadow: var(--shadow-lg);
-            max-width: 350px;
         }
 
         .toast-notification.success {
@@ -690,51 +350,16 @@
             animation: slideOut 0.3s ease forwards;
         }
 
-        .toast-content {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
         @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         @keyframes slideOut {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
         }
 
-        /* ========== ANIMATIONS ========== */
-        .fade-in {
-            animation: fadeIn 0.5s ease forwards;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ========== RESPONSIVE ========== */
         @media (max-width: 1024px) {
             .charts-section {
                 grid-template-columns: 1fr;
@@ -765,10 +390,6 @@
                 width: 100%;
             }
             
-            .stats-container {
-                grid-template-columns: 1fr;
-            }
-            
             .filter-grid {
                 grid-template-columns: 1fr;
             }
@@ -780,30 +401,31 @@
             }
             
             .bar-item {
-                width: 40px;
+                width: 45px;
             }
             
             .bar {
-                width: 30px;
+                width: 35px;
             }
         }
     </style>
 </head>
 <body>
+
     <div id="sidebar-container"></div>
+    <button class="menu-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
     
     <!-- Main Content -->
-    <div class="main-content">
+    <div class="main-content" id="mainContent">
         <div class="header">
-            <h1><i class="fas fa-chart-bar"></i> Statistik Promosi</h1>
+            <h1><i class="fas fa-chart-bar"></i> <span id="pageTitle">Statistik Promosi</span></h1>
             <div class="header-actions">
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Cari CSS..." id="cssSearch">
+                    <input type="text" id="cssSearch" placeholder="Cari CSS...">
                 </div>
-                <button class="menu-toggle">
-                    <i class="fas fa-bars"></i>
-                </button>
                 <div class="user-profile">
                     <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
                     <div class="user-info">
@@ -814,132 +436,59 @@
             </div>
         </div>
 
-        <!-- STATISTIC CARDS - DILETAKAN DI ATAS FILTER -->
-        <div class="stats-container">
-            <div class="stat-card total-promosi">
-                <div class="stat-header">
-                    <h3 class="stat-title">Total Promosi</h3>
-                    <div class="stat-icon primary">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                </div>
-                <div class="stat-value" id="statTotalPromosi">0</div>
-                <div class="stat-description">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>Total aktivitas promosi</span>
-                </div>
-            </div>
-
-            <div class="stat-card total-leads">
-                <div class="stat-header">
-                    <h3 class="stat-title">Total Leads</h3>
-                    <div class="stat-icon success">
-                        <i class="fas fa-users"></i>
-                    </div>
-                </div>
-                <div class="stat-value" id="statTotalLeads">0</div>
-                <div class="stat-description">
-                    <i class="fas fa-user-plus"></i>
-                    <span>Total leads masuk</span>
-                </div>
-            </div>
-
-            <div class="stat-card follow-up">
-                <div class="stat-header">
-                    <h3 class="stat-title">Follow Up</h3>
-                    <div class="stat-icon warning">
-                        <i class="fas fa-comments"></i>
-                    </div>
-                </div>
-                <div class="stat-value" id="statFollowUp">0</div>
-                <div class="stat-description">
-                    <i class="fas fa-phone-alt"></i>
-                    <span>Total follow up dilakukan</span>
-                </div>
-            </div>
-
-            <div class="stat-card closingan">
-                <div class="stat-header">
-                    <h3 class="stat-title">Closingan</h3>
-                    <div class="stat-icon purple">
-                        <i class="fas fa-handshake"></i>
-                    </div>
-                </div>
-                <div class="stat-value" id="statClosingan">0</div>
-                <div class="stat-description">
-                    <i class="fas fa-trophy"></i>
-                    <span>Total closingan berhasil</span>
-                </div>
-            </div>
-
-            <div class="stat-card avg-qualification">
-                <div class="stat-header">
-                    <h3 class="stat-title">Hot Leads</h3>
-                    <div class="stat-icon orange">
-                        <i class="fas fa-fire"></i>
-                    </div>
-                </div>
-                <div class="stat-value" id="statHotLeads">0</div>
-                <div class="stat-description">
-                    <i class="fas fa-chart-simple"></i>
-                    <span>Leads berkualifikasi Hot</span>
-                </div>
-            </div>
-        </div>
-
         <!-- Filter Panel -->
-        <div class="filter-panel fade-in">
+        <div class="filter-panel">
             <div class="filter-header">
-                <h3 class="filter-title">Filter Statistik</h3>
+                <h3 class="filter-title" id="filterTitle">Filter Statistik</h3>
                 <button class="filter-reset" id="resetFilters">
-                    <i class="fas fa-sync-alt"></i> Reset Filters
+                    <i class="fas fa-sync-alt"></i> <span id="resetBtnText">Reset Filters</span>
                 </button>
             </div>
             <div class="filter-grid">
                 <div class="filter-group">
-                    <label>Periode</label>
+                    <label id="periodLabel">Periode</label>
                     <select class="filter-select" id="periodFilter">
-                        <option value="all">Semua Waktu</option>
-                        <option value="today">Hari Ini</option>
-                        <option value="week">Minggu Ini</option>
-                        <option value="month">Bulan Ini</option>
-                        <option value="year">Tahun Ini</option>
+                        <option value="all" id="periodAll">Semua Waktu</option>
+                        <option value="today" id="periodToday">Hari Ini</option>
+                        <option value="week" id="periodWeek">Minggu Ini</option>
+                        <option value="month" id="periodMonth">Bulan Ini</option>
+                        <option value="year" id="periodYear">Tahun Ini</option>
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label>Tanggal Mulai</label>
+                    <label id="startDateLabel">Tanggal Mulai</label>
                     <input type="date" class="filter-input" id="startDateFilter">
                 </div>
                 <div class="filter-group">
-                    <label>Tanggal Akhir</label>
+                    <label id="endDateLabel">Tanggal Akhir</label>
                     <input type="date" class="filter-input" id="endDateFilter">
                 </div>
                 <div class="filter-group">
-                    <label>Platform</label>
+                    <label id="platformLabel">Platform</label>
                     <select class="filter-select" id="platformFilter">
-                        <option value="">Semua Platform</option>
-                        <option value="WhatsApp">WhatsApp</option>
-                        <option value="Telegram">Telegram</option>
-                        <option value="Facebook">Facebook</option>
-                        <option value="Instagram">Instagram</option>
-                        <option value="Website">Website</option>
-                        <option value="Direct">Direct</option>
-                        <option value="Referral">Referral</option>
+                        <option value="" id="platformAll">Semua Platform</option>
+                        <option value="WhatsApp" id="platformWhatsApp">WhatsApp</option>
+                        <option value="Telegram" id="platformTelegram">Telegram</option>
+                        <option value="Facebook" id="platformFacebook">Facebook</option>
+                        <option value="Instagram" id="platformInstagram">Instagram</option>
+                        <option value="Website" id="platformWebsite">Website</option>
+                        <option value="Direct" id="platformDirect">Direct</option>
+                        <option value="Referral" id="platformReferral">Referral</option>
                     </select>
                 </div>
             </div>
         </div>
 
         <!-- Statistics Table -->
-        <div class="stats-section fade-in">
+        <div class="stats-section">
             <div class="section-header">
-                <h2 class="section-title"><i class="fas fa-table"></i> Rekapitulasi Promosi per CSS</h2>
+                <h2 class="section-title" id="recapTitle"><i class="fas fa-table"></i> Rekapitulasi Promosi per CSS</h2>
                 <div class="section-actions">
                     <button class="btn btn-outline" id="exportExcel">
-                        <i class="fas fa-file-excel"></i> Export Excel
+                        <i class="fas fa-file-excel"></i> <span id="exportBtnText">Export Excel</span>
                     </button>
                     <button class="btn btn-outline" id="refreshStats">
-                        <i class="fas fa-sync-alt"></i> Refresh
+                        <i class="fas fa-sync-alt"></i> <span id="refreshBtnText">Refresh</span>
                     </button>
                 </div>
             </div>
@@ -947,75 +496,34 @@
             <div class="table-container">
                 <table class="stats-table" id="statsTable">
                     <thead>
-                        <tr>
-                            <th rowspan="2">NAMA CSS</th>
-                            <th rowspan="2">JUMLAH PROMOSI</th>
-                            <th rowspan="2">JUMLAH LEADS</th>
-                            <th rowspan="2">LEADS FOLLOW UP</th>
-                            <th colspan="3">KUALIFIKASI</th>
-                            <th colspan="5">FOLLOW UP</th>
-                            <th rowspan="2">CLOSINGAN</th>
+                        <tr id="tableHeaderRow1">
+                            <th rowspan="2" id="thCssName">NAMA CSS</th>
+                            <th rowspan="2" id="thTotalPromosi">JUMLAH PROMOSI</th>
+                            <th rowspan="2" id="thJumlahLeads">JUMLAH LEADS</th>
+                            <th rowspan="2" id="thLeadsFollowUp">LEADS FOLLOW UP</th>
+                            <th colspan="3" id="thQualification">KUALIFIKASI</th>
+                            <th colspan="5" id="thFollowUp">FOLLOW UP</th>
+                            <th rowspan="2" id="thClosingan">CLOSINGAN</th>
                         </tr>
-                        <tr>
-                            <th>Cold</th>
-                            <th>Warm</th>
-                            <th>Hot</th>
-                            <th>FU 1</th>
-                            <th>FU 2</th>
-                            <th>FU 3</th>
-                            <th>FU 4</th>
-                            <th>FU 5</th>
+                        <tr id="tableHeaderRow2">
+                            <th id="thCold">Cold</th>
+                            <th id="thWarm">Warm</th>
+                            <th id="thHot">Hot</th>
+                            <th id="thFu1">FU 1</th>
+                            <th id="thFu2">FU 2</th>
+                            <th id="thFu3">FU 3</th>
+                            <th id="thFu4">FU 4</th>
+                            <th id="thFu5">FU 5</th>
                         </tr>
                     </thead>
-                    <tbody id="statsTableBody">
-                        <!-- Akan diisi oleh JavaScript -->
-                    </tbody>
+                    <tbody id="statsTableBody"></tbody>
                 </table>
             </div>
             
             <div id="noData" class="empty-state" style="display: none;">
                 <i class="fas fa-chart-pie"></i>
-                <h3>Tidak Ada Data Statistik</h3>
-                <p>Belum ada data promosi untuk ditampilkan.</p>
-            </div>
-        </div>
-
-        <!-- Charts Section -->
-        <div class="charts-section fade-in">
-            <div class="chart-card">
-                <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Top 5 CSS by Total Promosi</h3>
-                <div class="chart-container" id="promosiChart">
-                    <div class="bar-chart" id="promosiBarChart">
-                        <!-- Akan diisi JavaScript -->
-                    </div>
-                </div>
-            </div>
-            
-            <div class="chart-card">
-                <h3 class="chart-title"><i class="fas fa-chart-pie"></i> Distribusi Kualifikasi Lead</h3>
-                <div class="chart-container" id="qualificationChart">
-                    <div class="bar-chart" id="qualificationBarChart">
-                        <!-- Akan diisi JavaScript -->
-                    </div>
-                </div>
-            </div>
-            
-            <div class="chart-card">
-                <h3 class="chart-title"><i class="fas fa-chart-line"></i> Follow Up Progress</h3>
-                <div class="chart-container" id="followupChart">
-                    <div class="bar-chart" id="followupBarChart">
-                        <!-- Akan diisi JavaScript -->
-                    </div>
-                </div>
-            </div>
-            
-            <div class="chart-card">
-                <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Closingan per CSS</h3>
-                <div class="chart-container" id="closingChart">
-                    <div class="bar-chart" id="closingBarChart">
-                        <!-- Akan diisi JavaScript -->
-                    </div>
-                </div>
+                <h3 id="noDataTitle">Tidak Ada Data Statistik</h3>
+                <p id="noDataMessage">Belum ada data promosi untuk ditampilkan.</p>
             </div>
         </div>
     </div>
@@ -1024,7 +532,501 @@
     <script src="user-profile.js"></script>
     
     <script>
-    // ========== FIREBASE INITIALIZATION ==========
+    // ========== TRANSLATIONS FOR PROMOSI STATISTIK ==========
+    const promosiTranslations = {
+        id: {
+            // Page Title
+            "pageTitle": "Statistik Promosi",
+            "userRole": "Statistik Promosi",
+            
+            // Filter Panel
+            "filterTitle": "Filter Statistik",
+            "resetBtnText": "Reset Filters",
+            "periodLabel": "Periode",
+            "periodAll": "Semua Waktu",
+            "periodToday": "Hari Ini",
+            "periodWeek": "Minggu Ini",
+            "periodMonth": "Bulan Ini",
+            "periodYear": "Tahun Ini",
+            "startDateLabel": "Tanggal Mulai",
+            "endDateLabel": "Tanggal Akhir",
+            "platformLabel": "Platform",
+            "platformAll": "Semua Platform",
+            "platformWhatsApp": "WhatsApp",
+            "platformTelegram": "Telegram",
+            "platformFacebook": "Facebook",
+            "platformInstagram": "Instagram",
+            "platformWebsite": "Website",
+            "platformDirect": "Direct",
+            "platformReferral": "Referral",
+            
+            // Chart Titles
+            "promosiChartTitle": "Top 5 Promosi CSS",
+            "qualificationChartTitle": "Kualifikasi Lead",
+            "followupChartTitle": "Follow Up Distribution",
+            "closingChartTitle": "Top 5 Closingan CSS",
+            
+            // Table Headers
+            "recapTitle": "Rekapitulasi Promosi per CSS",
+            "exportBtnText": "Export Excel",
+            "refreshBtnText": "Refresh",
+            "thCssName": "NAMA CSS",
+            "thTotalPromosi": "JUMLAH PROMOSI",
+            "thJumlahLeads": "JUMLAH LEADS",
+            "thLeadsFollowUp": "LEADS FOLLOW UP",
+            "thQualification": "KUALIFIKASI",
+            "thFollowUp": "FOLLOW UP",
+            "thCold": "Cold",
+            "thWarm": "Warm",
+            "thHot": "Hot",
+            "thFu1": "FU 1",
+            "thFu2": "FU 2",
+            "thFu3": "FU 3",
+            "thFu4": "FU 4",
+            "thFu5": "FU 5",
+            "thClosingan": "CLOSINGAN",
+            
+            // Empty State
+            "noDataTitle": "Tidak Ada Data Statistik",
+            "noDataMessage": "Belum ada data promosi untuk ditampilkan.",
+            
+            // Toast Messages
+            "dataLoaded": "Data statistik berhasil dimuat",
+            "dataError": "Gagal memuat data",
+            "filtersReset": "Filter direset",
+            "exportSuccess": "Data berhasil diexport!",
+            "refreshSuccess": "Data statistik diperbarui!",
+            "searchPlaceholder": "Cari CSS...",
+            
+            // Total Row
+            "totalOverall": "TOTAL KESELURUHAN"
+        },
+        en: {
+            // Page Title
+            "pageTitle": "Promotion Statistics",
+            "userRole": "Promotion Statistics",
+            
+            // Filter Panel
+            "filterTitle": "Statistics Filter",
+            "resetBtnText": "Reset Filters",
+            "periodLabel": "Period",
+            "periodAll": "All Time",
+            "periodToday": "Today",
+            "periodWeek": "This Week",
+            "periodMonth": "This Month",
+            "periodYear": "This Year",
+            "startDateLabel": "Start Date",
+            "endDateLabel": "End Date",
+            "platformLabel": "Platform",
+            "platformAll": "All Platforms",
+            "platformWhatsApp": "WhatsApp",
+            "platformTelegram": "Telegram",
+            "platformFacebook": "Facebook",
+            "platformInstagram": "Instagram",
+            "platformWebsite": "Website",
+            "platformDirect": "Direct",
+            "platformReferral": "Referral",
+            
+            // Chart Titles
+            "promosiChartTitle": "Top 5 CSS Promotions",
+            "qualificationChartTitle": "Lead Qualification",
+            "followupChartTitle": "Follow Up Distribution",
+            "closingChartTitle": "Top 5 CSS Closings",
+            
+            // Table Headers
+            "recapTitle": "Promotion Recap per CSS",
+            "exportBtnText": "Export Excel",
+            "refreshBtnText": "Refresh",
+            "thCssName": "CSS NAME",
+            "thTotalPromosi": "TOTAL PROMOTIONS",
+            "thJumlahLeads": "TOTAL LEADS",
+            "thLeadsFollowUp": "LEADS FOLLOW UP",
+            "thQualification": "QUALIFICATION",
+            "thFollowUp": "FOLLOW UP",
+            "thCold": "Cold",
+            "thWarm": "Warm",
+            "thHot": "Hot",
+            "thFu1": "FU 1",
+            "thFu2": "FU 2",
+            "thFu3": "FU 3",
+            "thFu4": "FU 4",
+            "thFu5": "FU 5",
+            "thClosingan": "CLOSING",
+            
+            // Empty State
+            "noDataTitle": "No Statistics Data",
+            "noDataMessage": "No promotion data available to display.",
+            
+            // Toast Messages
+            "dataLoaded": "Statistics data loaded successfully",
+            "dataError": "Failed to load data",
+            "filtersReset": "Filters reset",
+            "exportSuccess": "Data exported successfully!",
+            "refreshSuccess": "Statistics data updated!",
+            "searchPlaceholder": "Search CSS...",
+            
+            // Total Row
+            "totalOverall": "TOTAL OVERALL"
+        },
+        ja: {
+            // Page Title
+            "pageTitle": "プロモーション統計",
+            "userRole": "プロモーション統計",
+            
+            // Filter Panel
+            "filterTitle": "統計フィルター",
+            "resetBtnText": "フィルターリセット",
+            "periodLabel": "期間",
+            "periodAll": "全期間",
+            "periodToday": "今日",
+            "periodWeek": "今週",
+            "periodMonth": "今月",
+            "periodYear": "今年",
+            "startDateLabel": "開始日",
+            "endDateLabel": "終了日",
+            "platformLabel": "プラットフォーム",
+            "platformAll": "すべてのプラットフォーム",
+            "platformWhatsApp": "WhatsApp",
+            "platformTelegram": "Telegram",
+            "platformFacebook": "Facebook",
+            "platformInstagram": "Instagram",
+            "platformWebsite": "ウェブサイト",
+            "platformDirect": "ダイレクト",
+            "platformReferral": "紹介",
+            
+            // Chart Titles
+            "promosiChartTitle": "CSSプロモーションTOP5",
+            "qualificationChartTitle": "リード資格",
+            "followupChartTitle": "フォローアップ分布",
+            "closingChartTitle": "CSSクロージングTOP5",
+            
+            // Table Headers
+            "recapTitle": "CSS別プロモーション集計",
+            "exportBtnText": "Excel出力",
+            "refreshBtnText": "更新",
+            "thCssName": "CSS名",
+            "thTotalPromosi": "プロモーション数",
+            "thJumlahLeads": "リード数",
+            "thLeadsFollowUp": "フォローアップリード",
+            "thQualification": "資格",
+            "thFollowUp": "フォローアップ",
+            "thCold": "Cold",
+            "thWarm": "Warm",
+            "thHot": "Hot",
+            "thFu1": "FU 1",
+            "thFu2": "FU 2",
+            "thFu3": "FU 3",
+            "thFu4": "FU 4",
+            "thFu5": "FU 5",
+            "thClosingan": "クロージング",
+            
+            // Empty State
+            "noDataTitle": "データがありません",
+            "noDataMessage": "表示するプロモーションデータがありません。",
+            
+            // Toast Messages
+            "dataLoaded": "統計データを読み込みました",
+            "dataError": "データの読み込みに失敗しました",
+            "filtersReset": "フィルターをリセットしました",
+            "exportSuccess": "データをエクスポートしました！",
+            "refreshSuccess": "統計データを更新しました！",
+            "searchPlaceholder": "CSSを検索...",
+            
+            // Total Row
+            "totalOverall": "総合計"
+        },
+        zh: {
+            // Page Title
+            "pageTitle": "促销统计",
+            "userRole": "促销统计",
+            
+            // Filter Panel
+            "filterTitle": "统计筛选",
+            "resetBtnText": "重置筛选",
+            "periodLabel": "期间",
+            "periodAll": "全部时间",
+            "periodToday": "今天",
+            "periodWeek": "本周",
+            "periodMonth": "本月",
+            "periodYear": "今年",
+            "startDateLabel": "开始日期",
+            "endDateLabel": "结束日期",
+            "platformLabel": "平台",
+            "platformAll": "所有平台",
+            "platformWhatsApp": "WhatsApp",
+            "platformTelegram": "Telegram",
+            "platformFacebook": "Facebook",
+            "platformInstagram": "Instagram",
+            "platformWebsite": "网站",
+            "platformDirect": "直接",
+            "platformReferral": "推荐",
+            
+            // Chart Titles
+            "promosiChartTitle": "CSS促销TOP5",
+            "qualificationChartTitle": "潜在客户资格",
+            "followupChartTitle": "跟进分布",
+            "closingChartTitle": "CSS成交TOP5",
+            
+            // Table Headers
+            "recapTitle": "CSS促销汇总",
+            "exportBtnText": "导出Excel",
+            "refreshBtnText": "刷新",
+            "thCssName": "CSS名称",
+            "thTotalPromosi": "促销数量",
+            "thJumlahLeads": "潜在客户数量",
+            "thLeadsFollowUp": "跟进潜在客户",
+            "thQualification": "资格",
+            "thFollowUp": "跟进",
+            "thCold": "Cold",
+            "thWarm": "Warm",
+            "thHot": "Hot",
+            "thFu1": "FU 1",
+            "thFu2": "FU 2",
+            "thFu3": "FU 3",
+            "thFu4": "FU 4",
+            "thFu5": "FU 5",
+            "thClosingan": "成交",
+            
+            // Empty State
+            "noDataTitle": "暂无统计数据",
+            "noDataMessage": "暂无促销数据可显示。",
+            
+            // Toast Messages
+            "dataLoaded": "统计数据加载成功",
+            "dataError": "数据加载失败",
+            "filtersReset": "筛选已重置",
+            "exportSuccess": "数据导出成功！",
+            "refreshSuccess": "统计数据已更新！",
+            "searchPlaceholder": "搜索CSS...",
+            
+            // Total Row
+            "totalOverall": "总计"
+        }
+    };
+
+    // ========== TRANSLATION FUNCTIONS ==========
+    let currentLanguage = 'id';
+
+    function applyPromosiTranslations(language) {
+        const lang = promosiTranslations[language] || promosiTranslations['id'];
+        currentLanguage = language;
+        
+        if (!lang) return;
+        
+        console.log("Applying promosi translations for:", language);
+        
+        // Update page title
+        document.title = lang.pageTitle + " - Dashboard CSS";
+        
+        // Header elements
+        const pageTitleSpan = document.getElementById('pageTitle');
+        if (pageTitleSpan) pageTitleSpan.textContent = lang.pageTitle;
+        
+        const userRoleSpan = document.getElementById('userRole');
+        if (userRoleSpan) userRoleSpan.textContent = lang.userRole;
+        
+        // Search placeholder
+        const searchInput = document.getElementById('cssSearch');
+        if (searchInput) searchInput.placeholder = lang.searchPlaceholder;
+        
+        // Filter panel
+        const filterTitle = document.getElementById('filterTitle');
+        if (filterTitle) filterTitle.textContent = lang.filterTitle;
+        
+        const resetBtnText = document.getElementById('resetBtnText');
+        if (resetBtnText) resetBtnText.textContent = lang.resetBtnText;
+        
+        const periodLabel = document.getElementById('periodLabel');
+        if (periodLabel) periodLabel.textContent = lang.periodLabel;
+        
+        const startDateLabel = document.getElementById('startDateLabel');
+        if (startDateLabel) startDateLabel.textContent = lang.startDateLabel;
+        
+        const endDateLabel = document.getElementById('endDateLabel');
+        if (endDateLabel) endDateLabel.textContent = lang.endDateLabel;
+        
+        const platformLabel = document.getElementById('platformLabel');
+        if (platformLabel) platformLabel.textContent = lang.platformLabel;
+        
+        // Period options
+        const periodAll = document.getElementById('periodAll');
+        if (periodAll) periodAll.textContent = lang.periodAll;
+        
+        const periodToday = document.getElementById('periodToday');
+        if (periodToday) periodToday.textContent = lang.periodToday;
+        
+        const periodWeek = document.getElementById('periodWeek');
+        if (periodWeek) periodWeek.textContent = lang.periodWeek;
+        
+        const periodMonth = document.getElementById('periodMonth');
+        if (periodMonth) periodMonth.textContent = lang.periodMonth;
+        
+        const periodYear = document.getElementById('periodYear');
+        if (periodYear) periodYear.textContent = lang.periodYear;
+        
+        // Platform options
+        const platformAll = document.getElementById('platformAll');
+        if (platformAll) platformAll.textContent = lang.platformAll;
+        
+        const platformWhatsApp = document.getElementById('platformWhatsApp');
+        if (platformWhatsApp) platformWhatsApp.textContent = lang.platformWhatsApp;
+        
+        const platformTelegram = document.getElementById('platformTelegram');
+        if (platformTelegram) platformTelegram.textContent = lang.platformTelegram;
+        
+        const platformFacebook = document.getElementById('platformFacebook');
+        if (platformFacebook) platformFacebook.textContent = lang.platformFacebook;
+        
+        const platformInstagram = document.getElementById('platformInstagram');
+        if (platformInstagram) platformInstagram.textContent = lang.platformInstagram;
+        
+        const platformWebsite = document.getElementById('platformWebsite');
+        if (platformWebsite) platformWebsite.textContent = lang.platformWebsite;
+        
+        const platformDirect = document.getElementById('platformDirect');
+        if (platformDirect) platformDirect.textContent = lang.platformDirect;
+        
+        const platformReferral = document.getElementById('platformReferral');
+        if (platformReferral) platformReferral.textContent = lang.platformReferral;
+        
+        // Chart titles
+        const promosiChartTitle = document.getElementById('promosiChartTitle');
+        if (promosiChartTitle) promosiChartTitle.innerHTML = `<i class="fas fa-chart-line"></i> ${lang.promosiChartTitle}`;
+        
+        const qualificationChartTitle = document.getElementById('qualificationChartTitle');
+        if (qualificationChartTitle) qualificationChartTitle.innerHTML = `<i class="fas fa-temperature-high"></i> ${lang.qualificationChartTitle}`;
+        
+        const followupChartTitle = document.getElementById('followupChartTitle');
+        if (followupChartTitle) followupChartTitle.innerHTML = `<i class="fas fa-calendar-check"></i> ${lang.followupChartTitle}`;
+        
+        const closingChartTitle = document.getElementById('closingChartTitle');
+        if (closingChartTitle) closingChartTitle.innerHTML = `<i class="fas fa-trophy"></i> ${lang.closingChartTitle}`;
+        
+        // Section header
+        const recapTitle = document.getElementById('recapTitle');
+        if (recapTitle) recapTitle.innerHTML = `<i class="fas fa-table"></i> ${lang.recapTitle}`;
+        
+        const exportBtnText = document.getElementById('exportBtnText');
+        if (exportBtnText) exportBtnText.textContent = lang.exportBtnText;
+        
+        const refreshBtnText = document.getElementById('refreshBtnText');
+        if (refreshBtnText) refreshBtnText.textContent = lang.refreshBtnText;
+        
+        // Table headers
+        const thCssName = document.getElementById('thCssName');
+        if (thCssName) thCssName.textContent = lang.thCssName;
+        
+        const thTotalPromosi = document.getElementById('thTotalPromosi');
+        if (thTotalPromosi) thTotalPromosi.textContent = lang.thTotalPromosi;
+        
+        const thJumlahLeads = document.getElementById('thJumlahLeads');
+        if (thJumlahLeads) thJumlahLeads.textContent = lang.thJumlahLeads;
+        
+        const thLeadsFollowUp = document.getElementById('thLeadsFollowUp');
+        if (thLeadsFollowUp) thLeadsFollowUp.textContent = lang.thLeadsFollowUp;
+        
+        const thQualification = document.getElementById('thQualification');
+        if (thQualification) thQualification.textContent = lang.thQualification;
+        
+        const thFollowUp = document.getElementById('thFollowUp');
+        if (thFollowUp) thFollowUp.textContent = lang.thFollowUp;
+        
+        const thCold = document.getElementById('thCold');
+        if (thCold) thCold.textContent = lang.thCold;
+        
+        const thWarm = document.getElementById('thWarm');
+        if (thWarm) thWarm.textContent = lang.thWarm;
+        
+        const thHot = document.getElementById('thHot');
+        if (thHot) thHot.textContent = lang.thHot;
+        
+        const thFu1 = document.getElementById('thFu1');
+        if (thFu1) thFu1.textContent = lang.thFu1;
+        
+        const thFu2 = document.getElementById('thFu2');
+        if (thFu2) thFu2.textContent = lang.thFu2;
+        
+        const thFu3 = document.getElementById('thFu3');
+        if (thFu3) thFu3.textContent = lang.thFu3;
+        
+        const thFu4 = document.getElementById('thFu4');
+        if (thFu4) thFu4.textContent = lang.thFu4;
+        
+        const thFu5 = document.getElementById('thFu5');
+        if (thFu5) thFu5.textContent = lang.thFu5;
+        
+        const thClosingan = document.getElementById('thClosingan');
+        if (thClosingan) thClosingan.textContent = lang.thClosingan;
+        
+        // Empty state
+        const noDataTitle = document.getElementById('noDataTitle');
+        if (noDataTitle) noDataTitle.textContent = lang.noDataTitle;
+        
+        const noDataMessage = document.getElementById('noDataMessage');
+        if (noDataMessage) noDataMessage.textContent = lang.noDataMessage;
+        
+        // Store total text for dynamic row updates
+        window.totalOverallText = lang.totalOverall;
+        
+        // Refresh table to update total row if exists
+        updateTotalRowTranslation();
+    }
+    
+    function updateTotalRowTranslation() {
+        const totalRow = document.querySelector('#statsTableBody tr.total-row');
+        if (totalRow && window.totalOverallText) {
+            const firstCell = totalRow.querySelector('td:first-child strong');
+            if (firstCell) {
+                firstCell.textContent = window.totalOverallText;
+            }
+        }
+    }
+    
+    function updateToastMessages(language) {
+        const lang = promosiTranslations[language] || promosiTranslations['id'];
+        
+        // Store translations for toast messages
+        window.toastMessages = {
+            dataLoaded: lang.dataLoaded,
+            dataError: lang.dataError,
+            filtersReset: lang.filtersReset,
+            exportSuccess: lang.exportSuccess,
+            refreshSuccess: lang.refreshSuccess
+        };
+    }
+    
+    function showToast(message, type = 'info') {
+        const existing = document.querySelector('.toast-notification');
+        if (existing) existing.remove();
+        
+        const toast = document.createElement('div');
+        toast.className = `toast-notification ${type}`;
+        toast.innerHTML = `<div><i class="fas ${type==='success'?'fa-check-circle':type==='error'?'fa-exclamation-circle':'fa-info-circle'}"></i> ${message}</div>`;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.classList.add('hide');
+            setTimeout(() => toast.remove(), 400);
+        }, 3000);
+    }
+    
+    function initializePromosiLanguage() {
+        const savedLanguage = localStorage.getItem('language') || 'id';
+        console.log("Initializing promosi statistics with language:", savedLanguage);
+        
+        applyPromosiTranslations(savedLanguage);
+        updateToastMessages(savedLanguage);
+        
+        window.addEventListener('languageChanged', function(event) {
+            console.log("Language changed in promosi statistics to:", event.detail.language);
+            applyPromosiTranslations(event.detail.language);
+            updateToastMessages(event.detail.language);
+        });
+    }
+    
+    // ========== FIREBASE AND DATA FUNCTIONS ==========
+    
+    // Firebase Configuration
     if (!firebase.apps.length) {
         const firebaseConfig = {
             apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
@@ -1036,39 +1038,28 @@
             appId: "1:771131792881:web:ad634424225bd7de847850",
             measurementId: "G-3CYBC5B101"
         };
-        
         firebase.initializeApp(firebaseConfig);
     }
 
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // ========== GLOBAL VARIABLES ==========
     let currentUser = null;
     let promosiData = [];
     let leadsData = [];
     let filteredLeadsData = [];
     let cssStats = {};
-    let cssList = [
-        "DANEL",
-        "ADRIAN ABDUL ARIF", 
-        "ANDRI FIRMANSYAH",
-        "AHMAD BAIHAQI",
-        "DICKY ADE CHANDRA"
-    ];
+    let cssList = ["DANEL", "ADRIAN ABDUL ARIF", "ANDRI FIRMANSYAH", "AHMAD BAIHAQI", "DICKY ADE CHANDRA"];
+    let dataLoaded = false;
 
-    // ========== FUNGSI UTAMA ==========
-    
     function checkAuthState() {
         auth.onAuthStateChanged((user) => {
             if (user) {
                 currentUser = user;
-                console.log("User is signed in:", user.uid);
                 document.getElementById('userName').textContent = user.displayName || user.email;
                 loadAllData();
                 setupEventListeners();
             } else {
-                console.log("User is signed out");
                 window.location.href = "index.html";
             }
         });
@@ -1076,99 +1067,34 @@
 
     async function loadAllData() {
         try {
-            showLoading(true);
-            await loadPromosiData();
-            await loadLeadsData();
+            await Promise.all([loadPromosiData(), loadLeadsData()]);
             processStatistics();
             renderStatsTable();
             renderCharts();
-            updateStatisticCards();
+            if (window.toastMessages) {
+                showToast(window.toastMessages.dataLoaded, 'success');
+            } else {
+                showToast('Data statistik berhasil dimuat', 'success');
+            }
         } catch (error) {
             console.error("Error loading data:", error);
-            showToast('Gagal memuat data', 'error');
-        } finally {
-            showLoading(false);
+            if (window.toastMessages) {
+                showToast(window.toastMessages.dataError, 'error');
+            } else {
+                showToast('Gagal memuat data', 'error');
+            }
         }
     }
 
     async function loadPromosiData() {
-        try {
-            const snapshot = await db.collection('promosi').get();
-            promosiData = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-            console.log(`Loaded ${promosiData.length} promosi data`);
-        } catch (error) {
-            console.error("Error loading promosi data:", error);
-            promosiData = [];
-        }
+        const snapshot = await db.collection('promosi').get();
+        promosiData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     }
 
     async function loadLeadsData() {
-        try {
-            const snapshot = await db.collection('promosiLeads')
-                .orderBy('tanggalMasuk', 'desc')
-                .get();
-            
-            leadsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            filteredLeadsData = [...leadsData];
-            console.log(`Loaded ${leadsData.length} leads data`);
-            
-        } catch (error) {
-            console.error("Error loading leads data:", error);
-            leadsData = [];
-            filteredLeadsData = [];
-        }
-    }
-
-    // Fungsi untuk update statistik cards
-    function updateStatisticCards() {
-        // Hitung total dari data leads
-        const totalLeads = filteredLeadsData.length;
-        const totalFollowUp = filteredLeadsData.filter(lead => lead.leadsFollow === 'Follow').length;
-        const totalClosing = filteredLeadsData.filter(lead => lead.leadStatus && lead.leadStatus.toLowerCase() === 'closing').length;
-        const totalHotLeads = filteredLeadsData.filter(lead => lead.leadQualification === 'Hot').length;
-        
-        // Hitung total promosi
-        let totalPromosi = 0;
-        promosiData.forEach(promosi => {
-            const cssName = promosi.namaCSS ? promosi.namaCSS.toUpperCase() : '';
-            for (let key in cssStats) {
-                if (cssName.includes(key) || key.includes(cssName)) {
-                    totalPromosi++;
-                    break;
-                }
-            }
-        });
-        
-        // Animate counter
-        animateValue('statTotalPromosi', 0, totalPromosi);
-        animateValue('statTotalLeads', 0, totalLeads);
-        animateValue('statFollowUp', 0, totalFollowUp);
-        animateValue('statClosingan', 0, totalClosing);
-        animateValue('statHotLeads', 0, totalHotLeads);
-    }
-
-    // Animasi angka
-    function animateValue(elementId, start, end) {
-        const element = document.getElementById(elementId);
-        if (!element) return;
-        
-        const duration = 1000;
-        const step = 20;
-        const increment = (end - start) / (duration / step);
-        let current = start;
-        
-        const timer = setInterval(() => {
-            current += increment;
-            if (current >= end) {
-                element.textContent = end;
-                clearInterval(timer);
-            } else {
-                element.textContent = Math.floor(current);
-            }
-        }, step);
+        const snapshot = await db.collection('promosiLeads').orderBy('tanggalMasuk', 'desc').get();
+        leadsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        filteredLeadsData = [...leadsData];
     }
 
     function processStatistics() {
@@ -1176,25 +1102,13 @@
         
         cssList.forEach(css => {
             cssStats[css] = {
-                nama: css,
-                totalPromosi: 0,
-                jumlahLeads: 0,
-                leadsFollowUp: 0,
-                cold: 0,
-                warm: 0,
-                hot: 0,
-                followUp1: 0,
-                followUp2: 0,
-                followUp3: 0,
-                followUp4: 0,
-                followUp5: 0,
-                closingan: 0
+                nama: css, totalPromosi: 0, jumlahLeads: 0, leadsFollowUp: 0,
+                cold: 0, warm: 0, hot: 0, followUp1: 0, followUp2: 0, followUp3: 0, followUp4: 0, followUp5: 0, closingan: 0
             };
         });
         
         promosiData.forEach(promosi => {
             const cssName = promosi.namaCSS ? promosi.namaCSS.toUpperCase() : '';
-            
             for (let key in cssStats) {
                 if (cssName.includes(key) || key.includes(cssName)) {
                     cssStats[key].totalPromosi++;
@@ -1205,74 +1119,21 @@
         
         filteredLeadsData.forEach(lead => {
             const cssName = lead.namaCSS ? lead.namaCSS.toUpperCase() : '';
-            let found = false;
-            
             for (let key in cssStats) {
                 if (cssName.includes(key) || key.includes(cssName)) {
-                    cssStats[key].jumlahLeads++;
-                    
-                    if (lead.leadsFollow && lead.leadsFollow === 'Follow') {
-                        cssStats[key].leadsFollowUp++;
-                    }
-                    
-                    if (lead.leadQualification) {
-                        switch(lead.leadQualification.toLowerCase()) {
-                            case 'cold':
-                                cssStats[key].cold++;
-                                break;
-                            case 'warm':
-                                cssStats[key].warm++;
-                                break;
-                            case 'hot':
-                                cssStats[key].hot++;
-                                break;
-                        }
-                    }
-
-                    if (lead.followUp1 && lead.followUp1.trim() !== '') {
-                        cssStats[key].followUp1++;
-                    }
-                    if (lead.followUp2 && lead.followUp2.trim() !== '') {
-                        cssStats[key].followUp2++;
-                    }
-                    if (lead.followUp3 && lead.followUp3.trim() !== '') {
-                        cssStats[key].followUp3++;
-                    }
-                    if (lead.followUp4 && lead.followUp4.trim() !== '') {
-                        cssStats[key].followUp4++;
-                    }
-                    if (lead.followUp5 && lead.followUp5.trim() !== '') {
-                        cssStats[key].followUp5++;
-                    }
-
-                    // Hitung closingan HANYA dari field leadStatus
-                    if (lead.leadStatus && lead.leadStatus.toLowerCase() === 'closing') {
-                        cssStats[key].closingan++;
-                    }
-                    
-                    found = true;
+                    const stat = cssStats[key];
+                    stat.jumlahLeads++;
+                    if (lead.leadsFollow === 'Follow') stat.leadsFollowUp++;
+                    if (lead.leadQualification === 'Cold') stat.cold++;
+                    if (lead.leadQualification === 'Warm') stat.warm++;
+                    if (lead.leadQualification === 'Hot') stat.hot++;
+                    if (lead.followUp1 && lead.followUp1.trim()) stat.followUp1++;
+                    if (lead.followUp2 && lead.followUp2.trim()) stat.followUp2++;
+                    if (lead.followUp3 && lead.followUp3.trim()) stat.followUp3++;
+                    if (lead.followUp4 && lead.followUp4.trim()) stat.followUp4++;
+                    if (lead.followUp5 && lead.followUp5.trim()) stat.followUp5++;
+                    if (lead.leadStatus && lead.leadStatus.toLowerCase() === 'closing') stat.closingan++;
                     break;
-                }
-            }
-            
-            if (!found && lead.namaCSS) {
-                const newCss = lead.namaCSS.toUpperCase();
-                if (!cssStats[newCss]) {
-                    cssStats[newCss] = {
-                        nama: lead.namaCSS,
-                        totalPromosi: 0,
-                        jumlahLeads: 1,
-                        leadsFollowUp: (lead.leadsFollow === 'Follow') ? 1 : 0,
-                        cold: (lead.leadQualification === 'Cold') ? 1 : 0,
-                        warm: (lead.leadQualification === 'Warm') ? 1 : 0,
-                        hot: (lead.leadQualification === 'Hot') ? 1 : 0,
-                        followUp1: (lead.followUp1 && lead.followUp1.trim() !== '') ? 1 : 0,
-                        followUp2: (lead.followUp2 && lead.followUp2.trim() !== '') ? 1 : 0,
-                        followUp3: (lead.followUp3 && lead.followUp3.trim() !== '') ? 1 : 0,
-                        followUp4: (lead.followUp4 && lead.followUp4.trim() !== '') ? 1 : 0,
-                        followUp5: (lead.followUp5 && lead.followUp5.trim() !== '') ? 1 : 0,
-                        closingan: (lead.leadStatus && lead.leadStatus.toLowerCase() === 'closing') ? 1 : 0
-                    };
                 }
             }
         });
@@ -1281,8 +1142,6 @@
     function renderStatsTable() {
         const tableBody = document.getElementById('statsTableBody');
         const noData = document.getElementById('noData');
-        
-        if (!tableBody) return;
         
         const statsArray = Object.values(cssStats).filter(stat => stat.totalPromosi > 0 || stat.jumlahLeads > 0);
         
@@ -1297,64 +1156,35 @@
         
         statsArray.sort((a, b) => b.totalPromosi - a.totalPromosi);
         
-        let totalPromosi = 0, totalLeads = 0, totalFollowUp = 0;
-        let totalCold = 0, totalWarm = 0, totalHot = 0;
-        let totalFU1 = 0, totalFU2 = 0, totalFU3 = 0, totalFU4 = 0, totalFU5 = 0;
-        let totalClosing = 0;
+        let totals = { totalPromosi:0, jumlahLeads:0, leadsFollowUp:0, cold:0, warm:0, hot:0, followUp1:0, followUp2:0, followUp3:0, followUp4:0, followUp5:0, closingan:0 };
         
         statsArray.forEach(stat => {
-            const row = document.createElement('tr');
-            
-            totalPromosi += stat.totalPromosi;
-            totalLeads += stat.jumlahLeads;
-            totalFollowUp += stat.leadsFollowUp;
-            totalCold += stat.cold;
-            totalWarm += stat.warm;
-            totalHot += stat.hot;
-            totalFU1 += stat.followUp1;
-            totalFU2 += stat.followUp2;
-            totalFU3 += stat.followUp3;
-            totalFU4 += stat.followUp4;
-            totalFU5 += stat.followUp5;
-            totalClosing += stat.closingan;
-            
-            row.innerHTML = `
-                <td class="css-name">${stat.nama}</td>
-                <td><strong>${stat.totalPromosi}</strong></td>
-                <td>${stat.jumlahLeads}</td>
-                <td>${stat.leadsFollowUp}</td>
-                <td>${stat.cold}</td>
-                <td>${stat.warm}</td>
-                <td>${stat.hot}</td>
-                <td>${stat.followUp1}</td>
-                <td>${stat.followUp2}</td>
-                <td>${stat.followUp3}</td>
-                <td>${stat.followUp4}</td>
-                <td>${stat.followUp5}</td>
-                <td>${stat.closingan}</td>
+            Object.keys(totals).forEach(k => totals[k] += stat[k]);
+            tableBody.innerHTML += `
+                <tr>
+                    <td class="css-name">${stat.nama}</td>
+                    <td><strong>${stat.totalPromosi}</strong></td>
+                    <td>${stat.jumlahLeads}</td>
+                    <td>${stat.leadsFollowUp}</td>
+                    <td>${stat.cold}</td><td>${stat.warm}</td><td>${stat.hot}</td>
+                    <td>${stat.followUp1}</td><td>${stat.followUp2}</td><td>${stat.followUp3}</td><td>${stat.followUp4}</td><td>${stat.followUp5}</td>
+                    <td>${stat.closingan}</td>
+                </tr>
             `;
-            
-            tableBody.appendChild(row);
         });
         
-        const totalRow = document.createElement('tr');
-        totalRow.className = 'total-row';
-        totalRow.innerHTML = `
-            <td><strong>TOTAL KESELURUHAN</strong></td>
-            <td><strong>${totalPromosi}</strong></td>
-            <td><strong>${totalLeads}</strong></td>
-            <td><strong>${totalFollowUp}</strong></td>
-            <td><strong>${totalCold}</strong></td>
-            <td><strong>${totalWarm}</strong></td>
-            <td><strong>${totalHot}</strong></td>
-            <td><strong>${totalFU1}</strong></td>
-            <td><strong>${totalFU2}</strong></td>
-            <td><strong>${totalFU3}</strong></td>
-            <td><strong>${totalFU4}</strong></td>
-            <td><strong>${totalFU5}</strong></td>
-            <td><strong>${totalClosing}</strong></td>
+        const totalText = window.totalOverallText || "TOTAL KESELURUHAN";
+        tableBody.innerHTML += `
+            <tr class="total-row">
+                <td><strong>${totalText}</strong></td>
+                <td><strong>${totals.totalPromosi}</strong></td>
+                <td><strong>${totals.jumlahLeads}</strong></td>
+                <td><strong>${totals.leadsFollowUp}</strong></td>
+                <td><strong>${totals.cold}</strong></td><td><strong>${totals.warm}</strong></td><td><strong>${totals.hot}</strong></td>
+                <td><strong>${totals.followUp1}</strong></td><td><strong>${totals.followUp2}</strong></td><td><strong>${totals.followUp3}</strong></td><td><strong>${totals.followUp4}</strong></td><td><strong>${totals.followUp5}</strong></td>
+                <td><strong>${totals.closingan}</strong></td>
+            </tr>
         `;
-        tableBody.appendChild(totalRow);
     }
 
     function renderCharts() {
@@ -1365,154 +1195,77 @@
     }
 
     function renderPromosiChart() {
-        const chartContainer = document.getElementById('promosiBarChart');
-        if (!chartContainer) return;
-        
-        const statsArray = Object.values(cssStats)
-            .filter(stat => stat.totalPromosi > 0)
-            .sort((a, b) => b.totalPromosi - a.totalPromosi)
-            .slice(0, 5);
-        
-        if (statsArray.length === 0) {
-            chartContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Tidak ada data</p>';
-            return;
-        }
-        
-        const maxValue = Math.max(...statsArray.map(s => s.totalPromosi));
-        
-        chartContainer.innerHTML = statsArray.map((stat, index) => {
-            const height = (stat.totalPromosi / maxValue) * 200;
-            const delay = index * 0.1;
-            return `
-                <div class="bar-item" style="animation-delay: ${delay}s">
-                    <div class="bar-value">${stat.totalPromosi}</div>
-                    <div class="bar" style="height: ${height}px; background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);"></div>
-                    <div class="bar-label">${stat.nama.split(' ')[0]}</div>
-                </div>
-            `;
-        }).join('');
+        const container = document.getElementById('promosiBarChart');
+        if (!container) return;
+        const statsArray = Object.values(cssStats).filter(s => s.totalPromosi > 0).sort((a, b) => b.totalPromosi - a.totalPromosi).slice(0, 5);
+        if (statsArray.length === 0) { container.innerHTML = '<p style="text-align: center;">Tidak ada data</p>'; return; }
+        const maxValue = Math.max(...statsArray.map(s => s.totalPromosi), 1);
+        container.innerHTML = statsArray.map(stat => `
+            <div class="bar-item">
+                <div class="bar-value">${stat.totalPromosi}</div>
+                <div class="bar" style="height: ${(stat.totalPromosi / maxValue) * 200}px;"></div>
+                <div class="bar-label">${stat.nama.split(' ')[0]}</div>
+            </div>
+        `).join('');
     }
 
     function renderQualificationChart() {
-        const chartContainer = document.getElementById('qualificationBarChart');
-        if (!chartContainer) return;
-        
+        const container = document.getElementById('qualificationBarChart');
+        if (!container) return;
         const cold = filteredLeadsData.filter(l => l.leadQualification === 'Cold').length;
         const warm = filteredLeadsData.filter(l => l.leadQualification === 'Warm').length;
         const hot = filteredLeadsData.filter(l => l.leadQualification === 'Hot').length;
-        
         const maxValue = Math.max(cold, warm, hot, 1);
-        
-        chartContainer.innerHTML = `
-            <div class="bar-item" style="animation-delay: 0s">
-                <div class="bar-value">${cold}</div>
-                <div class="bar" style="height: ${(cold/maxValue)*200}px; background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);"></div>
-                <div class="bar-label">Cold</div>
-            </div>
-            <div class="bar-item" style="animation-delay: 0.1s">
-                <div class="bar-value">${warm}</div>
-                <div class="bar" style="height: ${(warm/maxValue)*200}px; background: linear-gradient(135deg, #f8961e 0%, #f3722c 100%);"></div>
-                <div class="bar-label">Warm</div>
-            </div>
-            <div class="bar-item" style="animation-delay: 0.2s">
-                <div class="bar-value">${hot}</div>
-                <div class="bar" style="height: ${(hot/maxValue)*200}px; background: linear-gradient(135deg, #f72585 0%, #7209b7 100%);"></div>
-                <div class="bar-label">Hot</div>
-            </div>
+        container.innerHTML = `
+            <div class="bar-item"><div class="bar-value">${cold}</div><div class="bar" style="height: ${(cold/maxValue)*200}px; background: linear-gradient(135deg, #4361ee, #3a0ca3);"></div><div class="bar-label">Cold</div></div>
+            <div class="bar-item"><div class="bar-value">${warm}</div><div class="bar" style="height: ${(warm/maxValue)*200}px; background: linear-gradient(135deg, #f8961e, #f3722c);"></div><div class="bar-label">Warm</div></div>
+            <div class="bar-item"><div class="bar-value">${hot}</div><div class="bar" style="height: ${(hot/maxValue)*200}px; background: linear-gradient(135deg, #f72585, #7209b7);"></div><div class="bar-label">Hot</div></div>
         `;
     }
 
     function renderFollowupChart() {
-        const chartContainer = document.getElementById('followupBarChart');
-        if (!chartContainer) return;
-        
+        const container = document.getElementById('followupBarChart');
+        if (!container) return;
         const statsArray = Object.values(cssStats);
-        const totalFU1 = statsArray.reduce((sum, stat) => sum + stat.followUp1, 0);
-        const totalFU2 = statsArray.reduce((sum, stat) => sum + stat.followUp2, 0);
-        const totalFU3 = statsArray.reduce((sum, stat) => sum + stat.followUp3, 0);
-        const totalFU4 = statsArray.reduce((sum, stat) => sum + stat.followUp4, 0);
-        const totalFU5 = statsArray.reduce((sum, stat) => sum + stat.followUp5, 0);
-        
-        const maxValue = Math.max(totalFU1, totalFU2, totalFU3, totalFU4, totalFU5, 1);
-        
-        chartContainer.innerHTML = `
-            <div class="bar-item" style="animation-delay: 0s">
-                <div class="bar-value">${totalFU1}</div>
-                <div class="bar" style="height: ${(totalFU1/maxValue)*200}px; background: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);"></div>
-                <div class="bar-label">FU 1</div>
-            </div>
-            <div class="bar-item" style="animation-delay: 0.1s">
-                <div class="bar-value">${totalFU2}</div>
-                <div class="bar" style="height: ${(totalFU2/maxValue)*200}px; background: linear-gradient(135deg, #4895ef 0%, #3f37c9 100%);"></div>
-                <div class="bar-label">FU 2</div>
-            </div>
-            <div class="bar-item" style="animation-delay: 0.2s">
-                <div class="bar-value">${totalFU3}</div>
-                <div class="bar" style="height: ${(totalFU3/maxValue)*200}px; background: linear-gradient(135deg, #7209b7 0%, #b5179e 100%);"></div>
-                <div class="bar-label">FU 3</div>
-            </div>
-            <div class="bar-item" style="animation-delay: 0.3s">
-                <div class="bar-value">${totalFU4}</div>
-                <div class="bar" style="height: ${(totalFU4/maxValue)*200}px; background: linear-gradient(135deg, #f72585 0%, #7209b7 100%);"></div>
-                <div class="bar-label">FU 4</div>
-            </div>
-            <div class="bar-item" style="animation-delay: 0.4s">
-                <div class="bar-value">${totalFU5}</div>
-                <div class="bar" style="height: ${(totalFU5/maxValue)*200}px; background: linear-gradient(135deg, #f8961e 0%, #f3722c 100%);"></div>
-                <div class="bar-label">FU 5</div>
-            </div>
+        const f1 = statsArray.reduce((s, stat) => s + stat.followUp1, 0);
+        const f2 = statsArray.reduce((s, stat) => s + stat.followUp2, 0);
+        const f3 = statsArray.reduce((s, stat) => s + stat.followUp3, 0);
+        const f4 = statsArray.reduce((s, stat) => s + stat.followUp4, 0);
+        const f5 = statsArray.reduce((s, stat) => s + stat.followUp5, 0);
+        const maxValue = Math.max(f1, f2, f3, f4, f5, 1);
+        container.innerHTML = `
+            <div class="bar-item"><div class="bar-value">${f1}</div><div class="bar" style="height: ${(f1/maxValue)*200}px;"></div><div class="bar-label">FU 1</div></div>
+            <div class="bar-item"><div class="bar-value">${f2}</div><div class="bar" style="height: ${(f2/maxValue)*200}px;"></div><div class="bar-label">FU 2</div></div>
+            <div class="bar-item"><div class="bar-value">${f3}</div><div class="bar" style="height: ${(f3/maxValue)*200}px;"></div><div class="bar-label">FU 3</div></div>
+            <div class="bar-item"><div class="bar-value">${f4}</div><div class="bar" style="height: ${(f4/maxValue)*200}px;"></div><div class="bar-label">FU 4</div></div>
+            <div class="bar-item"><div class="bar-value">${f5}</div><div class="bar" style="height: ${(f5/maxValue)*200}px;"></div><div class="bar-label">FU 5</div></div>
         `;
     }
 
     function renderClosingChart() {
-        const chartContainer = document.getElementById('closingBarChart');
-        if (!chartContainer) return;
-        
-        const statsArray = Object.values(cssStats)
-            .filter(stat => stat.closingan > 0)
-            .sort((a, b) => b.closingan - a.closingan)
-            .slice(0, 5);
-        
-        if (statsArray.length === 0) {
-            chartContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Belum ada closingan</p>';
-            return;
-        }
-        
-        const maxValue = Math.max(...statsArray.map(s => s.closingan));
-        
-        chartContainer.innerHTML = statsArray.map((stat, index) => {
-            const height = (stat.closingan / maxValue) * 200;
-            const delay = index * 0.1;
-            return `
-                <div class="bar-item" style="animation-delay: ${delay}s">
-                    <div class="bar-value">${stat.closingan}</div>
-                    <div class="bar" style="height: ${height}px; background: linear-gradient(135deg, #4cc9f0 0%, #06d6a0 100%);"></div>
-                    <div class="bar-label">${stat.nama.split(' ')[0]}</div>
-                </div>
-            `;
-        }).join('');
+        const container = document.getElementById('closingBarChart');
+        if (!container) return;
+        const statsArray = Object.values(cssStats).filter(s => s.closingan > 0).sort((a, b) => b.closingan - a.closingan).slice(0, 5);
+        if (statsArray.length === 0) { container.innerHTML = '<p style="text-align: center;">Belum ada closingan</p>'; return; }
+        const maxValue = Math.max(...statsArray.map(s => s.closingan), 1);
+        container.innerHTML = statsArray.map(stat => `
+            <div class="bar-item">
+                <div class="bar-value">${stat.closingan}</div>
+                <div class="bar" style="height: ${(stat.closingan / maxValue) * 200}px; background: linear-gradient(135deg, #4cc9f0, #06d6a0);"></div>
+                <div class="bar-label">${stat.nama.split(' ')[0]}</div>
+            </div>
+        `).join('');
     }
 
     function filterBySearch() {
-        const searchTerm = document.getElementById('cssSearch')?.value.toLowerCase() || '';
-        
-        if (!searchTerm) {
-            renderStatsTable();
-            return;
-        }
-        
-        const filteredStats = {};
-        
-        Object.keys(cssStats).forEach(key => {
-            if (key.toLowerCase().includes(searchTerm)) {
-                filteredStats[key] = cssStats[key];
-            }
-        });
-        
-        const originalStats = {...cssStats};
-        cssStats = filteredStats;
+        const term = document.getElementById('cssSearch')?.value.toLowerCase() || '';
+        if (!term) { renderStatsTable(); return; }
+        const filtered = {};
+        Object.keys(cssStats).forEach(key => { if (key.toLowerCase().includes(term)) filtered[key] = cssStats[key]; });
+        const original = {...cssStats};
+        cssStats = filtered;
         renderStatsTable();
-        cssStats = originalStats;
+        cssStats = original;
     }
 
     async function filterByPeriod() {
@@ -1522,47 +1275,26 @@
         const platform = document.getElementById('platformFilter').value;
         
         let filtered = [...leadsData];
-        
-        if (platform) {
-            filtered = filtered.filter(lead => lead.platform === platform);
-        }
+        if (platform) filtered = filtered.filter(lead => lead.platform === platform);
         
         if (startDate && endDate) {
-            filtered = filtered.filter(lead => 
-                lead.tanggalMasuk >= startDate && lead.tanggalMasuk <= endDate
-            );
+            filtered = filtered.filter(lead => lead.tanggalMasuk >= startDate && lead.tanggalMasuk <= endDate);
         } else if (period !== 'all') {
             const today = new Date();
             let start = new Date();
-            
-            switch(period) {
-                case 'today':
-                    start = today;
-                    break;
-                case 'week':
-                    start.setDate(today.getDate() - 7);
-                    break;
-                case 'month':
-                    start.setMonth(today.getMonth() - 1);
-                    break;
-                case 'year':
-                    start.setFullYear(today.getFullYear() - 1);
-                    break;
-            }
-            
+            if (period === 'today') start = today;
+            else if (period === 'week') start.setDate(today.getDate() - 7);
+            else if (period === 'month') start.setMonth(today.getMonth() - 1);
+            else if (period === 'year') start.setFullYear(today.getFullYear() - 1);
             const startStr = start.toISOString().split('T')[0];
             const todayStr = today.toISOString().split('T')[0];
-            
-            filtered = filtered.filter(lead => 
-                lead.tanggalMasuk >= startStr && lead.tanggalMasuk <= todayStr
-            );
+            filtered = filtered.filter(lead => lead.tanggalMasuk >= startStr && lead.tanggalMasuk <= todayStr);
         }
         
         filteredLeadsData = filtered;
         processStatistics();
         renderStatsTable();
         renderCharts();
-        updateStatisticCards();
     }
 
     function resetFilters() {
@@ -1571,204 +1303,80 @@
         document.getElementById('startDateFilter').value = '';
         document.getElementById('endDateFilter').value = '';
         document.getElementById('platformFilter').value = '';
-        
         filteredLeadsData = [...leadsData];
         processStatistics();
         renderStatsTable();
         renderCharts();
-        updateStatisticCards();
-        
-        showToast('Filter direset', 'success');
+        if (window.toastMessages) {
+            showToast(window.toastMessages.filtersReset, 'success');
+        } else {
+            showToast('Filter direset', 'success');
+        }
     }
 
     function exportToExcel() {
+        const lang = promosiTranslations[currentLanguage] || promosiTranslations['id'];
         const headers = [
-            'NAMA CSS',
-            'JUMLAH PROMOSI',
-            'JUMLAH LEADS',
-            'LEADS FOLLOW UP',
-            'Cold',
-            'Warm',
-            'Hot',
-            'FOLLOW UP 1',
-            'FOLLOW UP 2',
-            'FOLLOW UP 3',
-            'FOLLOW UP 4',
-            'FOLLOW UP 5',
-            'CLOSINGAN'
+            lang.thCssName, lang.thTotalPromosi, lang.thJumlahLeads, lang.thLeadsFollowUp,
+            lang.thCold, lang.thWarm, lang.thHot,
+            lang.thFu1, lang.thFu2, lang.thFu3, lang.thFu4, lang.thFu5, lang.thClosingan
         ];
-        
-        let csvContent = headers.join(',') + '\n';
-        
-        const statsArray = Object.values(cssStats).filter(stat => stat.totalPromosi > 0 || stat.jumlahLeads > 0);
-        statsArray.sort((a, b) => b.totalPromosi - a.totalPromosi);
-        
-        let totalPromosi = 0, totalLeads = 0, totalFollowUp = 0;
-        let totalCold = 0, totalWarm = 0, totalHot = 0;
-        let totalFU1 = 0, totalFU2 = 0, totalFU3 = 0, totalFU4 = 0, totalFU5 = 0;
-        let totalClosing = 0;
-        
-        statsArray.forEach(stat => {
-            const row = [
-                `"${stat.nama}"`,
-                stat.totalPromosi,
-                stat.jumlahLeads,
-                stat.leadsFollowUp,
-                stat.cold,
-                stat.warm,
-                stat.hot,
-                stat.followUp1,
-                stat.followUp2,
-                stat.followUp3,
-                stat.followUp4,
-                stat.followUp5,
-                stat.closingan
-            ];
-            
-            totalPromosi += stat.totalPromosi;
-            totalLeads += stat.jumlahLeads;
-            totalFollowUp += stat.leadsFollowUp;
-            totalCold += stat.cold;
-            totalWarm += stat.warm;
-            totalHot += stat.hot;
-            totalFU1 += stat.followUp1;
-            totalFU2 += stat.followUp2;
-            totalFU3 += stat.followUp3;
-            totalFU4 += stat.followUp4;
-            totalFU5 += stat.followUp5;
-            totalClosing += stat.closingan;
-            
-            csvContent += row.join(',') + '\n';
+        let csv = headers.join(',') + '\n';
+        const statsArray = Object.values(cssStats).filter(s => s.totalPromosi > 0 || s.jumlahLeads > 0).sort((a,b)=>b.totalPromosi - a.totalPromosi);
+        let totals = { totalPromosi:0, jumlahLeads:0, leadsFollowUp:0, cold:0, warm:0, hot:0, followUp1:0, followUp2:0, followUp3:0, followUp4:0, followUp5:0, closingan:0 };
+        statsArray.forEach(s => {
+            Object.keys(totals).forEach(k => totals[k] += s[k]);
+            csv += `"${s.nama}",${s.totalPromosi},${s.jumlahLeads},${s.leadsFollowUp},${s.cold},${s.warm},${s.hot},${s.followUp1},${s.followUp2},${s.followUp3},${s.followUp4},${s.followUp5},${s.closingan}\n`;
         });
-        
-        const totalRow = [
-            'TOTAL KESELURUHAN',
-            totalPromosi,
-            totalLeads,
-            totalFollowUp,
-            totalCold,
-            totalWarm,
-            totalHot,
-            totalFU1,
-            totalFU2,
-            totalFU3,
-            totalFU4,
-            totalFU5,
-            totalClosing
-        ];
-        csvContent += totalRow.join(',') + '\n';
-        
-        const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const totalText = lang.totalOverall;
+        csv += `"${totalText}",${totals.totalPromosi},${totals.jumlahLeads},${totals.leadsFollowUp},${totals.cold},${totals.warm},${totals.hot},${totals.followUp1},${totals.followUp2},${totals.followUp3},${totals.followUp4},${totals.followUp5},${totals.closingan}\n`;
+        const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
-        const url = URL.createObjectURL(blob);
-        link.setAttribute('href', url);
-        link.setAttribute('download', `statistik_promosi_${new Date().toISOString().split('T')[0]}.csv`);
-        document.body.appendChild(link);
+        link.href = URL.createObjectURL(blob);
+        link.download = `statistik_promosi_${new Date().toISOString().split('T')[0]}.csv`;
         link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        
-        showToast('Data berhasil diexport!', 'success');
-    }
-
-    function showToast(message, type = 'success', duration = 3000) {
-        const existingToast = document.querySelector('.toast-notification');
-        if (existingToast) {
-            existingToast.remove();
-        }
-        
-        const toast = document.createElement('div');
-        toast.className = `toast-notification ${type}`;
-        toast.innerHTML = `
-            <div class="toast-content">
-                <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
-                <span>${message}</span>
-            </div>
-        `;
-
-        document.body.appendChild(toast);
-
-        setTimeout(() => {
-            toast.classList.add('hide');
-            setTimeout(() => {
-                toast.remove();
-            }, 400);
-        }, duration);
-    }
-
-    let loadingTimeout;
-    function showLoading(show) {
-        if (show) {
-            loadingTimeout = setTimeout(() => {
-                const existingOverlay = document.querySelector('.loading-overlay');
-                if (!existingOverlay) {
-                    const overlay = document.createElement('div');
-                    overlay.className = 'loading-overlay';
-                    overlay.innerHTML = '<div class="loading-spinner"></div>';
-                    document.body.appendChild(overlay);
-                }
-            }, 300);
+        URL.revokeObjectURL(link.href);
+        if (window.toastMessages) {
+            showToast(window.toastMessages.exportSuccess, 'success');
         } else {
-            if (loadingTimeout) {
-                clearTimeout(loadingTimeout);
-                loadingTimeout = null;
-            }
-            
-            const existingOverlay = document.querySelector('.loading-overlay');
-            if (existingOverlay) {
-                existingOverlay.remove();
-            }
+            showToast('Data berhasil diexport!', 'success');
         }
     }
 
     function setupEventListeners() {
-        const refreshBtn = document.getElementById('refreshStats');
-        if (refreshBtn) {
-            refreshBtn.addEventListener('click', () => {
-                loadAllData();
+        document.getElementById('refreshStats')?.addEventListener('click', () => { 
+            loadAllData(); 
+            if (window.toastMessages) {
+                showToast(window.toastMessages.refreshSuccess, 'success');
+            } else {
                 showToast('Data statistik diperbarui!', 'success');
+            }
+        });
+        document.getElementById('exportExcel')?.addEventListener('click', exportToExcel);
+        document.getElementById('cssSearch')?.addEventListener('input', filterBySearch);
+        document.getElementById('periodFilter')?.addEventListener('change', filterByPeriod);
+        document.getElementById('startDateFilter')?.addEventListener('change', filterByPeriod);
+        document.getElementById('endDateFilter')?.addEventListener('change', filterByPeriod);
+        document.getElementById('platformFilter')?.addEventListener('change', filterByPeriod);
+        document.getElementById('resetFilters')?.addEventListener('click', resetFilters);
+        
+        // Menu toggle for mobile
+        const menuToggle = document.querySelector('.menu-toggle');
+        const sidebarContainer = document.getElementById('sidebar-container');
+        if (menuToggle && sidebarContainer) {
+            menuToggle.addEventListener('click', function() {
+                const sidebar = sidebarContainer.querySelector('.sidebar');
+                if (sidebar) {
+                    sidebar.classList.toggle('active');
+                }
             });
-        }
-        
-        const exportBtn = document.getElementById('exportExcel');
-        if (exportBtn) {
-            exportBtn.addEventListener('click', exportToExcel);
-        }
-        
-        const cssSearch = document.getElementById('cssSearch');
-        if (cssSearch) {
-            cssSearch.addEventListener('input', filterBySearch);
-        }
-        
-        const periodFilter = document.getElementById('periodFilter');
-        if (periodFilter) {
-            periodFilter.addEventListener('change', filterByPeriod);
-        }
-        
-        const startDateFilter = document.getElementById('startDateFilter');
-        if (startDateFilter) {
-            startDateFilter.addEventListener('change', filterByPeriod);
-        }
-        
-        const endDateFilter = document.getElementById('endDateFilter');
-        if (endDateFilter) {
-            endDateFilter.addEventListener('change', filterByPeriod);
-        }
-        
-        const platformFilter = document.getElementById('platformFilter');
-        if (platformFilter) {
-            platformFilter.addEventListener('change', filterByPeriod);
-        }
-        
-        const resetFiltersBtn = document.getElementById('resetFilters');
-        if (resetFiltersBtn) {
-            resetFiltersBtn.addEventListener('click', resetFilters);
         }
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', () => {
+        initializePromosiLanguage();
         checkAuthState();
     });
-</script>
+    </script>
 </body>
 </html>

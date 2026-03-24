@@ -377,6 +377,14 @@ let currentPeriod = getCurrentMonthYear();
 // 🔥 TAMBAHKAN VARIABEL UNTUK TOMBOL KEMBALI
 let isViewingUserDetail = false;
 
+// ========== TAMBAHKAN VARIABEL UNTUK MENCEGAH LOOP ==========
+let isProcessingChatUpdate = false;
+let isSavingKpiData = false;
+let lastKpiUpdateTime = 0;
+const KPI_UPDATE_DEBOUNCE_MS = 1000; // 1 detik debounce
+let saveTimeout = null;
+let lastSavedKpiState = null;
+let isInitializingKpi = false;
     // Elemen DOM
 const editAllBtn = document.getElementById('edit-all-btn');
 const resetBtn = document.getElementById('reset-data-btn');
@@ -850,66 +858,121 @@ function calculateScore(target, realization, isSmallerBetter = false, index = -1
         }
     }
 
-    function setupModulesRealTimeListeners() {
-        console.log('🔔 Setting up modules real-time listeners');
+    // ========== PERBAIKI FUNGSI setupModulesRealTimeListeners ==========
+function setupModulesRealTimeListeners() {
+    console.log('🔔 Setting up modules real-time listeners');
+    
+    const db = firebase.firestore();
+    const currentUser = firebase.auth().currentUser;
+    
+    if (currentUser) {
+        const userId = getCurrentViewingUserId() || currentUser.uid;
         
-        const db = firebase.firestore();
-        const currentUser = firebase.auth().currentUser;
-        
-        if (currentUser) {
-            const userId = getCurrentViewingUserId() || currentUser.uid;
-            
-            // Listener untuk chat collection
-            const chatUnsubscribe = db.collection('chats')
-                .where('userId', '==', userId)
-                .onSnapshot((snapshot) => {
-                    // 🔥 SKIP JIKA SEDANG EDIT
-                    if (preventRealTimeUpdate || isEditingMode) {
-                        console.log('⚠️ Skipping chat listener: Editing mode active');
-                        return;
+        // Listener untuk chat collection - HANYA UPDATE REALIZATION, JANGAN LANGSUNG SAVE
+        const chatUnsubscribe = db.collection('chats')
+            .where('userId', '==', userId)
+            .onSnapshot((snapshot) => {
+                // CEK: Jangan proses jika sedang dalam mode edit atau saving
+                if (preventRealTimeUpdate || isEditingMode || isSavingKpiData) {
+                    console.log('⚠️ Skipping chat listener: Busy or edit mode');
+                    return;
+                }
+                
+                // CEK: Debounce untuk mencegah terlalu banyak update
+                const now = Date.now();
+                if (now - lastKpiUpdateTime < KPI_UPDATE_DEBOUNCE_MS) {
+                    console.log('⚠️ Skipping chat listener: Too frequent update');
+                    return;
+                }
+                
+                // CEK: Hindari loop jika sedang memproses
+                if (isProcessingChatUpdate) {
+                    console.log('⚠️ Skipping chat listener: Already processing');
+                    return;
+                }
+                
+                isProcessingChatUpdate = true;
+                
+                try {
+                    console.log('🔄 Chat Response data updated from Firestore:', snapshot.size);
+                    
+                    // UPDATE REALIZATION SAJA, JANGAN LANGSUNG SAVE
+                    const chatKpi = kpiData.find(item => item.id === 4);
+                    if (chatKpi) {
+                        const oldRealization = chatKpi.realization;
+                        const newRealization = snapshot.size;
+                        
+                        // Hanya update jika ada perubahan
+                        if (oldRealization !== newRealization) {
+                            chatKpi.realization = newRealization;
+                            
+                            // Hitung ulang score chat response
+                            let newScore;
+                            if (newRealization === 0) {
+                                newScore = 100;
+                            } else {
+                                const penalty = newRealization * 25;
+                                newScore = Math.max(0, 100 - penalty);
+                            }
+                            
+                            chatKpi.score = newScore;
+                            
+                            console.log(`📊 Chat Score Updated: ${oldRealization} -> ${newRealization} chats, Score: ${newScore}%`);
+                            
+                            // Update display tanpa save ke Firestore
+                            updateDisplay();
+                            
+                            // Gunakan debounce untuk save
+                            scheduleKpiSave();
+                        }
                     }
                     
-                    console.log('🔄 Chat Response data updated from Firestore:', snapshot.size);
-                    // Update realization chat response
-                    kpiData[3].realization = snapshot.size;
+                    // Update summary card display
+                    const chatScore = kpiData.find(item => item.id === 4)?.score || 0;
+                    updateElementText('chat-score', chatScore.toFixed(2) + '%');
+                    updateElementText('chat-realization', kpiData[3]?.realization || 0);
+                    updateElementText('chat-points', chatScore.toFixed(2) + '%');
+                    updateProgressBar('.summary-card:nth-child(4) .progress-fill', Math.min(chatScore, 100));
                     
-                    // Hitung ulang score chat response
-                    kpiData[3].score = calculateScore(
-                        kpiData[3].target, 
-                        kpiData[3].realization, 
-                        false, // isSmallerBetter
-                        3 // Index khusus untuk chat
-                    );
-                    
-                    console.log(`📊 Real-time Chat Update: 
-                        Count: ${snapshot.size}
-                        New Score: ${kpiData[3].score}%`);
-                    
-                    // Update display dan simpan ke Firestore
-                    updateDisplay();
-                    saveKpiDataToFirestore();
-                    
-                    // Update summary card
-                    updateElementText('chat-score', kpiData[3].score.toFixed(2) + '%');
-                    updateElementText('chat-realization', kpiData[3].realization);
-                    updateElementText('chat-points', kpiData[3].score.toFixed(2) + '%');
-                    updateProgressBar('.summary-card:nth-child(4) .progress-fill', Math.min(kpiData[3].score, 100));
-                    
-                });
-            
-            unsubscribeFunctions.push(chatUnsubscribe);
-            
-            // Listener untuk data lainnya
-            const ideasUnsubscribe = db.collection('ideas')
-                .where('userId', '==', userId)
-                .onSnapshot((snapshot) => {
-                    console.log('🔄 Ideas data updated from Firestore');
-                    updateAllKpiData();
-                });
-            
-            unsubscribeFunctions.push(ideasUnsubscribe);
-        }
+                } catch (error) {
+                    console.error('Error in chat listener:', error);
+                } finally {
+                    isProcessingChatUpdate = false;
+                    lastKpiUpdateTime = Date.now();
+                }
+            });
+        
+        unsubscribeFunctions.push(chatUnsubscribe);
+        
+        // Listener untuk data lainnya - gunakan debounce juga
+        const ideasUnsubscribe = db.collection('ideas')
+            .where('userId', '==', userId)
+            .onSnapshot((snapshot) => {
+                if (preventRealTimeUpdate || isEditingMode || isSavingKpiData) {
+                    return;
+                }
+                
+                console.log('🔄 Ideas data updated from Firestore');
+                scheduleKpiSave();
+            });
+        
+        unsubscribeFunctions.push(ideasUnsubscribe);
+        
+        // Listener untuk research
+        const researchUnsubscribe = db.collection('research')
+            .where('userId', '==', userId)
+            .onSnapshot((snapshot) => {
+                if (preventRealTimeUpdate || isEditingMode || isSavingKpiData) {
+                    return;
+                }
+                
+                console.log('🔄 Research data updated from Firestore');
+                scheduleKpiSave();
+            });
+        
+        unsubscribeFunctions.push(researchUnsubscribe);
     }
+}
 
     // ========== FUNGSI UNTUK MEMASTIKAN INISIALISASI CHAT RESPONSE ==========
 
@@ -1080,92 +1143,141 @@ if (currentUser) {
         }
     }
 
-    async function saveKpiDataToFirestore() {
-        const currentPeriod = getCurrentMonthYear().display;
-        try {
-            const currentUser = firebase.auth().currentUser;
-            if (!currentUser) {
-                console.error('❌ No user logged in');
-                return false;
-            }
-
-            const db = firebase.firestore();
-            
-            // TENTUKAN TARGET USER ID DENGAN LOGIKA YANG JELAS
-            let targetUserId = currentUser.uid;
-            let targetUserName = currentUser.displayName || currentUser.email;
-            
-            // LOGIKA UNTUK SUPER ADMIN
-            if (isSuperAdminUser) {
-                // Prioritas 1: User ID dari window.currentViewingUserId
-                if (window.currentViewingUserId && window.currentViewingUserId !== currentUser.uid) {
-                    targetUserId = window.currentViewingUserId;
-                    // Dapatkan nama user target
-                    const userDoc = await db.collection('users').doc(targetUserId).get();
-                    if (userDoc.exists) {
-                        targetUserName = userDoc.data().name || userDoc.data().email || 'Unknown User';
-                    }
-                    console.log('🎯 Super Admin saving to TARGET user:', targetUserId, targetUserName);
-                }
-                // Prioritas 2: Jika ada specificUserId di URL atau state lain
-                else if (currentFilter === 'all') {
-                    console.log('⚠️ Super Admin in "all" mode but no target user selected, saving to own data');
-                    // Tetap ke data sendiri
-                }
-            }
-            
-            console.log('💾 FINAL SAVE TARGET:', {
-                targetUserId: targetUserId,
-                targetUserName: targetUserName,
-                isSuperAdmin: isSuperAdminUser,
-                currentViewing: window.currentViewingUserId
-            });
-
-            isLocalChange = true;
-            lastLocalChangeTime = Date.now();
-
-            const kpiDoc = {
-    kpiData: kpiData.map(item => ({
-        id: item.id,
-        area: item.area,
-        target: item.target,
-        weight: item.weight,
-        description: item.description,
-        note: item.note,
-        realization: item.realization,
-        score: item.score
-    })),
-    userId: targetUserId,
-    userName: targetUserName,
-    userEmail: currentUser.email,
-
-    period: currentPeriod, // 🔥 INI WAJIB
-
-    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-    totalScore: calculateTotalScore(kpiData),
-    lastUpdatedBy: currentUser.uid,
-    updatedByAdmin: isSuperAdminUser
-};
-
-
-            console.log('📤 Saving to Firestore document:', targetUserId);
-            await db.collection('kpiData').doc(targetUserId).set(kpiDoc, { merge: true });
-            
-            console.log('✅ SUCCESS: Data saved to Firestore for user:', targetUserId);
-            
-            // Update module collections untuk user yang benar
-            await updateModuleCollections(targetUserId);
-            
-            setTimeout(() => { isLocalChange = false; }, 5000);
-            return true;
-        } catch (error) {
-            console.error('❌ ERROR saving to Firestore:', error);
-            isLocalChange = false;
-            showNotification('Gagal menyimpan data: ' + error.message, 'error');
+    // ========== PERBAIKI FUNGSI saveKpiDataToFirestore ==========
+async function saveKpiDataToFirestore() {
+    // CEK: Jangan save jika sedang dalam proses
+    if (isSavingKpiData) {
+        console.log('⏳ Already saving KPI data, skipping...');
+        return false;
+    }
+    
+    // CEK: Jangan save jika sedang dalam mode edit
+    if (isEditingMode) {
+        console.log('⚠️ Skipping save: Edit mode active');
+        return false;
+    }
+    
+    // CEK: Jangan save jika tidak ada perubahan signifikan
+    const hasChanges = checkForSignificantChanges();
+    if (!hasChanges) {
+        console.log('ℹ️ No significant changes to save');
+        return true;
+    }
+    
+    isSavingKpiData = true;
+    
+    try {
+        const currentUser = firebase.auth().currentUser;
+        if (!currentUser) {
+            console.error('❌ No user logged in');
             return false;
         }
-    }
 
+        const db = firebase.firestore();
+        const currentPeriod = getCurrentMonthYear().display;
+        
+        // Tentukan target user ID
+        let targetUserId = currentUser.uid;
+        let targetUserName = currentUser.displayName || currentUser.email;
+        
+        if (isSuperAdminUser && window.currentViewingUserId && window.currentViewingUserId !== currentUser.uid) {
+            targetUserId = window.currentViewingUserId;
+            const userDoc = await db.collection('users').doc(targetUserId).get();
+            if (userDoc.exists) {
+                targetUserName = userDoc.data().name || userDoc.data().email || 'Unknown User';
+            }
+            console.log('🎯 Super Admin saving to TARGET user:', targetUserId, targetUserName);
+        }
+
+        console.log(`💾 Saving KPI data for period: ${currentPeriod} to user: ${targetUserId}`);
+
+        isLocalChange = true;
+        lastLocalChangeTime = Date.now();
+
+        const kpiDoc = {
+            kpiData: kpiData.map(item => ({
+                id: item.id,
+                area: item.area,
+                target: item.target,
+                weight: item.weight,
+                description: item.description,
+                note: item.note,
+                realization: item.realization,
+                score: item.score
+            })),
+            userId: targetUserId,
+            userName: targetUserName,
+            userEmail: currentUser.email,
+            period: currentPeriod,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            totalScore: calculateTotalScore(kpiData),
+            lastUpdatedBy: currentUser.uid,
+            updatedByAdmin: isSuperAdminUser
+        };
+
+        await db.collection('kpiData').doc(targetUserId).set(kpiDoc, { merge: true });
+        
+        console.log('✅ Data saved to Firestore for user:', targetUserId);
+        
+        setTimeout(() => { 
+            isLocalChange = false; 
+        }, 5000);
+        
+        return true;
+        
+    } catch (error) {
+        console.error('❌ ERROR saving to Firestore:', error);
+        isLocalChange = false;
+        showNotification('Gagal menyimpan data: ' + error.message, 'error');
+        return false;
+    } finally {
+        isSavingKpiData = false;
+    }
+}
+// ========== FUNGSI DEBOUNCE UNTUK SAVE ==========
+
+function scheduleKpiSave() {
+    // Hapus timeout sebelumnya
+    if (saveTimeout) {
+        clearTimeout(saveTimeout);
+    }
+    
+    // Set timeout baru dengan delay 2 detik
+    saveTimeout = setTimeout(async () => {
+        if (isSavingKpiData) {
+            console.log('⏳ Already saving, rescheduling...');
+            scheduleKpiSave();
+            return;
+        }
+        
+        console.log('💾 Debounced save triggered');
+        await saveKpiDataToFirestore();
+        saveTimeout = null;
+    }, 2000);
+}
+
+// ========== FUNGSI UNTUK CEK PERUBAHAN SIGNIFIKAN ==========
+
+function checkForSignificantChanges() {
+    const currentState = kpiData.map(item => ({
+        id: item.id,
+        realization: item.realization,
+        score: item.score
+    }));
+    
+    if (!lastSavedKpiState) {
+        lastSavedKpiState = JSON.parse(JSON.stringify(currentState));
+        return true;
+    }
+    
+    const hasChanges = JSON.stringify(lastSavedKpiState) !== JSON.stringify(currentState);
+    
+    if (hasChanges) {
+        lastSavedKpiState = JSON.parse(JSON.stringify(currentState));
+    }
+    
+    return hasChanges;
+}
     function calculateTotalScore(kpiDataArray) {
         if (!kpiDataArray || !Array.isArray(kpiDataArray)) {
             console.warn('⚠️ Invalid KPI data for calculation');
@@ -2543,7 +2655,8 @@ function getCurrentViewingUserId() {
 
     // ========== FUNGSI REAL-TIME LISTENERS ==========
 
-    function setupRealTimeListeners() {
+    // ========== PERBAIKI FUNGSI setupRealTimeListeners ==========
+function setupRealTimeListeners() {
     console.log('🔔 Setting up real-time listeners');
     
     const currentUser = firebase.auth().currentUser;
@@ -2556,12 +2669,10 @@ function getCurrentViewingUserId() {
     unsubscribeFunctions.forEach(unsub => unsub());
     unsubscribeFunctions = [];
     
-    // Tentukan target user dengan benar
     const targetUserId = getCurrentViewingUserId();
     
     console.log('🎯 Setting up real-time listeners for user:', targetUserId);
     
-    // JANGAN setup listener jika tidak ada target user
     if (!targetUserId) {
         console.log('⚠️ No target user for listeners, skipping');
         return;
@@ -2569,27 +2680,44 @@ function getCurrentViewingUserId() {
     
     const db = firebase.firestore();
     
-    // Listener untuk kpiData
+    // Listener untuk kpiData - dengan debounce
+    let lastFirestoreUpdate = 0;
+    
     const kpiUnsubscribe = db.collection('kpiData')
         .doc(targetUserId)
         .onSnapshot((doc) => {
-            // SKIP jika perubahan dari edit lokal
-            if (isLocalChange && (Date.now() - lastLocalChangeTime < 5000)) {
+            const now = Date.now();
+            
+            // CEK: Debounce untuk menghindari loop
+            if (now - lastFirestoreUpdate < 1000) {
+                console.log('⚠️ Skipping rapid Firestore update');
+                return;
+            }
+            
+            // CEK: Jika perubahan dari edit lokal
+            if (isLocalChange && (now - lastLocalChangeTime < 5000)) {
                 console.log('🔄 Skipping real-time update (local change)');
                 return;
             }
             
-            // SKIP jika sedang dalam mode edit
+            // CEK: Jika sedang dalam mode edit
             if (isEditingMode || preventRealTimeUpdate) {
                 console.log('⚠️ Skipping real-time update (edit mode)');
                 return;
             }
             
+            // CEK: Jika sedang saving
+            if (isSavingKpiData) {
+                console.log('⚠️ Skipping real-time update (saving in progress)');
+                return;
+            }
+            
+            lastFirestoreUpdate = now;
+            
             if (doc.exists) {
                 const savedData = doc.data();
                 console.log('📥 Real-time update from Firestore for user:', targetUserId);
                 
-                // CEK apakah data ini untuk user yang sedang dilihat
                 const currentViewing = getCurrentViewingUserId();
                 if (savedData.userId !== currentViewing) {
                     console.log('🚫 Ignoring update - data is for different user:', savedData.userId);
@@ -3358,46 +3486,65 @@ function force(el) {
     
     console.log('✅ KPI language system ready');
 })();
+// ========== PERBAIKI FUNGSI updateKpiFromFirestore ==========
 function updateKpiFromFirestore(firestoreData) {
-    // CEK: apakah data ini menyebabkan perubahan bahasa?
-    console.log('🔄 Firestore update received for:', firestoreData.userId);
-    
-    // Skip jika data tidak valid
-    if (!firestoreData.kpiData || !Array.isArray(firestoreData.kpiData)) {
-        console.log('⚠️ Invalid firestore data, skipping');
+    // CEK: Jika perubahan berasal dari local save, skip
+    if (isLocalChange && (Date.now() - lastLocalChangeTime < 5000)) {
+        console.log('🔄 Skipping real-time update (local change)');
         return;
     }
     
-    // Skip jika sedang dalam mode edit
+    // CEK: Jika sedang dalam mode edit, skip
     if (isEditingMode || preventRealTimeUpdate) {
         console.log('⚠️ Skipping real-time update (edit mode)');
         return;
     }
     
-    // Simpan bahasa saat ini sebelum update
+    // CEK: Jika sedang saving, skip
+    if (isSavingKpiData) {
+        console.log('⚠️ Skipping real-time update (saving in progress)');
+        return;
+    }
+    
+    if (!firestoreData.kpiData || !Array.isArray(firestoreData.kpiData)) {
+        console.log('⚠️ Invalid firestore data, skipping');
+        return;
+    }
+    
+    // Simpan bahasa saat ini
     const currentLang = localStorage.getItem('language') || 'id';
     
-    // Update data
+    let hasRealChanges = false;
+    
+    // Update data hanya jika ada perubahan
     firestoreData.kpiData.forEach((savedItem, index) => {
         if (index < kpiData.length) {
-            if (JSON.stringify(kpiData[index]) !== JSON.stringify(savedItem)) {
-                Object.assign(kpiData[index], savedItem);
+            const currentItem = kpiData[index];
+            
+            // Bandingkan realization dan score
+            if (currentItem.realization !== savedItem.realization || 
+                currentItem.score !== savedItem.score) {
+                hasRealChanges = true;
+                console.log(`🔄 Updating item ${index}: realization ${currentItem.realization} -> ${savedItem.realization}`);
+                Object.assign(currentItem, savedItem);
             }
         }
     });
     
-    // Update display
-    updateDisplay();
-    
-    // RESTORE bahasa jika diperlukan
-    setTimeout(() => {
-        const newLang = localStorage.getItem('language') || 'id';
-        if (newLang !== currentLang && window.applyKpiTranslations) {
-            window.applyKpiTranslations(newLang);
-        }
-    }, 100);
-    
-    console.log('✅ Data updated from Firestore (language protected)');
+    if (hasRealChanges) {
+        // Update display tanpa memicu save lagi
+        updateDisplay();
+        
+        // Restore bahasa jika diperlukan
+        setTimeout(() => {
+            const newLang = localStorage.getItem('language') || 'id';
+            if (newLang !== currentLang && window.applyKpiTranslations) {
+                window.applyKpiTranslations(newLang);
+            }
+        }, 100);
+        
+        console.log('✅ Data updated from Firestore');
+    }
 }
 </script>
 <script>

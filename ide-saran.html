@@ -578,6 +578,123 @@
             background: var(--hover-color);
         }
 
+        /* ========== PAGINATION STYLES ========== */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: var(--space-xl);
+            padding: var(--space-md) var(--space-lg);
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: var(--space-md);
+        }
+
+        .pagination-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+        }
+
+        .pagination-info i {
+            color: var(--primary);
+        }
+
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .pagination-btn {
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-numbers {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .page-number {
+            min-width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            color: var(--text-secondary);
+            transition: all var(--transition-fast);
+            border: 1px solid transparent;
+        }
+
+        .page-number:hover:not(.active) {
+            background: var(--hover-color);
+            border-color: var(--border-color);
+        }
+
+        .page-number.active {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .page-number.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-select {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .pagination-select select {
+            padding: 6px 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-size: var(--text-sm);
+            cursor: pointer;
+        }
+
+        .pagination-select select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
         /* ========== MODAL STYLES ========== */
         .modal-overlay {
             position: fixed;
@@ -849,6 +966,27 @@
                 align-items: flex-start;
                 gap: var(--space-md);
             }
+            
+            .pagination-container {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            
+            .pagination-controls {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .pagination-numbers {
+                order: 2;
+                justify-content: center;
+            }
+            
+            .pagination-select {
+                order: 3;
+                justify-content: center;
+            }
         }
 
         @media (max-width: 480px) {
@@ -899,17 +1037,71 @@
                 <button class="menu-toggle">
                     <i class="fas fa-bars"></i>
                 </button>
-                <div class="user-profile">
+<div class="user-profile">
                     <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
                     <div class="user-info">
-                        <h4>Nama Masing Masing</h4>
-                        <p>Customer Service Support</p>
+                        <h4 id="userName">Loading...</h4>
+                        <p id="userRole">Ide dan Saran</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        
+        <!-- Statistics Cards -->
+        <div class="ideas-stats" id="ideasStats">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <h3 class="stat-title">Total Ide & Saran</h3>
+                    <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                </div>
+                <div class="stat-content">
+                    <h3 id="total-ideas">0</h3>
+                    <p>Total ide yang diajukan</p>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="total-progress" style="width: 0%; background: var(--primary-gradient);"></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <h3 class="stat-title">Menunggu Review</h3>
+                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                </div>
+                <div class="stat-content">
+                    <h3 id="pending-ideas">0</h3>
+                    <p>Ide menunggu persetujuan</p>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="pending-progress" style="width: 0%; background: var(--pending-color);"></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <h3 class="stat-title">Disetujui</h3>
+                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                </div>
+                <div class="stat-content">
+                    <h3 id="approved-ideas">0</h3>
+                    <p>Ide yang disetujui</p>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="approved-progress" style="width: 0%; background: var(--completed-color);"></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <h3 class="stat-title">Ditolak</h3>
+                    <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+                </div>
+                <div class="stat-content">
+                    <h3 id="rejected-ideas">0</h3>
+                    <p>Ide yang ditolak</p>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="rejected-progress" style="width: 0%; background: var(--danger-gradient);"></div>
+                </div>
+            </div>
+        </div>
 
         <div class="ideas-container">
             <div class="section-header">
@@ -989,6 +1181,38 @@
                 <!-- Ide dan saran akan dimuat di sini secara dinamis -->
             </div>
             
+            <!-- Pagination Section -->
+            <div class="pagination-container" id="paginationContainer" style="display: none;">
+                <div class="pagination-info">
+                    <i class="fas fa-chart-line"></i>
+                    <span id="paginationStats">Menampilkan 0 dari 0 data</span>
+                </div>
+                
+                <div class="pagination-controls">
+                    <button class="pagination-btn" id="prevPageBtn" disabled>
+                        <i class="fas fa-chevron-left"></i> Sebelumnya
+                    </button>
+                    
+                    <div class="pagination-numbers" id="paginationNumbers">
+                        <!-- Page numbers akan diisi JavaScript -->
+                    </div>
+                    
+                    <button class="pagination-btn" id="nextPageBtn" disabled>
+                        Selanjutnya <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="pagination-select">
+                    <label for="itemsPerPageSelect" style="font-size: var(--text-sm); color: var(--text-secondary);">Tampilkan:</label>
+                    <select id="itemsPerPageSelect">
+                        <option value="6">6 per halaman</option>
+                        <option value="12" selected>12 per halaman</option>
+                        <option value="24">24 per halaman</option>
+                        <option value="48">48 per halaman</option>
+                    </select>
+                </div>
+            </div>
+            
             <div class="empty-state" id="emptyState">
                 <i class="fas fa-lightbulb"></i>
                 <h3>Tidak ada ide atau saran</h3>
@@ -1062,7 +1286,682 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     
     <script>
-        // Konfigurasi Firebase
+        // ========== TRANSLATIONS FOR IDEAS & SUGGESTIONS DASHBOARD ==========
+        const ideasTranslations = {
+            id: {
+                // Header
+                "ideasTitle": "Ide & Saran",
+                "searchPlaceholder": "Cari ide atau saran...",
+                
+                // Stats Section
+                "totalIdeas": "Total Ide & Saran",
+                "totalIdeasDesc": "Total ide yang diajukan",
+                "pendingIdeas": "Menunggu Review",
+                "pendingIdeasDesc": "Ide menunggu persetujuan",
+                "approvedIdeas": "Disetujui",
+                "approvedIdeasDesc": "Ide yang disetujui",
+                "rejectedIdeas": "Ditolak",
+                "rejectedIdeasDesc": "Ide yang ditolak",
+                
+                // Form Section
+                "formTitle": "Formulir Ide & Saran",
+                "ideaTitleLabel": "Judul Ide/Saran",
+                "ideaTitlePlaceholder": "Masukkan judul ide atau saran",
+                "categoryLabel": "Kategori",
+                "categoryPlaceholder": "Pilih kategori",
+                "descriptionLabel": "Deskripsi Ide/Saran",
+                "descriptionPlaceholder": "Jelaskan ide atau saran Anda secara detail...",
+                "urlLabel": "URL Referensi",
+                "urlPlaceholder": "https://example.com/gambar.jpg",
+                "urlOptional": "Opsional",
+                "submitButton": "Kirim Ide",
+                "updateButton": "Perbarui Ide",
+                "cancelButton": "Batal",
+                "cancelEditButton": "Batal Edit",
+                
+                // List Section
+                "listTitle": "Daftar Ide & Saran",
+                "refreshButton": "Refresh",
+                "noIdeas": "Tidak ada ide atau saran",
+                "noIdeasMessage": "Jadilah yang pertama untuk berbagi ide atau saran!",
+                
+                // Status Badges
+                "statusPending": "Menunggu Review",
+                "statusApproved": "Disetujui",
+                "statusRejected": "Ditolak",
+                
+                // Category Options
+                "categoryUIUX": "UI/UX",
+                "categoryPanel": "Fitur Panel",
+                "categoryMembersite": "Fitur Membersite",
+                "categoryUpdate": "Update Fitur",
+                "categoryOther": "Lainnya",
+                
+                // Actions
+                "edit": "Edit",
+                "delete": "Hapus",
+                "readOnly": "Read Only",
+                "viewReference": "Lihat Referensi",
+                
+                // Pagination
+                "showing": "Menampilkan",
+                "to": "-",
+                "of": "dari",
+                "noData": "Tidak ada data",
+                "previous": "Sebelumnya",
+                "next": "Selanjutnya",
+                "itemsPerPage": "Tampilkan:",
+                "itemsPerPage6": "6 per halaman",
+                "itemsPerPage12": "12 per halaman",
+                "itemsPerPage24": "24 per halaman",
+                "itemsPerPage48": "48 per halaman",
+                
+                // Modal
+                "editModalTitle": "Edit Ide & Saran",
+                "saveChanges": "Simpan Perubahan",
+                
+                // Notifications
+                "ideaAdded": "Ide Anda berhasil dikirim!",
+                "ideaUpdated": "Ide berhasil diperbarui!",
+                "ideaDeleted": "Ide berhasil dihapus",
+                "statusUpdated": "Status ide berhasil diubah menjadi",
+                "errorLoading": "Gagal memuat data ide",
+                "allFieldsRequired": "Harap isi semua field yang wajib diisi",
+                "invalidUrl": "URL tidak valid",
+                "confirmDelete": "Apakah Anda yakin ingin menghapus ide ini?",
+                "noPermissionEdit": "Anda tidak memiliki izin untuk mengedit ide ini",
+                "noPermissionDelete": "Anda tidak memiliki izin untuk menghapus ide ini",
+                "superAdminMode": "Super Admin Mode: Memuat {count} ide dari semua user ({monthly} ide bulan ini)",
+                "editModeNotification": "Anda sedang dalam mode edit. Perbarui data dan klik \"Perbarui Ide\" untuk menyimpan perubahan.",
+                "dataRefreshed": "Daftar ide diperbarui",
+                "loginRequired": "Silakan login untuk mengakses dashboard ide & saran"
+            },
+            
+            en: {
+                // Header
+                "ideasTitle": "Ideas & Suggestions",
+                "searchPlaceholder": "Search ideas or suggestions...",
+                
+                // Stats Section
+                "totalIdeas": "Total Ideas & Suggestions",
+                "totalIdeasDesc": "Total ideas submitted",
+                "pendingIdeas": "Pending Review",
+                "pendingIdeasDesc": "Ideas awaiting approval",
+                "approvedIdeas": "Approved",
+                "approvedIdeasDesc": "Approved ideas",
+                "rejectedIdeas": "Rejected",
+                "rejectedIdeasDesc": "Rejected ideas",
+                
+                // Form Section
+                "formTitle": "Ideas & Suggestions Form",
+                "ideaTitleLabel": "Idea/Suggestion Title",
+                "ideaTitlePlaceholder": "Enter idea or suggestion title",
+                "categoryLabel": "Category",
+                "categoryPlaceholder": "Select category",
+                "descriptionLabel": "Idea/Suggestion Description",
+                "descriptionPlaceholder": "Describe your idea or suggestion in detail...",
+                "urlLabel": "Reference URL",
+                "urlPlaceholder": "https://example.com/image.jpg",
+                "urlOptional": "Optional",
+                "submitButton": "Submit Idea",
+                "updateButton": "Update Idea",
+                "cancelButton": "Cancel",
+                "cancelEditButton": "Cancel Edit",
+                
+                // List Section
+                "listTitle": "Ideas & Suggestions List",
+                "refreshButton": "Refresh",
+                "noIdeas": "No ideas or suggestions",
+                "noIdeasMessage": "Be the first to share an idea or suggestion!",
+                
+                // Status Badges
+                "statusPending": "Pending Review",
+                "statusApproved": "Approved",
+                "statusRejected": "Rejected",
+                
+                // Category Options
+                "categoryUIUX": "UI/UX",
+                "categoryPanel": "Panel Features",
+                "categoryMembersite": "Membersite Features",
+                "categoryUpdate": "Feature Updates",
+                "categoryOther": "Other",
+                
+                // Actions
+                "edit": "Edit",
+                "delete": "Delete",
+                "readOnly": "Read Only",
+                "viewReference": "View Reference",
+                
+                // Pagination
+                "showing": "Showing",
+                "to": "to",
+                "of": "of",
+                "noData": "No data",
+                "previous": "Previous",
+                "next": "Next",
+                "itemsPerPage": "Show:",
+                "itemsPerPage6": "6 per page",
+                "itemsPerPage12": "12 per page",
+                "itemsPerPage24": "24 per page",
+                "itemsPerPage48": "48 per page",
+                
+                // Modal
+                "editModalTitle": "Edit Idea & Suggestion",
+                "saveChanges": "Save Changes",
+                
+                // Notifications
+                "ideaAdded": "Your idea has been submitted successfully!",
+                "ideaUpdated": "Idea has been updated successfully!",
+                "ideaDeleted": "Idea has been deleted successfully",
+                "statusUpdated": "Idea status has been changed to",
+                "errorLoading": "Failed to load idea data",
+                "allFieldsRequired": "Please fill in all required fields",
+                "invalidUrl": "Invalid URL",
+                "confirmDelete": "Are you sure you want to delete this idea?",
+                "noPermissionEdit": "You don't have permission to edit this idea",
+                "noPermissionDelete": "You don't have permission to delete this idea",
+                "superAdminMode": "Super Admin Mode: Loading {count} ideas from all users ({monthly} ideas this month)",
+                "editModeNotification": "You are in edit mode. Update the data and click \"Update Idea\" to save changes.",
+                "dataRefreshed": "Ideas list refreshed",
+                "loginRequired": "Please login to access the ideas & suggestions dashboard"
+            },
+            
+            ja: {
+                // Header
+                "ideasTitle": "アイデアと提案",
+                "searchPlaceholder": "アイデアや提案を検索...",
+                
+                // Stats Section
+                "totalIdeas": "総アイデアと提案数",
+                "totalIdeasDesc": "提出された総アイデア数",
+                "pendingIdeas": "レビュー待ち",
+                "pendingIdeasDesc": "承認待ちのアイデア",
+                "approvedIdeas": "承認済み",
+                "approvedIdeasDesc": "承認されたアイデア",
+                "rejectedIdeas": "却下",
+                "rejectedIdeasDesc": "却下されたアイデア",
+                
+                // Form Section
+                "formTitle": "アイデアと提案フォーム",
+                "ideaTitleLabel": "アイデア/提案タイトル",
+                "ideaTitlePlaceholder": "アイデアや提案のタイトルを入力",
+                "categoryLabel": "カテゴリ",
+                "categoryPlaceholder": "カテゴリを選択",
+                "descriptionLabel": "アイデア/提案の説明",
+                "descriptionPlaceholder": "アイデアや提案の詳細を説明...",
+                "urlLabel": "参考URL",
+                "urlPlaceholder": "https://example.com/image.jpg",
+                "urlOptional": "任意",
+                "submitButton": "アイデアを送信",
+                "updateButton": "アイデアを更新",
+                "cancelButton": "キャンセル",
+                "cancelEditButton": "編集をキャンセル",
+                
+                // List Section
+                "listTitle": "アイデアと提案リスト",
+                "refreshButton": "更新",
+                "noIdeas": "アイデアや提案はありません",
+                "noIdeasMessage": "最初のアイデアや提案を共有しましょう！",
+                
+                // Status Badges
+                "statusPending": "レビュー待ち",
+                "statusApproved": "承認済み",
+                "statusRejected": "却下",
+                
+                // Category Options
+                "categoryUIUX": "UI/UX",
+                "categoryPanel": "パネル機能",
+                "categoryMembersite": "メンバーサイト機能",
+                "categoryUpdate": "機能更新",
+                "categoryOther": "その他",
+                
+                // Actions
+                "edit": "編集",
+                "delete": "削除",
+                "readOnly": "読み取り専用",
+                "viewReference": "参照を見る",
+                
+                // Pagination
+                "showing": "表示中",
+                "to": "〜",
+                "of": "/",
+                "noData": "データなし",
+                "previous": "前へ",
+                "next": "次へ",
+                "itemsPerPage": "表示件数:",
+                "itemsPerPage6": "6件ずつ",
+                "itemsPerPage12": "12件ずつ",
+                "itemsPerPage24": "24件ずつ",
+                "itemsPerPage48": "48件ずつ",
+                
+                // Modal
+                "editModalTitle": "アイデアと提案を編集",
+                "saveChanges": "変更を保存",
+                
+                // Notifications
+                "ideaAdded": "アイデアが正常に送信されました！",
+                "ideaUpdated": "アイデアが正常に更新されました！",
+                "ideaDeleted": "アイデアが正常に削除されました",
+                "statusUpdated": "アイデアのステータスが変更されました",
+                "errorLoading": "アイデアデータの読み込みに失敗しました",
+                "allFieldsRequired": "必須フィールドをすべて入力してください",
+                "invalidUrl": "無効なURLです",
+                "confirmDelete": "このアイデアを削除してもよろしいですか？",
+                "noPermissionEdit": "このアイデアを編集する権限がありません",
+                "noPermissionDelete": "このアイデアを削除する権限がありません",
+                "superAdminMode": "スーパー管理者モード：全ユーザーから{count}件のアイデアを読み込み中（今月{monthly}件）",
+                "editModeNotification": "編集モードです。データを更新し「アイデアを更新」をクリックして変更を保存してください。",
+                "dataRefreshed": "アイデアリストを更新しました",
+                "loginRequired": "アイデアと提案ダッシュボードにアクセスするにはログインしてください"
+            },
+            
+            zh: {
+                // Header
+                "ideasTitle": "创意与建议",
+                "searchPlaceholder": "搜索创意或建议...",
+                
+                // Stats Section
+                "totalIdeas": "总创意与建议数",
+                "totalIdeasDesc": "提交的创意总数",
+                "pendingIdeas": "待审核",
+                "pendingIdeasDesc": "等待批准的创意",
+                "approvedIdeas": "已批准",
+                "approvedIdeasDesc": "已批准的创意",
+                "rejectedIdeas": "已拒绝",
+                "rejectedIdeasDesc": "已拒绝的创意",
+                
+                // Form Section
+                "formTitle": "创意与建议表单",
+                "ideaTitleLabel": "创意/建议标题",
+                "ideaTitlePlaceholder": "输入创意或建议标题",
+                "categoryLabel": "类别",
+                "categoryPlaceholder": "选择类别",
+                "descriptionLabel": "创意/建议描述",
+                "descriptionPlaceholder": "详细描述您的创意或建议...",
+                "urlLabel": "参考链接",
+                "urlPlaceholder": "https://example.com/image.jpg",
+                "urlOptional": "可选",
+                "submitButton": "提交创意",
+                "updateButton": "更新创意",
+                "cancelButton": "取消",
+                "cancelEditButton": "取消编辑",
+                
+                // List Section
+                "listTitle": "创意与建议列表",
+                "refreshButton": "刷新",
+                "noIdeas": "暂无创意或建议",
+                "noIdeasMessage": "成为第一个分享创意或建议的人！",
+                
+                // Status Badges
+                "statusPending": "待审核",
+                "statusApproved": "已批准",
+                "statusRejected": "已拒绝",
+                
+                // Category Options
+                "categoryUIUX": "UI/UX",
+                "categoryPanel": "面板功能",
+                "categoryMembersite": "会员网站功能",
+                "categoryUpdate": "功能更新",
+                "categoryOther": "其他",
+                
+                // Actions
+                "edit": "编辑",
+                "delete": "删除",
+                "readOnly": "只读",
+                "viewReference": "查看参考",
+                
+                // Pagination
+                "showing": "显示",
+                "to": "至",
+                "of": "共",
+                "noData": "无数据",
+                "previous": "上一页",
+                "next": "下一页",
+                "itemsPerPage": "显示:",
+                "itemsPerPage6": "每页6条",
+                "itemsPerPage12": "每页12条",
+                "itemsPerPage24": "每页24条",
+                "itemsPerPage48": "每页48条",
+                
+                // Modal
+                "editModalTitle": "编辑创意与建议",
+                "saveChanges": "保存更改",
+                
+                // Notifications
+                "ideaAdded": "创意已成功提交！",
+                "ideaUpdated": "创意已成功更新！",
+                "ideaDeleted": "创意已成功删除",
+                "statusUpdated": "创意状态已更改为",
+                "errorLoading": "加载创意数据失败",
+                "allFieldsRequired": "请填写所有必填字段",
+                "invalidUrl": "无效的URL",
+                "confirmDelete": "确定要删除此创意吗？",
+                "noPermissionEdit": "您没有权限编辑此创意",
+                "noPermissionDelete": "您没有权限删除此创意",
+                "superAdminMode": "超级管理员模式：正在从所有用户加载{count}个创意（本月{monthly}个）",
+                "editModeNotification": "您处于编辑模式。更新数据并点击\"更新创意\"以保存更改。",
+                "dataRefreshed": "创意列表已刷新",
+                "loginRequired": "请登录以访问创意与建议仪表板"
+            }
+        };
+
+        // ========== TRANSLATION FUNCTIONS ==========
+        let currentLanguage = localStorage.getItem('language') || 'id';
+
+        function applyIdeasTranslations(language) {
+            const lang = ideasTranslations[language] || ideasTranslations['id'];
+            
+            if (!lang) return;
+
+            console.log("Applying ideas translations for:", language);
+
+            // Header translations
+            const headerTitle = document.querySelector('.header h1');
+            if (headerTitle && lang.ideasTitle) {
+                const icon = headerTitle.querySelector('i');
+                if (icon) {
+                    headerTitle.innerHTML = icon.outerHTML + ' ' + lang.ideasTitle;
+                } else {
+                    headerTitle.textContent = lang.ideasTitle;
+                }
+            }
+
+            // Search placeholder
+            const searchInput = document.getElementById('searchIdeas');
+            if (searchInput && lang.searchPlaceholder) {
+                searchInput.placeholder = lang.searchPlaceholder;
+            }
+
+            // Stat cards titles
+            const statTitles = document.querySelectorAll('.stat-title');
+            if (statTitles.length >= 4) {
+                if (lang.totalIdeas) statTitles[0].textContent = lang.totalIdeas;
+                if (lang.pendingIdeas) statTitles[1].textContent = lang.pendingIdeas;
+                if (lang.approvedIdeas) statTitles[2].textContent = lang.approvedIdeas;
+                if (lang.rejectedIdeas) statTitles[3].textContent = lang.rejectedIdeas;
+            }
+
+            // Stat descriptions
+            const statDescriptions = document.querySelectorAll('.stat-content p');
+            if (statDescriptions.length >= 4) {
+                if (lang.totalIdeasDesc) statDescriptions[0].textContent = lang.totalIdeasDesc;
+                if (lang.pendingIdeasDesc) statDescriptions[1].textContent = lang.pendingIdeasDesc;
+                if (lang.approvedIdeasDesc) statDescriptions[2].textContent = lang.approvedIdeasDesc;
+                if (lang.rejectedIdeasDesc) statDescriptions[3].textContent = lang.rejectedIdeasDesc;
+            }
+
+            // Form section title
+            const formTitle = document.querySelector('.section-title');
+            if (formTitle && lang.formTitle) {
+                const icon = formTitle.querySelector('i');
+                if (icon) {
+                    formTitle.innerHTML = icon.outerHTML + ' ' + lang.formTitle;
+                } else {
+                    formTitle.textContent = lang.formTitle;
+                }
+            }
+
+            // Form labels
+            const formLabels = {
+                'ideaTitleLabel': 'label[for="ideaTitle"]',
+                'categoryLabel': 'label[for="ideaCategory"]',
+                'descriptionLabel': 'label[for="ideaDescription"]',
+                'urlLabel': 'label[for="ideaUrl"]'
+            };
+
+            Object.keys(formLabels).forEach(key => {
+                const element = document.querySelector(formLabels[key]);
+                if (element && lang[key]) {
+                    element.textContent = lang[key];
+                }
+            });
+
+            // Form placeholders
+            const titleInput = document.getElementById('ideaTitle');
+            if (titleInput && lang.ideaTitlePlaceholder) {
+                titleInput.placeholder = lang.ideaTitlePlaceholder;
+            }
+
+            const descriptionTextarea = document.getElementById('ideaDescription');
+            if (descriptionTextarea && lang.descriptionPlaceholder) {
+                descriptionTextarea.placeholder = lang.descriptionPlaceholder;
+            }
+
+            const urlInput = document.getElementById('ideaUrl');
+            if (urlInput && lang.urlPlaceholder) {
+                urlInput.placeholder = lang.urlPlaceholder;
+            }
+
+            const urlSmall = document.querySelector('.form-text');
+            if (urlSmall && lang.urlOptional) {
+                urlSmall.innerHTML = `<i class="fas fa-info-circle"></i> ${lang.urlOptional}`;
+            }
+
+            // Category options
+            const categorySelect = document.getElementById('ideaCategory');
+            if (categorySelect) {
+                const options = categorySelect.querySelectorAll('option');
+                if (options.length >= 6) {
+                    if (lang.categoryPlaceholder) options[0].textContent = lang.categoryPlaceholder;
+                    if (lang.categoryUIUX) options[1].textContent = lang.categoryUIUX;
+                    if (lang.categoryPanel) options[2].textContent = lang.categoryPanel;
+                    if (lang.categoryMembersite) options[3].textContent = lang.categoryMembersite;
+                    if (lang.categoryUpdate) options[4].textContent = lang.categoryUpdate;
+                    if (lang.categoryOther) options[5].textContent = lang.categoryOther;
+                }
+            }
+
+            // List section title
+            const listTitle = document.querySelectorAll('.section-title')[1];
+            if (listTitle && lang.listTitle) {
+                const icon = listTitle.querySelector('i');
+                if (icon) {
+                    listTitle.innerHTML = icon.outerHTML + ' ' + lang.listTitle;
+                } else {
+                    listTitle.textContent = lang.listTitle;
+                }
+            }
+
+            // Refresh button
+            const refreshBtn = document.getElementById('refreshIdeas');
+            if (refreshBtn && lang.refreshButton) {
+                refreshBtn.innerHTML = `<i class="fas fa-sync-alt"></i> ${lang.refreshButton}`;
+            }
+
+            // Empty state
+            const emptyStateH3 = document.querySelector('.empty-state h3');
+            const emptyStateP = document.querySelector('.empty-state p');
+            if (emptyStateH3 && lang.noIdeas) emptyStateH3.textContent = lang.noIdeas;
+            if (emptyStateP && lang.noIdeasMessage) emptyStateP.textContent = lang.noIdeasMessage;
+
+            // Submit button
+            const submitBtn = document.getElementById('submitButton');
+            if (submitBtn && lang.submitButton) {
+                const icon = submitBtn.querySelector('i');
+                if (icon) {
+                    submitBtn.innerHTML = icon.outerHTML + ' ' + lang.submitButton;
+                } else {
+                    submitBtn.textContent = lang.submitButton;
+                }
+            }
+
+            // Cancel buttons
+            const cancelIdeaBtn = document.getElementById('cancel-idea-btn');
+            if (cancelIdeaBtn && lang.cancelButton) {
+                cancelIdeaBtn.innerHTML = `<i class="fas fa-times"></i> ${lang.cancelButton}`;
+            }
+
+            const cancelEditBtn = document.getElementById('cancel-edit-btn');
+            if (cancelEditBtn && lang.cancelEditButton) {
+                cancelEditBtn.innerHTML = `<i class="fas fa-times"></i> ${lang.cancelEditButton}`;
+            }
+
+            // Modal translations
+            const modalTitle = document.querySelector('.modal-title');
+            if (modalTitle && lang.editModalTitle) {
+                const icon = modalTitle.querySelector('i');
+                if (icon) {
+                    modalTitle.innerHTML = icon.outerHTML + ' ' + lang.editModalTitle;
+                } else {
+                    modalTitle.textContent = lang.editModalTitle;
+                }
+            }
+
+            const modalLabels = {
+                'editIdeaTitle': 'label[for="editIdeaTitle"]',
+                'editIdeaCategory': 'label[for="editIdeaCategory"]',
+                'editIdeaDescription': 'label[for="editIdeaDescription"]',
+                'editIdeaUrl': 'label[for="editIdeaUrl"]',
+                'editIdeaStatus': 'label[for="editIdeaStatus"]'
+            };
+
+            Object.keys(modalLabels).forEach(key => {
+                const element = document.querySelector(modalLabels[key]);
+                if (element && lang[key.replace('edit', '').toLowerCase() + 'Label']) {
+                    const labelKey = key.replace('edit', '').toLowerCase() + 'Label';
+                    if (lang[labelKey]) element.textContent = lang[labelKey];
+                }
+            });
+
+            const modalStatusOptions = document.querySelectorAll('#editIdeaStatus option');
+            if (modalStatusOptions.length >= 3) {
+                if (lang.statusPending) modalStatusOptions[0].textContent = lang.statusPending;
+                if (lang.statusApproved) modalStatusOptions[1].textContent = lang.statusApproved;
+                if (lang.statusRejected) modalStatusOptions[2].textContent = lang.statusRejected;
+            }
+
+            const cancelModalBtn = document.getElementById('cancelEdit');
+            if (cancelModalBtn && lang.cancelButton) {
+                cancelModalBtn.innerHTML = `<i class="fas fa-times"></i> ${lang.cancelButton}`;
+            }
+
+            const saveModalBtn = document.getElementById('saveEdit');
+            if (saveModalBtn && lang.saveChanges) {
+                saveModalBtn.innerHTML = `<i class="fas fa-save"></i> ${lang.saveChanges}`;
+            }
+
+            // Pagination
+            const itemsPerPageLabel = document.querySelector('.pagination-select label');
+            if (itemsPerPageLabel && lang.itemsPerPage) {
+                itemsPerPageLabel.textContent = lang.itemsPerPage;
+            }
+
+            const itemsPerPageOptions = document.querySelectorAll('#itemsPerPageSelect option');
+            if (itemsPerPageOptions.length >= 4) {
+                if (lang.itemsPerPage6) itemsPerPageOptions[0].textContent = lang.itemsPerPage6;
+                if (lang.itemsPerPage12) itemsPerPageOptions[1].textContent = lang.itemsPerPage12;
+                if (lang.itemsPerPage24) itemsPerPageOptions[2].textContent = lang.itemsPerPage24;
+                if (lang.itemsPerPage48) itemsPerPageOptions[3].textContent = lang.itemsPerPage48;
+            }
+
+            const prevPageBtn = document.getElementById('prevPageBtn');
+            const nextPageBtn = document.getElementById('nextPageBtn');
+            if (prevPageBtn && lang.previous) {
+                prevPageBtn.innerHTML = `<i class="fas fa-chevron-left"></i> ${lang.previous}`;
+            }
+            if (nextPageBtn && lang.next) {
+                nextPageBtn.innerHTML = `${lang.next} <i class="fas fa-chevron-right"></i>`;
+            }
+
+            // Update status badges in existing cards
+            updateIdeasStatusTranslations(language);
+        }
+
+        function updateIdeasStatusTranslations(language) {
+            const lang = ideasTranslations[language] || ideasTranslations['id'];
+            
+            document.querySelectorAll('.idea-status').forEach(statusElement => {
+                const statusText = statusElement.textContent.trim();
+                if (statusText.includes('Menunggu') && lang.statusPending) {
+                    statusElement.innerHTML = `<i class="fas fa-circle"></i> ${lang.statusPending}`;
+                } else if (statusText.includes('Disetujui') && lang.statusApproved) {
+                    statusElement.innerHTML = `<i class="fas fa-circle"></i> ${lang.statusApproved}`;
+                } else if (statusText.includes('Ditolak') && lang.statusRejected) {
+                    statusElement.innerHTML = `<i class="fas fa-circle"></i> ${lang.statusRejected}`;
+                }
+            });
+
+            // Update action buttons tooltips
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                if (lang.edit) btn.title = lang.edit;
+            });
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                if (lang.delete) btn.title = lang.delete;
+            });
+            document.querySelectorAll('.idea-url a').forEach(link => {
+                if (lang.viewReference) {
+                    const text = link.innerHTML;
+                    if (text.includes('Lihat Referensi') || text.includes('View Reference')) {
+                        link.innerHTML = `<i class="fas fa-external-link-alt"></i> ${lang.viewReference}`;
+                    }
+                }
+            });
+        }
+
+        function updateIdeasNotificationMessages(language) {
+            const lang = ideasTranslations[language] || ideasTranslations['id'];
+            
+            const originalShowNotification = window.showNotification;
+            
+            window.showNotification = function(message, type = 'info') {
+                let translatedMessage = message;
+                
+                const translations = {
+                    'Ide Anda berhasil dikirim!': lang.ideaAdded,
+                    'Ide berhasil diperbarui!': lang.ideaUpdated,
+                    'Ide berhasil dihapus': lang.ideaDeleted,
+                    'Gagal memuat data ide': lang.errorLoading,
+                    'Harap isi semua field yang wajib diisi': lang.allFieldsRequired,
+                    'URL tidak valid': lang.invalidUrl,
+                    'Anda tidak memiliki izin untuk mengedit ide ini': lang.noPermissionEdit,
+                    'Anda tidak memiliki izin untuk menghapus ide ini': lang.noPermissionDelete,
+                    'Daftar ide diperbarui': lang.dataRefreshed
+                };
+                
+                for (const [key, value] of Object.entries(translations)) {
+                    if (message.includes(key)) {
+                        translatedMessage = value;
+                        break;
+                    }
+                }
+                
+                if (message.includes('Status ide berhasil diubah menjadi')) {
+                    const statusText = message.split('menjadi')[1]?.trim();
+                    translatedMessage = `${lang.statusUpdated} ${statusText}`;
+                }
+                
+                if (message.includes('Super Admin Mode: Memuat') && lang.superAdminMode) {
+                    const countMatch = message.match(/\d+/g);
+                    const count = countMatch ? countMatch[0] : '0';
+                    const monthly = countMatch && countMatch[1] ? countMatch[1] : '0';
+                    translatedMessage = lang.superAdminMode.replace('{count}', count).replace('{monthly}', monthly);
+                }
+                
+                if (message.includes('Anda sedang dalam mode edit') && lang.editModeNotification) {
+                    translatedMessage = lang.editModeNotification;
+                }
+                
+                originalShowNotification(translatedMessage, type);
+            };
+        }
+
+        function initializeIdeasLanguage() {
+            const savedLanguage = localStorage.getItem('language') || 'id';
+            currentLanguage = savedLanguage;
+            console.log("Initializing ideas dashboard with language:", savedLanguage);
+            
+            applyIdeasTranslations(savedLanguage);
+            updateIdeasNotificationMessages(savedLanguage);
+            
+            window.addEventListener('languageChanged', function(event) {
+                console.log("Language changed in ideas dashboard to:", event.detail.language);
+                currentLanguage = event.detail.language;
+                applyIdeasTranslations(event.detail.language);
+                updateIdeasNotificationMessages(event.detail.language);
+            });
+        }
+
+        // ========== KONFIGURASI FIREBASE ==========
         const firebaseConfig = {
             apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
             authDomain: "dashboard-css.firebaseapp.com",
@@ -1086,6 +1985,12 @@
         let currentUserData = null;
         let unsubscribeIdeas = null;
 
+        // Pagination Variables
+        let currentPage = 1;
+        let itemsPerPage = 12;
+        let filteredIdeasForPagination = [];
+        let totalPages = 1;
+
         // Elemen DOM
         const ideaForm = document.getElementById('ideaForm');
         const ideasGrid = document.getElementById('ideasGrid');
@@ -1104,6 +2009,14 @@
         const editIdeaId = document.getElementById('edit-idea-id');
         const cancelEditBtn = document.getElementById('cancel-edit-btn');
         const cancelIdeaBtn = document.getElementById('cancel-idea-btn');
+
+        // Pagination elements
+        const paginationContainer = document.getElementById('paginationContainer');
+        const prevPageBtn = document.getElementById('prevPageBtn');
+        const nextPageBtn = document.getElementById('nextPageBtn');
+        const paginationNumbers = document.getElementById('paginationNumbers');
+        const paginationStats = document.getElementById('paginationStats');
+        const itemsPerPageSelect = document.getElementById('itemsPerPageSelect');
 
         // Statistik elements
         const totalIdeasEl = document.getElementById('total-ideas');
@@ -1128,7 +2041,41 @@
             }, 3000);
         }
 
-        // Fungsi untuk menampilkan notifikasi
+        // ========== FUNGSI UTILITY ==========
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        function filterDataByCurrentMonth(data) {
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth();
+            const currentYear = currentDate.getFullYear();
+            
+            return data.filter(item => {
+                if (!item.createdAt) return false;
+                
+                let itemDate;
+                if (item.createdAt.toDate) {
+                    itemDate = item.createdAt.toDate();
+                } else if (item.createdAt instanceof Date) {
+                    itemDate = item.createdAt;
+                } else if (typeof item.createdAt === 'string') {
+                    itemDate = new Date(item.createdAt);
+                } else {
+                    return false;
+                }
+                
+                return itemDate.getMonth() === currentMonth && 
+                       itemDate.getFullYear() === currentYear;
+            });
+        }
+
         function showNotification(message, type = 'info') {
             if (!notificationContainer) {
                 console.error('Notification container not found');
@@ -1173,7 +2120,7 @@
             }, 500);
         }
 
-        // Fungsi untuk memastikan user document ada
+        // ========== FUNGSI AUTHENTIKASI ==========
         async function ensureUserDocument(user) {
             try {
                 const userRef = db.collection('users').doc(user.uid);
@@ -1224,7 +2171,6 @@
             }
         }
 
-        // Fungsi untuk memeriksa autentikasi
         async function checkAuth() {
             return new Promise((resolve, reject) => {
                 const unsubscribe = auth.onAuthStateChanged(async user => {
@@ -1244,7 +2190,7 @@
             });
         }
 
-        // Fungsi untuk menyimpan ide ke Firestore
+        // ========== FUNGSI CRUD ==========
         async function saveIdea(ideaData) {
             try {
                 await checkAuth();
@@ -1279,7 +2225,6 @@
             }
         }
 
-        // Fungsi untuk menghapus ide
         async function deleteIdeaFromFirestore(ideaId) {
             try {
                 await checkAuth();
@@ -1290,7 +2235,6 @@
             }
         }
 
-        // Fungsi untuk mengupdate status ide
         async function updateIdeaStatus(ideaId, status) {
             try {
                 await checkAuth();
@@ -1304,21 +2248,22 @@
             }
         }
 
-        // Fungsi untuk menghitung dan update statistik
+        // ========== FUNGSI STATISTIK ==========
         function updateIdeasStats() {
-            const total = ideasData.length;
-            const pending = ideasData.filter(idea => idea.status === 'pending').length;
-            const approved = ideasData.filter(idea => idea.status === 'approved').length;
-            const rejected = ideasData.filter(idea => idea.status === 'rejected').length;
+            const monthlyIdeas = filterDataByCurrentMonth(ideasData);
+            
+            const total = monthlyIdeas.length;
+            const pending = monthlyIdeas.filter(idea => idea.status === 'pending').length;
+            const approved = monthlyIdeas.filter(idea => idea.status === 'approved').length;
+            const rejected = monthlyIdeas.filter(idea => idea.status === 'rejected').length;
 
             if (totalIdeasEl) totalIdeasEl.textContent = total;
             if (pendingIdeasEl) pendingIdeasEl.textContent = pending;
             if (approvedIdeasEl) approvedIdeasEl.textContent = approved;
             if (rejectedIdeasEl) rejectedIdeasEl.textContent = rejected;
 
-            // Update progress bars
             if (totalProgress) {
-                const target = 50; // Target 50 ide
+                const target = 50;
                 totalProgress.style.width = `${Math.min(100, (total / target) * 100)}%`;
             }
             if (pendingProgress && total > 0) {
@@ -1331,18 +2276,174 @@
                 rejectedProgress.style.width = `${(rejected / total) * 100}%`;
             }
 
-            // Update counter di localStorage
             localStorage.setItem('ideasCount', total.toString());
             window.dispatchEvent(new CustomEvent('ideasDataChanged', { 
                 detail: { ideasCount: total } 
             }));
         }
 
-        // Fungsi untuk merender daftar ide
-        function renderIdeas(filteredIdeas = null) {
-            const ideasToRender = filteredIdeas || ideasData;
+        function addMonthIndicator() {
+            const statsContainer = document.getElementById('ideasStats');
+            if (!statsContainer) return;
             
-            if (ideasToRender.length === 0) {
+            if (document.getElementById('monthIndicator')) return;
+            
+            const currentDate = new Date();
+            const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const currentMonth = monthNames[currentDate.getMonth()];
+            const currentYear = currentDate.getFullYear();
+            
+            const monthIndicator = document.createElement('div');
+            monthIndicator.id = 'monthIndicator';
+            monthIndicator.style.cssText = `
+                background: rgba(67, 97, 238, 0.1);
+                color: #4361ee;
+                padding: 8px 16px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 500;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 20px;
+                width: fit-content;
+            `;
+            
+            const lang = ideasTranslations[currentLanguage] || ideasTranslations['id'];
+            monthIndicator.innerHTML = `
+                <i class="fas fa-calendar-alt"></i>
+                <span>Data Bulan ${currentMonth} ${currentYear}</span>
+            `;
+            
+            statsContainer.parentNode.insertBefore(monthIndicator, statsContainer);
+        }
+
+        // ========== FUNGSI PAGINATION ==========
+        function getFilteredDataForPagination() {
+            const searchTerm = searchIdeas ? searchIdeas.value.toLowerCase() : '';
+            
+            if (!searchTerm) {
+                return [...ideasData];
+            }
+            
+            return ideasData.filter(idea => 
+                idea.title.toLowerCase().includes(searchTerm) ||
+                idea.category.toLowerCase().includes(searchTerm) ||
+                idea.description.toLowerCase().includes(searchTerm) ||
+                (idea.submittedBy && idea.submittedBy.toLowerCase().includes(searchTerm))
+            );
+        }
+
+        function renderPaginationNumbers() {
+            if (!paginationNumbers) return;
+            
+            paginationNumbers.innerHTML = '';
+            
+            if (totalPages === 0) {
+                paginationNumbers.innerHTML = '<span class="page-number disabled">-</span>';
+                return;
+            }
+            
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, currentPage + 2);
+            
+            if (startPage > 1) {
+                const firstPageBtn = createPageButton(1);
+                paginationNumbers.appendChild(firstPageBtn);
+                
+                if (startPage > 2) {
+                    const dots = document.createElement('span');
+                    dots.className = 'page-number disabled';
+                    dots.textContent = '...';
+                    dots.style.cursor = 'default';
+                    paginationNumbers.appendChild(dots);
+                }
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = createPageButton(i);
+                paginationNumbers.appendChild(pageBtn);
+            }
+            
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    const dots = document.createElement('span');
+                    dots.className = 'page-number disabled';
+                    dots.textContent = '...';
+                    dots.style.cursor = 'default';
+                    paginationNumbers.appendChild(dots);
+                }
+                
+                const lastPageBtn = createPageButton(totalPages);
+                paginationNumbers.appendChild(lastPageBtn);
+            }
+        }
+
+        function createPageButton(pageNum) {
+            const btn = document.createElement('span');
+            btn.className = 'page-number';
+            btn.textContent = pageNum;
+            
+            if (pageNum === currentPage) {
+                btn.classList.add('active');
+            }
+            
+            btn.addEventListener('click', function() {
+                if (pageNum !== currentPage) {
+                    currentPage = pageNum;
+                    updatePaginationUI();
+                }
+            });
+            
+            return btn;
+        }
+
+        function updatePaginationUI() {
+            filteredIdeasForPagination = getFilteredDataForPagination();
+            totalPages = Math.ceil(filteredIdeasForPagination.length / itemsPerPage);
+            
+            if (currentPage > totalPages) {
+                currentPage = totalPages > 0 ? totalPages : 1;
+            }
+            if (currentPage < 1) {
+                currentPage = 1;
+            }
+            
+            const lang = ideasTranslations[currentLanguage] || ideasTranslations['id'];
+            
+            if (filteredIdeasForPagination.length > itemsPerPage) {
+                paginationContainer.style.display = 'flex';
+            } else {
+                paginationContainer.style.display = 'none';
+            }
+            
+            const startItem = (currentPage - 1) * itemsPerPage + 1;
+            const endItem = Math.min(currentPage * itemsPerPage, filteredIdeasForPagination.length);
+            const totalItems = filteredIdeasForPagination.length;
+            
+            if (totalItems > 0) {
+                paginationStats.innerHTML = `<i class="fas fa-chart-line"></i> ${lang.showing} ${startItem} ${lang.to} ${endItem} ${lang.of} ${totalItems} ${lang.data || 'data'}`;
+            } else {
+                paginationStats.innerHTML = `<i class="fas fa-chart-line"></i> ${lang.noData}`;
+            }
+            
+            prevPageBtn.disabled = currentPage === 1 || totalItems === 0;
+            nextPageBtn.disabled = currentPage === totalPages || totalItems === 0;
+            
+            renderPaginationNumbers();
+            renderPaginatedIdeas();
+        }
+
+        function renderPaginatedIdeas() {
+            if (!ideasGrid) return;
+            
+            const filteredData = getFilteredDataForPagination();
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
+            const paginatedData = filteredData.slice(startIndex, endIndex);
+            
+            if (paginatedData.length === 0 && filteredData.length === 0) {
                 if (emptyState) emptyState.style.display = 'block';
                 if (ideasGrid) ideasGrid.style.display = 'none';
                 return;
@@ -1353,164 +2454,187 @@
             
             ideasGrid.innerHTML = '';
             
-            ideasToRender.forEach(idea => {
-                const ideaCard = document.createElement('div');
-                ideaCard.className = 'idea-card fade-in';
-                
-                let formattedDate = 'Tanggal tidak tersedia';
-                let timeDisplay = '';
-
-                if (idea.createdAt) {
-                    try {
-                        const ideaDate = idea.createdAt.toDate ? idea.createdAt.toDate() : new Date(idea.createdAt);
-                        if (!isNaN(ideaDate.getTime())) {
-                            formattedDate = ideaDate.toLocaleDateString('id-ID', {
-                                day: 'numeric',
-                                month: 'long',
-                                year: 'numeric'
-                            });
-                            timeDisplay = ideaDate.toLocaleTimeString('id-ID', {
-                                hour: '2-digit',
-                                minute: '2-digit'
-                            });
-                        }
-                    } catch (e) {
-                        console.error('Error formatting date:', e);
-                    }
-                }
-                
-                let statusClass = '';
-                let statusText = '';
-                
-                switch(idea.status) {
-                    case 'pending':
-                        statusClass = 'status-pending';
-                        statusText = 'Menunggu Review';
-                        break;
-                    case 'approved':
-                        statusClass = 'status-approved';
-                        statusText = 'Disetujui';
-                        break;
-                    case 'rejected':
-                        statusClass = 'status-rejected';
-                        statusText = 'Ditolak';
-                        break;
-                    default:
-                        statusClass = 'status-pending';
-                        statusText = 'Menunggu Review';
-                }
-                
-                const ownerInfo = currentUserData && currentUserData.isSuperAdmin ? 
-                    `<div class="card-meta">
-                        <div class="meta-item">
-                            <i class="fas fa-user"></i>
-                            <span>User ID: ${idea.userId}</span>
-                        </div>
-                    </div>` : '';
-
-                // Tampilkan URL jika ada
-                const urlHtml = idea.url ? `
-                    <div class="idea-url">
-                        <a href="${idea.url}" target="_blank">
-                            <i class="fas fa-external-link-alt"></i> 
-                            Lihat Referensi
-                        </a>
-                    </div>
-                ` : '';
-
-                ideaCard.innerHTML = `
-                    <div class="idea-header">
-                        <div>
-                            <h3 class="idea-title">${idea.title}</h3>
-                            <p class="idea-date">
-                                <i class="far fa-calendar-alt"></i> ${formattedDate} 
-                                ${timeDisplay ? `<span class="idea-time"><i class="far fa-clock"></i> ${timeDisplay}</span>` : ''}
-                            </p>
-                        </div>
-                        <span class="idea-status ${statusClass}">
-                            <i class="fas fa-circle"></i> ${statusText}
-                        </span>
-                    </div>
-                    
-                    ${ownerInfo}
-                    
-                    <span class="idea-category">${idea.category}</span>
-                    
-                    <p class="idea-description">${idea.description}</p>
-                    
-                    ${urlHtml}
-                    
-                    <div class="idea-footer">
-                        <div class="idea-author">
-                            <img class="author-avatar" src="https://iili.io/Fpiva7S.png" alt="Author">
-                            <div class="author-info">
-                                <span class="author-name">${idea.submittedBy || 'User'}</span>
-                                <span class="author-role">${currentUserData && currentUserData.isSuperAdmin ? 'Super Admin View' : 'Customer Service Support'}</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="idea-actions">
-                        ${currentUserData && (currentUserData.isSuperAdmin || idea.userId === currentUser.uid) ? `
-                            <button class="action-btn edit-btn" data-id="${idea.id}" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="action-btn delete-btn" data-id="${idea.id}" title="Hapus">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        ` : `
-                            <span style="color: var(--text-secondary); font-size: var(--text-xs);">Read Only</span>
-                        `}
-                        ${currentUserData && currentUserData.isSuperAdmin ? `
-                            <select class="form-select status-select" data-id="${idea.id}" style="width: 120px; margin-left: auto; padding: 4px;">
-                                <option value="pending" ${idea.status === 'pending' ? 'selected' : ''}>Menunggu</option>
-                                <option value="approved" ${idea.status === 'approved' ? 'selected' : ''}>Setujui</option>
-                                <option value="rejected" ${idea.status === 'rejected' ? 'selected' : ''}>Tolak</option>
-                            </select>
-                        ` : ''}
-                    </div>
-                `;
-                
+            paginatedData.forEach(idea => {
+                const ideaCard = createIdeaCard(idea);
                 ideasGrid.appendChild(ideaCard);
-                
-                // Event listeners
-                if (currentUserData && (currentUserData.isSuperAdmin || idea.userId === currentUser.uid)) {
-                    const editBtn = ideaCard.querySelector('.edit-btn');
-                    if (editBtn) {
-                        editBtn.addEventListener('click', function() {
-                            openEditModal(idea.id);
-                        });
-                    }
-                    
-                    const deleteBtn = ideaCard.querySelector('.delete-btn');
-                    if (deleteBtn) {
-                        deleteBtn.addEventListener('click', function() {
-                            deleteIdea(idea.id);
-                        });
-                    }
-                }
-
-                // Status select untuk super admin
-                if (currentUserData && currentUserData.isSuperAdmin) {
-                    const statusSelect = ideaCard.querySelector('.status-select');
-                    if (statusSelect) {
-                        statusSelect.addEventListener('change', async function() {
-                            const newStatus = this.value;
-                            try {
-                                await updateIdeaStatus(idea.id, newStatus);
-                                showNotification(`Status ide berhasil diubah menjadi ${this.options[this.selectedIndex].text}`, 'success');
-                            } catch (error) {
-                                console.error('Error updating status:', error);
-                                showNotification('Gagal mengubah status', 'error');
-                                this.value = idea.status;
-                            }
-                        });
-                    }
-                }
             });
+            
+            updateIdeasStatusTranslations(currentLanguage);
         }
 
-        // Fungsi untuk handle submit form
+        function createIdeaCard(idea) {
+            const ideaCard = document.createElement('div');
+            ideaCard.className = 'idea-card fade-in';
+            
+            let formattedDate = 'Tanggal tidak tersedia';
+            let timeDisplay = '';
+
+            if (idea.createdAt) {
+                try {
+                    const ideaDate = idea.createdAt.toDate ? idea.createdAt.toDate() : new Date(idea.createdAt);
+                    if (!isNaN(ideaDate.getTime())) {
+                        formattedDate = ideaDate.toLocaleDateString('id-ID', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric'
+                        });
+                        timeDisplay = ideaDate.toLocaleTimeString('id-ID', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error formatting date:', e);
+                }
+            }
+            
+            const lang = ideasTranslations[currentLanguage] || ideasTranslations['id'];
+            
+            let statusClass = '';
+            let statusText = '';
+            
+            switch(idea.status) {
+                case 'pending':
+                    statusClass = 'status-pending';
+                    statusText = lang.statusPending;
+                    break;
+                case 'approved':
+                    statusClass = 'status-approved';
+                    statusText = lang.statusApproved;
+                    break;
+                case 'rejected':
+                    statusClass = 'status-rejected';
+                    statusText = lang.statusRejected;
+                    break;
+                default:
+                    statusClass = 'status-pending';
+                    statusText = lang.statusPending;
+            }
+            
+            const ownerInfo = currentUserData && currentUserData.isSuperAdmin ? 
+                `<div class="card-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-user"></i>
+                        <span>User ID: ${escapeHtml(idea.userId)}</span>
+                    </div>
+                </div>` : '';
+
+            const urlHtml = idea.url ? `
+                <div class="idea-url">
+                    <a href="${escapeHtml(idea.url)}" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> 
+                        ${lang.viewReference}
+                    </a>
+                </div>
+            ` : '';
+
+            ideaCard.innerHTML = `
+                <div class="idea-header">
+                    <div>
+                        <h3 class="idea-title">${escapeHtml(idea.title)}</h3>
+                        <p class="idea-date">
+                            <i class="far fa-calendar-alt"></i> ${formattedDate} 
+                            ${timeDisplay ? `<span class="idea-time"><i class="far fa-clock"></i> ${timeDisplay}</span>` : ''}
+                        </p>
+                    </div>
+                    <span class="idea-status ${statusClass}">
+                        <i class="fas fa-circle"></i> ${statusText}
+                    </span>
+                </div>
+                
+                ${ownerInfo}
+                
+                <span class="idea-category">${escapeHtml(idea.category)}</span>
+                
+                <p class="idea-description">${escapeHtml(idea.description)}</p>
+                
+                ${urlHtml}
+                
+                <div class="idea-footer">
+                    <div class="idea-author">
+                        <img class="author-avatar" src="https://iili.io/Fpiva7S.png" alt="Author">
+                        <div class="author-info">
+                            <span class="author-name">${escapeHtml(idea.submittedBy || 'User')}</span>
+                            <span class="author-role">${currentUserData && currentUserData.isSuperAdmin ? 'Super Admin View' : lang.customerSupport || 'Customer Service Support'}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="idea-actions">
+                    ${currentUserData && (currentUserData.isSuperAdmin || idea.userId === currentUser.uid) ? `
+                        <button class="action-btn edit-btn" data-id="${idea.id}" title="${lang.edit}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-btn" data-id="${idea.id}" title="${lang.delete}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    ` : `
+                        <span style="color: var(--text-secondary); font-size: var(--text-xs);">${lang.readOnly}</span>
+                    `}
+                    ${currentUserData && currentUserData.isSuperAdmin ? `
+                        <select class="form-select status-select" data-id="${idea.id}" style="width: 120px; margin-left: auto; padding: 4px;">
+                            <option value="pending" ${idea.status === 'pending' ? 'selected' : ''}>${lang.statusPending}</option>
+                            <option value="approved" ${idea.status === 'approved' ? 'selected' : ''}>${lang.statusApproved}</option>
+                            <option value="rejected" ${idea.status === 'rejected' ? 'selected' : ''}>${lang.statusRejected}</option>
+                        </select>
+                    ` : ''}
+                </div>
+            `;
+            
+            if (currentUserData && (currentUserData.isSuperAdmin || idea.userId === currentUser.uid)) {
+                const editBtn = ideaCard.querySelector('.edit-btn');
+                if (editBtn) {
+                    editBtn.addEventListener('click', function() {
+                        openEditModal(idea.id);
+                    });
+                }
+                
+                const deleteBtn = ideaCard.querySelector('.delete-btn');
+                if (deleteBtn) {
+                    deleteBtn.addEventListener('click', function() {
+                        deleteIdea(idea.id);
+                    });
+                }
+            }
+
+            if (currentUserData && currentUserData.isSuperAdmin) {
+                const statusSelect = ideaCard.querySelector('.status-select');
+                if (statusSelect) {
+                    statusSelect.addEventListener('change', async function() {
+                        const newStatus = this.value;
+                        try {
+                            await updateIdeaStatus(idea.id, newStatus);
+                            const statusText = this.options[this.selectedIndex].text;
+                            showNotification(`${lang.statusUpdated} ${statusText}`, 'success');
+                        } catch (error) {
+                            console.error('Error updating status:', error);
+                            showNotification(lang.errorLoading, 'error');
+                            this.value = idea.status;
+                        }
+                    });
+                }
+            }
+            
+            return ideaCard;
+        }
+
+        // ========== FUNGSI FORM ==========
+        function resetForm() {
+            ideaForm.reset();
+            currentEditId = null;
+            editIdeaId.value = '';
+            
+            const lang = ideasTranslations[currentLanguage] || ideasTranslations['id'];
+            
+            if (formModeIndicator) formModeIndicator.style.display = 'none';
+            if (cancelEditBtn) cancelEditBtn.style.display = 'none';
+            if (cancelIdeaBtn) cancelIdeaBtn.style.display = 'none';
+            
+            if (submitButton) {
+                submitButton.innerHTML = `<i class="fas fa-paper-plane"></i> ${lang.submitButton}`;
+            }
+        }
+
         async function handleSubmitIdea(e) {
             e.preventDefault();
             
@@ -1519,17 +2643,18 @@
             const description = document.getElementById('ideaDescription').value.trim();
             const url = document.getElementById('ideaUrl').value.trim();
             
+            const lang = ideasTranslations[currentLanguage] || ideasTranslations['id'];
+            
             if (!title || !category || !description) {
-                showNotification('Harap isi semua field yang wajib diisi', 'error');
+                showNotification(lang.allFieldsRequired, 'error');
                 return;
             }
             
-            // Validasi URL jika diisi
             if (url) {
                 try {
                     new URL(url);
                 } catch (e) {
-                    showNotification('URL tidak valid', 'error');
+                    showNotification(lang.invalidUrl, 'error');
                     return;
                 }
             }
@@ -1550,47 +2675,30 @@
                 }
                 
                 await saveIdea(newIdea);
-                
                 resetForm();
-                
-                showNotification(currentEditId ? 'Ide berhasil diperbarui!' : 'Ide Anda berhasil dikirim!', 'success');
+                showNotification(currentEditId ? lang.ideaUpdated : lang.ideaAdded, 'success');
                 
             } catch (error) {
                 console.error('Error saving idea:', error);
-                showNotification('Gagal menyimpan ide: ' + error.message, 'error');
+                showNotification(lang.errorLoading, 'error');
             } finally {
                 submitButton.classList.remove('btn-loading');
                 submitButton.disabled = false;
             }
         }
 
-        // Fungsi untuk reset form
-        function resetForm() {
-            ideaForm.reset();
-            currentEditId = null;
-            editIdeaId.value = '';
-            
-            if (formModeIndicator) formModeIndicator.style.display = 'none';
-            if (cancelEditBtn) cancelEditBtn.style.display = 'none';
-            if (cancelIdeaBtn) cancelIdeaBtn.style.display = 'none';
-            
-            const submitBtn = document.getElementById('submitButton');
-            if (submitBtn) {
-                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim Ide';
-            }
-        }
-
-        // Fungsi untuk membuka modal edit
+        // ========== FUNGSI MODAL ==========
         function openEditModal(id) {
             const idea = ideasData.find(item => item.id === id);
             if (!idea) return;
             
+            const lang = ideasTranslations[currentLanguage] || ideasTranslations['id'];
+            
             if (!currentUserData.isSuperAdmin && idea.userId !== currentUser.uid) {
-                showNotification('Anda tidak memiliki izin untuk mengedit ide ini', 'error');
+                showNotification(lang.noPermissionEdit, 'error');
                 return;
             }
             
-            // Isi form edit di modal
             document.getElementById('editIdeaId').value = idea.id;
             document.getElementById('editIdeaTitle').value = idea.title;
             document.getElementById('editIdeaCategory').value = idea.category;
@@ -1598,55 +2706,88 @@
             document.getElementById('editIdeaUrl').value = idea.url || '';
             document.getElementById('editIdeaStatus').value = idea.status || 'pending';
             
-            // Tampilkan modal
             editModal.classList.add('active');
         }
 
-        // Fungsi untuk menghapus ide
+        async function handleSaveEdit() {
+            const id = document.getElementById('editIdeaId').value;
+            const title = document.getElementById('editIdeaTitle').value;
+            const category = document.getElementById('editIdeaCategory').value;
+            const description = document.getElementById('editIdeaDescription').value;
+            const url = document.getElementById('editIdeaUrl').value.trim();
+            const status = document.getElementById('editIdeaStatus').value;
+            
+            const lang = ideasTranslations[currentLanguage] || ideasTranslations['id'];
+            
+            if (!title || !category || !description) {
+                showNotification(lang.allFieldsRequired, 'error');
+                return;
+            }
+            
+            if (url) {
+                try {
+                    new URL(url);
+                } catch (e) {
+                    showNotification(lang.invalidUrl, 'error');
+                    return;
+                }
+            }
+            
+            try {
+                await db.collection('ideas').doc(id).update({
+                    title,
+                    category,
+                    description,
+                    url: url || null,
+                    status,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                closeModal();
+                showNotification(lang.ideaUpdated, 'success');
+                
+            } catch (error) {
+                console.error('Error updating idea:', error);
+                showNotification(lang.errorLoading, 'error');
+            }
+        }
+
+        function closeModal() {
+            editModal.classList.remove('active');
+        }
+
         async function deleteIdea(id) {
             const idea = ideasData.find(item => item.id === id);
             if (!idea) return;
             
+            const lang = ideasTranslations[currentLanguage] || ideasTranslations['id'];
+            
             if (!currentUserData.isSuperAdmin && idea.userId !== currentUser.uid) {
-                showNotification('Anda tidak memiliki izin untuk menghapus ide ini', 'error');
+                showNotification(lang.noPermissionDelete, 'error');
                 return;
             }
             
-            if (confirm('Apakah Anda yakin ingin menghapus ide ini?')) {
+            if (confirm(lang.confirmDelete)) {
                 try {
                     await deleteIdeaFromFirestore(id);
-                    showNotification('Ide berhasil dihapus', 'success');
+                    showNotification(lang.ideaDeleted, 'success');
                     
                     if (currentEditId === id) {
                         resetForm();
                     }
                 } catch (error) {
                     console.error('Error deleting idea:', error);
-                    showNotification('Gagal menghapus ide', 'error');
+                    showNotification(lang.errorLoading, 'error');
                 }
             }
         }
 
-        // Fungsi untuk filter ide
         function filterIdeas() {
-            const searchTerm = searchIdeas.value.toLowerCase();
-            
-            if (!searchTerm) {
-                renderIdeas();
-                return;
-            }
-            
-            const filteredIdeas = ideasData.filter(idea => 
-                idea.title.toLowerCase().includes(searchTerm) ||
-                idea.category.toLowerCase().includes(searchTerm) ||
-                idea.description.toLowerCase().includes(searchTerm) ||
-                (idea.submittedBy && idea.submittedBy.toLowerCase().includes(searchTerm))
-            );
-            
-            renderIdeas(filteredIdeas);
+            currentPage = 1;
+            updatePaginationUI();
         }
 
-        // Setup real-time listener
+        // ========== FUNGSI REAL-TIME LISTENER ==========
         function setupRealTimeListener() {
             if (unsubscribeIdeas) {
                 unsubscribeIdeas();
@@ -1673,22 +2814,25 @@
                     return dateB - dateA;
                 });
                 
-                renderIdeas();
                 updateIdeasStats();
+                updatePaginationUI();
                 
+                const monthlyCount = filterDataByCurrentMonth(ideasData).length;
+                const lang = ideasTranslations[currentLanguage] || ideasTranslations['id'];
                 if (currentUserData && currentUserData.isSuperAdmin) {
-                    showNotification(`Super Admin Mode: Memuat ${ideasData.length} ide dari semua user`, 'info');
+                    showNotification(lang.superAdminMode.replace('{count}', ideasData.length).replace('{monthly}', monthlyCount), 'info');
                 }
             }, error => {
                 console.error('Error in real-time listener:', error);
-                showNotification('Gagal memuat data real-time', 'error');
+                const lang = ideasTranslations[currentLanguage] || ideasTranslations['id'];
+                showNotification(lang.errorLoading, 'error');
             });
         }
 
-        // Update user profile
         function updateUserProfile(user, userData) {
             const userProfile = document.querySelector('.user-info h4');
             const userRole = document.querySelector('.user-info p');
+            const lang = ideasTranslations[currentLanguage] || ideasTranslations['id'];
             
             if (userProfile) {
                 const displayName = userData?.displayName || user.displayName || user.email || 'User';
@@ -1697,8 +2841,8 @@
             
             if (userRole) {
                 const roleText = userData && userData.isSuperAdmin ? 
-                    'Super Administrator' : 
-                    'Customer Service Support';
+                    lang.superAdmin || 'Super Administrator' : 
+                    lang.customerSupport || 'Customer Service Support';
                 userRole.textContent = roleText;
                 
                 if (userData && userData.isSuperAdmin) {
@@ -1712,70 +2856,25 @@
                         badge.style.borderRadius = '12px';
                         badge.style.fontSize = 'var(--text-xs)';
                         badge.style.marginLeft = '8px';
-                        badge.textContent = 'Super Admin';
+                        badge.textContent = lang.superAdmin || 'Super Admin';
                         headerTitle.appendChild(badge);
                     }
                 }
             }
         }
 
-        // Fungsi untuk handle simpan edit dari modal
-        async function handleSaveEdit() {
-            const id = document.getElementById('editIdeaId').value;
-            const title = document.getElementById('editIdeaTitle').value;
-            const category = document.getElementById('editIdeaCategory').value;
-            const description = document.getElementById('editIdeaDescription').value;
-            const url = document.getElementById('editIdeaUrl').value.trim();
-            const status = document.getElementById('editIdeaStatus').value;
-            
-            if (!title || !category || !description) {
-                showNotification('Harap isi semua field', 'error');
-                return;
-            }
-            
-            // Validasi URL jika diisi
-            if (url) {
-                try {
-                    new URL(url);
-                } catch (e) {
-                    showNotification('URL tidak valid', 'error');
-                    return;
-                }
-            }
-            
-            try {
-                await db.collection('ideas').doc(id).update({
-                    title,
-                    category,
-                    description,
-                    url: url || null,
-                    status,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                closeModal();
-                showNotification('Ide berhasil diperbarui', 'success');
-                
-            } catch (error) {
-                console.error('Error updating idea:', error);
-                showNotification('Gagal memperbarui ide: ' + error.message, 'error');
-            }
-        }
-
-        function closeModal() {
-            editModal.classList.remove('active');
-        }
-
-        // Event Listeners
+        // ========== EVENT LISTENERS ==========
         document.addEventListener('DOMContentLoaded', async function() {
             console.log('DOM Content Loaded - Initializing Ideas & Suggestions Dashboard');
             
+            initializeIdeasLanguage();
+            
             try {
                 await checkAuth();
-                
                 console.log('User authenticated:', currentUser.uid, 'Role:', currentUserData.role);
                 
                 setupRealTimeListener();
+                addMonthIndicator();
                 
                 if (ideaForm) {
                     ideaForm.addEventListener('submit', handleSubmitIdea);
@@ -1787,8 +2886,9 @@
                 
                 if (refreshIdeas) {
                     refreshIdeas.addEventListener('click', function() {
-                        renderIdeas();
-                        showNotification('Daftar ide diperbarui', 'info');
+                        updatePaginationUI();
+                        const lang = ideasTranslations[currentLanguage] || ideasTranslations['id'];
+                        showNotification(lang.dataRefreshed, 'info');
                     });
                 }
                 
@@ -1800,7 +2900,6 @@
                     cancelIdeaBtn.addEventListener('click', resetForm);
                 }
                 
-                // Modal edit listeners
                 if (closeEditModal) {
                     closeEditModal.addEventListener('click', closeModal);
                 }
@@ -1813,7 +2912,32 @@
                     saveEdit.addEventListener('click', handleSaveEdit);
                 }
                 
-                // Click outside modal to close
+                if (prevPageBtn) {
+                    prevPageBtn.addEventListener('click', function() {
+                        if (currentPage > 1) {
+                            currentPage--;
+                            updatePaginationUI();
+                        }
+                    });
+                }
+                
+                if (nextPageBtn) {
+                    nextPageBtn.addEventListener('click', function() {
+                        if (currentPage < totalPages) {
+                            currentPage++;
+                            updatePaginationUI();
+                        }
+                    });
+                }
+                
+                if (itemsPerPageSelect) {
+                    itemsPerPageSelect.addEventListener('change', function() {
+                        itemsPerPage = parseInt(this.value);
+                        currentPage = 1;
+                        updatePaginationUI();
+                    });
+                }
+                
                 window.addEventListener('click', function(event) {
                     if (event.target === editModal) {
                         closeModal();
@@ -1821,12 +2945,12 @@
                 });
                 
                 updateUserProfile(currentUser, currentUserData);
-                
                 console.log('Ideas & suggestions dashboard initialized successfully');
                 
             } catch (error) {
                 console.error('Authentication error:', error);
-                showNotification('Silakan login untuk mengakses dashboard ide & saran', 'error');
+                const lang = ideasTranslations[currentLanguage] || ideasTranslations['id'];
+                showNotification(lang.loginRequired, 'error');
                 
                 setTimeout(() => {
                     window.location.href = 'index.html';
@@ -1834,7 +2958,6 @@
             }
         });
 
-        // Handle auth state changes
         auth.onAuthStateChanged(async user => {
             if (user) {
                 currentUser = user;
@@ -1852,6 +2975,7 @@
                 if (unsubscribeIdeas) {
                     unsubscribeIdeas();
                 }
+                const lang = ideasTranslations[currentLanguage] || ideasTranslations['id'];
                 showNotification('Anda telah logout', 'info');
                 
                 setTimeout(() => {

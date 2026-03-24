@@ -1035,11 +1035,11 @@
 <button class="menu-toggle">
                     <i class="fas fa-bars"></i>
                 </button>
-                <div class="user-profile">
+<div class="user-profile">
                     <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
                     <div class="user-info">
-                        <h4>Nama Masing Masing</h4>
-                        <p>Customer Service Support</p>
+                        <h4 id="userName">Loading...</h4>
+                        <p id="userRole">Releases New Game</p>
                     </div>
                 </div>
             </div>
@@ -1416,6 +1416,8 @@ const firebaseConfig = {
     let isEditing = false;
     let currentEditId = null;
     let currentImage = null;
+    let currentPage = 1;
+const itemsPerPage = 8;
 
   // ========== FIXED GAMES LISTENER ==========
     function setupGamesListener() {
@@ -1862,32 +1864,75 @@ async function addGame(gameData) {
         return card;
     }
 
-    // Load games into the grid
     function renderGames() {
-        const gamesGrid = document.getElementById('gamesGrid');
-        const noGames = document.getElementById('noGames');
-        
-        if (!gamesGrid) return;
-        
-        if (filteredGames.length === 0) {
-            gamesGrid.style.display = 'none';
-            if (noGames) noGames.style.display = 'flex';
-            return;
-        }
-        
-        gamesGrid.style.display = 'grid';
-        if (noGames) noGames.style.display = 'none';
-        
-        // Clear the grid
-        gamesGrid.innerHTML = '';
-        
-        // Render each game
-        filteredGames.forEach(game => {
-            const gameCard = createGameCard(game);
-            gamesGrid.appendChild(gameCard);
-        });
+    const gamesGrid = document.getElementById('gamesGrid');
+    const noGames = document.getElementById('noGames');
+    const paginationContainer = document.getElementById('paginationContainer');
+    const pageInfo = document.getElementById('pageInfo');
+    const paginationStats = document.getElementById('paginationStats');
+    const prevPageBtn = document.getElementById('prevPageBtn');
+    const nextPageBtn = document.getElementById('nextPageBtn');
+
+    if (!gamesGrid) return;
+
+    const totalItems = filteredGames.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    if (totalItems === 0) {
+        gamesGrid.style.display = 'none';
+        if (noGames) noGames.style.display = 'flex';
+        if (paginationContainer) paginationContainer.style.display = 'none';
+        return;
     }
 
+    gamesGrid.style.display = 'grid';
+    if (noGames) noGames.style.display = 'none';
+    if (paginationContainer) paginationContainer.style.display = 'block';
+
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedGames = filteredGames.slice(startIndex, endIndex);
+
+    gamesGrid.innerHTML = '';
+
+    paginatedGames.forEach(game => {
+        const gameCard = createGameCard(game);
+        gamesGrid.appendChild(gameCard);
+    });
+
+    if (pageInfo) {
+        pageInfo.textContent = `Halaman ${currentPage} dari ${totalPages}`;
+    }
+
+    if (paginationStats) {
+        paginationStats.textContent = `Menampilkan ${startIndex + 1}-${Math.min(endIndex, totalItems)} dari ${totalItems} game`;
+    }
+
+    if (prevPageBtn) {
+        prevPageBtn.disabled = currentPage === 1;
+    }
+
+    if (nextPageBtn) {
+        nextPageBtn.disabled = currentPage === totalPages;
+    }
+}
+function goToNextPage() {
+    const totalPages = Math.ceil(filteredGames.length / itemsPerPage);
+    if (currentPage < totalPages) {
+        currentPage++;
+        renderGames();
+    }
+}
+
+function goToPrevPage() {
+    if (currentPage > 1) {
+        currentPage--;
+        renderGames();
+    }
+}
     // Load games with filters applied
     function loadGames() {
         const statusFilter = document.getElementById('statusFilter')?.value || '';

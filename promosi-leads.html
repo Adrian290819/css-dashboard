@@ -8,8 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
     <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="stylemobile.css">
     <script src="global-time.js"></script>
-    <script src="translations.js"></script>
     
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-app-compat.js"></script>
@@ -108,6 +108,20 @@
             color: var(--text-secondary);
         }
 
+        .menu-toggle {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+        }
 
         /* ========== FILTER PANEL ========== */
         .filter-panel {
@@ -328,17 +342,17 @@
 
         .status-contacted {
             background-color: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
+            color: #f59e0b;
         }
 
         .status-converted {
             background-color: rgba(16, 185, 129, 0.1);
-            color: var(--success);
+            color: #10b981;
         }
 
         .status-lost {
             background-color: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
+            color: #ef4444;
         }
 
         .action-buttons {
@@ -691,10 +705,6 @@
                 width: 100%;
             }
             
-            .promosi-stats {
-                grid-template-columns: 1fr;
-            }
-            
             .filter-grid {
                 grid-template-columns: 1fr;
             }
@@ -730,24 +740,24 @@
 </head>
 <body>
     <div id="sidebar-container"></div>
+    <button class="menu-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
     
     <!-- Main Content -->
     <div class="main-content">
         <div class="header">
-            <h1><i class="fas fa-bullhorn"></i> Promosi Leads Management</h1>
+            <h1><i class="fas fa-bullhorn"></i> <span id="pageTitle">Promosi Leads Management</span></h1>
             <div class="header-actions">
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Cari leads (nama, username, notes)..." id="leadsSearch">
+                    <input type="text" id="leadsSearch" placeholder="Cari leads (nama, username, notes)...">
                 </div>
-                <button class="menu-toggle">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="user-profile">
+<div class="user-profile">
                     <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
                     <div class="user-info">
                         <h4 id="userName">Loading...</h4>
-                        <p id="userRole">Customer Service Support</p>
+                        <p id="userRole">Promosi Leads</p>
                     </div>
                 </div>
             </div>
@@ -756,57 +766,57 @@
         <!-- Filter Panel -->
         <div class="filter-panel fade-in">
             <div class="filter-header">
-                <h3 class="filter-title">Filter Leads</h3>
+                <h3 class="filter-title" id="filterTitle">Filter Leads</h3>
                 <button class="filter-reset" id="resetFilters">
-                    <i class="fas fa-sync-alt"></i> Reset Filters
+                    <i class="fas fa-sync-alt"></i> <span id="resetBtnText">Reset Filters</span>
                 </button>
             </div>
             <div class="filter-grid">
                 <div class="filter-group">
-                    <label>Platform</label>
+                    <label id="platformLabel">Platform</label>
                     <select class="filter-select" id="platformFilter">
-                        <option value="">Semua Platform</option>
-                        <option value="WhatsApp">WhatsApp</option>
-                        <option value="Telegram">Telegram</option>
-                        <option value="Facebook">Facebook</option>
-                        <option value="Instagram">Instagram</option>
-                        <option value="Website">Website</option>
-                        <option value="Direct">Direct</option>
-                        <option value="Referral">Referral</option>
+                        <option value="" id="platformAll">Semua Platform</option>
+                        <option value="WhatsApp" id="platformWhatsApp">WhatsApp</option>
+                        <option value="Telegram" id="platformTelegram">Telegram</option>
+                        <option value="Facebook" id="platformFacebook">Facebook</option>
+                        <option value="Instagram" id="platformInstagram">Instagram</option>
+                        <option value="Website" id="platformWebsite">Website</option>
+                        <option value="Direct" id="platformDirect">Direct</option>
+                        <option value="Referral" id="platformReferral">Referral</option>
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label>Lead Qualification</label>
+                    <label id="qualificationLabel">Lead Qualification</label>
                     <select class="filter-select" id="qualificationFilter">
-                        <option value="">Semua</option>
-                        <option value="Hot">Hot</option>
-                        <option value="Warm">Warm</option>
-                        <option value="Cold">Cold</option>
-                        <option value="Qualified">Qualified</option>
-                        <option value="Not Qualified">Not Qualified</option>
+                        <option value="" id="qualificationAll">Semua</option>
+                        <option value="Hot" id="qualificationHot">Hot</option>
+                        <option value="Warm" id="qualificationWarm">Warm</option>
+                        <option value="Cold" id="qualificationCold">Cold</option>
+                        <option value="Qualified" id="qualificationQualified">Qualified</option>
+                        <option value="Not Qualified" id="qualificationNotQualified">Not Qualified</option>
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label>Leads / Follow</label>
+                    <label id="leadsFollowLabel">Leads / Follow</label>
                     <select class="filter-select" id="leadsFollowFilter">
-                        <option value="">Semua</option>
-                        <option value="Leads">Leads</option>
-                        <option value="Follow">Follow</option>
+                        <option value="" id="leadsFollowAll">Semua</option>
+                        <option value="Leads" id="leadsFollowLeads">Leads</option>
+                        <option value="Follow" id="leadsFollowFollow">Follow</option>
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label>Nama CSS</label>
+                    <label id="cssLabel">Nama CSS</label>
                     <select class="filter-select" id="cssFilter">
-                        <option value="">Semua CSS</option>
-                        <option value="DANEL">DANEL</option>
-                        <option value="ADRIAN ABDUL ARIF">ADRIAN</option>
-                        <option value="ANDRI FIRMANSYAH">ANDRI</option>
-                        <option value="AHMAD BAIHAQI">BAIHAQI</option>
-                        <option value="DICKY ADE CHANDRA">DICKY</option>
+                        <option value="" id="cssAll">Semua CSS</option>
+                        <option value="DANEL" id="cssDanel">DANEL</option>
+                        <option value="ADRIAN ABDUL ARIF" id="cssAdrian">ADRIAN</option>
+                        <option value="ANDRI FIRMANSYAH" id="cssAndri">ANDRI</option>
+                        <option value="AHMAD BAIHAQI" id="cssBaihaqi">BAIHAQI</option>
+                        <option value="DICKY ADE CHANDRA" id="cssDicky">DICKY</option>
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label>Tanggal Masuk</label>
+                    <label id="dateLabel">Tanggal Masuk</label>
                     <input type="date" class="filter-input" id="dateFilter">
                 </div>
             </div>
@@ -815,16 +825,16 @@
         <!-- Leads Section -->
         <div class="leads-section fade-in">
             <div class="section-header">
-                <h2 class="section-title"><i class="fas fa-table"></i> Data Leads Promosi</h2>
+                <h2 class="section-title"><i class="fas fa-table"></i> <span id="sectionTitle">Data Leads Promosi</span></h2>
                 <div class="section-actions">
                     <button class="btn btn-outline" id="exportExcel">
-                        <i class="fas fa-file-excel"></i> Export Excel
+                        <i class="fas fa-file-excel"></i> <span id="exportBtnText">Export Excel</span>
                     </button>
                     <button class="btn btn-outline" id="refreshLeads">
-                        <i class="fas fa-sync-alt"></i> Refresh
+                        <i class="fas fa-sync-alt"></i> <span id="refreshBtnText">Refresh</span>
                     </button>
                     <button class="btn btn-primary" id="addLeadBtn">
-                        <i class="fas fa-plus"></i> Tambah Lead
+                        <i class="fas fa-plus"></i> <span id="addLeadBtnText">Tambah Lead</span>
                     </button>
                 </div>
             </div>
@@ -832,25 +842,25 @@
             <div class="table-container">
                 <table class="leads-table" id="leadsTable">
                     <thead>
-    <tr>
-        <th>Tanggal Masuk</th>
-        <th>Platform</th>
-        <th>Contact Username</th>
-        <th>Screenshot Chat</th>
-        <th>Nama CSS</th>
-        <th>Lead Qualification</th>
-        <th>Leads / Follow</th>
-        <th>Status</th> <!-- KOLOM BARU -->
-        <th>Reason</th>
-        <th>Request Leads</th>
-        <th>Follow Up 1</th>
-        <th>Follow Up 2</th>
-        <th>Follow Up 3</th>
-        <th>Follow Up 4</th>
-        <th>Follow Up 5</th>
-        <th>Aksi</th>
-    </tr>
-</thead>
+                        <tr id="tableHeader">
+                            <th id="thTanggalMasuk">Tanggal Masuk</th>
+                            <th id="thPlatform">Platform</th>
+                            <th id="thContactUsername">Contact Username</th>
+                            <th id="thScreenshotChat">Screenshot Chat</th>
+                            <th id="thNamaCSS">Nama CSS</th>
+                            <th id="thLeadQualification">Lead Qualification</th>
+                            <th id="thLeadsFollow">Leads / Follow</th>
+                            <th id="thStatus">Status</th>
+                            <th id="thReason">Reason</th>
+                            <th id="thRequestLeads">Request Leads</th>
+                            <th id="thFollowUp1">Follow Up 1</th>
+                            <th id="thFollowUp2">Follow Up 2</th>
+                            <th id="thFollowUp3">Follow Up 3</th>
+                            <th id="thFollowUp4">Follow Up 4</th>
+                            <th id="thFollowUp5">Follow Up 5</th>
+                            <th id="thAksi">Aksi</th>
+                        </tr>
+                    </thead>
                     <tbody id="leadsTableBody">
                         <!-- Data akan dimuat secara dinamis -->
                     </tbody>
@@ -859,10 +869,10 @@
             
             <div id="noLeads" class="empty-state" style="display: none;">
                 <i class="fas fa-users"></i>
-                <h3>Tidak Ada Data Leads</h3>
-                <p>Belum ada data leads promosi saat ini.</p>
+                <h3 id="noLeadsTitle">Tidak Ada Data Leads</h3>
+                <p id="noLeadsMessage">Belum ada data leads promosi saat ini.</p>
                 <button class="btn btn-primary" id="addFirstLead">
-                    <i class="fas fa-plus"></i> Tambah Lead Pertama
+                    <i class="fas fa-plus"></i> <span id="addFirstLeadText">Tambah Lead Pertama</span>
                 </button>
             </div>
         </div>
@@ -881,36 +891,36 @@
                     
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>Tanggal Masuk *</label>
+                            <label id="labelTanggalMasuk">Tanggal Masuk *</label>
                             <input type="date" class="form-control" id="tanggalMasuk" required>
                         </div>
                         
                         <div class="form-group">
-                            <label>Platform *</label>
+                            <label id="labelPlatform">Platform *</label>
                             <select class="form-control" id="platform" required>
-                                <option value="">Pilih Platform</option>
-                                <option value="WhatsApp">WhatsApp</option>
-                                <option value="Telegram">Telegram</option>
-                                <option value="Facebook">Facebook</option>
-                                <option value="Instagram">Instagram</option>
-                                <option value="Website">Website</option>
-                                <option value="Direct">Direct</option>
-                                <option value="Referral">Referral</option>
-                                <option value="Other">Other</option>
+                                <option value="" id="selectPlatformPlaceholder">Pilih Platform</option>
+                                <option value="WhatsApp" id="selectWhatsApp">WhatsApp</option>
+                                <option value="Telegram" id="selectTelegram">Telegram</option>
+                                <option value="Facebook" id="selectFacebook">Facebook</option>
+                                <option value="Instagram" id="selectInstagram">Instagram</option>
+                                <option value="Website" id="selectWebsite">Website</option>
+                                <option value="Direct" id="selectDirect">Direct</option>
+                                <option value="Referral" id="selectReferral">Referral</option>
+                                <option value="Other" id="selectOther">Other</option>
                             </select>
                         </div>
                         
                         <div class="form-group">
-                            <label>Contact Username *</label>
+                            <label id="labelContactUsername">Contact Username *</label>
                             <input type="text" class="form-control" id="contactUsername" placeholder="@username atau nomor" required>
                         </div>
                         
                         <div class="form-group">
-                            <label>Screenshot Chat (URL)</label>
+                            <label id="labelScreenshotChat">Screenshot Chat (URL)</label>
                             <div class="url-input-group">
                                 <input type="url" class="form-control" id="screenshotUrl" placeholder="https://example.com/image.jpg">
                                 <button type="button" class="btn-test-url" id="testScreenshotUrl">
-                                    <i class="fas fa-eye"></i> Test
+                                    <i class="fas fa-eye"></i> <span id="testBtnText">Test</span>
                                 </button>
                             </div>
                             <div class="image-preview" id="screenshotPreview">
@@ -919,79 +929,79 @@
                         </div>
                         
                         <div class="form-group">
-                            <label>Nama CSS *</label>
+                            <label id="labelNamaCSS">Nama CSS *</label>
                             <select class="form-control" id="namaCSS" required>
-                                <option value="">Pilih CSS</option>
-                                <option value="DANEL">DANEL</option>
-                                <option value="ADRIAN ABDUL ARIF">ADRIAN</option>
-                                <option value="ANDRI FIRMANSYAH">ANDRI</option>
-                                <option value="AHMAD BAIHAQI">BAIHAQI</option>
-                                <option value="DICKY ADE CHANDRA">DICKY</option>
+                                <option value="" id="selectCssPlaceholder">Pilih CSS</option>
+                                <option value="DANEL" id="selectDanel">DANEL</option>
+                                <option value="ADRIAN ABDUL ARIF" id="selectAdrian">ADRIAN</option>
+                                <option value="ANDRI FIRMANSYAH" id="selectAndri">ANDRI</option>
+                                <option value="AHMAD BAIHAQI" id="selectBaihaqi">BAIHAQI</option>
+                                <option value="DICKY ADE CHANDRA" id="selectDicky">DICKY</option>
                             </select>
                         </div>
                         
                         <div class="form-group">
-                            <label>Lead Qualification</label>
+                            <label id="labelLeadQualification">Lead Qualification</label>
                             <select class="form-control" id="leadQualification">
-                                <option value="">Pilih Kualifikasi</option>
-                                <option value="Hot">Hot</option>
-                                <option value="Warm">Warm</option>
-                                <option value="Cold">Cold</option>
-                                <option value="Qualified">Qualified</option>
-                                <option value="Not Qualified">Not Qualified</option>
+                                <option value="" id="selectQualificationPlaceholder">Pilih Kualifikasi</option>
+                                <option value="Hot" id="selectHot">Hot</option>
+                                <option value="Warm" id="selectWarm">Warm</option>
+                                <option value="Cold" id="selectCold">Cold</option>
+                                <option value="Qualified" id="selectQualified">Qualified</option>
+                                <option value="Not Qualified" id="selectNotQualified">Not Qualified</option>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label>Leads / Follow</label>
+                            <label id="labelLeadsFollow">Leads / Follow</label>
                             <select class="form-control" id="leadsFollow">
-                                <option value="">Pilih Status</option>
-                                <option value="Leads">Leads</option>
-                                <option value="Follow">Follow</option>
+                                <option value="" id="selectLeadsFollowPlaceholder">Pilih Status</option>
+                                <option value="Leads" id="selectLeads">Leads</option>
+                                <option value="Follow" id="selectFollow">Follow</option>
                             </select>
                         </div>
 
-<!-- TAMBAHKAN FIELD STATUS BARU -->
-<div class="form-group">
-    <label>Status *</label>
-    <select class="form-control" id="leadStatus" required>
-        <option value="">Pilih Status</option>
-        <option value="Progres">Progres</option>
-        <option value="Closing">Closing</option>
-    </select>
-</div>
+                        <div class="form-group">
+                            <label id="labelLeadStatus">Status *</label>
+                            <select class="form-control" id="leadStatus" required>
+                                <option value="" id="selectStatusPlaceholder">Pilih Status</option>
+                                <option value="Progres" id="selectProgres">Progres</option>
+                                <option value="Closing" id="selectClosing">Closing</option>
+                            </select>
+                        </div>
+                        
                         <div class="form-group full-width">
-                            <label>Reason</label>
+                            <label id="labelReason">Reason</label>
                             <textarea class="form-control" id="reason" rows="2" placeholder="Alasan kualifikasi..."></textarea>
                         </div>
 
                         <div class="form-group full-width">
-                            <label>Request Leads</label>
+                            <label id="labelRequestLeads">Request Leads</label>
                             <textarea class="form-control" id="requestLeads" rows="2" placeholder="Jenis request..."></textarea>
                         </div>
 
                         <div class="form-group full-width">
-                            <label>Follow Up 1</label>
+                            <label id="labelFollowUp1">Follow Up 1</label>
                             <textarea class="form-control" id="followUp1" rows="2" placeholder="Deskripsi follow up 1..."></textarea>
                         </div>
 
                         <div class="form-group full-width">
-                            <label>Follow Up 2</label>
+                            <label id="labelFollowUp2">Follow Up 2</label>
                             <textarea class="form-control" id="followUp2" rows="2" placeholder="Deskripsi follow up 2..."></textarea>
                         </div>
 
                         <div class="form-group full-width">
-                            <label>Follow Up 3</label>
+                            <label id="labelFollowUp3">Follow Up 3</label>
                             <textarea class="form-control" id="followUp3" rows="2" placeholder="Deskripsi follow up 3..."></textarea>
                         </div>
 
                         <div class="form-group full-width">
-                            <label>Follow Up 4</label>
+                            <label id="labelFollowUp4">Follow Up 4</label>
                             <textarea class="form-control" id="followUp4" rows="2" placeholder="Deskripsi follow up 4..."></textarea>
                         </div>
 
                         <div class="form-group full-width">
-                            <label>Follow Up 5</label>
+                            <label id="labelFollowUp5">Follow Up 5</label>
                             <textarea class="form-control" id="followUp5" rows="2" placeholder="Deskripsi follow up 5..."></textarea>
                         </div>
                     </div>
@@ -999,10 +1009,10 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-outline" id="cancelModal">
-                    <i class="fas fa-times"></i> Batal
+                    <i class="fas fa-times"></i> <span id="cancelBtnText">Batal</span>
                 </button>
                 <button class="btn btn-primary" id="saveLead">
-                    <i class="fas fa-save"></i> Simpan Lead
+                    <i class="fas fa-save"></i> <span id="saveBtnText">Simpan Lead</span>
                 </button>
             </div>
         </div>
@@ -1012,14 +1022,14 @@
     <div class="modal-overlay" id="imageModal">
         <div class="modal" style="max-width: 800px;">
             <div class="modal-header">
-                <h3 class="modal-title"><i class="fas fa-image"></i> Screenshot Chat</h3>
+                <h3 class="modal-title"><i class="fas fa-image"></i> <span id="imageModalTitle">Screenshot Chat</span></h3>
                 <button class="modal-close" id="closeImageModal">&times;</button>
             </div>
             <div class="modal-body" style="text-align: center;">
                 <img id="modalImage" src="" alt="Screenshot" style="max-width: 100%; max-height: 70vh;">
             </div>
             <div class="modal-footer">
-                <button class="btn btn-outline" id="closeImageBtn">Tutup</button>
+                <button class="btn btn-outline" id="closeImageBtn"><span id="closeBtnText">Tutup</span></button>
             </div>
         </div>
     </div>
@@ -1028,20 +1038,20 @@
     <div class="modal-overlay" id="deleteModal">
         <div class="modal" style="max-width: 400px;">
             <div class="modal-header" style="background: var(--warning-gradient);">
-                <h3 class="modal-title"><i class="fas fa-exclamation-triangle"></i> Konfirmasi Hapus</h3>
+                <h3 class="modal-title"><i class="fas fa-exclamation-triangle"></i> <span id="deleteModalTitle">Konfirmasi Hapus</span></h3>
                 <button class="modal-close" id="closeDeleteModal">&times;</button>
             </div>
             <div class="modal-body">
-                <p style="text-align: center; font-size: var(--text-lg); margin: var(--space-lg) 0;">
+                <p style="text-align: center; font-size: var(--text-lg); margin: var(--space-lg) 0;" id="deleteConfirmMessage">
                     Apakah Anda yakin ingin menghapus data ini?
                 </p>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-outline" id="cancelDelete">
-                    <i class="fas fa-times"></i> Batal
+                    <i class="fas fa-times"></i> <span id="cancelDeleteBtnText">Batal</span>
                 </button>
                 <button class="btn btn-danger" id="confirmDelete">
-                    <i class="fas fa-trash"></i> Hapus
+                    <i class="fas fa-trash"></i> <span id="confirmDeleteBtnText">Hapus</span>
                 </button>
             </div>
         </div>
@@ -1051,6 +1061,855 @@
     <script src="user-profile.js"></script>
     
     <script>
+    // ========== TRANSLATIONS FOR PROMOSI LEADS ==========
+    const promosiLeadsTranslations = {
+        id: {
+            // Page Title
+            "pageTitle": "Promosi Leads Management",
+            "userRole": "Customer Service Support",
+            
+            // Search
+            "searchPlaceholder": "Cari leads (nama, username, notes)...",
+            
+            // Filter Panel
+            "filterTitle": "Filter Leads",
+            "resetBtnText": "Reset Filters",
+            "platformLabel": "Platform",
+            "platformAll": "Semua Platform",
+            "platformWhatsApp": "WhatsApp",
+            "platformTelegram": "Telegram",
+            "platformFacebook": "Facebook",
+            "platformInstagram": "Instagram",
+            "platformWebsite": "Website",
+            "platformDirect": "Direct",
+            "platformReferral": "Referral",
+            "qualificationLabel": "Lead Qualification",
+            "qualificationAll": "Semua",
+            "qualificationHot": "Hot",
+            "qualificationWarm": "Warm",
+            "qualificationCold": "Cold",
+            "qualificationQualified": "Qualified",
+            "qualificationNotQualified": "Not Qualified",
+            "leadsFollowLabel": "Leads / Follow",
+            "leadsFollowAll": "Semua",
+            "leadsFollowLeads": "Leads",
+            "leadsFollowFollow": "Follow",
+            "cssLabel": "Nama CSS",
+            "cssAll": "Semua CSS",
+            "cssDanel": "DANEL",
+            "cssAdrian": "ADRIAN",
+            "cssAndri": "ANDRI",
+            "cssBaihaqi": "BAIHAQI",
+            "cssDicky": "DICKY",
+            "dateLabel": "Tanggal Masuk",
+            
+            // Section Header
+            "sectionTitle": "Data Leads Promosi",
+            "exportBtnText": "Export Excel",
+            "refreshBtnText": "Refresh",
+            "addLeadBtnText": "Tambah Lead",
+            
+            // Table Headers
+            "thTanggalMasuk": "Tanggal Masuk",
+            "thPlatform": "Platform",
+            "thContactUsername": "Contact Username",
+            "thScreenshotChat": "Screenshot Chat",
+            "thNamaCSS": "Nama CSS",
+            "thLeadQualification": "Lead Qualification",
+            "thLeadsFollow": "Leads / Follow",
+            "thStatus": "Status",
+            "thReason": "Reason",
+            "thRequestLeads": "Request Leads",
+            "thFollowUp1": "Follow Up 1",
+            "thFollowUp2": "Follow Up 2",
+            "thFollowUp3": "Follow Up 3",
+            "thFollowUp4": "Follow Up 4",
+            "thFollowUp5": "Follow Up 5",
+            "thAksi": "Aksi",
+            
+            // Empty State
+            "noLeadsTitle": "Tidak Ada Data Leads",
+            "noLeadsMessage": "Belum ada data leads promosi saat ini.",
+            "addFirstLeadText": "Tambah Lead Pertama",
+            
+            // Modal
+            "modalAddTitle": "Tambah Lead Baru",
+            "modalEditTitle": "Edit Lead",
+            "labelTanggalMasuk": "Tanggal Masuk *",
+            "labelPlatform": "Platform *",
+            "labelContactUsername": "Contact Username *",
+            "labelScreenshotChat": "Screenshot Chat (URL)",
+            "labelNamaCSS": "Nama CSS *",
+            "labelLeadQualification": "Lead Qualification",
+            "labelLeadsFollow": "Leads / Follow",
+            "labelLeadStatus": "Status *",
+            "labelReason": "Reason",
+            "labelRequestLeads": "Request Leads",
+            "labelFollowUp1": "Follow Up 1",
+            "labelFollowUp2": "Follow Up 2",
+            "labelFollowUp3": "Follow Up 3",
+            "labelFollowUp4": "Follow Up 4",
+            "labelFollowUp5": "Follow Up 5",
+            
+            // Form Placeholders
+            "selectPlatformPlaceholder": "Pilih Platform",
+            "selectCssPlaceholder": "Pilih CSS",
+            "selectQualificationPlaceholder": "Pilih Kualifikasi",
+            "selectLeadsFollowPlaceholder": "Pilih Status",
+            "selectStatusPlaceholder": "Pilih Status",
+            "selectWhatsApp": "WhatsApp",
+            "selectTelegram": "Telegram",
+            "selectFacebook": "Facebook",
+            "selectInstagram": "Instagram",
+            "selectWebsite": "Website",
+            "selectDirect": "Direct",
+            "selectReferral": "Referral",
+            "selectOther": "Other",
+            "selectDanel": "DANEL",
+            "selectAdrian": "ADRIAN",
+            "selectAndri": "ANDRI",
+            "selectBaihaqi": "BAIHAQI",
+            "selectDicky": "DICKY",
+            "selectHot": "Hot",
+            "selectWarm": "Warm",
+            "selectCold": "Cold",
+            "selectQualified": "Qualified",
+            "selectNotQualified": "Not Qualified",
+            "selectLeads": "Leads",
+            "selectFollow": "Follow",
+            "selectProgres": "Progres",
+            "selectClosing": "Closing",
+            
+            // Modal Buttons
+            "cancelBtnText": "Batal",
+            "saveBtnText": "Simpan Lead",
+            "testBtnText": "Test",
+            "closeBtnText": "Tutup",
+            
+            // Image Modal
+            "imageModalTitle": "Screenshot Chat",
+            
+            // Delete Modal
+            "deleteModalTitle": "Konfirmasi Hapus",
+            "deleteConfirmMessage": "Apakah Anda yakin ingin menghapus data ini?",
+            "cancelDeleteBtnText": "Batal",
+            "confirmDeleteBtnText": "Hapus",
+            
+            // Toast Messages
+            "dataLoaded": "Data leads berhasil dimuat",
+            "dataError": "Gagal memuat data leads",
+            "leadAdded": "Lead berhasil ditambahkan!",
+            "leadUpdated": "Lead berhasil diperbarui!",
+            "leadDeleted": "Lead berhasil dihapus!",
+            "saveError": "Gagal menyimpan lead",
+            "deleteError": "Gagal menghapus lead",
+            "exportSuccess": "Data berhasil diexport!",
+            "refreshSuccess": "Data leads diperbarui!",
+            "fillRequiredFields": "Harap isi semua field yang wajib!",
+            "leadNotFound": "Lead tidak ditemukan!",
+            "noDataFilter": "Tidak Ada Data Sesuai Filter",
+            "changeFilterCriteria": "Coba ubah kriteria filter Anda.",
+            
+            // Status Badges
+            "viewImage": "Lihat",
+            "edit": "Edit",
+            "delete": "Hapus"
+        },
+        en: {
+            "pageTitle": "Promotion Leads Management",
+            "userRole": "Customer Service Support",
+            "searchPlaceholder": "Search leads (name, username, notes)...",
+            "filterTitle": "Filter Leads",
+            "resetBtnText": "Reset Filters",
+            "platformLabel": "Platform",
+            "platformAll": "All Platforms",
+            "platformWhatsApp": "WhatsApp",
+            "platformTelegram": "Telegram",
+            "platformFacebook": "Facebook",
+            "platformInstagram": "Instagram",
+            "platformWebsite": "Website",
+            "platformDirect": "Direct",
+            "platformReferral": "Referral",
+            "qualificationLabel": "Lead Qualification",
+            "qualificationAll": "All",
+            "qualificationHot": "Hot",
+            "qualificationWarm": "Warm",
+            "qualificationCold": "Cold",
+            "qualificationQualified": "Qualified",
+            "qualificationNotQualified": "Not Qualified",
+            "leadsFollowLabel": "Leads / Follow",
+            "leadsFollowAll": "All",
+            "leadsFollowLeads": "Leads",
+            "leadsFollowFollow": "Follow",
+            "cssLabel": "CSS Name",
+            "cssAll": "All CSS",
+            "cssDanel": "DANEL",
+            "cssAdrian": "ADRIAN",
+            "cssAndri": "ANDRI",
+            "cssBaihaqi": "BAIHAQI",
+            "cssDicky": "DICKY",
+            "dateLabel": "Entry Date",
+            "sectionTitle": "Promotion Leads Data",
+            "exportBtnText": "Export Excel",
+            "refreshBtnText": "Refresh",
+            "addLeadBtnText": "Add Lead",
+            "thTanggalMasuk": "Entry Date",
+            "thPlatform": "Platform",
+            "thContactUsername": "Contact Username",
+            "thScreenshotChat": "Screenshot Chat",
+            "thNamaCSS": "CSS Name",
+            "thLeadQualification": "Lead Qualification",
+            "thLeadsFollow": "Leads / Follow",
+            "thStatus": "Status",
+            "thReason": "Reason",
+            "thRequestLeads": "Request Leads",
+            "thFollowUp1": "Follow Up 1",
+            "thFollowUp2": "Follow Up 2",
+            "thFollowUp3": "Follow Up 3",
+            "thFollowUp4": "Follow Up 4",
+            "thFollowUp5": "Follow Up 5",
+            "thAksi": "Actions",
+            "noLeadsTitle": "No Leads Data",
+            "noLeadsMessage": "No promotion leads data available.",
+            "addFirstLeadText": "Add First Lead",
+            "modalAddTitle": "Add New Lead",
+            "modalEditTitle": "Edit Lead",
+            "labelTanggalMasuk": "Entry Date *",
+            "labelPlatform": "Platform *",
+            "labelContactUsername": "Contact Username *",
+            "labelScreenshotChat": "Screenshot Chat (URL)",
+            "labelNamaCSS": "CSS Name *",
+            "labelLeadQualification": "Lead Qualification",
+            "labelLeadsFollow": "Leads / Follow",
+            "labelLeadStatus": "Status *",
+            "labelReason": "Reason",
+            "labelRequestLeads": "Request Leads",
+            "labelFollowUp1": "Follow Up 1",
+            "labelFollowUp2": "Follow Up 2",
+            "labelFollowUp3": "Follow Up 3",
+            "labelFollowUp4": "Follow Up 4",
+            "labelFollowUp5": "Follow Up 5",
+            "selectPlatformPlaceholder": "Select Platform",
+            "selectCssPlaceholder": "Select CSS",
+            "selectQualificationPlaceholder": "Select Qualification",
+            "selectLeadsFollowPlaceholder": "Select Status",
+            "selectStatusPlaceholder": "Select Status",
+            "selectWhatsApp": "WhatsApp",
+            "selectTelegram": "Telegram",
+            "selectFacebook": "Facebook",
+            "selectInstagram": "Instagram",
+            "selectWebsite": "Website",
+            "selectDirect": "Direct",
+            "selectReferral": "Referral",
+            "selectOther": "Other",
+            "selectDanel": "DANEL",
+            "selectAdrian": "ADRIAN",
+            "selectAndri": "ANDRI",
+            "selectBaihaqi": "BAIHAQI",
+            "selectDicky": "DICKY",
+            "selectHot": "Hot",
+            "selectWarm": "Warm",
+            "selectCold": "Cold",
+            "selectQualified": "Qualified",
+            "selectNotQualified": "Not Qualified",
+            "selectLeads": "Leads",
+            "selectFollow": "Follow",
+            "selectProgres": "In Progress",
+            "selectClosing": "Closing",
+            "cancelBtnText": "Cancel",
+            "saveBtnText": "Save Lead",
+            "testBtnText": "Test",
+            "closeBtnText": "Close",
+            "imageModalTitle": "Chat Screenshot",
+            "deleteModalTitle": "Confirm Delete",
+            "deleteConfirmMessage": "Are you sure you want to delete this data?",
+            "cancelDeleteBtnText": "Cancel",
+            "confirmDeleteBtnText": "Delete",
+            "dataLoaded": "Leads data loaded successfully",
+            "dataError": "Failed to load leads data",
+            "leadAdded": "Lead added successfully!",
+            "leadUpdated": "Lead updated successfully!",
+            "leadDeleted": "Lead deleted successfully!",
+            "saveError": "Failed to save lead",
+            "deleteError": "Failed to delete lead",
+            "exportSuccess": "Data exported successfully!",
+            "refreshSuccess": "Leads data updated!",
+            "fillRequiredFields": "Please fill in all required fields!",
+            "leadNotFound": "Lead not found!",
+            "noDataFilter": "No Data Matching Filter",
+            "changeFilterCriteria": "Try changing your filter criteria.",
+            "viewImage": "View",
+            "edit": "Edit",
+            "delete": "Delete"
+        },
+        ja: {
+            "pageTitle": "プロモーションリード管理",
+            "userRole": "カスタマーサービスサポート",
+            "searchPlaceholder": "リードを検索 (名前、ユーザー名、メモ)...",
+            "filterTitle": "リードフィルター",
+            "resetBtnText": "フィルターリセット",
+            "platformLabel": "プラットフォーム",
+            "platformAll": "すべてのプラットフォーム",
+            "platformWhatsApp": "WhatsApp",
+            "platformTelegram": "Telegram",
+            "platformFacebook": "Facebook",
+            "platformInstagram": "Instagram",
+            "platformWebsite": "ウェブサイト",
+            "platformDirect": "ダイレクト",
+            "platformReferral": "紹介",
+            "qualificationLabel": "リード資格",
+            "qualificationAll": "すべて",
+            "qualificationHot": "Hot",
+            "qualificationWarm": "Warm",
+            "qualificationCold": "Cold",
+            "qualificationQualified": "Qualified",
+            "qualificationNotQualified": "Not Qualified",
+            "leadsFollowLabel": "リード / フォロー",
+            "leadsFollowAll": "すべて",
+            "leadsFollowLeads": "リード",
+            "leadsFollowFollow": "フォロー",
+            "cssLabel": "CSS名",
+            "cssAll": "すべてのCSS",
+            "cssDanel": "DANEL",
+            "cssAdrian": "ADRIAN",
+            "cssAndri": "ANDRI",
+            "cssBaihaqi": "BAIHAQI",
+            "cssDicky": "DICKY",
+            "dateLabel": "登録日",
+            "sectionTitle": "プロモーションリードデータ",
+            "exportBtnText": "Excel出力",
+            "refreshBtnText": "更新",
+            "addLeadBtnText": "リード追加",
+            "thTanggalMasuk": "登録日",
+            "thPlatform": "プラットフォーム",
+            "thContactUsername": "連絡先ユーザー名",
+            "thScreenshotChat": "スクリーンショット",
+            "thNamaCSS": "CSS名",
+            "thLeadQualification": "リード資格",
+            "thLeadsFollow": "リード / フォロー",
+            "thStatus": "ステータス",
+            "thReason": "理由",
+            "thRequestLeads": "リード要望",
+            "thFollowUp1": "フォローアップ 1",
+            "thFollowUp2": "フォローアップ 2",
+            "thFollowUp3": "フォローアップ 3",
+            "thFollowUp4": "フォローアップ 4",
+            "thFollowUp5": "フォローアップ 5",
+            "thAksi": "アクション",
+            "noLeadsTitle": "リードデータがありません",
+            "noLeadsMessage": "プロモーションリードデータはありません。",
+            "addFirstLeadText": "最初のリードを追加",
+            "modalAddTitle": "新規リード追加",
+            "modalEditTitle": "リード編集",
+            "labelTanggalMasuk": "登録日 *",
+            "labelPlatform": "プラットフォーム *",
+            "labelContactUsername": "連絡先ユーザー名 *",
+            "labelScreenshotChat": "スクリーンショット (URL)",
+            "labelNamaCSS": "CSS名 *",
+            "labelLeadQualification": "リード資格",
+            "labelLeadsFollow": "リード / フォロー",
+            "labelLeadStatus": "ステータス *",
+            "labelReason": "理由",
+            "labelRequestLeads": "リード要望",
+            "labelFollowUp1": "フォローアップ 1",
+            "labelFollowUp2": "フォローアップ 2",
+            "labelFollowUp3": "フォローアップ 3",
+            "labelFollowUp4": "フォローアップ 4",
+            "labelFollowUp5": "フォローアップ 5",
+            "selectPlatformPlaceholder": "プラットフォームを選択",
+            "selectCssPlaceholder": "CSSを選択",
+            "selectQualificationPlaceholder": "資格を選択",
+            "selectLeadsFollowPlaceholder": "ステータスを選択",
+            "selectStatusPlaceholder": "ステータスを選択",
+            "selectWhatsApp": "WhatsApp",
+            "selectTelegram": "Telegram",
+            "selectFacebook": "Facebook",
+            "selectInstagram": "Instagram",
+            "selectWebsite": "ウェブサイト",
+            "selectDirect": "ダイレクト",
+            "selectReferral": "紹介",
+            "selectOther": "その他",
+            "selectDanel": "DANEL",
+            "selectAdrian": "ADRIAN",
+            "selectAndri": "ANDRI",
+            "selectBaihaqi": "BAIHAQI",
+            "selectDicky": "DICKY",
+            "selectHot": "Hot",
+            "selectWarm": "Warm",
+            "selectCold": "Cold",
+            "selectQualified": "Qualified",
+            "selectNotQualified": "Not Qualified",
+            "selectLeads": "リード",
+            "selectFollow": "フォロー",
+            "selectProgres": "進行中",
+            "selectClosing": "成約",
+            "cancelBtnText": "キャンセル",
+            "saveBtnText": "保存",
+            "testBtnText": "テスト",
+            "closeBtnText": "閉じる",
+            "imageModalTitle": "チャットスクリーンショット",
+            "deleteModalTitle": "削除確認",
+            "deleteConfirmMessage": "このデータを削除してもよろしいですか？",
+            "cancelDeleteBtnText": "キャンセル",
+            "confirmDeleteBtnText": "削除",
+            "dataLoaded": "リードデータを読み込みました",
+            "dataError": "リードデータの読み込みに失敗しました",
+            "leadAdded": "リードを追加しました！",
+            "leadUpdated": "リードを更新しました！",
+            "leadDeleted": "リードを削除しました！",
+            "saveError": "リードの保存に失敗しました",
+            "deleteError": "リードの削除に失敗しました",
+            "exportSuccess": "データをエクスポートしました！",
+            "refreshSuccess": "リードデータを更新しました！",
+            "fillRequiredFields": "必須項目をすべて入力してください！",
+            "leadNotFound": "リードが見つかりません！",
+            "noDataFilter": "フィルター条件に一致するデータがありません",
+            "changeFilterCriteria": "フィルター条件を変更してみてください。",
+            "viewImage": "表示",
+            "edit": "編集",
+            "delete": "削除"
+        },
+        zh: {
+            "pageTitle": "促销线索管理",
+            "userRole": "客户服务支持",
+            "searchPlaceholder": "搜索线索 (姓名、用户名、备注)...",
+            "filterTitle": "线索筛选",
+            "resetBtnText": "重置筛选",
+            "platformLabel": "平台",
+            "platformAll": "所有平台",
+            "platformWhatsApp": "WhatsApp",
+            "platformTelegram": "Telegram",
+            "platformFacebook": "Facebook",
+            "platformInstagram": "Instagram",
+            "platformWebsite": "网站",
+            "platformDirect": "直接",
+            "platformReferral": "推荐",
+            "qualificationLabel": "线索资格",
+            "qualificationAll": "全部",
+            "qualificationHot": "Hot",
+            "qualificationWarm": "Warm",
+            "qualificationCold": "Cold",
+            "qualificationQualified": "Qualified",
+            "qualificationNotQualified": "Not Qualified",
+            "leadsFollowLabel": "线索 / 跟进",
+            "leadsFollowAll": "全部",
+            "leadsFollowLeads": "线索",
+            "leadsFollowFollow": "跟进",
+            "cssLabel": "CSS名称",
+            "cssAll": "所有CSS",
+            "cssDanel": "DANEL",
+            "cssAdrian": "ADRIAN",
+            "cssAndri": "ANDRI",
+            "cssBaihaqi": "BAIHAQI",
+            "cssDicky": "DICKY",
+            "dateLabel": "录入日期",
+            "sectionTitle": "促销线索数据",
+            "exportBtnText": "导出Excel",
+            "refreshBtnText": "刷新",
+            "addLeadBtnText": "添加线索",
+            "thTanggalMasuk": "录入日期",
+            "thPlatform": "平台",
+            "thContactUsername": "联系人用户名",
+            "thScreenshotChat": "聊天截图",
+            "thNamaCSS": "CSS名称",
+            "thLeadQualification": "线索资格",
+            "thLeadsFollow": "线索 / 跟进",
+            "thStatus": "状态",
+            "thReason": "原因",
+            "thRequestLeads": "线索需求",
+            "thFollowUp1": "跟进 1",
+            "thFollowUp2": "跟进 2",
+            "thFollowUp3": "跟进 3",
+            "thFollowUp4": "跟进 4",
+            "thFollowUp5": "跟进 5",
+            "thAksi": "操作",
+            "noLeadsTitle": "暂无线索数据",
+            "noLeadsMessage": "暂无促销线索数据。",
+            "addFirstLeadText": "添加第一条线索",
+            "modalAddTitle": "添加新线索",
+            "modalEditTitle": "编辑线索",
+            "labelTanggalMasuk": "录入日期 *",
+            "labelPlatform": "平台 *",
+            "labelContactUsername": "联系人用户名 *",
+            "labelScreenshotChat": "聊天截图 (URL)",
+            "labelNamaCSS": "CSS名称 *",
+            "labelLeadQualification": "线索资格",
+            "labelLeadsFollow": "线索 / 跟进",
+            "labelLeadStatus": "状态 *",
+            "labelReason": "原因",
+            "labelRequestLeads": "线索需求",
+            "labelFollowUp1": "跟进 1",
+            "labelFollowUp2": "跟进 2",
+            "labelFollowUp3": "跟进 3",
+            "labelFollowUp4": "跟进 4",
+            "labelFollowUp5": "跟进 5",
+            "selectPlatformPlaceholder": "选择平台",
+            "selectCssPlaceholder": "选择CSS",
+            "selectQualificationPlaceholder": "选择资格",
+            "selectLeadsFollowPlaceholder": "选择状态",
+            "selectStatusPlaceholder": "选择状态",
+            "selectWhatsApp": "WhatsApp",
+            "selectTelegram": "Telegram",
+            "selectFacebook": "Facebook",
+            "selectInstagram": "Instagram",
+            "selectWebsite": "网站",
+            "selectDirect": "直接",
+            "selectReferral": "推荐",
+            "selectOther": "其他",
+            "selectDanel": "DANEL",
+            "selectAdrian": "ADRIAN",
+            "selectAndri": "ANDRI",
+            "selectBaihaqi": "BAIHAQI",
+            "selectDicky": "DICKY",
+            "selectHot": "Hot",
+            "selectWarm": "Warm",
+            "selectCold": "Cold",
+            "selectQualified": "Qualified",
+            "selectNotQualified": "Not Qualified",
+            "selectLeads": "线索",
+            "selectFollow": "跟进",
+            "selectProgres": "进行中",
+            "selectClosing": "成交",
+            "cancelBtnText": "取消",
+            "saveBtnText": "保存",
+            "testBtnText": "测试",
+            "closeBtnText": "关闭",
+            "imageModalTitle": "聊天截图",
+            "deleteModalTitle": "确认删除",
+            "deleteConfirmMessage": "您确定要删除此数据吗？",
+            "cancelDeleteBtnText": "取消",
+            "confirmDeleteBtnText": "删除",
+            "dataLoaded": "线索数据加载成功",
+            "dataError": "线索数据加载失败",
+            "leadAdded": "线索添加成功！",
+            "leadUpdated": "线索更新成功！",
+            "leadDeleted": "线索删除成功！",
+            "saveError": "保存线索失败",
+            "deleteError": "删除线索失败",
+            "exportSuccess": "数据导出成功！",
+            "refreshSuccess": "线索数据已更新！",
+            "fillRequiredFields": "请填写所有必填字段！",
+            "leadNotFound": "未找到线索！",
+            "noDataFilter": "没有符合筛选条件的数据",
+            "changeFilterCriteria": "请尝试更改筛选条件。",
+            "viewImage": "查看",
+            "edit": "编辑",
+            "delete": "删除"
+        }
+    };
+
+    // ========== TRANSLATION FUNCTIONS ==========
+    let currentLanguage = 'id';
+
+    function applyPromosiLeadsTranslations(language) {
+        const lang = promosiLeadsTranslations[language] || promosiLeadsTranslations['id'];
+        currentLanguage = language;
+        
+        if (!lang) return;
+        
+        console.log("Applying promosi leads translations for:", language);
+        
+        // Update page title
+        document.title = lang.pageTitle + " - Dashboard CSS";
+        
+        // Header elements
+        const pageTitleSpan = document.getElementById('pageTitle');
+        if (pageTitleSpan) pageTitleSpan.textContent = lang.pageTitle;
+        
+        const userRoleSpan = document.getElementById('userRole');
+        if (userRoleSpan) userRoleSpan.textContent = lang.userRole;
+        
+        // Search placeholder
+        const searchInput = document.getElementById('leadsSearch');
+        if (searchInput) searchInput.placeholder = lang.searchPlaceholder;
+        
+        // Filter panel
+        const filterTitle = document.getElementById('filterTitle');
+        if (filterTitle) filterTitle.textContent = lang.filterTitle;
+        
+        const resetBtnText = document.getElementById('resetBtnText');
+        if (resetBtnText) resetBtnText.textContent = lang.resetBtnText;
+        
+        const platformLabel = document.getElementById('platformLabel');
+        if (platformLabel) platformLabel.textContent = lang.platformLabel;
+        
+        const qualificationLabel = document.getElementById('qualificationLabel');
+        if (qualificationLabel) qualificationLabel.textContent = lang.qualificationLabel;
+        
+        const leadsFollowLabel = document.getElementById('leadsFollowLabel');
+        if (leadsFollowLabel) leadsFollowLabel.textContent = lang.leadsFollowLabel;
+        
+        const cssLabel = document.getElementById('cssLabel');
+        if (cssLabel) cssLabel.textContent = lang.cssLabel;
+        
+        const dateLabel = document.getElementById('dateLabel');
+        if (dateLabel) dateLabel.textContent = lang.dateLabel;
+        
+        // Filter options
+        const filterElements = {
+            'platformAll': lang.platformAll,
+            'platformWhatsApp': lang.platformWhatsApp,
+            'platformTelegram': lang.platformTelegram,
+            'platformFacebook': lang.platformFacebook,
+            'platformInstagram': lang.platformInstagram,
+            'platformWebsite': lang.platformWebsite,
+            'platformDirect': lang.platformDirect,
+            'platformReferral': lang.platformReferral,
+            'qualificationAll': lang.qualificationAll,
+            'qualificationHot': lang.qualificationHot,
+            'qualificationWarm': lang.qualificationWarm,
+            'qualificationCold': lang.qualificationCold,
+            'qualificationQualified': lang.qualificationQualified,
+            'qualificationNotQualified': lang.qualificationNotQualified,
+            'leadsFollowAll': lang.leadsFollowAll,
+            'leadsFollowLeads': lang.leadsFollowLeads,
+            'leadsFollowFollow': lang.leadsFollowFollow,
+            'cssAll': lang.cssAll,
+            'cssDanel': lang.cssDanel,
+            'cssAdrian': lang.cssAdrian,
+            'cssAndri': lang.cssAndri,
+            'cssBaihaqi': lang.cssBaihaqi,
+            'cssDicky': lang.cssDicky
+        };
+        
+        Object.keys(filterElements).forEach(id => {
+            const element = document.getElementById(id);
+            if (element) element.textContent = filterElements[id];
+        });
+        
+        // Section header
+        const sectionTitle = document.getElementById('sectionTitle');
+        if (sectionTitle) sectionTitle.textContent = lang.sectionTitle;
+        
+        const exportBtnText = document.getElementById('exportBtnText');
+        if (exportBtnText) exportBtnText.textContent = lang.exportBtnText;
+        
+        const refreshBtnText = document.getElementById('refreshBtnText');
+        if (refreshBtnText) refreshBtnText.textContent = lang.refreshBtnText;
+        
+        const addLeadBtnText = document.getElementById('addLeadBtnText');
+        if (addLeadBtnText) addLeadBtnText.textContent = lang.addLeadBtnText;
+        
+        const addFirstLeadText = document.getElementById('addFirstLeadText');
+        if (addFirstLeadText) addFirstLeadText.textContent = lang.addFirstLeadText;
+        
+        // Table headers
+        const tableHeaders = {
+            'thTanggalMasuk': lang.thTanggalMasuk,
+            'thPlatform': lang.thPlatform,
+            'thContactUsername': lang.thContactUsername,
+            'thScreenshotChat': lang.thScreenshotChat,
+            'thNamaCSS': lang.thNamaCSS,
+            'thLeadQualification': lang.thLeadQualification,
+            'thLeadsFollow': lang.thLeadsFollow,
+            'thStatus': lang.thStatus,
+            'thReason': lang.thReason,
+            'thRequestLeads': lang.thRequestLeads,
+            'thFollowUp1': lang.thFollowUp1,
+            'thFollowUp2': lang.thFollowUp2,
+            'thFollowUp3': lang.thFollowUp3,
+            'thFollowUp4': lang.thFollowUp4,
+            'thFollowUp5': lang.thFollowUp5,
+            'thAksi': lang.thAksi
+        };
+        
+        Object.keys(tableHeaders).forEach(id => {
+            const element = document.getElementById(id);
+            if (element) element.textContent = tableHeaders[id];
+        });
+        
+        // Empty state
+        const noLeadsTitle = document.getElementById('noLeadsTitle');
+        if (noLeadsTitle) noLeadsTitle.textContent = lang.noLeadsTitle;
+        
+        const noLeadsMessage = document.getElementById('noLeadsMessage');
+        if (noLeadsMessage) noLeadsMessage.textContent = lang.noLeadsMessage;
+        
+        // Modal form labels
+        const formLabels = {
+            'labelTanggalMasuk': lang.labelTanggalMasuk,
+            'labelPlatform': lang.labelPlatform,
+            'labelContactUsername': lang.labelContactUsername,
+            'labelScreenshotChat': lang.labelScreenshotChat,
+            'labelNamaCSS': lang.labelNamaCSS,
+            'labelLeadQualification': lang.labelLeadQualification,
+            'labelLeadsFollow': lang.labelLeadsFollow,
+            'labelLeadStatus': lang.labelLeadStatus,
+            'labelReason': lang.labelReason,
+            'labelRequestLeads': lang.labelRequestLeads,
+            'labelFollowUp1': lang.labelFollowUp1,
+            'labelFollowUp2': lang.labelFollowUp2,
+            'labelFollowUp3': lang.labelFollowUp3,
+            'labelFollowUp4': lang.labelFollowUp4,
+            'labelFollowUp5': lang.labelFollowUp5
+        };
+        
+        Object.keys(formLabels).forEach(id => {
+            const element = document.getElementById(id);
+            if (element) element.textContent = formLabels[id];
+        });
+        
+        // Form placeholders and options
+        const selectElements = {
+            'selectPlatformPlaceholder': lang.selectPlatformPlaceholder,
+            'selectCssPlaceholder': lang.selectCssPlaceholder,
+            'selectQualificationPlaceholder': lang.selectQualificationPlaceholder,
+            'selectLeadsFollowPlaceholder': lang.selectLeadsFollowPlaceholder,
+            'selectStatusPlaceholder': lang.selectStatusPlaceholder,
+            'selectWhatsApp': lang.selectWhatsApp,
+            'selectTelegram': lang.selectTelegram,
+            'selectFacebook': lang.selectFacebook,
+            'selectInstagram': lang.selectInstagram,
+            'selectWebsite': lang.selectWebsite,
+            'selectDirect': lang.selectDirect,
+            'selectReferral': lang.selectReferral,
+            'selectOther': lang.selectOther,
+            'selectDanel': lang.selectDanel,
+            'selectAdrian': lang.selectAdrian,
+            'selectAndri': lang.selectAndri,
+            'selectBaihaqi': lang.selectBaihaqi,
+            'selectDicky': lang.selectDicky,
+            'selectHot': lang.selectHot,
+            'selectWarm': lang.selectWarm,
+            'selectCold': lang.selectCold,
+            'selectQualified': lang.selectQualified,
+            'selectNotQualified': lang.selectNotQualified,
+            'selectLeads': lang.selectLeads,
+            'selectFollow': lang.selectFollow,
+            'selectProgres': lang.selectProgres,
+            'selectClosing': lang.selectClosing
+        };
+        
+        Object.keys(selectElements).forEach(id => {
+            const element = document.getElementById(id);
+            if (element) element.textContent = selectElements[id];
+        });
+        
+        // Placeholder attributes
+        const contactUsernameInput = document.getElementById('contactUsername');
+        if (contactUsernameInput) contactUsernameInput.placeholder = "@username atau nomor";
+        
+        const reasonTextarea = document.getElementById('reason');
+        if (reasonTextarea) reasonTextarea.placeholder = lang.labelReason === "Reason" ? "Alasan kualifikasi..." : "Qualification reason...";
+        
+        const requestLeadsTextarea = document.getElementById('requestLeads');
+        if (requestLeadsTextarea) requestLeadsTextarea.placeholder = lang.labelRequestLeads === "Request Leads" ? "Jenis request..." : "Request type...";
+        
+        // Modal buttons
+        const cancelBtnText = document.getElementById('cancelBtnText');
+        if (cancelBtnText) cancelBtnText.textContent = lang.cancelBtnText;
+        
+        const saveBtnText = document.getElementById('saveBtnText');
+        if (saveBtnText) saveBtnText.textContent = lang.saveBtnText;
+        
+        const testBtnText = document.getElementById('testBtnText');
+        if (testBtnText) testBtnText.textContent = lang.testBtnText;
+        
+        const closeBtnText = document.getElementById('closeBtnText');
+        if (closeBtnText) closeBtnText.textContent = lang.closeBtnText;
+        
+        // Image modal
+        const imageModalTitle = document.getElementById('imageModalTitle');
+        if (imageModalTitle) imageModalTitle.textContent = lang.imageModalTitle;
+        
+        // Delete modal
+        const deleteModalTitle = document.getElementById('deleteModalTitle');
+        if (deleteModalTitle) deleteModalTitle.textContent = lang.deleteModalTitle;
+        
+        const deleteConfirmMessage = document.getElementById('deleteConfirmMessage');
+        if (deleteConfirmMessage) deleteConfirmMessage.textContent = lang.deleteConfirmMessage;
+        
+        const cancelDeleteBtnText = document.getElementById('cancelDeleteBtnText');
+        if (cancelDeleteBtnText) cancelDeleteBtnText.textContent = lang.cancelDeleteBtnText;
+        
+        const confirmDeleteBtnText = document.getElementById('confirmDeleteBtnText');
+        if (confirmDeleteBtnText) confirmDeleteBtnText.textContent = lang.confirmDeleteBtnText;
+        
+        // Store toast messages for later use
+        window.toastMessages = {
+            dataLoaded: lang.dataLoaded,
+            dataError: lang.dataError,
+            leadAdded: lang.leadAdded,
+            leadUpdated: lang.leadUpdated,
+            leadDeleted: lang.leadDeleted,
+            saveError: lang.saveError,
+            deleteError: lang.deleteError,
+            exportSuccess: lang.exportSuccess,
+            refreshSuccess: lang.refreshSuccess,
+            fillRequiredFields: lang.fillRequiredFields,
+            leadNotFound: lang.leadNotFound
+        };
+        
+        // Update modal title when needed (handled in open functions)
+        window.modalTitles = {
+            add: lang.modalAddTitle,
+            edit: lang.modalEditTitle
+        };
+        
+        // Store other translations
+        window.statusTranslations = {
+            viewImage: lang.viewImage,
+            edit: lang.edit,
+            delete: lang.delete
+        };
+    }
+    
+    function updateToastMessages(language) {
+        const lang = promosiLeadsTranslations[language] || promosiLeadsTranslations['id'];
+        window.toastMessages = {
+            dataLoaded: lang.dataLoaded,
+            dataError: lang.dataError,
+            leadAdded: lang.leadAdded,
+            leadUpdated: lang.leadUpdated,
+            leadDeleted: lang.leadDeleted,
+            saveError: lang.saveError,
+            deleteError: lang.deleteError,
+            exportSuccess: lang.exportSuccess,
+            refreshSuccess: lang.refreshSuccess,
+            fillRequiredFields: lang.fillRequiredFields,
+            leadNotFound: lang.leadNotFound
+        };
+    }
+    
+    function showToast(message, type = 'success', duration = 3000) {
+        const existingToast = document.querySelector('.toast-notification');
+        if (existingToast) existingToast.remove();
+        
+        const toast = document.createElement('div');
+        toast.className = `toast-notification ${type}`;
+        toast.innerHTML = `
+            <div class="toast-content">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add('hide');
+            setTimeout(() => toast.remove(), 400);
+        }, duration);
+    }
+    
+    function initializePromosiLeadsLanguage() {
+        const savedLanguage = localStorage.getItem('language') || 'id';
+        console.log("Initializing promosi leads with language:", savedLanguage);
+        
+        applyPromosiLeadsTranslations(savedLanguage);
+        updateToastMessages(savedLanguage);
+        
+        window.addEventListener('languageChanged', function(event) {
+            console.log("Language changed in promosi leads to:", event.detail.language);
+            applyPromosiLeadsTranslations(event.detail.language);
+            updateToastMessages(event.detail.language);
+            // Refresh table to update status badges text
+            if (typeof renderLeadsTable === 'function') {
+                renderLeadsTable();
+            }
+        });
+    }
+    
     // ========== FIREBASE INITIALIZATION ==========
     const firebaseConfig = {
         apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
@@ -1106,7 +1965,11 @@
             const userDoc = await db.collection('users').doc(uid).get();
             if (userDoc.exists) {
                 const userData = userDoc.data();
-                document.getElementById('userRole').textContent = userData.role || 'User';
+                const userRoleElement = document.getElementById('userRole');
+                if (userRoleElement) {
+                    const lang = promosiLeadsTranslations[currentLanguage] || promosiLeadsTranslations['id'];
+                    userRoleElement.textContent = userData.role === 'super_admin' ? (lang.superAdmin || 'Super Admin') : (lang.userRole || 'Customer Service Support');
+                }
             }
         } catch (error) {
             console.error("Error checking user role:", error);
@@ -1128,9 +1991,17 @@
             
             renderLeadsTable();
             
+            if (window.toastMessages && window.toastMessages.dataLoaded) {
+                showToast(window.toastMessages.dataLoaded, 'success');
+            }
+            
         } catch (error) {
             console.error("Error loading leads:", error);
-            showToast('Gagal memuat data leads', 'error');
+            if (window.toastMessages && window.toastMessages.dataError) {
+                showToast(window.toastMessages.dataError, 'error');
+            } else {
+                showToast('Gagal memuat data leads', 'error');
+            }
         }
     }
 
@@ -1148,13 +2019,15 @@
         if (noLeads) noLeads.style.display = 'none';
         if (tableBody) tableBody.innerHTML = '';
         
+        const lang = promosiLeadsTranslations[currentLanguage] || promosiLeadsTranslations['id'];
+        
         leadsData.forEach(lead => {
             const row = document.createElement('tr');
             
             // Format tanggal
             const tanggalMasuk = lead.tanggalMasuk ? 
                 (lead.tanggalMasuk.includes('-') ? 
-                    new Date(lead.tanggalMasuk).toLocaleDateString('id-ID') : 
+                    new Date(lead.tanggalMasuk).toLocaleDateString(currentLanguage === 'en' ? 'en-US' : 'id-ID') : 
                     lead.tanggalMasuk) : '-';
             
             // Status badge untuk qualification
@@ -1176,9 +2049,16 @@
             
             // Badge untuk Status (Progres/Closing)
             let statusClass = '';
-            let statusText = lead.leadStatus || 'Progres';
+            let statusText = lead.leadStatus || (lang.selectProgres || 'Progres');
             if (lead.leadStatus === 'Closing') statusClass = 'status-converted';
             else statusClass = 'status-new';
+            
+            // Translate status text if needed
+            if (lead.leadStatus === 'Progres' && currentLanguage !== 'id') {
+                statusText = lang.selectProgres || 'Progres';
+            } else if (lead.leadStatus === 'Closing' && currentLanguage !== 'id') {
+                statusText = lang.selectClosing || 'Closing';
+            }
             
             row.innerHTML = `
                 <td>${tanggalMasuk}</td>
@@ -1187,10 +2067,10 @@
                 <td>
                     ${lead.screenshotUrl ? 
                         `<a href="#" class="screenshot-link" onclick="event.preventDefault(); openImageModal('${lead.screenshotUrl}');">
-                            <i class="fas fa-image"></i> Lihat
+                            <i class="fas fa-image"></i> ${lang.viewImage}
                         </a>` : 
                         '-'}
-                </td>
+                 </td>
                 <td>${lead.namaCSS || '-'}</td>
                 <td><span class="status-badge ${qualificationClass}">${lead.leadQualification || '-'}</span></td>
                 <td><span class="status-badge ${leadsFollowClass}">${leadsFollowText}</span></td>
@@ -1205,13 +2085,13 @@
                 <td>
                     <div class="action-buttons">
                         <button class="btn btn-edit btn-sm edit-btn" data-id="${lead.id}">
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit"></i> ${lang.edit}
                         </button>
                         <button class="btn btn-danger btn-sm delete-btn" data-id="${lead.id}">
-                            <i class="fas fa-trash"></i>
+                            <i class="fas fa-trash"></i> ${lang.delete}
                         </button>
                     </div>
-                </td>
+                 </td>
             `;
             
             tableBody.appendChild(row);
@@ -1251,7 +2131,8 @@
 
     // Fungsi untuk membuka modal tambah
     function openAddModal() {
-        document.getElementById('modalTitle').innerHTML = '<i class="fas fa-plus"></i> Tambah Lead Baru';
+        const lang = promosiLeadsTranslations[currentLanguage] || promosiLeadsTranslations['id'];
+        document.getElementById('modalTitle').innerHTML = `<i class="fas fa-plus"></i> ${lang.modalAddTitle}`;
         document.getElementById('leadForm').reset();
         document.getElementById('leadId').value = '';
         document.getElementById('screenshotPreview').classList.remove('show');
@@ -1273,13 +2154,18 @@
             const doc = await db.collection('promosiLeads').doc(leadId).get();
             
             if (!doc.exists) {
-                showToast('Lead tidak ditemukan!', 'error');
+                if (window.toastMessages && window.toastMessages.leadNotFound) {
+                    showToast(window.toastMessages.leadNotFound, 'error');
+                } else {
+                    showToast('Lead tidak ditemukan!', 'error');
+                }
                 return;
             }
             
             const lead = doc.data();
+            const lang = promosiLeadsTranslations[currentLanguage] || promosiLeadsTranslations['id'];
             
-            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Lead';
+            document.getElementById('modalTitle').innerHTML = `<i class="fas fa-edit"></i> ${lang.modalEditTitle}`;
             document.getElementById('leadId').value = leadId;
             
             // Isi form dengan data
@@ -1313,7 +2199,11 @@
             
         } catch (error) {
             console.error("Error opening edit modal:", error);
-            showToast('Gagal memuat data lead', 'error');
+            if (window.toastMessages && window.toastMessages.dataError) {
+                showToast(window.toastMessages.dataError, 'error');
+            } else {
+                showToast('Gagal memuat data lead', 'error');
+            }
         }
     }
 
@@ -1327,7 +2217,11 @@
         const leadStatus = document.getElementById('leadStatus').value;
         
         if (!tanggalMasuk || !platform || !contactUsername || !namaCSS || !leadStatus) {
-            showToast('Harap isi semua field yang wajib!', 'error');
+            if (window.toastMessages && window.toastMessages.fillRequiredFields) {
+                showToast(window.toastMessages.fillRequiredFields, 'error');
+            } else {
+                showToast('Harap isi semua field yang wajib!', 'error');
+            }
             return;
         }
         
@@ -1357,12 +2251,20 @@
             if (leadId) {
                 // Update existing lead
                 await db.collection('promosiLeads').doc(leadId).update(leadData);
-                showToast('Lead berhasil diperbarui!', 'success');
+                if (window.toastMessages && window.toastMessages.leadUpdated) {
+                    showToast(window.toastMessages.leadUpdated, 'success');
+                } else {
+                    showToast('Lead berhasil diperbarui!', 'success');
+                }
             } else {
                 // Add new lead
                 leadData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
                 await db.collection('promosiLeads').add(leadData);
-                showToast('Lead berhasil ditambahkan!', 'success');
+                if (window.toastMessages && window.toastMessages.leadAdded) {
+                    showToast(window.toastMessages.leadAdded, 'success');
+                } else {
+                    showToast('Lead berhasil ditambahkan!', 'success');
+                }
             }
             
             // Tutup modal dan reset form
@@ -1376,7 +2278,11 @@
             
         } catch (error) {
             console.error("Error saving lead:", error);
-            showToast('Gagal menyimpan lead', 'error');
+            if (window.toastMessages && window.toastMessages.saveError) {
+                showToast(window.toastMessages.saveError, 'error');
+            } else {
+                showToast('Gagal menyimpan lead', 'error');
+            }
         }
     }
 
@@ -1387,7 +2293,11 @@
         try {
             await db.collection('promosiLeads').doc(currentLeadId).delete();
             
-            showToast('Lead berhasil dihapus!', 'success');
+            if (window.toastMessages && window.toastMessages.leadDeleted) {
+                showToast(window.toastMessages.leadDeleted, 'success');
+            } else {
+                showToast('Lead berhasil dihapus!', 'success');
+            }
             
             document.getElementById('deleteModal').classList.remove('active');
             document.body.style.overflow = '';
@@ -1396,7 +2306,11 @@
             
         } catch (error) {
             console.error("Error deleting lead:", error);
-            showToast('Gagal menghapus lead', 'error');
+            if (window.toastMessages && window.toastMessages.deleteError) {
+                showToast(window.toastMessages.deleteError, 'error');
+            } else {
+                showToast('Gagal menghapus lead', 'error');
+            }
         }
     }
 
@@ -1450,12 +2364,16 @@
         const tableBody = document.getElementById('leadsTableBody');
         const noLeads = document.getElementById('noLeads');
         
+        const lang = promosiLeadsTranslations[currentLanguage] || promosiLeadsTranslations['id'];
+        
         if (filteredLeads.length === 0) {
             if (tableBody) tableBody.innerHTML = '';
             if (noLeads) {
                 noLeads.style.display = 'block';
-                noLeads.querySelector('h3').textContent = 'Tidak Ada Data Sesuai Filter';
-                noLeads.querySelector('p').textContent = 'Coba ubah kriteria filter Anda.';
+                const noLeadsTitle = noLeads.querySelector('h3');
+                const noLeadsMessage = noLeads.querySelector('p');
+                if (noLeadsTitle) noLeadsTitle.textContent = lang.noDataFilter;
+                if (noLeadsMessage) noLeadsMessage.textContent = lang.changeFilterCriteria;
             }
             return;
         }
@@ -1469,7 +2387,7 @@
             // Format tanggal
             const tanggalMasuk = lead.tanggalMasuk ? 
                 (lead.tanggalMasuk.includes('-') ? 
-                    new Date(lead.tanggalMasuk).toLocaleDateString('id-ID') : 
+                    new Date(lead.tanggalMasuk).toLocaleDateString(currentLanguage === 'en' ? 'en-US' : 'id-ID') : 
                     lead.tanggalMasuk) : '-';
             
             // Status badge untuk qualification
@@ -1491,9 +2409,16 @@
             
             // Badge untuk Status (Progres/Closing)
             let statusClass = '';
-            let statusText = lead.leadStatus || 'Progres';
+            let statusText = lead.leadStatus || (lang.selectProgres || 'Progres');
             if (lead.leadStatus === 'Closing') statusClass = 'status-converted';
             else statusClass = 'status-new';
+            
+            // Translate status text if needed
+            if (lead.leadStatus === 'Progres' && currentLanguage !== 'id') {
+                statusText = lang.selectProgres || 'Progres';
+            } else if (lead.leadStatus === 'Closing' && currentLanguage !== 'id') {
+                statusText = lang.selectClosing || 'Closing';
+            }
             
             row.innerHTML = `
                 <td>${tanggalMasuk}</td>
@@ -1502,10 +2427,10 @@
                 <td>
                     ${lead.screenshotUrl ? 
                         `<a href="#" class="screenshot-link" onclick="event.preventDefault(); openImageModal('${lead.screenshotUrl}');">
-                            <i class="fas fa-image"></i> Lihat
+                            <i class="fas fa-image"></i> ${lang.viewImage}
                         </a>` : 
                         '-'}
-                </td>
+                 </td>
                 <td>${lead.namaCSS || '-'}</td>
                 <td><span class="status-badge ${qualificationClass}">${lead.leadQualification || '-'}</span></td>
                 <td><span class="status-badge ${leadsFollowClass}">${leadsFollowText}</span></td>
@@ -1520,13 +2445,13 @@
                 <td>
                     <div class="action-buttons">
                         <button class="btn btn-edit btn-sm edit-btn" data-id="${lead.id}">
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit"></i> ${lang.edit}
                         </button>
                         <button class="btn btn-danger btn-sm delete-btn" data-id="${lead.id}">
-                            <i class="fas fa-trash"></i>
+                            <i class="fas fa-trash"></i> ${lang.delete}
                         </button>
                     </div>
-                </td>
+                 </td>
             `;
             
             tableBody.appendChild(row);
@@ -1562,6 +2487,10 @@
         document.getElementById('dateFilter').value = '';
         
         renderLeadsTable();
+        
+        if (window.toastMessages && window.toastMessages.filtersReset) {
+            showToast(window.toastMessages.filtersReset, 'success');
+        }
     }
 
     // Fungsi untuk test URL screenshot
@@ -1577,11 +2506,13 @@
 
     // Fungsi untuk export ke Excel
     function exportToExcel() {
+        const lang = promosiLeadsTranslations[currentLanguage] || promosiLeadsTranslations['id'];
+        
         const headers = [
-            'Tanggal Masuk', 'Platform', 'Contact Username', 'Screenshot Chat',
-            'Nama CSS', 'Lead Qualification', 'Leads / Follow', 'Status',
-            'Reason', 'Request Leads', 'Follow Up 1', 'Follow Up 2',
-            'Follow Up 3', 'Follow Up 4', 'Follow Up 5'
+            lang.thTanggalMasuk, lang.thPlatform, lang.thContactUsername, lang.thScreenshotChat,
+            lang.thNamaCSS, lang.thLeadQualification, lang.thLeadsFollow, lang.thStatus,
+            lang.thReason, lang.thRequestLeads, lang.thFollowUp1, lang.thFollowUp2,
+            lang.thFollowUp3, lang.thFollowUp4, lang.thFollowUp5
         ];
         
         let csvContent = headers.join(',') + '\n';
@@ -1605,7 +2536,7 @@
                 (lead.followUp5 || '').replace(/,/g, ';').replace(/\n/g, ' ')
             ];
             
-            csvContent += row.join(',') + '\n';
+            csvContent += row.map(cell => `"${cell}"`).join(',') + '\n';
         });
         
         const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -1617,29 +2548,11 @@
         link.click();
         document.body.removeChild(link);
         
-        showToast('Data berhasil diexport!', 'success');
-    }
-
-    // Fungsi untuk menampilkan toast
-    function showToast(message, type = 'success', duration = 3000) {
-        const existingToast = document.querySelector('.toast-notification');
-        if (existingToast) existingToast.remove();
-        
-        const toast = document.createElement('div');
-        toast.className = `toast-notification ${type}`;
-        toast.innerHTML = `
-            <div class="toast-content">
-                <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
-                <span>${message}</span>
-            </div>
-        `;
-
-        document.body.appendChild(toast);
-
-        setTimeout(() => {
-            toast.classList.add('hide');
-            setTimeout(() => toast.remove(), 400);
-        }, duration);
+        if (window.toastMessages && window.toastMessages.exportSuccess) {
+            showToast(window.toastMessages.exportSuccess, 'success');
+        } else {
+            showToast('Data berhasil diexport!', 'success');
+        }
     }
 
     // ========== EVENT LISTENERS ==========
@@ -1649,7 +2562,9 @@
         // Refresh button
         document.getElementById('refreshLeads')?.addEventListener('click', () => {
             loadLeadsData();
-            showToast('Data leads diperbarui!', 'success');
+            if (window.toastMessages && window.toastMessages.refreshSuccess) {
+                showToast(window.toastMessages.refreshSuccess, 'success');
+            }
         });
         
         // Export button
@@ -1726,16 +2641,29 @@
         document.querySelectorAll('.modal').forEach(modal => {
             modal.addEventListener('click', (e) => e.stopPropagation());
         });
+        
+        // Menu toggle for mobile
+        const menuToggle = document.querySelector('.menu-toggle');
+        const sidebarContainer = document.getElementById('sidebar-container');
+        if (menuToggle && sidebarContainer) {
+            menuToggle.addEventListener('click', function() {
+                const sidebar = sidebarContainer.querySelector('.sidebar');
+                if (sidebar) {
+                    sidebar.classList.toggle('active');
+                }
+            });
+        }
     }
 
     // ========== INISIALISASI ==========
     document.addEventListener('DOMContentLoaded', function() {
         console.log("DOM loaded, initializing...");
+        initializePromosiLeadsLanguage();
         checkAuthState();
     });
 
     // Expose function to global scope
     window.openImageModal = openImageModal;
-</script>
+    </script>
 </body>
 </html>

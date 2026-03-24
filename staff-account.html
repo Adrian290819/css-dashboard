@@ -908,20 +908,20 @@
         <div class="header fade-in">
             <h1>
                 <i class="fas fa-user-friends"></i>
-                Staff Account Management
+                <span id="page-title">Staff Account Management</span>
             </h1>
             
             <div class="header-actions">
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Cari staff..." id="searchStaff">
+                    <input type="text" id="searchStaff" placeholder="Cari staff...">
                 </div>
                 
-                <div class="user-profile">
-                    <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iMjAiIGZpbGw9IiM0MzYxRUUiLz4KPHN2ZyB4PSI4IiB5PSI4IiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDExQzE0LjIwOTEgMTEgMTYgOS4yMDkxIDE2IDdDMTYgNC43OTA4NiAxNC4yMDkxIDMgMTIgM0M5Ljc5MDg2IDMgOCA0Ljc5MDg2IDggN0M4IDkuMjA5MSA5Ljc5MDg2IDExIDEyIDExWiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTYgMTlDNiAxNi43OTA5IDcuNzkwODYgMTUgMTAgMTVIMTVDMTcuMjA5MSAxNSAxOSAxNi43OTA5IDE5IDE5VjIwQzE5IDIxLjEwNDYgMTguMTA0NiAyMiAxNyAyMkg4QzYuODk1NDMgMjIgNiAyMS4xMDQ2IDYgMjBWMTlaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4KPC9zdmc+'">
+<div class="user-profile">
+                    <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
                     <div class="user-info">
-                        <h4>Loading...</h4>
-                        <p>Loading...</p>
+                        <h4 id="userName">Loading...</h4>
+                        <p id="userRole">Staff Account</p>
                     </div>
                 </div>
             </div>
@@ -931,39 +931,39 @@
             <div class="section-header">
                 <h2 class="section-title">
                     <i class="fas fa-users"></i>
-                    Daftar Staff
+                    <span id="staff-list-title">Daftar Staff</span>
                 </h2>
                 
                 <div class="filter-controls">
                     <div class="filter-group">
-                        <label class="filter-label" for="filterRole">Role</label>
+                        <label class="filter-label" id="filter-role-label" for="filterRole">Role</label>
                         <select id="filterRole" class="filter-input">
-                            <option value="">Semua Role</option>
-                            <option value="super_admin">Super Admin</option>
-                            <option value="admin">Admin</option>
-                            <option value="staff">Staff</option>
-                            <option value="support">Support</option>
+                            <option value="" id="all-roles-option">Semua Role</option>
+                            <option value="super_admin" id="super-admin-option">Super Admin</option>
+                            <option value="admin" id="admin-option">Admin</option>
+                            <option value="staff" id="staff-option">Staff</option>
+                            <option value="support" id="support-option">Support</option>
                         </select>
                     </div>
                     
                     <div class="filter-group">
-                        <label class="filter-label" for="filterStatus">Status</label>
+                        <label class="filter-label" id="filter-status-label" for="filterStatus">Status</label>
                         <select id="filterStatus" class="filter-input">
-                            <option value="">Semua Status</option>
-                            <option value="active">Aktif</option>
-                            <option value="suspended">Suspended</option>
-                            <option value="pending">Pending</option>
+                            <option value="" id="all-status-option">Semua Status</option>
+                            <option value="active" id="active-status-option">Aktif</option>
+                            <option value="suspended" id="suspended-status-option">Suspended</option>
+                            <option value="pending" id="pending-status-option">Pending</option>
                         </select>
                     </div>
                     
                     <button class="btn btn-primary" id="addStaffBtn">
                         <i class="fas fa-plus"></i>
-                        Tambah Staff
+                        <span id="add-staff-btn-text">Tambah Staff</span>
                     </button>
                     
                     <button class="btn btn-warning" id="addSuperAdminBtn">
                         <i class="fas fa-crown"></i>
-                        Tambah Super Admin
+                        <span id="add-super-admin-btn-text">Tambah Super Admin</span>
                     </button>
                 </div>
             </div>
@@ -976,11 +976,11 @@
             <!-- Empty State -->
             <div class="empty-state" id="emptyState" style="display: none;">
                 <i class="fas fa-users"></i>
-                <h3>Tidak ada data staff</h3>
-                <p>Belum ada staff yang terdaftar atau data sesuai dengan filter yang dipilih.</p>
+                <h3 id="empty-state-title">Tidak ada data staff</h3>
+                <p id="empty-state-desc">Belum ada staff yang terdaftar atau data sesuai dengan filter yang dipilih.</p>
                 <button class="btn btn-primary" id="addFirstStaffBtn">
                     <i class="fas fa-plus"></i>
-                    Tambah Staff Pertama
+                    <span id="add-first-staff-text">Tambah Staff Pertama</span>
                 </button>
             </div>
         </div>
@@ -992,7 +992,7 @@
             <div class="modal-header">
                 <h3 class="modal-title" id="addModalTitle">
                     <i class="fas fa-user-plus"></i>
-                    Tambah Staff Baru
+                    <span id="add-modal-title-text">Tambah Staff Baru</span>
                 </h3>
                 <button class="modal-close" onclick="closeModal('addStaffModal')">
                     <i class="fas fa-times"></i>
@@ -1001,30 +1001,30 @@
             <form id="addStaffForm">
                 <input type="hidden" id="staffRoleType" value="staff">
                 <div class="form-group">
-                    <label class="form-label" for="staffName">Nama Lengkap</label>
+                    <label class="form-label" id="full-name-label" for="staffName">Nama Lengkap</label>
                     <input type="text" id="staffName" class="form-input" required placeholder="Masukkan nama lengkap">
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="staffEmail">Email</label>
+                    <label class="form-label" id="email-label" for="staffEmail">Email</label>
                     <input type="email" id="staffEmail" class="form-input" required placeholder="Masukkan email">
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="staffRole">Role</label>
+                    <label class="form-label" id="role-label" for="staffRole">Role</label>
                     <select id="staffRole" class="form-input" required>
-                        <option value="staff">Staff</option>
-                        <option value="admin">Admin</option>
-                        <option value="support">Support</option>
-                        <option value="super_admin">Super Admin</option>
+                        <option value="staff" id="staff-role-option">Staff</option>
+                        <option value="admin" id="admin-role-option">Admin</option>
+                        <option value="support" id="support-role-option">Support</option>
+                        <option value="super_admin" id="super-admin-role-option">Super Admin</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="staffPassword">Password</label>
+                    <label class="form-label" id="password-label" for="staffPassword">Password</label>
                     <input type="password" id="staffPassword" class="form-input" required minlength="6" placeholder="Minimal 6 karakter">
                 </div>
                 
                 <div class="modal-actions modal-actions-right">
-                    <button type="button" class="btn btn-outline" onclick="closeModal('addStaffModal')">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="button" class="btn btn-outline" id="cancel-btn" onclick="closeModal('addStaffModal')">Batal</button>
+                    <button type="submit" class="btn btn-primary" id="save-btn">Simpan</button>
                 </div>
             </form>
         </div>
@@ -1036,7 +1036,7 @@
             <div class="modal-header">
                 <h3 class="modal-title">
                     <i class="fas fa-key"></i>
-                    Reset Password
+                    <span id="reset-password-title">Reset Password</span>
                 </h3>
                 <button class="modal-close" onclick="closeModal('resetPasswordModal')">
                     <i class="fas fa-times"></i>
@@ -1045,17 +1045,17 @@
             <form id="resetPasswordForm">
                 <input type="hidden" id="resetStaffId">
                 <div class="form-group">
-                    <label class="form-label" for="newPassword">Password Baru</label>
+                    <label class="form-label" id="new-password-label" for="newPassword">Password Baru</label>
                     <input type="password" id="newPassword" class="form-input" required minlength="6" placeholder="Minimal 6 karakter">
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="confirmPassword">Konfirmasi Password</label>
+                    <label class="form-label" id="confirm-password-label" for="confirmPassword">Konfirmasi Password</label>
                     <input type="password" id="confirmPassword" class="form-input" required minlength="6" placeholder="Konfirmasi password">
                 </div>
                 
                 <div class="modal-actions modal-actions-right">
-                    <button type="button" class="btn btn-outline" onclick="closeModal('resetPasswordModal')">Batal</button>
-                    <button type="submit" class="btn btn-primary">Reset Password</button>
+                    <button type="button" class="btn btn-outline" id="reset-cancel-btn" onclick="closeModal('resetPasswordModal')">Batal</button>
+                    <button type="submit" class="btn btn-primary" id="reset-submit-btn">Reset Password</button>
                 </div>
             </form>
         </div>
@@ -1067,7 +1067,7 @@
             <div class="modal-header">
                 <h3 class="modal-title" id="suspendModalTitle">
                     <i class="fas fa-exclamation-triangle"></i>
-                    Konfirmasi Tindakan
+                    <span id="confirm-action-title">Konfirmasi Tindakan</span>
                 </h3>
                 <button class="modal-close" onclick="closeModal('suspendModal')">
                     <i class="fas fa-times"></i>
@@ -1080,7 +1080,7 @@
             </div>
             
             <div class="modal-actions modal-actions-center">
-                <button type="button" class="btn btn-outline" onclick="closeModal('suspendModal')">Batal</button>
+                <button type="button" class="btn btn-outline" id="confirm-cancel-btn" onclick="closeModal('suspendModal')">Batal</button>
                 <button type="button" class="btn btn-danger" id="confirmSuspendBtn">Konfirmasi</button>
             </div>
         </div>
@@ -1092,7 +1092,7 @@
             <div class="modal-header">
                 <h3 class="modal-title">
                     <i class="fas fa-user-circle"></i>
-                    Detail Staff
+                    <span id="staff-detail-title">Detail Staff</span>
                 </h3>
                 <button class="modal-close" onclick="closeModal('staffDetailsModal')">
                     <i class="fas fa-times"></i>
@@ -1103,7 +1103,7 @@
             </div>
             
             <div class="modal-actions modal-actions-center">
-                <button type="button" class="btn btn-primary" onclick="closeModal('staffDetailsModal')">Tutup</button>
+                <button type="button" class="btn btn-primary" id="close-detail-btn" onclick="closeModal('staffDetailsModal')">Tutup</button>
             </div>
         </div>
     </div>
@@ -1114,7 +1114,7 @@
             <div class="modal-header">
                 <h3 class="modal-title">
                     <i class="fas fa-crown" style="color: #f59e0b;"></i>
-                    Verifikasi Super Admin
+                    <span id="verification-title">Verifikasi Super Admin</span>
                 </h3>
                 <button class="modal-close" onclick="closeModal('superAdminVerificationModal')">
                     <i class="fas fa-times"></i>
@@ -1122,17 +1122,17 @@
             </div>
             <form id="superAdminVerificationForm">
                 <div class="form-group">
-                    <p style="margin-bottom: 20px; color: var(--text-secondary);">
+                    <p id="verification-desc" style="margin-bottom: 20px; color: var(--text-secondary);">
                         Untuk menambahkan Super Admin, diperlukan verifikasi keamanan. 
                         Masukkan password Super Admin Anda untuk melanjutkan.
                     </p>
-                    <label class="form-label" for="superAdminPassword">Password Super Admin</label>
+                    <label class="form-label" id="super-admin-password-label" for="superAdminPassword">Password Super Admin</label>
                     <input type="password" id="superAdminPassword" class="form-input" required placeholder="Masukkan password Anda">
                 </div>
                 
                 <div class="modal-actions modal-actions-right">
-                    <button type="button" class="btn btn-outline" onclick="closeModal('superAdminVerificationModal')">Batal</button>
-                    <button type="submit" class="btn btn-warning">Verifikasi</button>
+                    <button type="button" class="btn btn-outline" id="verification-cancel-btn" onclick="closeModal('superAdminVerificationModal')">Batal</button>
+                    <button type="submit" class="btn btn-warning" id="verification-submit-btn">Verifikasi</button>
                 </div>
             </form>
         </div>
@@ -1144,7 +1144,7 @@
             <div class="modal-header">
                 <h3 class="modal-title">
                     <i class="fas fa-edit"></i>
-                    Edit Staff
+                    <span id="edit-staff-title">Edit Staff</span>
                 </h3>
                 <button class="modal-close" onclick="closeModal('editStaffModal')">
                     <i class="fas fa-times"></i>
@@ -1153,34 +1153,34 @@
             <form id="editStaffForm">
                 <input type="hidden" id="editStaffId">
                 <div class="form-group">
-                    <label class="form-label" for="editStaffName">Nama Lengkap</label>
+                    <label class="form-label" id="edit-full-name-label" for="editStaffName">Nama Lengkap</label>
                     <input type="text" id="editStaffName" class="form-input" required placeholder="Masukkan nama lengkap">
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="editStaffEmail">Email</label>
+                    <label class="form-label" id="edit-email-label" for="editStaffEmail">Email</label>
                     <input type="email" id="editStaffEmail" class="form-input" required placeholder="Masukkan email">
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="editStaffRole">Role</label>
+                    <label class="form-label" id="edit-role-label" for="editStaffRole">Role</label>
                     <select id="editStaffRole" class="form-input" required>
-                        <option value="staff">Staff</option>
-                        <option value="admin">Admin</option>
-                        <option value="support">Support</option>
-                        <option value="super_admin">Super Admin</option>
+                        <option value="staff" id="edit-staff-role-option">Staff</option>
+                        <option value="admin" id="edit-admin-role-option">Admin</option>
+                        <option value="support" id="edit-support-role-option">Support</option>
+                        <option value="super_admin" id="edit-super-admin-role-option">Super Admin</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="editStaffStatus">Status</label>
+                    <label class="form-label" id="edit-status-label" for="editStaffStatus">Status</label>
                     <select id="editStaffStatus" class="form-input" required>
-                        <option value="active">Aktif</option>
-                        <option value="suspended">Suspended</option>
-                        <option value="pending">Pending</option>
+                        <option value="active" id="edit-active-option">Aktif</option>
+                        <option value="suspended" id="edit-suspended-option">Suspended</option>
+                        <option value="pending" id="edit-pending-option">Pending</option>
                     </select>
                 </div>
                 
                 <div class="modal-actions modal-actions-right">
-                    <button type="button" class="btn btn-outline" onclick="closeModal('editStaffModal')">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                    <button type="button" class="btn btn-outline" id="edit-cancel-btn" onclick="closeModal('editStaffModal')">Batal</button>
+                    <button type="submit" class="btn btn-primary" id="edit-save-btn">Simpan Perubahan</button>
                 </div>
             </form>
         </div>
@@ -1192,6 +1192,676 @@
     <!-- Scripts -->
     <script src="sidebar-loader.js"></script>
     <script src="user-profile.js"></script>
+    
+    <script>
+        // ========== TRANSLATIONS FOR STAFF ACCOUNT ==========
+        const staffTranslations = {
+            id: {
+                // Header
+                "pageTitle": "Staff Account Management",
+                "searchPlaceholder": "Cari staff...",
+                
+                // Staff List Section
+                "staffListTitle": "Daftar Staff",
+                "addStaff": "Tambah Staff",
+                "addSuperAdmin": "Tambah Super Admin",
+                
+                // Filter Labels
+                "filterRole": "Role",
+                "filterStatus": "Status",
+                "allRoles": "Semua Role",
+                "superAdmin": "Super Admin",
+                "admin": "Admin",
+                "staff": "Staff",
+                "support": "Support",
+                "allStatus": "Semua Status",
+                "active": "Aktif",
+                "suspended": "Suspended",
+                "pending": "Pending",
+                
+                // Empty State
+                "emptyStateTitle": "Tidak ada data staff",
+                "emptyStateDesc": "Belum ada staff yang terdaftar atau data sesuai dengan filter yang dipilih.",
+                "addFirstStaff": "Tambah Staff Pertama",
+                
+                // Add Staff Modal
+                "addStaffTitle": "Tambah Staff Baru",
+                "addSuperAdminTitle": "Tambah Super Admin Baru",
+                "fullName": "Nama Lengkap",
+                "email": "Email",
+                "role": "Role",
+                "password": "Password",
+                "passwordPlaceholder": "Minimal 6 karakter",
+                "cancel": "Batal",
+                "save": "Simpan",
+                
+                // Reset Password Modal
+                "resetPasswordTitle": "Reset Password",
+                "newPassword": "Password Baru",
+                "confirmPassword": "Konfirmasi Password",
+                "resetPassword": "Reset Password",
+                
+                // Edit Staff Modal
+                "editStaffTitle": "Edit Staff",
+                "editFullName": "Nama Lengkap",
+                "editEmail": "Email",
+                "editRole": "Role",
+                "editStatus": "Status",
+                "saveChanges": "Simpan Perubahan",
+                
+                // Staff Detail Modal
+                "staffDetailTitle": "Detail Staff",
+                "joined": "Bergabung",
+                "lastLogin": "Terakhir Login",
+                "staffId": "ID Staff",
+                "close": "Tutup",
+                
+                // Staff Status
+                "statusActive": "Aktif",
+                "statusSuspended": "Suspended",
+                "statusPending": "Pending",
+                
+                // Buttons
+                "reset": "Reset",
+                "activate": "Aktifkan",
+                "suspend": "Suspend",
+                "detail": "Detail",
+                "edit": "Edit",
+                "delete": "Hapus",
+                
+                // Confirmation Modal
+                "confirmAction": "Konfirmasi Tindakan",
+                "suspendConfirm": "Suspend Staff",
+                "activateConfirm": "Aktifkan Staff",
+                "deleteConfirm": "Hapus Staff",
+                "suspendMessage": "Apakah Anda yakin ingin men-suspend staff {name}?",
+                "activateMessage": "Apakah Anda yakin ingin mengaktifkan staff {name}?",
+                "deleteMessage": "Apakah Anda yakin ingin menghapus staff {name}? Tindakan ini tidak dapat dibatalkan.",
+                
+                // Verification Modal
+                "verificationTitle": "Verifikasi Super Admin",
+                "verificationDesc": "Untuk menambahkan Super Admin, diperlukan verifikasi keamanan. Masukkan password Super Admin Anda untuk melanjutkan.",
+                "superAdminPassword": "Password Super Admin",
+                "verify": "Verifikasi",
+                
+                // Notifications
+                "staffAdded": "Staff berhasil ditambahkan",
+                "superAdminAdded": "Super Admin berhasil ditambahkan",
+                "staffUpdated": "Staff berhasil diperbarui",
+                "passwordReset": "Password berhasil direset",
+                "staffActivated": "Staff {name} berhasil diaktifkan",
+                "staffSuspended": "Staff {name} berhasil di-suspend",
+                "staffDeleted": "Staff berhasil dihapus",
+                "errorLoading": "Gagal memuat data staff",
+                "errorAdding": "Gagal menambahkan staff: {error}",
+                "errorUpdating": "Gagal memperbarui staff: {error}",
+                "errorDeleting": "Gagal menghapus staff: {error}",
+                "passwordMismatch": "Password tidak cocok",
+                "passwordMinLength": "Password minimal 6 karakter",
+                "allFieldsRequired": "Semua field harus diisi",
+                "invalidEmail": "Email tidak valid",
+                "noPermission": "Anda tidak memiliki izin untuk melakukan tindakan ini",
+                "loginRequired": "Silakan login untuk mengakses halaman ini",
+                "connected": "Terhubung dengan Server",
+                "demoMode": "Mode Demo: {message}"
+            },
+            en: {
+                // Header
+                "pageTitle": "Staff Account Management",
+                "searchPlaceholder": "Search staff...",
+                
+                // Staff List Section
+                "staffListTitle": "Staff List",
+                "addStaff": "Add Staff",
+                "addSuperAdmin": "Add Super Admin",
+                
+                // Filter Labels
+                "filterRole": "Role",
+                "filterStatus": "Status",
+                "allRoles": "All Roles",
+                "superAdmin": "Super Admin",
+                "admin": "Admin",
+                "staff": "Staff",
+                "support": "Support",
+                "allStatus": "All Status",
+                "active": "Active",
+                "suspended": "Suspended",
+                "pending": "Pending",
+                
+                // Empty State
+                "emptyStateTitle": "No staff data",
+                "emptyStateDesc": "No staff registered or data matching the selected filters.",
+                "addFirstStaff": "Add First Staff",
+                
+                // Add Staff Modal
+                "addStaffTitle": "Add New Staff",
+                "addSuperAdminTitle": "Add New Super Admin",
+                "fullName": "Full Name",
+                "email": "Email",
+                "role": "Role",
+                "password": "Password",
+                "passwordPlaceholder": "Minimum 6 characters",
+                "cancel": "Cancel",
+                "save": "Save",
+                
+                // Reset Password Modal
+                "resetPasswordTitle": "Reset Password",
+                "newPassword": "New Password",
+                "confirmPassword": "Confirm Password",
+                "resetPassword": "Reset Password",
+                
+                // Edit Staff Modal
+                "editStaffTitle": "Edit Staff",
+                "editFullName": "Full Name",
+                "editEmail": "Email",
+                "editRole": "Role",
+                "editStatus": "Status",
+                "saveChanges": "Save Changes",
+                
+                // Staff Detail Modal
+                "staffDetailTitle": "Staff Details",
+                "joined": "Joined",
+                "lastLogin": "Last Login",
+                "staffId": "Staff ID",
+                "close": "Close",
+                
+                // Staff Status
+                "statusActive": "Active",
+                "statusSuspended": "Suspended",
+                "statusPending": "Pending",
+                
+                // Buttons
+                "reset": "Reset",
+                "activate": "Activate",
+                "suspend": "Suspend",
+                "detail": "Detail",
+                "edit": "Edit",
+                "delete": "Delete",
+                
+                // Confirmation Modal
+                "confirmAction": "Confirm Action",
+                "suspendConfirm": "Suspend Staff",
+                "activateConfirm": "Activate Staff",
+                "deleteConfirm": "Delete Staff",
+                "suspendMessage": "Are you sure you want to suspend staff {name}?",
+                "activateMessage": "Are you sure you want to activate staff {name}?",
+                "deleteMessage": "Are you sure you want to delete staff {name}? This action cannot be undone.",
+                
+                // Verification Modal
+                "verificationTitle": "Super Admin Verification",
+                "verificationDesc": "To add a Super Admin, security verification is required. Enter your Super Admin password to continue.",
+                "superAdminPassword": "Super Admin Password",
+                "verify": "Verify",
+                
+                // Notifications
+                "staffAdded": "Staff successfully added",
+                "superAdminAdded": "Super Admin successfully added",
+                "staffUpdated": "Staff successfully updated",
+                "passwordReset": "Password successfully reset",
+                "staffActivated": "Staff {name} successfully activated",
+                "staffSuspended": "Staff {name} successfully suspended",
+                "staffDeleted": "Staff successfully deleted",
+                "errorLoading": "Failed to load staff data",
+                "errorAdding": "Failed to add staff: {error}",
+                "errorUpdating": "Failed to update staff: {error}",
+                "errorDeleting": "Failed to delete staff: {error}",
+                "passwordMismatch": "Passwords do not match",
+                "passwordMinLength": "Password must be at least 6 characters",
+                "allFieldsRequired": "All fields are required",
+                "invalidEmail": "Invalid email address",
+                "noPermission": "You do not have permission to perform this action",
+                "loginRequired": "Please login to access this page",
+                "connected": "Connected to Server",
+                "demoMode": "Demo Mode: {message}"
+            },
+            ja: {
+                // Header
+                "pageTitle": "スタッフアカウント管理",
+                "searchPlaceholder": "スタッフを検索...",
+                
+                // Staff List Section
+                "staffListTitle": "スタッフリスト",
+                "addStaff": "スタッフを追加",
+                "addSuperAdmin": "スーパー管理者を追加",
+                
+                // Filter Labels
+                "filterRole": "役割",
+                "filterStatus": "ステータス",
+                "allRoles": "すべての役割",
+                "superAdmin": "スーパー管理者",
+                "admin": "管理者",
+                "staff": "スタッフ",
+                "support": "サポート",
+                "allStatus": "すべてのステータス",
+                "active": "アクティブ",
+                "suspended": "停止中",
+                "pending": "保留中",
+                
+                // Empty State
+                "emptyStateTitle": "スタッフデータがありません",
+                "emptyStateDesc": "登録されたスタッフがいるか、選択したフィルターに一致するデータはありません。",
+                "addFirstStaff": "最初のスタッフを追加",
+                
+                // Add Staff Modal
+                "addStaffTitle": "新規スタッフ追加",
+                "addSuperAdminTitle": "新規スーパー管理者追加",
+                "fullName": "氏名",
+                "email": "メールアドレス",
+                "role": "役割",
+                "password": "パスワード",
+                "passwordPlaceholder": "最小6文字",
+                "cancel": "キャンセル",
+                "save": "保存",
+                
+                // Reset Password Modal
+                "resetPasswordTitle": "パスワードリセット",
+                "newPassword": "新しいパスワード",
+                "confirmPassword": "パスワード確認",
+                "resetPassword": "パスワードをリセット",
+                
+                // Edit Staff Modal
+                "editStaffTitle": "スタッフ編集",
+                "editFullName": "氏名",
+                "editEmail": "メールアドレス",
+                "editRole": "役割",
+                "editStatus": "ステータス",
+                "saveChanges": "変更を保存",
+                
+                // Staff Detail Modal
+                "staffDetailTitle": "スタッフ詳細",
+                "joined": "登録日",
+                "lastLogin": "最終ログイン",
+                "staffId": "スタッフID",
+                "close": "閉じる",
+                
+                // Staff Status
+                "statusActive": "アクティブ",
+                "statusSuspended": "停止中",
+                "statusPending": "保留中",
+                
+                // Buttons
+                "reset": "リセット",
+                "activate": "有効化",
+                "suspend": "停止",
+                "detail": "詳細",
+                "edit": "編集",
+                "delete": "削除",
+                
+                // Confirmation Modal
+                "confirmAction": "アクション確認",
+                "suspendConfirm": "スタッフを停止",
+                "activateConfirm": "スタッフを有効化",
+                "deleteConfirm": "スタッフを削除",
+                "suspendMessage": "スタッフ {name} を停止してもよろしいですか？",
+                "activateMessage": "スタッフ {name} を有効化してもよろしいですか？",
+                "deleteMessage": "スタッフ {name} を削除してもよろしいですか？この操作は取り消せません。",
+                
+                // Verification Modal
+                "verificationTitle": "スーパー管理者認証",
+                "verificationDesc": "スーパー管理者を追加するには、セキュリティ認証が必要です。続行するにはスーパー管理者のパスワードを入力してください。",
+                "superAdminPassword": "スーパー管理者パスワード",
+                "verify": "認証",
+                
+                // Notifications
+                "staffAdded": "スタッフが正常に追加されました",
+                "superAdminAdded": "スーパー管理者が正常に追加されました",
+                "staffUpdated": "スタッフが正常に更新されました",
+                "passwordReset": "パスワードが正常にリセットされました",
+                "staffActivated": "スタッフ {name} が正常に有効化されました",
+                "staffSuspended": "スタッフ {name} が正常に停止されました",
+                "staffDeleted": "スタッフが正常に削除されました",
+                "errorLoading": "スタッフデータの読み込みに失敗しました",
+                "errorAdding": "スタッフの追加に失敗しました: {error}",
+                "errorUpdating": "スタッフの更新に失敗しました: {error}",
+                "errorDeleting": "スタッフの削除に失敗しました: {error}",
+                "passwordMismatch": "パスワードが一致しません",
+                "passwordMinLength": "パスワードは6文字以上である必要があります",
+                "allFieldsRequired": "すべてのフィールドを入力してください",
+                "invalidEmail": "無効なメールアドレスです",
+                "noPermission": "この操作を行う権限がありません",
+                "loginRequired": "このページにアクセスするにはログインしてください",
+                "connected": "サーバーに接続済み",
+                "demoMode": "デモモード: {message}"
+            },
+            zh: {
+                // Header
+                "pageTitle": "员工账户管理",
+                "searchPlaceholder": "搜索员工...",
+                
+                // Staff List Section
+                "staffListTitle": "员工列表",
+                "addStaff": "添加员工",
+                "addSuperAdmin": "添加超级管理员",
+                
+                // Filter Labels
+                "filterRole": "角色",
+                "filterStatus": "状态",
+                "allRoles": "所有角色",
+                "superAdmin": "超级管理员",
+                "admin": "管理员",
+                "staff": "员工",
+                "support": "客服支持",
+                "allStatus": "所有状态",
+                "active": "活跃",
+                "suspended": "已暂停",
+                "pending": "待处理",
+                
+                // Empty State
+                "emptyStateTitle": "暂无员工数据",
+                "emptyStateDesc": "尚未注册员工或没有与所选筛选条件匹配的数据。",
+                "addFirstStaff": "添加第一位员工",
+                
+                // Add Staff Modal
+                "addStaffTitle": "添加新员工",
+                "addSuperAdminTitle": "添加新超级管理员",
+                "fullName": "姓名",
+                "email": "邮箱",
+                "role": "角色",
+                "password": "密码",
+                "passwordPlaceholder": "至少6个字符",
+                "cancel": "取消",
+                "save": "保存",
+                
+                // Reset Password Modal
+                "resetPasswordTitle": "重置密码",
+                "newPassword": "新密码",
+                "confirmPassword": "确认密码",
+                "resetPassword": "重置密码",
+                
+                // Edit Staff Modal
+                "editStaffTitle": "编辑员工",
+                "editFullName": "姓名",
+                "editEmail": "邮箱",
+                "editRole": "角色",
+                "editStatus": "状态",
+                "saveChanges": "保存更改",
+                
+                // Staff Detail Modal
+                "staffDetailTitle": "员工详情",
+                "joined": "加入时间",
+                "lastLogin": "最后登录",
+                "staffId": "员工ID",
+                "close": "关闭",
+                
+                // Staff Status
+                "statusActive": "活跃",
+                "statusSuspended": "已暂停",
+                "statusPending": "待处理",
+                
+                // Buttons
+                "reset": "重置",
+                "activate": "激活",
+                "suspend": "暂停",
+                "detail": "详情",
+                "edit": "编辑",
+                "delete": "删除",
+                
+                // Confirmation Modal
+                "confirmAction": "确认操作",
+                "suspendConfirm": "暂停员工",
+                "activateConfirm": "激活员工",
+                "deleteConfirm": "删除员工",
+                "suspendMessage": "确定要暂停员工 {name} 吗？",
+                "activateMessage": "确定要激活员工 {name} 吗？",
+                "deleteMessage": "确定要删除员工 {name} 吗？此操作无法撤销。",
+                
+                // Verification Modal
+                "verificationTitle": "超级管理员验证",
+                "verificationDesc": "要添加超级管理员，需要进行安全验证。请输入您的超级管理员密码以继续。",
+                "superAdminPassword": "超级管理员密码",
+                "verify": "验证",
+                
+                // Notifications
+                "staffAdded": "员工添加成功",
+                "superAdminAdded": "超级管理员添加成功",
+                "staffUpdated": "员工更新成功",
+                "passwordReset": "密码重置成功",
+                "staffActivated": "员工 {name} 已成功激活",
+                "staffSuspended": "员工 {name} 已成功暂停",
+                "staffDeleted": "员工删除成功",
+                "errorLoading": "加载员工数据失败",
+                "errorAdding": "添加员工失败: {error}",
+                "errorUpdating": "更新员工失败: {error}",
+                "errorDeleting": "删除员工失败: {error}",
+                "passwordMismatch": "密码不匹配",
+                "passwordMinLength": "密码至少需要6个字符",
+                "allFieldsRequired": "所有字段都必须填写",
+                "invalidEmail": "无效的邮箱地址",
+                "noPermission": "您没有权限执行此操作",
+                "loginRequired": "请登录以访问此页面",
+                "connected": "已连接到服务器",
+                "demoMode": "演示模式: {message}"
+            }
+        };
+
+        // ========== TRANSLATION FUNCTIONS ==========
+        let currentLanguage = localStorage.getItem('language') || 'id';
+
+        function applyStaffTranslations(language) {
+            const lang = staffTranslations[language] || staffTranslations['id'];
+            
+            console.log("Applying staff translations for:", language);
+            
+            // Header
+            const pageTitle = document.getElementById('page-title');
+            if (pageTitle && lang.pageTitle) pageTitle.textContent = lang.pageTitle;
+            
+            const searchInput = document.getElementById('searchStaff');
+            if (searchInput && lang.searchPlaceholder) searchInput.placeholder = lang.searchPlaceholder;
+            
+            // Staff List Section
+            const staffListTitle = document.getElementById('staff-list-title');
+            if (staffListTitle && lang.staffListTitle) staffListTitle.textContent = lang.staffListTitle;
+            
+            const addStaffBtnText = document.getElementById('add-staff-btn-text');
+            if (addStaffBtnText && lang.addStaff) addStaffBtnText.textContent = lang.addStaff;
+            
+            const addSuperAdminBtnText = document.getElementById('add-super-admin-btn-text');
+            if (addSuperAdminBtnText && lang.addSuperAdmin) addSuperAdminBtnText.textContent = lang.addSuperAdmin;
+            
+            // Filter Labels
+            const filterRoleLabel = document.getElementById('filter-role-label');
+            if (filterRoleLabel && lang.filterRole) filterRoleLabel.textContent = lang.filterRole;
+            
+            const filterStatusLabel = document.getElementById('filter-status-label');
+            if (filterStatusLabel && lang.filterStatus) filterStatusLabel.textContent = lang.filterStatus;
+            
+            const allRolesOption = document.getElementById('all-roles-option');
+            if (allRolesOption && lang.allRoles) allRolesOption.textContent = lang.allRoles;
+            
+            const superAdminOption = document.getElementById('super-admin-option');
+            if (superAdminOption && lang.superAdmin) superAdminOption.textContent = lang.superAdmin;
+            
+            const adminOption = document.getElementById('admin-option');
+            if (adminOption && lang.admin) adminOption.textContent = lang.admin;
+            
+            const staffOption = document.getElementById('staff-option');
+            if (staffOption && lang.staff) staffOption.textContent = lang.staff;
+            
+            const supportOption = document.getElementById('support-option');
+            if (supportOption && lang.support) supportOption.textContent = lang.support;
+            
+            const allStatusOption = document.getElementById('all-status-option');
+            if (allStatusOption && lang.allStatus) allStatusOption.textContent = lang.allStatus;
+            
+            const activeStatusOption = document.getElementById('active-status-option');
+            if (activeStatusOption && lang.active) activeStatusOption.textContent = lang.active;
+            
+            const suspendedStatusOption = document.getElementById('suspended-status-option');
+            if (suspendedStatusOption && lang.suspended) suspendedStatusOption.textContent = lang.suspended;
+            
+            const pendingStatusOption = document.getElementById('pending-status-option');
+            if (pendingStatusOption && lang.pending) pendingStatusOption.textContent = lang.pending;
+            
+            // Empty State
+            const emptyStateTitle = document.getElementById('empty-state-title');
+            if (emptyStateTitle && lang.emptyStateTitle) emptyStateTitle.textContent = lang.emptyStateTitle;
+            
+            const emptyStateDesc = document.getElementById('empty-state-desc');
+            if (emptyStateDesc && lang.emptyStateDesc) emptyStateDesc.textContent = lang.emptyStateDesc;
+            
+            const addFirstStaffText = document.getElementById('add-first-staff-text');
+            if (addFirstStaffText && lang.addFirstStaff) addFirstStaffText.textContent = lang.addFirstStaff;
+            
+            // Add Staff Modal
+            const addModalTitleText = document.getElementById('add-modal-title-text');
+            if (addModalTitleText) {
+                // Will be updated when modal opens based on role type
+            }
+            
+            const fullNameLabel = document.getElementById('full-name-label');
+            if (fullNameLabel && lang.fullName) fullNameLabel.textContent = lang.fullName;
+            
+            const emailLabel = document.getElementById('email-label');
+            if (emailLabel && lang.email) emailLabel.textContent = lang.email;
+            
+            const roleLabel = document.getElementById('role-label');
+            if (roleLabel && lang.role) roleLabel.textContent = lang.role;
+            
+            const passwordLabel = document.getElementById('password-label');
+            if (passwordLabel && lang.password) passwordLabel.textContent = lang.password;
+            
+            const passwordInput = document.getElementById('staffPassword');
+            if (passwordInput && lang.passwordPlaceholder) passwordInput.placeholder = lang.passwordPlaceholder;
+            
+            const cancelBtn = document.getElementById('cancel-btn');
+            if (cancelBtn && lang.cancel) cancelBtn.textContent = lang.cancel;
+            
+            const saveBtn = document.getElementById('save-btn');
+            if (saveBtn && lang.save) saveBtn.textContent = lang.save;
+            
+            // Role options in add modal
+            const staffRoleOption = document.getElementById('staff-role-option');
+            if (staffRoleOption && lang.staff) staffRoleOption.textContent = lang.staff;
+            
+            const adminRoleOption = document.getElementById('admin-role-option');
+            if (adminRoleOption && lang.admin) adminRoleOption.textContent = lang.admin;
+            
+            const supportRoleOption = document.getElementById('support-role-option');
+            if (supportRoleOption && lang.support) supportRoleOption.textContent = lang.support;
+            
+            const superAdminRoleOption = document.getElementById('super-admin-role-option');
+            if (superAdminRoleOption && lang.superAdmin) superAdminRoleOption.textContent = lang.superAdmin;
+            
+            // Reset Password Modal
+            const resetPasswordTitle = document.getElementById('reset-password-title');
+            if (resetPasswordTitle && lang.resetPasswordTitle) resetPasswordTitle.textContent = lang.resetPasswordTitle;
+            
+            const newPasswordLabel = document.getElementById('new-password-label');
+            if (newPasswordLabel && lang.newPassword) newPasswordLabel.textContent = lang.newPassword;
+            
+            const confirmPasswordLabel = document.getElementById('confirm-password-label');
+            if (confirmPasswordLabel && lang.confirmPassword) confirmPasswordLabel.textContent = lang.confirmPassword;
+            
+            const resetCancelBtn = document.getElementById('reset-cancel-btn');
+            if (resetCancelBtn && lang.cancel) resetCancelBtn.textContent = lang.cancel;
+            
+            const resetSubmitBtn = document.getElementById('reset-submit-btn');
+            if (resetSubmitBtn && lang.resetPassword) resetSubmitBtn.textContent = lang.resetPassword;
+            
+            // Edit Staff Modal
+            const editStaffTitle = document.getElementById('edit-staff-title');
+            if (editStaffTitle && lang.editStaffTitle) editStaffTitle.textContent = lang.editStaffTitle;
+            
+            const editFullNameLabel = document.getElementById('edit-full-name-label');
+            if (editFullNameLabel && lang.editFullName) editFullNameLabel.textContent = lang.editFullName;
+            
+            const editEmailLabel = document.getElementById('edit-email-label');
+            if (editEmailLabel && lang.editEmail) editEmailLabel.textContent = lang.editEmail;
+            
+            const editRoleLabel = document.getElementById('edit-role-label');
+            if (editRoleLabel && lang.editRole) editRoleLabel.textContent = lang.editRole;
+            
+            const editStatusLabel = document.getElementById('edit-status-label');
+            if (editStatusLabel && lang.editStatus) editStatusLabel.textContent = lang.editStatus;
+            
+            const editCancelBtn = document.getElementById('edit-cancel-btn');
+            if (editCancelBtn && lang.cancel) editCancelBtn.textContent = lang.cancel;
+            
+            const editSaveBtn = document.getElementById('edit-save-btn');
+            if (editSaveBtn && lang.saveChanges) editSaveBtn.textContent = lang.saveChanges;
+            
+            // Edit role options
+            const editStaffRoleOption = document.getElementById('edit-staff-role-option');
+            if (editStaffRoleOption && lang.staff) editStaffRoleOption.textContent = lang.staff;
+            
+            const editAdminRoleOption = document.getElementById('edit-admin-role-option');
+            if (editAdminRoleOption && lang.admin) editAdminRoleOption.textContent = lang.admin;
+            
+            const editSupportRoleOption = document.getElementById('edit-support-role-option');
+            if (editSupportRoleOption && lang.support) editSupportRoleOption.textContent = lang.support;
+            
+            const editSuperAdminRoleOption = document.getElementById('edit-super-admin-role-option');
+            if (editSuperAdminRoleOption && lang.superAdmin) editSuperAdminRoleOption.textContent = lang.superAdmin;
+            
+            // Edit status options
+            const editActiveOption = document.getElementById('edit-active-option');
+            if (editActiveOption && lang.active) editActiveOption.textContent = lang.active;
+            
+            const editSuspendedOption = document.getElementById('edit-suspended-option');
+            if (editSuspendedOption && lang.suspended) editSuspendedOption.textContent = lang.suspended;
+            
+            const editPendingOption = document.getElementById('edit-pending-option');
+            if (editPendingOption && lang.pending) editPendingOption.textContent = lang.pending;
+            
+            // Staff Detail Modal
+            const staffDetailTitle = document.getElementById('staff-detail-title');
+            if (staffDetailTitle && lang.staffDetailTitle) staffDetailTitle.textContent = lang.staffDetailTitle;
+            
+            const closeDetailBtn = document.getElementById('close-detail-btn');
+            if (closeDetailBtn && lang.close) closeDetailBtn.textContent = lang.close;
+            
+            // Confirmation Modal
+            const confirmActionTitle = document.getElementById('confirm-action-title');
+            if (confirmActionTitle && lang.confirmAction) confirmActionTitle.textContent = lang.confirmAction;
+            
+            const confirmCancelBtn = document.getElementById('confirm-cancel-btn');
+            if (confirmCancelBtn && lang.cancel) confirmCancelBtn.textContent = lang.cancel;
+            
+            // Verification Modal
+            const verificationTitle = document.getElementById('verification-title');
+            if (verificationTitle && lang.verificationTitle) verificationTitle.textContent = lang.verificationTitle;
+            
+            const verificationDesc = document.getElementById('verification-desc');
+            if (verificationDesc && lang.verificationDesc) verificationDesc.textContent = lang.verificationDesc;
+            
+            const superAdminPasswordLabel = document.getElementById('super-admin-password-label');
+            if (superAdminPasswordLabel && lang.superAdminPassword) superAdminPasswordLabel.textContent = lang.superAdminPassword;
+            
+            const verificationCancelBtn = document.getElementById('verification-cancel-btn');
+            if (verificationCancelBtn && lang.cancel) verificationCancelBtn.textContent = lang.cancel;
+            
+            const verificationSubmitBtn = document.getElementById('verification-submit-btn');
+            if (verificationSubmitBtn && lang.verify) verificationSubmitBtn.textContent = lang.verify;
+            
+            // Update any existing dynamic content
+            if (window.staffManager) {
+                window.staffManager.renderStaffList();
+            }
+        }
+
+        function initializeStaffLanguage() {
+            const savedLanguage = localStorage.getItem('language') || 'id';
+            currentLanguage = savedLanguage;
+            console.log("Initializing staff dashboard with language:", savedLanguage);
+            
+            applyStaffTranslations(savedLanguage);
+            
+            window.addEventListener('languageChanged', function(event) {
+                console.log("Language changed in staff dashboard to:", event.detail.language);
+                currentLanguage = event.detail.language;
+                applyStaffTranslations(event.detail.language);
+                
+                if (window.staffManager) {
+                    window.staffManager.renderStaffList();
+                }
+            });
+        }
+
+        // Call initialization
+        initializeStaffLanguage();
+    </script>
+    
     <script>
         // ===== FIREBASE INITIALIZATION =====
         const firebaseConfig = {
@@ -1224,6 +1894,10 @@
                 this.initializeEventListeners();
                 this.checkCurrentUser();
                 this.setupAuthListener();
+            }
+
+            getLang() {
+                return staffTranslations[currentLanguage] || staffTranslations['id'];
             }
 
             initializeElements() {
@@ -1301,62 +1975,28 @@
             }
 
             async checkSuperAdminStatus(uid) {
-    try {
-        const userDoc = await db.collection('users').doc(uid).get();
-        if (userDoc.exists) {
-            const userData = userDoc.data();
-            
-            // CEK SEMUA KEMUNGKINAN FIELD Super Admin
-            this.isSuperAdmin = 
-                userData.role === 'super_admin' || 
-                userData.role === 'Super Admin' ||
-                userData.isSuperAdmin === true ||
-                (userData.permissions && userData.permissions.includes('all_access')) ||
-                (userData.permissions && userData.permissions.includes('all')) ||
-                userData.superAdmin === true;
-            
-            console.log('Super Admin Status:', this.isSuperAdmin, userData);
-            this.updateUIForSuperAdmin();
-        }
-        this.loadStaffData();
-    } catch (error) {
-        console.error("Error checking super admin status:", error);
-        this.isSuperAdmin = false;
-        this.loadStaffData();
-    }
-}
-async fixSuperAdminPermissions() {
-    try {
-        // Cari semua user dengan role super_admin
-        const snapshot = await db.collection('users')
-            .where('role', '==', 'super_admin')
-            .get();
-        
-        const batch = db.batch();
-        
-        snapshot.docs.forEach(doc => {
-            const userData = doc.data();
-            
-            // Update dengan permissions lengkap jika belum ada
-            if (!userData.permissions || !userData.permissions.includes('all_access')) {
-                batch.update(doc.ref, {
-                    permissions: ["read", "write", "delete", "manage_users", "manage_roles", "all_access"],
-                    Language: userData.Language || "id",
-                    LastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                try {
+                    const userDoc = await db.collection('users').doc(uid).get();
+                    if (userDoc.exists) {
+                        const userData = userDoc.data();
+                        this.isSuperAdmin = 
+                            userData.role === 'super_admin' || 
+                            userData.role === 'Super Admin' ||
+                            userData.isSuperAdmin === true ||
+                            (userData.permissions && userData.permissions.includes('all_access'));
+                        
+                        console.log('Super Admin Status:', this.isSuperAdmin, userData);
+                        this.updateUIForSuperAdmin();
+                    }
+                    this.loadStaffData();
+                } catch (error) {
+                    console.error("Error checking super admin status:", error);
+                    this.isSuperAdmin = false;
+                    this.loadStaffData();
+                }
             }
-        });
-        
-        await batch.commit();
-        this.showNotification('Permissions Super Admin telah diperbaiki', 'success');
-        
-    } catch (error) {
-        console.error('Error fixing permissions:', error);
-        this.showNotification('Gagal memperbaiki permissions', 'error');
-    }
-}
+
             updateUIForSuperAdmin() {
-                // Show/hide super admin specific elements
                 const addSuperAdminBtn = document.getElementById('addSuperAdminBtn');
                 if (addSuperAdminBtn) {
                     addSuperAdminBtn.style.display = this.isSuperAdmin ? 'inline-flex' : 'none';
@@ -1369,8 +2009,6 @@ async fixSuperAdminPermissions() {
                     if (savedUid) {
                         await this.checkSuperAdminStatus(savedUid);
                     }
-                    
-                    // Load user profile from localStorage
                     this.loadCurrentUserProfile();
                 } catch (error) {
                     console.error("Error checking current user:", error);
@@ -1400,7 +2038,6 @@ async fixSuperAdminPermissions() {
                             el.textContent = savedRole;
                         });
                         
-                        // Check if current user is super admin
                         if (savedRole === 'Super Admin') {
                             this.isSuperAdmin = true;
                             this.updateUIForSuperAdmin();
@@ -1429,39 +2066,49 @@ async fixSuperAdminPermissions() {
             }
 
             async loadFromFirebase() {
-    try {
-        const snapshot = await db.collection('users').get();
-        this.staffData = snapshot.docs.map(doc => {
-            const data = doc.data();
-            
-            // Tentukan role dengan cerdas
-            let role = 'staff';
-            if (data.role === 'super_admin' || data.isSuperAdmin === true || data.superAdmin === true) {
-                role = 'super_admin';
-            } else if (data.role === 'Admin' || data.role === 'admin') {
-                role = 'admin';
-            } else if (data.role === 'Support' || data.role === 'support') {
-                role = 'support';
+                try {
+                    const snapshot = await db.collection('users').get();
+                    const lang = this.getLang();
+                    
+                    this.staffData = snapshot.docs.map(doc => {
+                        const data = doc.data();
+                        
+                        let role = 'staff';
+                        if (data.role === 'super_admin' || data.isSuperAdmin === true) {
+                            role = 'super_admin';
+                        } else if (data.role === 'Admin' || data.role === 'admin') {
+                            role = 'admin';
+                        } else if (data.role === 'Support' || data.role === 'support') {
+                            role = 'support';
+                        }
+                        
+                        let status = 'active';
+                        const dbStatus = data.status;
+                        if (dbStatus === 'Suspended' || dbStatus === 'suspended') {
+                            status = 'suspended';
+                        } else if (dbStatus === 'Pending' || dbStatus === 'pending') {
+                            status = 'pending';
+                        }
+                        
+                        return {
+                            id: doc.id,
+                            name: data.name || data.displayName || data.email || 'Unknown User',
+                            email: data.email || '',
+                            role: role,
+                            status: status,
+                            avatar: data.image || data.avatar || 'https://iili.io/KfDh0EN.png',
+                            joinDate: data.createdate ? this.formatFirestoreDate(data.createdate) : new Date().toISOString().split('T')[0],
+                            lastLogin: data.LastLogin || data.lastLogin || null,
+                            isSuperAdmin: data.isSuperAdmin === true || role === 'super_admin'
+                        };
+                    });
+                    
+                } catch (error) {
+                    console.error("Error loading from Firebase:", error);
+                    throw error;
+                }
             }
-            
-            return {
-                id: doc.id,
-                name: data.name || data.displayName || data.email || 'Unknown User',
-                email: data.email || '',
-                role: role,
-                status: this.normalizeStatus(data.status),
-                avatar: data.image || data.avatar || 'https://iili.io/KfDh0EN.png',
-                joinDate: data.createdate ? this.formatFirestoreDate(data.createdate) : new Date().toISOString().split('T')[0],
-                lastLogin: data.LastLogin || data.lastLogin || null,
-                isSuperAdmin: data.isSuperAdmin === true || role === 'super_admin'
-            };
-        });
-        
-    } catch (error) {
-        console.error("Error loading from Firebase:", error);
-        throw error;
-    }
-}
+
             loadFromLocalStorage() {
                 const savedData = localStorage.getItem('staffAccounts');
                 if (savedData) {
@@ -1507,32 +2154,6 @@ async fixSuperAdminPermissions() {
                 localStorage.setItem('staffAccounts', JSON.stringify(this.staffData));
             }
 
-            normalizeRole(role) {
-                const roleMap = {
-                    'Super Admin': 'super_admin',
-                    'Admin': 'admin',
-                    'Customer Service Support': 'staff',
-                    'Support': 'support',
-                    'super_admin': 'super_admin',
-                    'admin': 'admin',
-                    'staff': 'staff',
-                    'support': 'support'
-                };
-                return roleMap[role] || 'staff';
-            }
-
-            normalizeStatus(status) {
-                const statusMap = {
-                    'Active': 'active',
-                    'Suspended': 'suspended',
-                    'Pending': 'pending',
-                    'active': 'active',
-                    'suspended': 'suspended',
-                    'pending': 'pending'
-                };
-                return statusMap[status] || 'active';
-            }
-
             formatFirestoreDate(timestamp) {
                 if (!timestamp) return new Date().toISOString().split('T')[0];
                 
@@ -1553,6 +2174,7 @@ async fixSuperAdminPermissions() {
                 if (!this.staffList || !this.emptyState) return;
                 
                 let filteredStaff = this.applyFilters();
+                const lang = this.getLang();
                 
                 if (filteredStaff.length === 0) {
                     this.staffList.style.display = 'none';
@@ -1596,6 +2218,7 @@ async fixSuperAdminPermissions() {
             }
 
             createStaffItem(staffMember) {
+                const lang = this.getLang();
                 const staffItem = document.createElement('div');
                 staffItem.className = `staff-item ${staffMember.status === 'suspended' ? 'suspended' : ''} ${staffMember.role === 'super_admin' ? 'super-admin' : ''}`;
                 
@@ -1627,7 +2250,7 @@ async fixSuperAdminPermissions() {
                         </span>
                         <span class="staff-joined">
                             <i class="fas fa-calendar-plus"></i>
-                            Bergabung: ${formattedDate}
+                            ${lang.joined || 'Bergabung'}: ${formattedDate}
                         </span>
                         <span class="staff-email">
                             <i class="fas fa-clock"></i>
@@ -1639,33 +2262,33 @@ async fixSuperAdminPermissions() {
                         ${this.isSuperAdmin ? `
                             <button class="btn btn-outline btn-sm reset-password-btn" data-staff-id="${staffMember.id}">
                                 <i class="fas fa-key"></i>
-                                Reset
+                                ${lang.reset || 'Reset'}
                             </button>
                             ${!isSuperAdmin ? `
                                 <button class="btn ${staffMember.status === 'suspended' ? 'btn-success' : 'btn-warning'} btn-sm suspend-btn" 
                                         data-staff-id="${staffMember.id}">
                                     <i class="fas ${staffMember.status === 'suspended' ? 'fa-play' : 'fa-pause'}"></i>
-                                    ${staffMember.status === 'suspended' ? 'Aktifkan' : 'Suspend'}
+                                    ${staffMember.status === 'suspended' ? (lang.activate || 'Aktifkan') : (lang.suspend || 'Suspend')}
                                 </button>
                             ` : ''}
                             <button class="btn btn-primary btn-sm view-details-btn" data-staff-id="${staffMember.id}">
                                 <i class="fas fa-eye"></i>
-                                Detail
+                                ${lang.detail || 'Detail'}
                             </button>
                             <button class="btn btn-info btn-sm edit-btn" data-staff-id="${staffMember.id}" style="background: #3b82f6; color: white;">
                                 <i class="fas fa-edit"></i>
-                                Edit
+                                ${lang.edit || 'Edit'}
                             </button>
                             ${!isSuperAdmin ? `
                                 <button class="btn btn-danger btn-sm delete-btn" data-staff-id="${staffMember.id}">
                                     <i class="fas fa-trash"></i>
-                                    Hapus
+                                    ${lang.delete || 'Hapus'}
                                 </button>
                             ` : ''}
                         ` : `
                             <button class="btn btn-primary btn-sm view-details-btn" data-staff-id="${staffMember.id}">
                                 <i class="fas fa-eye"></i>
-                                Detail
+                                ${lang.detail || 'Detail'}
                             </button>
                         `}
                     </div>
@@ -1706,14 +2329,16 @@ async fixSuperAdminPermissions() {
 
             openAddStaffModal(roleType = 'staff') {
                 const modalTitle = document.getElementById('addModalTitle');
+                const modalTitleSpan = document.getElementById('add-modal-title-text');
                 const roleSelect = document.getElementById('staffRole');
+                const lang = this.getLang();
                 
                 if (roleType === 'super_admin') {
-                    modalTitle.innerHTML = '<i class="fas fa-crown"></i> Tambah Super Admin Baru';
-                    roleSelect.value = 'super_admin';
+                    if (modalTitleSpan) modalTitleSpan.textContent = lang.addSuperAdminTitle;
+                    if (roleSelect) roleSelect.value = 'super_admin';
                 } else {
-                    modalTitle.innerHTML = '<i class="fas fa-user-plus"></i> Tambah Staff Baru';
-                    roleSelect.value = 'staff';
+                    if (modalTitleSpan) modalTitleSpan.textContent = lang.addStaffTitle;
+                    if (roleSelect) roleSelect.value = 'staff';
                 }
                 
                 document.getElementById('addStaffModal').classList.add('active');
@@ -1729,14 +2354,13 @@ async fixSuperAdminPermissions() {
                 e.preventDefault();
                 
                 const password = document.getElementById('superAdminPassword').value;
+                const lang = this.getLang();
                 
                 if (!password) {
-                    this.showNotification('Password harus diisi', 'error');
+                    this.showNotification(lang.allFieldsRequired, 'error');
                     return;
                 }
                 
-                // For demo purposes, we'll accept any password
-                // In production, this should verify against Firebase
                 this.closeModal('superAdminVerificationModal');
                 this.openAddStaffModal('super_admin');
             }
@@ -1752,12 +2376,18 @@ async fixSuperAdminPermissions() {
 
             openEditStaffModal(staffId) {
                 const staff = this.staffData.find(s => s.id === staffId);
+                const lang = this.getLang();
+                
                 if (staff && this.isSuperAdmin) {
                     document.getElementById('editStaffId').value = staffId;
                     document.getElementById('editStaffName').value = staff.name;
                     document.getElementById('editStaffEmail').value = staff.email;
                     document.getElementById('editStaffRole').value = staff.role;
                     document.getElementById('editStaffStatus').value = staff.status;
+                    
+                    // Update modal title
+                    const editTitleSpan = document.getElementById('edit-staff-title');
+                    if (editTitleSpan) editTitleSpan.textContent = lang.editStaffTitle;
                     
                     document.getElementById('editStaffModal').classList.add('active');
                 }
@@ -1768,9 +2398,10 @@ async fixSuperAdminPermissions() {
                 
                 const staffId = document.getElementById('editStaffId').value;
                 const staff = this.staffData.find(s => s.id === staffId);
+                const lang = this.getLang();
                 
                 if (!staff) {
-                    this.showNotification('Staff tidak ditemukan', 'error');
+                    this.showNotification(lang.staffNotFound || 'Staff tidak ditemukan', 'error');
                     return;
                 }
                 
@@ -1795,38 +2426,49 @@ async fixSuperAdminPermissions() {
                         });
                     }
                     
-                    // Update local data
                     Object.assign(staff, updatedData);
                     this.saveToLocalStorage();
                     
                     this.closeModal('editStaffModal');
                     this.renderStaffList();
-                    this.showNotification('Staff berhasil diperbarui', 'success');
+                    this.showNotification(lang.staffUpdated, 'success');
                     
                 } catch (error) {
                     console.error('Error updating staff:', error);
-                    this.showNotification('Gagal memperbarui staff: ' + error.message, 'error');
+                    this.showNotification(lang.errorUpdating.replace('{error}', error.message), 'error');
                 }
             }
 
             toggleSuspend(staffId) {
                 const staff = this.staffData.find(s => s.id === staffId);
+                const lang = this.getLang();
+                
                 if (staff && staff.role !== 'super_admin' && this.isSuperAdmin) {
                     const newStatus = staff.status === 'suspended' ? 'active' : 'suspended';
                     const action = newStatus === 'suspended' ? 'suspend' : 'activate';
                     
                     this.pendingAction = { type: 'suspend', staffId, newStatus };
                     
-                    document.getElementById('suspendModalTitle').innerHTML = `
-                        <i class="fas ${action === 'suspend' ? 'fa-pause-circle' : 'fa-play-circle'}"></i>
-                        ${action === 'suspend' ? 'Suspend Staff' : 'Aktifkan Staff'}
-                    `;
-                    document.getElementById('suspendModalMessage').textContent = 
-                        `Apakah Anda yakin ingin ${action === 'suspend' ? 'men-suspend' : 'mengaktifkan'} staff ${staff.name}?`;
-                    document.getElementById('confirmSuspendBtn').textContent = 
-                        action === 'suspend' ? 'Suspend' : 'Aktifkan';
-                    document.getElementById('confirmSuspendBtn').className = 
-                        action === 'suspend' ? 'btn btn-warning' : 'btn btn-success';
+                    const modalTitleSpan = document.getElementById('suspendModalTitle');
+                    if (modalTitleSpan) {
+                        const titleSpan = modalTitleSpan.querySelector('span');
+                        if (titleSpan) {
+                            titleSpan.textContent = action === 'suspend' ? lang.suspendConfirm : lang.activateConfirm;
+                        }
+                    }
+                    
+                    const messageEl = document.getElementById('suspendModalMessage');
+                    if (messageEl) {
+                        messageEl.textContent = action === 'suspend' 
+                            ? lang.suspendMessage.replace('{name}', staff.name)
+                            : lang.activateMessage.replace('{name}', staff.name);
+                    }
+                    
+                    const confirmBtn = document.getElementById('confirmSuspendBtn');
+                    if (confirmBtn) {
+                        confirmBtn.textContent = action === 'suspend' ? lang.suspend : lang.activate;
+                        confirmBtn.className = action === 'suspend' ? 'btn btn-warning' : 'btn btn-success';
+                    }
                     
                     document.getElementById('suspendModal').classList.add('active');
                 }
@@ -1834,18 +2476,27 @@ async fixSuperAdminPermissions() {
 
             deleteStaff(staffId) {
                 const staff = this.staffData.find(s => s.id === staffId);
+                const lang = this.getLang();
                 
                 if (staff && staff.role !== 'super_admin' && this.isSuperAdmin) {
                     this.pendingAction = { type: 'delete', staffId };
                     
-                    document.getElementById('suspendModalTitle').innerHTML = `
-                        <i class="fas fa-trash-alt"></i>
-                        Hapus Staff
-                    `;
-                    document.getElementById('suspendModalMessage').textContent = 
-                        `Apakah Anda yakin ingin menghapus staff ${staff.name}? Tindakan ini tidak dapat dibatalkan.`;
-                    document.getElementById('confirmSuspendBtn').textContent = 'Hapus';
-                    document.getElementById('confirmSuspendBtn').className = 'btn btn-danger';
+                    const modalTitleSpan = document.getElementById('suspendModalTitle');
+                    if (modalTitleSpan) {
+                        const titleSpan = modalTitleSpan.querySelector('span');
+                        if (titleSpan) titleSpan.textContent = lang.deleteConfirm;
+                    }
+                    
+                    const messageEl = document.getElementById('suspendModalMessage');
+                    if (messageEl) {
+                        messageEl.textContent = lang.deleteMessage.replace('{name}', staff.name);
+                    }
+                    
+                    const confirmBtn = document.getElementById('confirmSuspendBtn');
+                    if (confirmBtn) {
+                        confirmBtn.textContent = lang.delete;
+                        confirmBtn.className = 'btn btn-danger';
+                    }
                     
                     document.getElementById('suspendModal').classList.add('active');
                 }
@@ -1856,9 +2507,10 @@ async fixSuperAdminPermissions() {
                 
                 const { type, staffId, newStatus } = this.pendingAction;
                 const staff = this.staffData.find(s => s.id === staffId);
+                const lang = this.getLang();
                 
                 if (!staff) {
-                    this.showNotification('Staff tidak ditemukan', 'error');
+                    this.showNotification(lang.staffNotFound || 'Staff tidak ditemukan', 'error');
                     this.closeModal('suspendModal');
                     this.pendingAction = null;
                     return;
@@ -1867,8 +2519,13 @@ async fixSuperAdminPermissions() {
                 try {
                     if (type === 'suspend') {
                         await this.updateStaffStatus(staffId, newStatus);
+                        const message = newStatus === 'suspended' 
+                            ? lang.staffSuspended.replace('{name}', staff.name)
+                            : lang.staffActivated.replace('{name}', staff.name);
+                        this.showNotification(message, 'success');
                     } else if (type === 'delete') {
                         await this.deleteStaffFromSystem(staffId);
+                        this.showNotification(lang.staffDeleted, 'success');
                     }
                     
                     this.closeModal('suspendModal');
@@ -1876,7 +2533,7 @@ async fixSuperAdminPermissions() {
                     
                 } catch (error) {
                     console.error(`Error in ${type} action:`, error);
-                    this.showNotification(`Gagal ${type} staff: ${error.message}`, 'error');
+                    this.showNotification(lang.errorDeleting.replace('{error}', error.message), 'error');
                 }
             }
 
@@ -1896,11 +2553,6 @@ async fixSuperAdminPermissions() {
                         this.saveToLocalStorage();
                     }
                     
-                    this.showNotification(
-                        `Staff ${staff.name} berhasil ${newStatus === 'suspended' ? 'di-suspend' : 'diaktifkan'}`,
-                        'success'
-                    );
-                    
                     this.renderStaffList();
                 }
             }
@@ -1914,100 +2566,103 @@ async fixSuperAdminPermissions() {
                 
                 this.staffData = this.staffData.filter(s => s.id !== staffId);
                 this.saveToLocalStorage();
-                
-                this.showNotification('Staff berhasil dihapus', 'success');
                 this.renderStaffList();
             }
 
             async handleAddStaff(e) {
-    e.preventDefault();
-    
-    const formData = {
-        name: document.getElementById('staffName').value,
-        email: document.getElementById('staffEmail').value,
-        role: document.getElementById('staffRole').value,
-        password: document.getElementById('staffPassword').value
-    };
-    
-    try {
-        const userCredential = await auth.createUserWithEmailAndPassword(
-            formData.email, 
-            formData.password
-        );
-        
-        // Tentukan permissions berdasarkan role
-        let permissions = [];
-        let isSuperAdmin = false;
-        
-        if (formData.role === 'super_admin') {
-            permissions = ["read", "write", "delete", "manage_users", "manage_roles", "all_access"];
-            isSuperAdmin = true;  // Set flag isSuperAdmin
-        } else if (formData.role === 'admin') {
-            permissions = ["read", "write", "delete", "manage_users"];
-        } else if (formData.role === 'support') {
-            permissions = ["read", "write"];
-        } else {
-            permissions = ["read"];
-        }
-        
-        // Data LENGKAP untuk Firestore
-        const userData = {
-            // Field untuk display
-            name: formData.name,
-            displayName: formData.name,
-            email: formData.email,
-            image: 'https://iili.io/KfDh0EN.png',
-            
-            // Field untuk role & permissions
-            role: formData.role === 'super_admin' ? 'super_admin' : this.denormalizeRole(formData.role),
-            roleType: formData.role, // Simpan role asli
-            isSuperAdmin: isSuperAdmin, // ✅ TAMBAHKAN FIELD INI
-            permissions: permissions,
-            
-            // Field status
-            status: 'Active',
-            active: true,
-            
-            // Timestamps
-            createdate: firebase.firestore.FieldValue.serverTimestamp(),
-            LastLogin: null,
-            LastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
-            Language: "id",
-            
-            // Metadata
-            uid: userCredential.user.uid
-        };
-        
-        // Simpan ke Firestore
-        await db.collection('users').doc(userCredential.user.uid).set(userData);
-        
-        // Data untuk UI
-        const newStaff = {
-            id: userCredential.user.uid,
-            name: formData.name,
-            email: formData.email,
-            role: formData.role,
-            status: 'active',
-            avatar: 'https://iili.io/KfDh0EN.png',
-            joinDate: new Date().toISOString().split('T')[0],
-            lastLogin: null,
-            isSuperAdmin: isSuperAdmin
-        };
-        
-        this.staffData.push(newStaff);
-        this.saveToLocalStorage();
-        
-        this.closeModal('addStaffModal');
-        this.renderStaffList();
-        
-        const roleText = formData.role === 'super_admin' ? 'Super Admin' : 'Staff';
-        this.showNotification(`${roleText} berhasil ditambahkan`, 'success');
-        
-    } catch (error) {
-        console.error('Error adding staff:', error);
-        this.showNotification('Gagal menambahkan staff: ' + error.message, 'error');
-    }
-}
+                e.preventDefault();
+                
+                const formData = {
+                    name: document.getElementById('staffName').value,
+                    email: document.getElementById('staffEmail').value,
+                    role: document.getElementById('staffRole').value,
+                    password: document.getElementById('staffPassword').value
+                };
+                
+                const lang = this.getLang();
+                
+                if (!formData.name || !formData.email || !formData.password) {
+                    this.showNotification(lang.allFieldsRequired, 'error');
+                    return;
+                }
+                
+                if (formData.password.length < 6) {
+                    this.showNotification(lang.passwordMinLength, 'error');
+                    return;
+                }
+                
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(formData.email)) {
+                    this.showNotification(lang.invalidEmail, 'error');
+                    return;
+                }
+                
+                try {
+                    const userCredential = await auth.createUserWithEmailAndPassword(
+                        formData.email, 
+                        formData.password
+                    );
+                    
+                    let permissions = [];
+                    let isSuperAdmin = false;
+                    
+                    if (formData.role === 'super_admin') {
+                        permissions = ["read", "write", "delete", "manage_users", "manage_roles", "all_access"];
+                        isSuperAdmin = true;
+                    } else if (formData.role === 'admin') {
+                        permissions = ["read", "write", "delete", "manage_users"];
+                    } else if (formData.role === 'support') {
+                        permissions = ["read", "write"];
+                    } else {
+                        permissions = ["read"];
+                    }
+                    
+                    const userData = {
+                        name: formData.name,
+                        displayName: formData.name,
+                        email: formData.email,
+                        image: 'https://iili.io/KfDh0EN.png',
+                        role: formData.role === 'super_admin' ? 'super_admin' : this.denormalizeRole(formData.role),
+                        roleType: formData.role,
+                        isSuperAdmin: isSuperAdmin,
+                        permissions: permissions,
+                        status: 'Active',
+                        active: true,
+                        createdate: firebase.firestore.FieldValue.serverTimestamp(),
+                        LastLogin: null,
+                        LastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
+                        Language: currentLanguage,
+                        uid: userCredential.user.uid
+                    };
+                    
+                    await db.collection('users').doc(userCredential.user.uid).set(userData);
+                    
+                    const newStaff = {
+                        id: userCredential.user.uid,
+                        name: formData.name,
+                        email: formData.email,
+                        role: formData.role,
+                        status: 'active',
+                        avatar: 'https://iili.io/KfDh0EN.png',
+                        joinDate: new Date().toISOString().split('T')[0],
+                        lastLogin: null,
+                        isSuperAdmin: isSuperAdmin
+                    };
+                    
+                    this.staffData.push(newStaff);
+                    this.saveToLocalStorage();
+                    
+                    this.closeModal('addStaffModal');
+                    this.renderStaffList();
+                    
+                    const successMsg = formData.role === 'super_admin' ? lang.superAdminAdded : lang.staffAdded;
+                    this.showNotification(successMsg, 'success');
+                    
+                } catch (error) {
+                    console.error('Error adding staff:', error);
+                    this.showNotification(lang.errorAdding.replace('{error}', error.message), 'error');
+                }
+            }
 
             async handleResetPassword(e) {
                 e.preventDefault();
@@ -2015,31 +2670,32 @@ async fixSuperAdminPermissions() {
                 const staffId = document.getElementById('resetStaffId').value;
                 const newPassword = document.getElementById('newPassword').value;
                 const confirmPassword = document.getElementById('confirmPassword').value;
+                const lang = this.getLang();
                 
                 if (!newPassword || !confirmPassword) {
-                    this.showNotification('Password harus diisi', 'error');
+                    this.showNotification(lang.allFieldsRequired, 'error');
                     return;
                 }
                 
                 if (newPassword !== confirmPassword) {
-                    this.showNotification('Password tidak cocok', 'error');
+                    this.showNotification(lang.passwordMismatch, 'error');
                     return;
                 }
                 
                 if (newPassword.length < 6) {
-                    this.showNotification('Password minimal 6 karakter', 'error');
+                    this.showNotification(lang.passwordMinLength, 'error');
                     return;
                 }
                 
                 try {
                     if (auth) {
-                        this.showNotification('Reset password berhasil (demo mode)', 'success');
+                        this.showNotification(lang.passwordReset, 'success');
                     } else {
                         const staff = this.staffData.find(s => s.id === staffId);
                         if (staff) {
                             staff.password = newPassword;
                             this.saveToLocalStorage();
-                            this.showNotification('Password berhasil direset', 'success');
+                            this.showNotification(lang.passwordReset, 'success');
                         }
                     }
                     
@@ -2047,7 +2703,7 @@ async fixSuperAdminPermissions() {
                     
                 } catch (error) {
                     console.error('Error resetting password:', error);
-                    this.showNotification('Gagal reset password: ' + error.message, 'error');
+                    this.showNotification(lang.errorUpdating.replace('{error}', error.message), 'error');
                 }
             }
 
@@ -2079,6 +2735,7 @@ async fixSuperAdminPermissions() {
 
             showStaffDetailsModal(staff) {
                 const content = document.getElementById('staffDetailsContent');
+                const lang = this.getLang();
                 const lastLogin = this.formatLastLogin(staff.lastLogin);
                 const isSuperAdmin = staff.role === 'super_admin';
                 
@@ -2097,24 +2754,27 @@ async fixSuperAdminPermissions() {
                         </div>
                         <div class="staff-detail-meta">
                             <div class="detail-item">
-                                <label>Role:</label>
+                                <label>${lang.role || 'Role'}:</label>
                                 <span>${this.getRoleText(staff.role)}</span>
                             </div>
                             <div class="detail-item">
-                                <label>Bergabung:</label>
+                                <label>${lang.joined || 'Bergabung'}:</label>
                                 <span>${this.formatDate(staff.joinDate)}</span>
                             </div>
                             <div class="detail-item">
-                                <label>Terakhir Login:</label>
+                                <label>${lang.lastLogin || 'Terakhir Login'}:</label>
                                 <span>${lastLogin}</span>
                             </div>
                             <div class="detail-item">
-                                <label>ID Staff:</label>
+                                <label>${lang.staffId || 'ID Staff'}:</label>
                                 <span>${staff.id}</span>
                             </div>
                         </div>
                     </div>
                 `;
+                
+                const detailTitle = document.getElementById('staff-detail-title');
+                if (detailTitle) detailTitle.textContent = lang.staffDetailTitle;
                 
                 document.getElementById('staffDetailsModal').classList.add('active');
             }
@@ -2124,20 +2784,22 @@ async fixSuperAdminPermissions() {
             }
 
             getStatusText(status) {
+                const lang = this.getLang();
                 const statusMap = {
-                    'active': 'Aktif',
-                    'suspended': 'Suspended',
-                    'pending': 'Pending'
+                    'active': lang.active || 'Aktif',
+                    'suspended': lang.suspended || 'Suspended',
+                    'pending': lang.pending || 'Pending'
                 };
                 return statusMap[status] || status;
             }
 
             getRoleText(role) {
+                const lang = this.getLang();
                 const roleMap = {
-                    'super_admin': 'Super Admin',
-                    'admin': 'Admin',
-                    'staff': 'Staff',
-                    'support': 'Support'
+                    'super_admin': lang.superAdmin || 'Super Admin',
+                    'admin': lang.admin || 'Admin',
+                    'staff': lang.staff || 'Staff',
+                    'support': lang.support || 'Support'
                 };
                 return roleMap[role] || role;
             }
@@ -2154,9 +2816,10 @@ async fixSuperAdminPermissions() {
             }
 
             formatDate(dateString) {
+                const lang = this.getLang();
                 try {
                     const date = new Date(dateString);
-                    return date.toLocaleDateString('id-ID', {
+                    return date.toLocaleDateString(currentLanguage === 'id' ? 'id-ID' : currentLanguage === 'ja' ? 'ja-JP' : currentLanguage === 'zh' ? 'zh-CN' : 'en-US', {
                         day: 'numeric',
                         month: 'long',
                         year: 'numeric'
@@ -2167,7 +2830,8 @@ async fixSuperAdminPermissions() {
             }
 
             formatLastLogin(lastLogin) {
-                if (!lastLogin) return 'Belum pernah login';
+                const lang = this.getLang();
+                if (!lastLogin) return lang.lastLoginNever || 'Belum pernah login';
                 
                 try {
                     let loginDate;
@@ -2179,7 +2843,7 @@ async fixSuperAdminPermissions() {
                     } else if (typeof lastLogin === 'string') {
                         loginDate = new Date(lastLogin);
                     } else {
-                        return 'Data tidak valid';
+                        return lang.invalidData || 'Data tidak valid';
                     }
                     
                     const now = new Date();
@@ -2188,19 +2852,19 @@ async fixSuperAdminPermissions() {
                     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
                     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
                     
-                    if (diffMinutes < 1) return 'Baru saja';
-                    if (diffMinutes < 60) return `${diffMinutes} menit yang lalu`;
-                    if (diffHours < 24) return `${diffHours} jam yang lalu`;
-                    if (diffDays === 1) return 'Kemarin';
-                    if (diffDays < 7) return `${diffDays} hari yang lalu`;
+                    if (diffMinutes < 1) return lang.justNow || 'Baru saja';
+                    if (diffMinutes < 60) return `${diffMinutes} ${lang.minutesAgo || 'menit yang lalu'}`;
+                    if (diffHours < 24) return `${diffHours} ${lang.hoursAgo || 'jam yang lalu'}`;
+                    if (diffDays === 1) return lang.yesterday || 'Kemarin';
+                    if (diffDays < 7) return `${diffDays} ${lang.daysAgo || 'hari yang lalu'}`;
                     
-                    return loginDate.toLocaleDateString('id-ID', {
+                    return loginDate.toLocaleDateString(currentLanguage === 'id' ? 'id-ID' : currentLanguage === 'ja' ? 'ja-JP' : currentLanguage === 'zh' ? 'zh-CN' : 'en-US', {
                         day: 'numeric',
                         month: 'short',
                         year: 'numeric'
                     });
                 } catch (error) {
-                    return 'Data tidak valid';
+                    return lang.invalidData || 'Data tidak valid';
                 }
             }
 

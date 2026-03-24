@@ -1,10 +1,10 @@
-// sidebar-loader.js - SIMPLIFIED VERSION
+// sidebar-loader.js - WITH MENU ITEMS REMOVED
 class SidebarLoader {
     constructor() {
         this.sidebarContainer = document.getElementById('sidebar-container');
         
-        // Sistem terjemahan yang lebih terstruktur
-        this.translations = this.createTranslationSystem();
+        // Sistem terjemahan yang lebih lengkap untuk semua menu
+        this.translations = this.createFullTranslationSystem();
         
         this.currentLanguage = localStorage.getItem('language') || 'id';
         this.currentUserRole = 'user';
@@ -18,16 +18,8 @@ class SidebarLoader {
         this.log('SidebarLoader initialized');
     }
 
-    // ========== SIMPLIFIED FIREBASE HANDLING ==========
-    async initializeFirebase() {
-        // Tidak perlu inisialisasi Firebase lagi di sini
-        // Kita akan gunakan data dari sessionStorage saja
-        this.log('Firebase initialization skipped - using session storage');
-        return true;
-    }
-
-    // ========== TRANSLATION SYSTEM ==========
-    createTranslationSystem() {
+    // ========== COMPLETE TRANSLATION SYSTEM ==========
+    createFullTranslationSystem() {
         return {
             id: {
                 dashboardTitle: "CSS Dashboard",
@@ -35,39 +27,52 @@ class SidebarLoader {
                     reports: "Laporan",
                     maintenance: "Pemeliharaan",
                     performance: "Kinerja",
-                    daily: "Harian",
-                    admin: "Administrator"
+                    admin: "Administrator",
+                    promotions: "Promosi"
                 },
                 menuItems: {
+                    // Main Menu
                     dashboardOverview: "Dashboard Overview",
+                    
+                    // Reports
                     reportsMenu: "Laporan",
                     pendingReports: "Laporan Tertunda",
                     solvedReports: "Laporan Selesai",
+                    
+                    // Maintenance
                     maintenanceMenu: "Pemeliharaan",
                     pendingMaintenance: "Pemeliharaan Tertunda",
                     completedMaintenance: "Pemeliharaan Selesai",
+                    
+                    // Releases
                     releases: "Rilis",
                     newFeatures: "Fitur Baru",
                     newGames: "Game Baru",
+                    
+                    // KPI
                     kpiPoints: "KPI Points",
                     kpiCss: "KPI CSS",
                     kpiHistory: "History KPI",
+                    
+                    // Ideas & Research
                     ideasSuggestions: "Ide & Saran",
                     research: "Riset",
                     chatResponse: "Respon Chat",
-                    dailyRoutine: "Rutinitas Harian",
-                    dailyTasks: "Tugas Harian",
-                    taskHistory: "Riwayat Tugas",
+                    
+                    // Promosi Panel
+                    promosiPanel: "Promosi Panel",
+                    promosiStatistics: "Statistik",
+                    promosiLeads: "Leads",
+                    promosiReport: "Report Promo",
+                    
+                    // Additional Menus
                     staffAccount: "Akun Staff",
-                    userManagement: "Manajemen Pengguna",
-                    systemSettings: "Pengaturan Sistem",
-                    superAdmin: "Super Admin",
                     topUpCredit: "Top Up Kredit",
                     eventProvider: "Penyedia Event",
-                    weeklyMeetings: "Ide  Saran Agent",
-                    phishingAlerts: "Peringatan Phishing",
                     shiftSchedule: "Jadwal Shift",
                     settings: "Pengaturan",
+                    
+                    // Actions
                     logout: "Keluar",
                     darkMode: "Mode Gelap",
                     lightMode: "Mode Terang"
@@ -79,39 +84,52 @@ class SidebarLoader {
                     reports: "Reports",
                     maintenance: "Maintenance",
                     performance: "Performance",
-                    daily: "Daily",
-                    admin: "Administrator"
+                    admin: "Administrator",
+                    promotions: "Promotions"
                 },
                 menuItems: {
+                    // Main Menu
                     dashboardOverview: "Dashboard Overview",
+                    
+                    // Reports
                     reportsMenu: "Reports",
                     pendingReports: "Pending Reports",
                     solvedReports: "Solved Reports",
+                    
+                    // Maintenance
                     maintenanceMenu: "Maintenance",
                     pendingMaintenance: "Pending Maintenance",
                     completedMaintenance: "Completed Maintenance",
+                    
+                    // Releases
                     releases: "Releases",
                     newFeatures: "New Features",
                     newGames: "New Games",
+                    
+                    // KPI
                     kpiPoints: "KPI Points",
                     kpiCss: "KPI CSS",
                     kpiHistory: "KPI History",
+                    
+                    // Ideas & Research
                     ideasSuggestions: "Ideas & Suggestions",
                     research: "Research",
                     chatResponse: "Chat Response",
-                    dailyRoutine: "Daily Routine",
-                    dailyTasks: "Daily Tasks",
-                    taskHistory: "Task History",
+                    
+                    // Promosi Panel
+                    promosiPanel: "Promotion Panel",
+                    promosiStatistics: "Statistics",
+                    promosiLeads: "Leads",
+                    promosiReport: "Promotion Report",
+                    
+                    // Additional Menus
                     staffAccount: "Staff Account",
-                    userManagement: "User Management",
-                    systemSettings: "System Settings",
-                    superAdmin: "Super Admin",
                     topUpCredit: "Top Up Credit",
                     eventProvider: "Event Provider",
-                    weeklyMeetings: "Agent Recommendations",
-                    phishingAlerts: "Phishing Alerts",
                     shiftSchedule: "Shift Schedule",
                     settings: "Settings",
+                    
+                    // Actions
                     logout: "Logout",
                     darkMode: "Dark Mode",
                     lightMode: "Light Mode"
@@ -123,39 +141,52 @@ class SidebarLoader {
                     reports: "レポート",
                     maintenance: "メンテナンス",
                     performance: "パフォーマンス",
-                    daily: "日次",
-                    admin: "管理者"
+                    admin: "管理者",
+                    promotions: "プロモーション"
                 },
                 menuItems: {
+                    // Main Menu
                     dashboardOverview: "ダッシュボード概要",
+                    
+                    // Reports
                     reportsMenu: "レポート",
                     pendingReports: "保留中のレポート",
                     solvedReports: "解決済みレポート",
+                    
+                    // Maintenance
                     maintenanceMenu: "メンテナンス",
                     pendingMaintenance: "保留中のメンテナンス",
                     completedMaintenance: "完了済みメンテナンス",
+                    
+                    // Releases
                     releases: "リリース",
                     newFeatures: "新機能",
                     newGames: "新ゲーム",
+                    
+                    // KPI
                     kpiPoints: "KPIポイント",
                     kpiCss: "KPI CSS",
                     kpiHistory: "KPI履歴",
+                    
+                    // Ideas & Research
                     ideasSuggestions: "アイデアと提案",
                     research: "リサーチ",
                     chatResponse: "チャット応答",
-                    dailyRoutine: "日次ルーチン",
-                    dailyTasks: "日次タスク",
-                    taskHistory: "タスク履歴",
+                    
+                    // Promosi Panel
+                    promosiPanel: "プロモーションパネル",
+                    promosiStatistics: "統計",
+                    promosiLeads: "リード",
+                    promosiReport: "プロモーションレポート",
+                    
+                    // Additional Menus
                     staffAccount: "スタッフアカウント",
-                    userManagement: "ユーザー管理",
-                    systemSettings: "システム設定",
-                    superAdmin: "スーパー管理者",
                     topUpCredit: "クレジットチャージ",
                     eventProvider: "イベントプロバイダー",
-                    weeklyMeetings: "エージェントからの提案",
-                    phishingAlerts: "フィッシング警告",
                     shiftSchedule: "シフトスケジュール",
                     settings: "設定",
+                    
+                    // Actions
                     logout: "ログアウト",
                     darkMode: "ダークモード",
                     lightMode: "ライトモード"
@@ -167,39 +198,52 @@ class SidebarLoader {
                     reports: "报告",
                     maintenance: "维护",
                     performance: "性能",
-                    daily: "日常",
-                    admin: "管理员"
+                    admin: "管理员",
+                    promotions: "促销"
                 },
                 menuItems: {
+                    // Main Menu
                     dashboardOverview: "仪表板概览",
+                    
+                    // Reports
                     reportsMenu: "报告",
                     pendingReports: "待处理报告",
                     solvedReports: "已解决报告",
+                    
+                    // Maintenance
                     maintenanceMenu: "维护",
                     pendingMaintenance: "待处理维护",
                     completedMaintenance: "已完成维护",
+                    
+                    // Releases
                     releases: "发布",
                     newFeatures: "新功能",
                     newGames: "新游戏",
+                    
+                    // KPI
                     kpiPoints: "KPI 积分",
                     kpiCss: "KPI CSS",
                     kpiHistory: "KPI历史",
+                    
+                    // Ideas & Research
                     ideasSuggestions: "想法与建议",
                     research: "研究",
                     chatResponse: "聊天回复",
-                    dailyRoutine: "日常例行",
-                    dailyTasks: "日常任务",
-                    taskHistory: "任务历史",
+                    
+                    // Promosi Panel
+                    promosiPanel: "促销面板",
+                    promosiStatistics: "统计",
+                    promosiLeads: "线索",
+                    promosiReport: "促销报告",
+                    
+                    // Additional Menus
                     staffAccount: "员工账户",
-                    userManagement: "用户管理",
-                    systemSettings: "系统设置",
-                    superAdmin: "超级管理员",
                     topUpCredit: "充值积分",
                     eventProvider: "活动提供商",
-                    weeklyMeetings: "代理建议",
-                    phishingAlerts: "网络钓鱼警报",
                     shiftSchedule: "轮班安排",
                     settings: "设置",
+                    
+                    // Actions
                     logout: "退出登录",
                     darkMode: "深色模式",
                     lightMode: "浅色模式"
@@ -253,8 +297,6 @@ class SidebarLoader {
     // ========== SIMPLIFIED USER DATA ==========
     async initializeUserData() {
         try {
-            // SELALU gunakan data dari sessionStorage/localStorage
-            // Karena sudah divalidasi di index.html
             const sessionUser = sessionStorage.getItem("user");
             const localStorageUser = localStorage.getItem("currentUser");
             const isLoggedIn = sessionStorage.getItem("isLoggedIn");
@@ -263,6 +305,7 @@ class SidebarLoader {
                 const userData = JSON.parse(sessionUser || localStorageUser);
                 this.currentUserRole = userData.role || 'user';
                 this.currentUserId = userData.uid;
+                this.userData = userData;
                 
                 this.log('User data loaded from storage', {
                     role: this.currentUserRole,
@@ -272,14 +315,12 @@ class SidebarLoader {
                 return userData;
             }
             
-            // Jika tidak ada data login, redirect ke login
             this.log('No user data found, redirecting to login');
             window.location.href = 'index.html';
             return null;
             
         } catch (error) {
             this.error('Error initializing user data:', error);
-            // Redirect ke login jika error
             setTimeout(() => {
                 window.location.href = 'index.html';
             }, 1000);
@@ -287,7 +328,7 @@ class SidebarLoader {
         }
     }
 
-    // ========== TRANSLATION APPLICATION ==========
+    // ========== COMPLETE TRANSLATION APPLICATION ==========
     applyTranslations() {
         try {
             // Update dashboard title
@@ -301,12 +342,14 @@ class SidebarLoader {
             if (categories.length >= 1) categories[0].textContent = this.getCategory('reports');
             if (categories.length >= 2) categories[1].textContent = this.getCategory('maintenance');
             if (categories.length >= 3) categories[2].textContent = this.getCategory('performance');
-            if (categories.length >= 4) categories[3].textContent = this.getCategory('daily');
+            if (categories.length >= 4) categories[3] && (categories[3].textContent = this.getCategory('promotions'));
+            if (categories.length >= 5) categories[4] && (categories[4].textContent = this.getCategory('admin'));
 
-            // Find and update menu items by their data-page attribute
+            // Dashboard Overview
             const dashboardItem = document.querySelector('.menu-item[data-page="summary-dashboard.html"] .menu-text');
             if (dashboardItem) dashboardItem.textContent = this.getMenuItem('dashboardOverview');
             
+            // Reports section
             const reportsSubmenu = document.querySelector('.has-submenu:has(+ .submenu .menu-item[data-page="pending-reports.html"]) .menu-text');
             if (reportsSubmenu) reportsSubmenu.textContent = this.getMenuItem('reportsMenu');
             
@@ -316,6 +359,7 @@ class SidebarLoader {
             const solvedReports = document.querySelector('.menu-item[data-page="solved-report.html"] .menu-text');
             if (solvedReports) solvedReports.textContent = this.getMenuItem('solvedReports');
             
+            // Maintenance section
             const maintenanceSubmenu = document.querySelector('.has-submenu:has(+ .submenu .menu-item[data-page="maintenance.html"]) .menu-text');
             if (maintenanceSubmenu) maintenanceSubmenu.textContent = this.getMenuItem('maintenanceMenu');
             
@@ -325,6 +369,7 @@ class SidebarLoader {
             const completedMaintenance = document.querySelector('.menu-item[data-page="completed-report.html"] .menu-text');
             if (completedMaintenance) completedMaintenance.textContent = this.getMenuItem('completedMaintenance');
             
+            // Releases section
             const releasesSubmenu = document.querySelector('.has-submenu:has(+ .submenu .menu-item[data-page="releases-newfeature.html"]) .menu-text');
             if (releasesSubmenu) releasesSubmenu.textContent = this.getMenuItem('releases');
             
@@ -334,11 +379,15 @@ class SidebarLoader {
             const newGames = document.querySelector('.menu-item[data-page="releases-newgame.html"] .menu-text');
             if (newGames) newGames.textContent = this.getMenuItem('newGames');
             
+            // KPI section
             const kpiSubmenu = document.querySelector('.has-submenu:has(+ .submenu .menu-item[data-page="kpi-css.html"]) .menu-text');
             if (kpiSubmenu) kpiSubmenu.textContent = this.getMenuItem('kpiPoints');
             
             const kpiCss = document.querySelector('.menu-item[data-page="kpi-css.html"] .menu-text');
             if (kpiCss) kpiCss.textContent = this.getMenuItem('kpiCss');
+            
+            const kpiHistory = document.querySelector('.menu-item[data-page="kpi-history.html"] .menu-text');
+            if (kpiHistory) kpiHistory.textContent = this.getMenuItem('kpiHistory');
             
             const ideas = document.querySelector('.menu-item[data-page="ide-saran.html"] .menu-text');
             if (ideas) ideas.textContent = this.getMenuItem('ideasSuggestions');
@@ -349,15 +398,21 @@ class SidebarLoader {
             const chatResponse = document.querySelector('.menu-item[data-page="chat-response.html"] .menu-text');
             if (chatResponse) chatResponse.textContent = this.getMenuItem('chatResponse');
             
-            const dailySubmenu = document.querySelector('.has-submenu:has(+ .submenu .menu-item[data-page="daily-tasks.html"]) .menu-text');
-            if (dailySubmenu) dailySubmenu.textContent = this.getMenuItem('dailyRoutine');
+            // Promosi Panel - Main menu item
+            const promosiPanelItem = document.querySelector('.has-submenu[data-submenu="promosi-submenu"] .menu-text');
+            if (promosiPanelItem) promosiPanelItem.textContent = this.getMenuItem('promosiPanel');
             
-            const dailyTasks = document.querySelector('.menu-item[data-page="daily-tasks.html"] .menu-text');
-            if (dailyTasks) dailyTasks.textContent = this.getMenuItem('dailyTasks');
+            // Promosi Panel - Submenu items
+            const promosiStatistics = document.querySelector('#promosi-submenu .menu-item[data-page="promosi-statistik.html"] .menu-text');
+            if (promosiStatistics) promosiStatistics.textContent = this.getMenuItem('promosiStatistics');
             
-            const taskHistory = document.querySelector('.menu-item[data-page="task-history.html"] .menu-text');
-            if (taskHistory) taskHistory.textContent = this.getMenuItem('taskHistory');
+            const promosiLeads = document.querySelector('#promosi-submenu .menu-item[data-page="promosi-leads.html"] .menu-text');
+            if (promosiLeads) promosiLeads.textContent = this.getMenuItem('promosiLeads');
             
+            const promosiReport = document.querySelector('#promosi-submenu .menu-item[data-page="report-promo.html"] .menu-text');
+            if (promosiReport) promosiReport.textContent = this.getMenuItem('promosiReport');
+            
+            // Additional menus
             const staffAccount = document.querySelector('.menu-item[data-page="staff-account.html"] .menu-text');
             if (staffAccount) staffAccount.textContent = this.getMenuItem('staffAccount');
             
@@ -366,12 +421,6 @@ class SidebarLoader {
             
             const eventProvider = document.querySelector('.menu-item[data-page="eventprovider.html"] .menu-text');
             if (eventProvider) eventProvider.textContent = this.getMenuItem('eventProvider');
-            
-            const weeklyMeetings = document.querySelector('.menu-item[data-page="idesaran-agent.html"] .menu-text');
-            if (weeklyMeetings) weeklyMeetings.textContent = this.getMenuItem('weeklyMeetings');
-            
-            const phishingAlerts = document.querySelector('.menu-item[data-page="phishing.html"] .menu-text');
-            if (phishingAlerts) phishingAlerts.textContent = this.getMenuItem('phishingAlerts');
             
             const shiftSchedule = document.querySelector('.menu-item[data-page="jadwalshift.html"] .menu-text');
             if (shiftSchedule) shiftSchedule.textContent = this.getMenuItem('shiftSchedule');
@@ -728,6 +777,7 @@ class SidebarLoader {
                 </div>
                 
                 <div class="sidebar-menu">
+                    <!-- Dashboard Overview -->
                     <div class="menu-item" data-page="summary-dashboard.html">
                         <div class="menu-icon">
                             <i class="fas fa-tachometer-alt"></i>
@@ -735,6 +785,7 @@ class SidebarLoader {
                         <span class="menu-text">${this.getMenuItem('dashboardOverview')}</span>
                     </div>
                     
+                    <!-- Reports Section -->
                     <div class="menu-category">${this.getCategory('reports')}</div>
                     <div class="menu-item has-submenu">
                         <div class="menu-icon">
@@ -760,6 +811,7 @@ class SidebarLoader {
                         </div>
                     </div>
                     
+                    <!-- Maintenance Section -->
                     <div class="menu-category">${this.getCategory('maintenance')}</div>
                     <div class="menu-item has-submenu">
                         <div class="menu-icon">
@@ -785,6 +837,7 @@ class SidebarLoader {
                         </div>
                     </div>
 
+                    <!-- Releases Section -->
                     <div class="menu-item has-submenu">
                         <div class="menu-icon">
                             <i class="fas fa-rocket"></i>
@@ -809,6 +862,7 @@ class SidebarLoader {
                         </div>
                     </div>
                     
+                    <!-- Performance Section -->
                     <div class="menu-category">${this.getCategory('performance')}</div>
                     <div class="menu-item has-submenu">
                         <div class="menu-icon">
@@ -846,88 +900,85 @@ class SidebarLoader {
                         </div>
                     </div>
 
-                 <!-- MENU PROMOSI PANEL -->
-<div class="menu-item has-submenu" data-submenu="promosi-submenu">
-    <div class="menu-icon">
-        <i class="fas fa-bullhorn"></i>
-    </div>
-    <span class="menu-text">Promosi Panel</span>
-    <div class="submenu-indicator">
-        <i class="fas fa-chevron-right"></i>
-    </div>
-</div>
+                    <!-- Promosi Panel Section -->
+                    <div class="menu-category">${this.getCategory('promotions')}</div>
+                    <div class="menu-item has-submenu" data-submenu="promosi-submenu">
+                        <div class="menu-icon">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <span class="menu-text">${this.getMenuItem('promosiPanel')}</span>
+                        <div class="submenu-indicator">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    <div class="submenu" id="promosi-submenu">
+                        <div class="menu-item" data-page="promosi-statistik.html">
+                            <div class="menu-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <span class="menu-text">${this.getMenuItem('promosiStatistics')}</span>
+                        </div>
+                        <div class="menu-item" data-page="promosi-leads.html">
+                            <div class="menu-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <span class="menu-text">${this.getMenuItem('promosiLeads')}</span>
+                        </div>
+                        <div class="menu-item" data-page="report-promo.html">
+                            <div class="menu-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <span class="menu-text">${this.getMenuItem('promosiReport')}</span>
+                        </div>
+                    </div>
 
-<div class="submenu" id="promosi-submenu">
+                    ${isSuperAdmin ? `
+                    <!-- Admin Section (Super Admin Only) -->
+                    <div class="menu-category">${this.getCategory('admin')}</div>
+                    <div class="menu-item" data-page="staff-account.html">
+                        <div class="menu-icon">
+                            <i class="fas fa-user-friends"></i>
+                        </div>
+                        <span class="menu-text">${this.getMenuItem('staffAccount')}</span>
+                    </div>
+                    ` : ''}
 
-    <!-- 1. Statistik -->
-    <div class="menu-item" data-page="promosi-statistik.html">
-        <div class="menu-icon">
-            <i class="fas fa-chart-line"></i>
-        </div>
-        <span class="menu-text">Statistik</span>
-    </div>
+                    <!-- Additional Menus -->
+                    <div class="menu-item" data-page="topup-credit.html">
+                        <div class="menu-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <span class="menu-text">${this.getMenuItem('topUpCredit')}</span>
+                    </div>  
 
-    <!-- 2. Leads -->
-    <div class="menu-item" data-page="promosi-leads.html">
-        <div class="menu-icon">
-            <i class="fas fa-users"></i>
-        </div>
-        <span class="menu-text">Leads</span>
-    </div>
+                    <div class="menu-item" data-page="eventprovider.html">
+                        <div class="menu-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <span class="menu-text">${this.getMenuItem('eventProvider')}</span>
+                    </div>
 
-    <!-- 3. Report Promo -->
-    <div class="menu-item" data-page="report-promo.html">
-        <div class="menu-icon">
-            <i class="fas fa-file-alt"></i>
-        </div>
-        <span class="menu-text">Report Promo</span>
-    </div>
+                    <div class="menu-item" data-page="jadwalshift.html">
+                        <div class="menu-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <span class="menu-text">${this.getMenuItem('shiftSchedule')}</span>
+                    </div>
 
-</div>
+                    <div class="menu-item" data-page="pengaturan.html">
+                        <div class="menu-icon">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <span class="menu-text">${this.getMenuItem('settings')}</span>
+                    </div>
 
-${isSuperAdmin ? `
-<div class="menu-item" data-page="staff-account.html">
-    <div class="menu-icon">
-        <i class="fas fa-user-friends"></i>
-    </div>
-    <span class="menu-text">${this.getMenuItem('staffAccount')}</span>
-</div>
-` : ''}
-
-<div class="menu-item" data-page="topup-credit.html">
-    <div class="menu-icon">
-        <i class="fas fa-coins"></i>
-    </div>
-    <span class="menu-text">${this.getMenuItem('topUpCredit')}</span>
-</div>  
-
-<div class="menu-item" data-page="eventprovider.html">
-    <div class="menu-icon">
-        <i class="fas fa-trophy"></i>
-    </div>
-    <span class="menu-text">${this.getMenuItem('eventProvider')}</span>
-</div>
-
-<div class="menu-item" data-page="jadwalshift.html">
-    <div class="menu-icon">
-        <i class="fas fa-calendar-alt"></i>
-    </div>
-    <span class="menu-text">${this.getMenuItem('shiftSchedule')}</span>
-</div>
-
-<div class="menu-item" data-page="pengaturan.html">
-    <div class="menu-icon">
-        <i class="fas fa-cog"></i>
-    </div>
-    <span class="menu-text">${this.getMenuItem('settings')}</span>
-</div>
-
-<div class="menu-item logout-btn" id="logoutButton">
-    <div class="menu-icon">
-        <i class="fas fa-sign-out-alt"></i>
-    </div>
-    <span class="menu-text">${this.getMenuItem('logout')}</span>
-</div>
+                    <!-- Logout -->
+                    <div class="menu-item logout-btn" id="logoutButton">
+                        <div class="menu-icon">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </div>
+                        <span class="menu-text">${this.getMenuItem('logout')}</span>
+                    </div>
                 </div>
             </div>
         `;
@@ -1083,10 +1134,11 @@ ${isSuperAdmin ? `
         const allowedPages = [
             'summary-dashboard.html', 'pending-reports.html', 'solved-report.html',
             'maintenance.html', 'completed-report.html', 'releases-newfeature.html',
-            'releases-newgame.html', 'kpi-css.html', 'ide-saran.html',
-            'research.html', 'chat-response.html', 'promosi-leads.html', 'promosi-statistik.html', 'report-promo.html',
+            'releases-newgame.html', 'kpi-css.html', 'kpi-history.html', 'ide-saran.html',
+            'research.html', 'chat-response.html',
+            'promosi-leads.html', 'promosi-statistik.html', 'report-promo.html',
             'staff-account.html', 'topup-credit.html', 'eventprovider.html', 
-            'idesaran-agent.html', 'phishing.html', 'jadwalshift.html', 'pengaturan.html',
+            'jadwalshift.html', 'pengaturan.html',
             'index.html'
         ];
         

@@ -746,7 +746,7 @@ body.admin-mode .masteragent-history-table td:nth-child(7) {
             
             <div class="form-group">
                 <label for="topupAmount">Jumlah Top Up</label>
-                <input type="number" id="topupAmount" class="form-input" placeholder="Masukkan jumlah top up" min="1" required>
+                <input type="text" id="topupAmount" class="form-input" placeholder="Masukkan jumlah top up">
             </div>
             
             <div class="form-group">
@@ -2323,25 +2323,25 @@ async function revertCreditFromHistory(historyData, historyType) {
         });
         
         document.getElementById('topupAmount')?.addEventListener('input', function() {
-            const brandSelect = document.getElementById('brandSelect');
-            const category = brandSelect.options[brandSelect.selectedIndex]?.dataset.category;
-            const currentCreditInput = document.getElementById('currentCredit');
-            const newCreditInput = document.getElementById('newCredit');
-            
-            if (brandSelect.value && currentCreditInput.value && category) {
-                const currentCredit = parseFormattedNumber(currentCreditInput.value);
-                const topupAmount = parseInt(this.value) || 0;
-                
-                if (topupAmount > currentCredit) {
-                    newCreditInput.value = "Credit tidak mencukupi!";
-                    newCreditInput.style.color = "var(--danger)";
-                } else {
-                    const newCredit = currentCredit - topupAmount;
-                    newCreditInput.value = formatNumber(newCredit);
-                    newCreditInput.style.color = "var(--text-primary)";
-                }
-            }
-        });
+    const brandSelect = document.getElementById('brandSelect');
+    const category = brandSelect.options[brandSelect.selectedIndex]?.dataset.category;
+    const currentCreditInput = document.getElementById('currentCredit');
+    const newCreditInput = document.getElementById('newCredit');
+
+    if (brandSelect.value && currentCreditInput.value && category) {
+        const currentCredit = parseFormattedNumber(currentCreditInput.value);
+        const topupAmount = parseFormattedNumber(this.value); // ganti ini
+
+        if (topupAmount > currentCredit) {
+            newCreditInput.value = "Credit tidak mencukupi!";
+            newCreditInput.style.color = "var(--danger)";
+        } else {
+            const newCredit = currentCredit - topupAmount;
+            newCreditInput.value = formatNumber(newCredit);
+            newCreditInput.style.color = "var(--text-primary)";
+        }
+    }
+});
         
         // Event listener untuk form submissions
         document.getElementById('masteragentForm')?.addEventListener('submit', async function(e) {
@@ -2406,7 +2406,9 @@ async function revertCreditFromHistory(historyData, historyType) {
     const brandSelect = document.getElementById('brandSelect');
     const brand = brandSelect.value;
     const category = brandSelect.options[brandSelect.selectedIndex]?.dataset.category;
-    const amount = parseInt(document.getElementById('topupAmount').value);
+const amount = parseInt(
+    document.getElementById('topupAmount').value.replace(/\./g, '')
+);
     
     if (!brand || !category || isNaN(amount) || amount <= 0) {
         showToast('Semua field harus diisi dengan benar', 'error');
@@ -3834,6 +3836,13 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         initDateFilter();
     }, 200);
+});
+const topupInput = document.getElementById('topupAmount');
+
+topupInput.addEventListener('input', function (e) {
+    let value = e.target.value.replace(/\D/g, ''); // hanya angka
+    value = new Intl.NumberFormat('id-ID').format(value);
+    e.target.value = value;
 });
 </script>
 </body>

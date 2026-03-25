@@ -38,6 +38,7 @@ class SidebarLoader {
                     reportsMenu: "Laporan",
                     pendingReports: "Laporan Tertunda",
                     solvedReports: "Laporan Selesai",
+                     ideasAgent: "Ide Saran Agent",
                     
                     // Maintenance
                     maintenanceMenu: "Pemeliharaan",
@@ -95,6 +96,7 @@ class SidebarLoader {
                     reportsMenu: "Reports",
                     pendingReports: "Pending Reports",
                     solvedReports: "Solved Reports",
+                     ideasAgent: "Ideas & Suggestions",
                     
                     // Maintenance
                     maintenanceMenu: "Maintenance",
@@ -152,6 +154,7 @@ class SidebarLoader {
                     reportsMenu: "レポート",
                     pendingReports: "保留中のレポート",
                     solvedReports: "解決済みレポート",
+                    ideasAgent: "アイデアと提案エージェント",
                     
                     // Maintenance
                     maintenanceMenu: "メンテナンス",
@@ -209,6 +212,7 @@ class SidebarLoader {
                     reportsMenu: "报告",
                     pendingReports: "待处理报告",
                     solvedReports: "已解决报告",
+                    ideasAgent: "想法与建议代理",
                     
                     // Maintenance
                     maintenanceMenu: "维护",
@@ -358,6 +362,10 @@ class SidebarLoader {
             
             const solvedReports = document.querySelector('.menu-item[data-page="solved-report.html"] .menu-text');
             if (solvedReports) solvedReports.textContent = this.getMenuItem('solvedReports');
+
+            const ideasAgent = document.querySelector('.menu-item[data-page="idesaran-agent.html"] .menu-text');
+        if (ideasAgent) ideasAgent.textContent = this.getMenuItem('ideasAgent');
+        
             
             // Maintenance section
             const maintenanceSubmenu = document.querySelector('.has-submenu:has(+ .submenu .menu-item[data-page="maintenance.html"]) .menu-text');
@@ -809,6 +817,12 @@ class SidebarLoader {
                             </div>
                             <span class="menu-text">${this.getMenuItem('solvedReports')}</span>
                         </div>
+                          <div class="menu-item" data-page="idesaran-agent.html">
+        <div class="menu-icon">
+            <i class="fas fa-comment-dots"></i>
+        </div>
+        <span class="menu-text">Ide Saran Agent</span>
+    </div>
                     </div>
                     
                     <!-- Maintenance Section -->
@@ -834,31 +848,6 @@ class SidebarLoader {
                                 <i class="fas fa-check-double"></i>
                             </div>
                             <span class="menu-text">${this.getMenuItem('completedMaintenance')}</span>
-                        </div>
-                    </div>
-
-                    <!-- Releases Section -->
-                    <div class="menu-item has-submenu">
-                        <div class="menu-icon">
-                            <i class="fas fa-rocket"></i>
-                        </div>
-                        <span class="menu-text">${this.getMenuItem('releases')}</span>
-                        <div class="submenu-indicator">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                    <div class="submenu">
-                        <div class="menu-item" data-page="releases-newfeature.html">
-                            <div class="menu-icon">
-                                <i class="fas fa-cog"></i>
-                            </div>
-                            <span class="menu-text">${this.getMenuItem('newFeatures')}</span>
-                        </div>
-                        <div class="menu-item" data-page="releases-newgame.html">
-                            <div class="menu-icon">
-                                <i class="fas fa-gamepad"></i>
-                            </div>
-                            <span class="menu-text">${this.getMenuItem('newGames')}</span>
                         </div>
                     </div>
                     
@@ -1131,16 +1120,16 @@ class SidebarLoader {
     }
 
     handleMenuNavigation(pageUrl) {
-        const allowedPages = [
-            'summary-dashboard.html', 'pending-reports.html', 'solved-report.html',
-            'maintenance.html', 'completed-report.html', 'releases-newfeature.html',
-            'releases-newgame.html', 'kpi-css.html', 'kpi-history.html', 'ide-saran.html',
-            'research.html', 'chat-response.html',
-            'promosi-leads.html', 'promosi-statistik.html', 'report-promo.html',
-            'staff-account.html', 'topup-credit.html', 'eventprovider.html', 
-            'jadwalshift.html', 'pengaturan.html',
-            'index.html'
-        ];
+    const allowedPages = [
+        'summary-dashboard.html', 'pending-reports.html', 'solved-report.html',
+        'maintenance.html', 'completed-report.html', 'kpi-css.html', 'kpi-history.html', 'ide-saran.html',
+        'research.html', 'chat-response.html',
+        'promosi-leads.html', 'promosi-statistik.html', 'report-promo.html',
+        'staff-account.html', 'topup-credit.html', 'eventprovider.html', 
+        'jadwalshift.html', 'pengaturan.html',
+        'index.html',
+        'idesaran-agent.html'  // ← TAMBAHKAN INI
+    ];
         
         if (!allowedPages.includes(pageUrl)) {
             this.error('Invalid page navigation attempt:', pageUrl);

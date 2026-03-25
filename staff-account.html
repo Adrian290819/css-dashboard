@@ -956,14 +956,9 @@
                         </select>
                     </div>
                     
-                    <button class="btn btn-primary" id="addStaffBtn">
-                        <i class="fas fa-plus"></i>
-                        <span id="add-staff-btn-text">Tambah Staff</span>
-                    </button>
-                    
                     <button class="btn btn-warning" id="addSuperAdminBtn">
                         <i class="fas fa-crown"></i>
-                        <span id="add-super-admin-btn-text">Tambah Super Admin</span>
+                        <span id="add-super-admin-btn-text">Tambah Admin</span>
                     </button>
                 </div>
             </div>
@@ -1203,8 +1198,7 @@
                 
                 // Staff List Section
                 "staffListTitle": "Daftar Staff",
-                "addStaff": "Tambah Staff",
-                "addSuperAdmin": "Tambah Super Admin",
+                "addSuperAdmin": "Tambah Admin",
                 
                 // Filter Labels
                 "filterRole": "Role",
@@ -1285,7 +1279,6 @@
                 "verify": "Verifikasi",
                 
                 // Notifications
-                "staffAdded": "Staff berhasil ditambahkan",
                 "superAdminAdded": "Super Admin berhasil ditambahkan",
                 "staffUpdated": "Staff berhasil diperbarui",
                 "passwordReset": "Password berhasil direset",
@@ -1313,7 +1306,7 @@
                 // Staff List Section
                 "staffListTitle": "Staff List",
                 "addStaff": "Add Staff",
-                "addSuperAdmin": "Add Super Admin",
+                "addSuperAdmin": "Add Admin",
                 
                 // Filter Labels
                 "filterRole": "Role",
@@ -1653,8 +1646,6 @@
             const staffListTitle = document.getElementById('staff-list-title');
             if (staffListTitle && lang.staffListTitle) staffListTitle.textContent = lang.staffListTitle;
             
-            const addStaffBtnText = document.getElementById('add-staff-btn-text');
-            if (addStaffBtnText && lang.addStaff) addStaffBtnText.textContent = lang.addStaff;
             
             const addSuperAdminBtnText = document.getElementById('add-super-admin-btn-text');
             if (addSuperAdminBtnText && lang.addSuperAdmin) addSuperAdminBtnText.textContent = lang.addSuperAdmin;
@@ -1906,7 +1897,6 @@
                 this.searchInput = document.getElementById('searchStaff');
                 this.filterRole = document.getElementById('filterRole');
                 this.filterStatus = document.getElementById('filterStatus');
-                this.addStaffBtn = document.getElementById('addStaffBtn');
                 this.addSuperAdminBtn = document.getElementById('addSuperAdminBtn');
                 this.addFirstStaffBtn = document.getElementById('addFirstStaffBtn');
                 this.addStaffForm = document.getElementById('addStaffForm');
@@ -1929,9 +1919,6 @@
                     this.filterStatus.addEventListener('change', () => this.filterStaff());
                 }
                 
-                if (this.addStaffBtn) {
-                    this.addStaffBtn.addEventListener('click', () => this.openAddStaffModal('staff'));
-                }
                 
                 if (this.addSuperAdminBtn) {
                     this.addSuperAdminBtn.addEventListener('click', () => this.openSuperAdminVerification());

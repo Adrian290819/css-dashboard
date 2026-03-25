@@ -34,7 +34,25 @@
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--border-color);
 }
+/* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
 
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-full);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: var(--radius-full);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
 /* ========== PERBAIKAN STATISTIC CARDS ========== */
 .filter-panel {
     background: var(--card-bg);
@@ -2404,7 +2422,24 @@ async function showReportDetails(reportId) {
     
     // Get user names
     const reportedBy = await getCachedUserName(report.userId);
-    const completedBy = await getCachedUserName(report.completedBy);
+    
+    // PERBAIKAN: Dapatkan nama yang menyelesaikan report
+    let completedBy = 'N/A';
+    
+    // Cek apakah ada completedByName (dari data lama)
+    if (report.completedByName) {
+        completedBy = report.completedByName;
+    } 
+    // Jika tidak ada, coba ambil dari completedBy (UID)
+    else if (report.completedBy) {
+        completedBy = await getCachedUserName(report.completedBy);
+    }
+    // Cek field lain yang mungkin digunakan
+    else if (report.resolvedBy) {
+        completedBy = await getCachedUserName(report.resolvedBy);
+    }
+    
+    console.log(`Completed by: ${completedBy} (UID: ${report.completedBy})`);
     
     // Calculate resolution time
     let resolutionTime = 'N/A';

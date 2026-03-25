@@ -2571,86 +2571,106 @@
 
         // ========== FUNGSI UTAMA: Transfer Data ke Solved Reports ==========
         async function markReportAsComplete() {
-            const resolutionDescription = document.getElementById('resolutionDescription').value;
-            
-            if (!resolutionDescription) {
-                showToast('Please provide resolution details!', 'error');
-                return;
-            }
-            
-            if (!currentReportId) {
-                showToast('No report selected!', 'error');
-                return;
-            }
-            
+    const resolutionDescription = document.getElementById('resolutionDescription').value;
+    
+    if (!resolutionDescription) {
+        showToast('Please provide resolution details!', 'error');
+        return;
+    }
+    
+    if (!currentReportId) {
+        showToast('No report selected!', 'error');
+        return;
+    }
+    
+    try {
+        // Dapatkan data laporan dari pendingReports
+        const doc = await db.collection('pendingReports').doc(currentReportId).get();
+        
+        if (!doc.exists) {
+            showToast('Report not found!', 'error');
+            return;
+        }
+        
+        const reportData = doc.data();
+        
+        // PERBAIKAN: Dapatkan data user yang sedang login
+        let completedByName = 'Unknown';
+        let completedByUid = currentUser?.uid || null;
+        
+        // Coba dapatkan nama dari Firestore jika ada
+        if (currentUser) {
             try {
-                // Dapatkan data laporan dari pendingReports
-                const doc = await db.collection('pendingReports').doc(currentReportId).get();
-                
-                if (!doc.exists) {
-                    showToast('Report not found!', 'error');
-                    return;
+                const userDoc = await db.collection('users').doc(currentUser.uid).get();
+                if (userDoc.exists) {
+                    completedByName = userDoc.data().name || currentUser.displayName || 'Unknown';
+                } else {
+                    completedByName = currentUser.displayName || 'Unknown';
                 }
-                
-                const reportData = doc.data();
-                
-                // Buat data untuk solvedReports dengan semua field yang diperlukan
-                const solvedReportData = {
-                    title: reportData.title,
-                    category: reportData.category,
-                    brand: reportData.brand,
-                    description: reportData.description,
-                    userId: reportData.userId,
-                    reportedBy: reportData.reportedBy || currentUser.displayName || 'Unknown',
-                    priority: reportData.priority || 'medium',
-                    status: 'completed',
-                    dateCreated: reportData.dateCreated,
-                    dateSolved: new Date(),
-                    dateUpdated: new Date(),
-                    resolution: resolutionDescription,
-                    completedBy: currentUser.displayName || 'Unknown',
-                    dueDate: reportData.dueDate,
-                    originalReportId: currentReportId
-                };
-                
-                // Gunakan batch write untuk operasi atomik
-                const batch = db.batch();
-                
-                // Tambahkan ke solvedReports
-                const solvedReportRef = db.collection('solvedReports').doc(currentReportId);
-                batch.set(solvedReportRef, solvedReportData);
-                
-                // Hapus dari pendingReports
-                const pendingReportRef = db.collection('pendingReports').doc(currentReportId);
-                batch.delete(pendingReportRef);
-                
-                // Commit batch operation
-                await batch.commit();
-                
-                // Tambahkan notifikasi
-                addNotification({
-                    type: 'report_solved',
-                    message: `Report "${reportData.title}" has been marked as completed`,
-                    reportId: currentReportId
-                });
-                
-                showToast('Report marked as completed successfully!');
-                
-                // Tutup modal
-                const markCompleteModal = document.getElementById('markCompleteModal');
-                if (markCompleteModal) {
-                    markCompleteModal.classList.remove('active');
-                }
-                document.body.style.overflow = '';
-                
-                // Perbarui daftar laporan
-                renderReportCards();
-                
             } catch (error) {
-                console.error("Error marking report as complete:", error);
-                showToast('Error marking report as complete', 'error');
+                console.error("Error getting user data:", error);
+                completedByName = currentUser.displayName || 'Unknown';
             }
         }
+        
+        // Buat data untuk solvedReports dengan semua field yang diperlukan
+        const solvedReportData = {
+            title: reportData.title,
+            category: reportData.category,
+            brand: reportData.brand,
+            description: reportData.description,
+            userId: reportData.userId,
+            reportedBy: reportData.reportedBy || completedByName,
+            priority: reportData.priority || 'medium',
+            status: 'completed',
+            dateCreated: reportData.dateCreated,
+            dateSolved: new Date(),
+            dateUpdated: new Date(),
+            resolution: resolutionDescription,
+            completedBy: completedByUid,      // <-- SIMPAN UID UNTUK REFERENSI
+            completedByName: completedByName, // <-- SIMPAN NAMA UNTUK TAMPILAN
+            dueDate: reportData.dueDate,
+            originalReportId: currentReportId
+        };
+        
+        // Gunakan batch write untuk operasi atomik
+        const batch = db.batch();
+        
+        // Tambahkan ke solvedReports
+        const solvedReportRef = db.collection('solvedReports').doc(currentReportId);
+        batch.set(solvedReportRef, solvedReportData);
+        
+        // Hapus dari pendingReports
+        const pendingReportRef = db.collection('pendingReports').doc(currentReportId);
+        batch.delete(pendingReportRef);
+        
+        // Commit batch operation
+        await batch.commit();
+        
+        // Tambahkan notifikasi
+        addNotification({
+            type: 'report_solved',
+            message: `Report "${reportData.title}" has been marked as completed`,
+            reportId: currentReportId
+        });
+        
+        showToast('Report marked as completed successfully!');
+        
+        // Tutup modal
+        const markCompleteModal = document.getElementById('markCompleteModal');
+        if (markCompleteModal) {
+            markCompleteModal.classList.remove('active');
+        }
+        document.body.style.overflow = '';
+        
+        // Perbarui daftar laporan
+        renderReportCards();
+        
+    } catch (error) {
+        console.error("Error marking report as complete:", error);
+        showToast('Error marking report as complete', 'error');
+    }
+}
 
         // Fungsi untuk menampilkan kartu laporan
         async function renderReportCards() {

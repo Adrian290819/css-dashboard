@@ -6,6 +6,7 @@
     <title>Top Up Credit - Dashboard Admin CSS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="global.css">
     <script src="global-time.js"></script>
         <link rel="stylesheet" href="stylemobile.css">
@@ -91,6 +92,27 @@
             justify-content: center;
             font-size: 1.25rem;
         }
+        /* Tambahkan di bagian style yang sudah ada */
+.btn-export {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+}
+
+.btn-export:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-export i {
+    margin-right: 6px;
+}
+
+.section-actions {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+}
 
         /* Perbaikan class untuk stat-icon agar sesuai dengan 6 kategori */
 .stat-icon.d-gaming {
@@ -686,6 +708,26 @@ body.admin-mode .masteragent-history-table td:nth-child(7) {
     min-width: 150px;
     text-align: center;
 }
+/* Responsive untuk tombol export */
+@media (max-width: 768px) {
+    .section-actions {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        margin-top: var(--space-sm);
+    }
+    
+    .section-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-sm);
+    }
+}
     </style>
 </head>
 <body>
@@ -762,15 +804,18 @@ body.admin-mode .masteragent-history-table td:nth-child(7) {
     </div>
 
     <!-- Regular History Section -->
-    <div class="history-section fade-in" style="animation-delay: 0.3s;">
-        <div class="section-header">
-            <h2 class="section-title"><i class="fas fa-history"></i> Riwayat Top Up</h2>
-            <div class="section-actions">
-                <button class="btn btn-outline" id="refreshHistory">
-                    <i class="fas fa-sync-alt"></i> Muat Ulang
-                </button>
-            </div>
+<div class="history-section fade-in" style="animation-delay: 0.3s;">
+    <div class="section-header">
+        <h2 class="section-title"><i class="fas fa-history"></i> Riwayat Top Up</h2>
+        <div class="section-actions">
+            <button class="btn btn-outline" id="refreshHistory">
+                <i class="fas fa-sync-alt"></i> Muat Ulang
+            </button>
+            <button class="btn btn-export" id="exportRegularExcel">
+                <i class="fas fa-file-excel"></i> Export Excel
+            </button>
         </div>
+    </div>
         
         <div class="history-table-container">
             <table class="history-table">
@@ -841,14 +886,15 @@ body.admin-mode .masteragent-history-table td:nth-child(7) {
         </form>
     </div>
 
-    <!-- Masteragent History Section -->
-    <!-- Masteragent History Section -->
 <div class="history-section fade-in" style="animation-delay: 0.3s;">
     <div class="section-header">
         <h2 class="section-title"><i class="fas fa-history"></i> Riwayat Top Up Masteragent</h2>
         <div class="section-actions">
             <button class="btn btn-outline" id="refreshMasteragentHistory">
                 <i class="fas fa-sync-alt"></i> Muat Ulang
+            </button>
+            <button class="btn btn-export" id="exportMasteragentExcel">
+                <i class="fas fa-file-excel"></i> Export Excel
             </button>
         </div>
     </div>
@@ -2199,7 +2245,21 @@ async function revertCreditFromHistory(historyData, historyType) {
         } else {
             console.error('❌ saveCreditChanges button not found!');
         }
-        
+        // Event listener untuk export regular history
+const exportRegularBtn = document.getElementById('exportRegularExcel');
+if (exportRegularBtn) {
+    exportRegularBtn.addEventListener('click', function() {
+        exportRegularHistoryToExcel();
+    });
+}
+
+// Event listener untuk export masteragent history
+const exportMasteragentBtn = document.getElementById('exportMasteragentExcel');
+if (exportMasteragentBtn) {
+    exportMasteragentBtn.addEventListener('click', function() {
+        exportMasteragentHistoryToExcel();
+    });
+}
         // Event listener untuk save history changes
         const saveHistoryBtn = document.getElementById('saveHistoryChanges');
         if (saveHistoryBtn) {
@@ -3844,6 +3904,185 @@ topupInput.addEventListener('input', function (e) {
     value = new Intl.NumberFormat('id-ID').format(value);
     e.target.value = value;
 });
+// ========== FUNGSI EXPORT EXCEL ==========
+
+// Fungsi untuk export data ke Excel
+function exportToExcel(data, filename, columns) {
+    if (!data || data.length === 0) {
+        showToast('Tidak ada data untuk diekspor', 'error');
+        return;
+    }
+    
+    try {
+        // Siapkan data untuk worksheet
+        const worksheetData = [columns];
+        
+        data.forEach(item => {
+            const row = [];
+            columns.forEach(col => {
+                let value = item[col.field] || '';
+                // Format angka jika perlu
+                if (col.format === 'number' && value) {
+                    value = value.toString().replace(/\./g, '');
+                }
+                row.push(value);
+            });
+            worksheetData.push(row);
+        });
+        
+        // Buat workbook dan worksheet
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(worksheetData);
+        
+        // Atur lebar kolom
+        ws['!cols'] = columns.map(col => ({ wch: col.width || 20 }));
+        
+        // Tambahkan worksheet ke workbook
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+        
+        // Export file
+        XLSX.writeFile(wb, `${filename}.xlsx`);
+        
+        showToast(`Berhasil mengekspor ${data.length} data ke Excel`, 'success');
+        
+    } catch (error) {
+        console.error('Error exporting to Excel:', error);
+        showToast('Gagal mengekspor data', 'error');
+    }
+}
+
+// Fungsi untuk export riwayat regular topup
+function exportRegularHistoryToExcel() {
+    // Ambil data yang sedang ditampilkan (dengan filter yang aktif)
+    const searchTerm = document.getElementById('dashboardSearch')?.value.toLowerCase().trim() || '';
+    let dataToExport = filterDataByDate(topupHistory);
+    
+    // Terapkan filter pencarian jika ada
+    if (searchTerm !== '') {
+        dataToExport = dataToExport.filter(history => {
+            return Object.values(history).some(value => 
+                value && value.toString().toLowerCase().includes(searchTerm)
+            );
+        });
+    }
+    
+    if (dataToExport.length === 0) {
+        showToast('Tidak ada data untuk diekspor', 'error');
+        return;
+    }
+    
+    // Definisi kolom untuk export
+    const columns = [
+        { field: 'date', header: 'Tanggal', width: 25 },
+        { field: 'user', header: 'User', width: 20 },
+        { field: 'brand', header: 'Brand', width: 30 },
+        { field: 'amount', header: 'Jumlah Top Up', width: 15, format: 'number' },
+        { field: 'before', header: 'Credit Sebelum', width: 15, format: 'number' },
+        { field: 'after', header: 'Credit Sesudah', width: 15, format: 'number' }
+    ];
+    
+    // Siapkan data dengan format yang sesuai
+    const exportData = dataToExport.map(item => ({
+        date: item.date || 'N/A',
+        user: item.user || 'Unknown User',
+        brand: item.brand || 'N/A',
+        amount: formatNumber(item.amount),
+        before: formatNumber(item.before),
+        after: formatNumber(item.after)
+    }));
+    
+    const columnHeaders = columns.map(col => col.header);
+    
+    // Buat file Excel
+    exportToExcel(exportData, 'Riwayat_Top_Up_Regular', columnHeaders, columns);
+}
+
+// Fungsi untuk export riwayat masteragent
+function exportMasteragentHistoryToExcel() {
+    // Ambil data yang sedang ditampilkan (dengan filter yang aktif)
+    const searchTerm = document.getElementById('dashboardSearch')?.value.toLowerCase().trim() || '';
+    let dataToExport = filterDataByDate(masteragentHistory);
+    
+    // Terapkan filter pencarian jika ada
+    if (searchTerm !== '') {
+        dataToExport = dataToExport.filter(history => {
+            return Object.values(history).some(value => 
+                value && value.toString().toLowerCase().includes(searchTerm)
+            );
+        });
+    }
+    
+    if (dataToExport.length === 0) {
+        showToast('Tidak ada data untuk diekspor', 'error');
+        return;
+    }
+    
+    // Definisi kolom untuk export
+    const columns = [
+        { field: 'date', header: 'Tanggal', width: 25 },
+        { field: 'user', header: 'User', width: 20 },
+        { field: 'category', header: 'Kategori', width: 20 },
+        { field: 'amount', header: 'Jumlah Top Up', width: 15, format: 'number' },
+        { field: 'before', header: 'Credit Sebelum', width: 15, format: 'number' },
+        { field: 'after', header: 'Credit Sesudah', width: 15, format: 'number' }
+    ];
+    
+    // Siapkan data dengan format yang sesuai
+    const exportData = dataToExport.map(item => ({
+        date: item.date || 'N/A',
+        user: item.user || 'Unknown User',
+        category: item.category || 'N/A',
+        amount: formatNumber(item.amount),
+        before: formatNumber(item.before),
+        after: formatNumber(item.after)
+    }));
+    
+    const columnHeaders = columns.map(col => col.header);
+    
+    // Buat file Excel
+    exportToExcel(exportData, 'Riwayat_Top_Up_Masteragent', columnHeaders, columns);
+}
+
+// Perbaiki fungsi exportToExcel
+function exportToExcel(data, filename, columnHeaders, columns) {
+    if (!data || data.length === 0) {
+        showToast('Tidak ada data untuk diekspor', 'error');
+        return;
+    }
+    
+    try {
+        // Siapkan data untuk worksheet
+        const worksheetData = [columnHeaders];
+        
+        data.forEach(item => {
+            const row = [];
+            columns.forEach(col => {
+                let value = item[col.field] || '';
+                row.push(value);
+            });
+            worksheetData.push(row);
+        });
+        
+        // Buat workbook dan worksheet
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(worksheetData);
+        
+        // Atur lebar kolom
+        ws['!cols'] = columns.map(col => ({ wch: col.width || 20 }));
+        
+        // Tambahkan worksheet ke workbook
+        XLSX.utils.book_append_sheet(wb, ws, 'Riwayat Top Up');
+        
+        // Export file
+        XLSX.writeFile(wb, `${filename}.xlsx`);
+        
+        showToast(`Berhasil mengekspor ${data.length} data ke Excel`, 'success');
+        
+    } catch (error) {
+        console.error('Error exporting to Excel:', error);
+        showToast('Gagal mengekspor data: ' + error.message, 'error');
+    }
+}
 </script>
 </body>
 </html>

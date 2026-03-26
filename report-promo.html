@@ -15,6 +15,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-auth-compat.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+
 
     <style>
         :root {
@@ -2611,40 +2613,110 @@
         deleteModal.classList.add('active');
     }
 
-    function exportToExcel() {
-        const lang = window.translations || reportPromoTranslations[currentLanguage] || reportPromoTranslations['id'];
-        if (filteredData.length === 0) {
-            showToast(lang.noDataToExport || 'Tidak ada data untuk diexport', 'error');
-            return;
+    // Fungsi untuk export ke Excel dengan format yang lebih rapi
+function exportToExcel() {
+    const lang = window.translations || reportPromoTranslations[currentLanguage] || reportPromoTranslations['id'];
+    
+    if (filteredData.length === 0) {
+        showToast(lang.noDataToExport || 'Tidak ada data untuk diexport', 'error');
+        return;
+    }
+    
+    // Header dengan format yang lebih jelas
+    const headers = [
+        'NO',
+        lang.thCss || 'CSS',
+        lang.thPlatform || 'Platform',
+        lang.thKeterangan || 'Keterangan',
+        lang.thTanggalPosting || 'Tanggal Posting',
+        lang.thScreenshot || 'Screenshot URL',
+        lang.thLinkGroup || 'Link Group',
+        lang.thKendala || 'Kendala',
+        lang.thStatus || 'Status'
+    ];
+    
+    // Buat worksheet data
+    const worksheetData = [headers];
+    
+    // Tambahkan data promosi
+    filteredData.forEach((item, index) => {
+        // Format tanggal
+        let tanggal = item.tanggalPosting || '';
+        if (tanggal && tanggal.includes('T')) {
+            tanggal = tanggal.split('T')[0];
         }
         
-        const headers = [
-            lang.thCss || 'CSS', lang.thPlatform || 'Platform', lang.thKeterangan || 'Keterangan',
-            lang.thTanggalPosting || 'Tanggal Posting', lang.thScreenshot || 'Screenshot URL',
-            lang.thLinkGroup || 'Link Group', lang.thKendala || 'Kendala', lang.thStatus || 'Status'
+        // Bersihkan teks dari karakter yang bisa merusak format
+        const cleanText = (text) => {
+            if (!text) return '';
+            return text
+                .replace(/,/g, ';')
+                .replace(/\n/g, ' ')
+                .replace(/\r/g, ' ')
+                .replace(/"/g, '""');
+        };
+        
+        const row = [
+            index + 1,
+            cleanText(item.namaCSS) || '-',
+            cleanText(item.platform) || '-',
+            cleanText(item.keterangan) || '-',
+            tanggal || '-',
+            item.screenshot || '',
+            item.linkGroup || '',
+            cleanText(item.kendala) || '-',
+            item.status || 'Pending'
+        ];
+        worksheetData.push(row);
+    });
+    
+    // Gunakan SheetJS untuk export Excel yang lebih baik
+    if (typeof XLSX !== 'undefined') {
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(worksheetData);
+        
+        // Atur lebar kolom
+        ws['!cols'] = [
+            { wch: 6 },   // NO
+            { wch: 20 },  // CSS
+            { wch: 15 },  // Platform
+            { wch: 35 },  // Keterangan
+            { wch: 12 },  // Tanggal Posting
+            { wch: 35 },  // Screenshot URL
+            { wch: 35 },  // Link Group
+            { wch: 30 },  // Kendala
+            { wch: 12 }   // Status
         ];
         
-        let csvContent = headers.join(',') + '\n';
+        // Style header (bold, background color)
+        const headerRange = XLSX.utils.decode_range(ws['!ref']);
+        for (let C = headerRange.s.c; C <= headerRange.e.c; ++C) {
+            const address = XLSX.utils.encode_cell({ r: 0, c: C });
+            if (!ws[address]) continue;
+            ws[address].s = {
+                font: { bold: true, sz: 12, color: { rgb: "FFFFFF" } },
+                fill: { fgColor: { rgb: "4361ee" } },
+                alignment: { horizontal: "center", vertical: "center" }
+            };
+        }
         
-        filteredData.forEach(item => {
-            const row = [
-                `"${(item.namaCSS || '').replace(/"/g, '""')}"`,
-                `"${(item.platform || '').replace(/"/g, '""')}"`,
-                `"${(item.keterangan || '').replace(/"/g, '""')}"`,
-                item.tanggalPosting || '',
-                `"${(item.screenshot || '').replace(/"/g, '""')}"`,
-                `"${(item.linkGroup || '').replace(/"/g, '""')}"`,
-                `"${(item.kendala || '').replace(/"/g, '""')}"`,
-                item.status || 'Pending'
-            ];
-            csvContent += row.join(',') + '\n';
-        });
+        XLSX.utils.book_append_sheet(wb, ws, "Report Promosi");
+        
+        const fileName = `report_promosi_${getTodayDate()}_${new Date().getTime()}.xlsx`;
+        XLSX.writeFile(wb, fileName);
+        
+        showToast((lang.exportSuccess || 'Berhasil mengexport {count} data!').replace('{count}', filteredData.length), 'success');
+    } else {
+        // Fallback ke CSV jika SheetJS tidak tersedia
+        let csvContent = worksheetData.map(row => 
+            row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')
+        ).join('\n');
         
         const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
         const url = URL.createObjectURL(blob);
         link.setAttribute('href', url);
-        link.setAttribute('download', `promosi_report_${getTodayDate()}.csv`);
+        link.setAttribute('download', `report_promosi_${getTodayDate()}.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -2652,7 +2724,7 @@
         
         showToast((lang.exportSuccess || 'Berhasil mengexport {count} data!').replace('{count}', filteredData.length), 'success');
     }
-
+}
     function importFromCSV(file) {
         const lang = window.translations || reportPromoTranslations[currentLanguage] || reportPromoTranslations['id'];
         const reader = new FileReader();

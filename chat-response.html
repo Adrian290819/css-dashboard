@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="global.css">
-        <link rel="stylesheet" href="stylemobile.css">
-        <script src="global-time.js"></script>
+    <link rel="stylesheet" href="stylemobile.css">
+    <script src="global-time.js"></script>
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
@@ -120,61 +120,22 @@
             color: var(--text-secondary, #6b7280);
         }
 
-        .menu-item {
-            background-color: transparent;
-            color: var(--text-primary);
-            padding: 12px;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            display: flex;
+        /* Month Indicator Styles */
+        .month-indicator {
+            background: rgba(67, 97, 238, 0.1);
+            color: #4361ee;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
             align-items: center;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            border: none;
-           
+            gap: 8px;
+            margin-bottom: 20px;
+            width: fit-content;
         }
 
-        .menu-item:hover {
-            background-color: var(--hover-color);
-            color: var(--menu-hover-text);
-        }
-
-        .menu-item:hover i,
-        .menu-item:hover .menu-icon {
-            color: var(--menu-hover-text);
-        }
-
-        .menu-item.active {
-            background: var(--success-gradient);
-            color: #fff;
-        }
-
-        .chat-container {
-            background: var(--card-bg, #fff);
-            border-radius: var(--radius-lg);
-            padding: var(--space-lg);
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-color, #e5e7eb);
-            margin-bottom: var(--space-xl);
-        }
-
-        .chat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--space-lg);
-            padding-bottom: var(--space-md);
-            border-bottom: 1px solid var(--border-color, #e5e7eb);
-        }
-
-        .chat-title {
-            font-size: var(--text-xl);
-            font-weight: var(--font-semibold);
-            color: var(--text-primary, #111827);
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-        }
-
+        /* Statistics Cards */
         .chat-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -183,11 +144,11 @@
         }
 
         .stat-card {
-            background: var(--card-bg, #fff);
+            background: var(--card-bg);
             border-radius: var(--radius-lg);
             padding: var(--space-lg);
             box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-color, #e5e7eb);
+            border: 1px solid var(--border-color);
             transition: transform var(--transition-normal), box-shadow var(--transition-normal);
         }
 
@@ -206,7 +167,7 @@
         .stat-title {
             font-size: var(--text-sm);
             font-weight: var(--font-medium);
-            color: var(--text-secondary, #6b7280);
+            color: var(--text-secondary);
         }
 
         .stat-icon {
@@ -227,19 +188,19 @@
         .stat-content h3 {
             font-size: var(--text-2xl);
             font-weight: var(--font-bold);
-            color: var(--text-primary, #111827);
+            color: var(--text-primary);
             margin: 0 0 var(--space-xs);
         }
 
         .stat-content p {
             font-size: var(--text-xs);
-            color: var(--text-secondary, #6b7280);
+            color: var(--text-secondary);
             margin: 0;
         }
 
         .progress-bar {
             height: 8px;
-            background-color: var(--bg-secondary, #f9fafb);
+            background-color: var(--bg-secondary);
             border-radius: var(--radius-full);
             overflow: hidden;
         }
@@ -250,17 +211,28 @@
             transition: width 1s ease;
         }
 
+        /* Chat Container */
+        .chat-container {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            margin-bottom: var(--space-xl);
+        }
+
         .chat-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: var(--space-lg);
         }
 
+        /* Chat List */
         .chat-list {
-            background: var(--bg-secondary, #f9fafb);
+            background: var(--bg-secondary);
             border-radius: var(--radius-lg);
             padding: var(--space-lg);
-            border: 1px solid var(--border-color, #e5e7eb);
+            border: 1px solid var(--border-color);
         }
 
         .list-header {
@@ -268,12 +240,14 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: var(--space-lg);
+            flex-wrap: wrap;
+            gap: var(--space-md);
         }
 
         .list-title {
             font-size: var(--text-lg);
             font-weight: var(--font-semibold);
-            color: var(--text-primary, #111827);
+            color: var(--text-primary);
         }
 
         .add-chat-btn {
@@ -299,13 +273,14 @@
             display: flex;
             flex-direction: column;
             gap: var(--space-md);
+            min-height: 400px;
         }
 
         .chat-item {
-            background: var(--card-bg, #fff);
+            background: var(--card-bg);
             border-radius: var(--radius-md);
             padding: var(--space-md);
-            border: 1px solid var(--border-color, #e5e7eb);
+            border: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -324,18 +299,18 @@
         .chat-name {
             font-weight: var(--font-semibold);
             margin-bottom: var(--space-xs);
-            color: var(--text-primary, #111827);
+            color: var(--text-primary);
         }
 
         .chat-desc {
             font-size: var(--text-sm);
-            color: var(--text-secondary, #6b7280);
+            color: var(--text-secondary);
             margin-bottom: var(--space-xs);
         }
 
         .chat-date {
             font-size: var(--text-xs);
-            color: var(--text-tertiary, #9ca3af);
+            color: var(--text-tertiary);
         }
 
         .chat-actions {
@@ -349,49 +324,73 @@
             border-radius: var(--radius-full);
             font-size: var(--text-xs);
             font-weight: var(--font-medium);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .status-fast {
             background: rgba(16, 185, 129, 0.1);
-            color: var(--completed-color, #10b981);
+            color: var(--completed-color);
         }
 
         .status-medium {
             background: rgba(245, 158, 11, 0.1);
-            color: var(--pending-color, #f59e0b);
+            color: var(--pending-color);
         }
 
         .status-slow {
             background: rgba(239, 68, 68, 0.1);
-            color: var(--overdue-color, #ef4444);
+            color: var(--overdue-color);
         }
 
         .action-btn {
-            padding: 6px;
+            padding: 8px 12px;
             border-radius: var(--radius-md);
             background: transparent;
             border: none;
             cursor: pointer;
-            color: var(--text-secondary, #6b7280);
+            color: var(--text-secondary);
             transition: all var(--transition-fast);
         }
 
         .action-btn:hover {
-            background: var(--hover-color, #e5e7eb);
-            color: var(--text-primary, #111827);
+            background: var(--hover-color);
+            color: var(--text-primary);
         }
 
+        .edit-btn {
+            background: var(--warning-gradient);
+            color: white;
+        }
+
+        .edit-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .delete-btn {
+            background: var(--danger-gradient);
+            color: white;
+        }
+
+        .delete-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* Chat Form */
         .chat-form {
-            background: var(--bg-secondary, #f9fafb);
+            background: var(--bg-secondary);
             border-radius: var(--radius-lg);
             padding: var(--space-lg);
-            border: 1px solid var(--border-color, #e5e7eb);
+            border: 1px solid var(--border-color);
         }
 
         .form-title {
             font-size: var(--text-lg);
             font-weight: var(--font-semibold);
-            color: var(--text-primary, #111827);
+            color: var(--text-primary);
             margin-bottom: var(--space-lg);
         }
 
@@ -403,7 +402,7 @@
             display: block;
             font-size: var(--text-sm);
             font-weight: var(--font-medium);
-            color: var(--text-primary, #111827);
+            color: var(--text-primary);
             margin-bottom: var(--space-xs);
         }
 
@@ -412,10 +411,10 @@
         .form-select {
             width: 100%;
             padding: var(--space-sm);
-            border: 1px solid var(--border-color, #e5e7eb);
+            border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
-            background: var(--input-bg, #fff);
-            color: var(--text-primary, #111827);
+            background: var(--card-bg);
+            color: var(--text-primary);
             font-size: var(--text-sm);
             transition: border-color var(--transition-fast);
         }
@@ -424,13 +423,8 @@
         .form-textarea:focus,
         .form-select:focus {
             outline: none;
-            border-color: var(--primary, #4361ee);
+            border-color: #4361ee;
             box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
-        }
-
-        .form-textarea {
-            min-height: 100px;
-            resize: vertical;
         }
 
         .form-actions {
@@ -461,24 +455,116 @@
         }
 
         .btn-secondary {
-            background: var(--bg-secondary, #f9fafb);
-            color: var(--text-primary, #111827);
-            border: 1px solid var(--border-color, #e5e7eb);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
         }
 
         .btn-secondary:hover {
-            background: var(--hover-color, #e5e7eb);
+            background: var(--hover-color);
         }
 
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
+        /* Form Mode Indicator */
+        .form-mode-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .mode-badge {
+            padding: 4px 8px;
+            border-radius: var(--radius-full);
+            font-weight: var(--font-medium);
         }
 
+        .edit-mode-badge {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--pending-color);
+        }
+
+        .add-mode-badge {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--completed-color);
+        }
+
+        /* Pagination Styles */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: var(--space-lg);
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: var(--space-md);
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: var(--space-sm);
+            align-items: center;
+        }
+
+        .pagination-btn {
+            padding: var(--space-sm) var(--space-md);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-2px);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            padding: 0 var(--space-md);
+        }
+
+        .page-size-selector {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .page-size-selector label {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+        }
+
+        .page-size-selector select {
+            padding: var(--space-xs) var(--space-sm);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        .items-per-page {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+        }
+
+        /* Notification Styles */
         .notification-container {
             position: fixed;
             top: 20px;
@@ -492,43 +578,37 @@
         .notification {
             padding: 12px 16px;
             border-radius: var(--radius-md);
-            background: var(--card-bg, #fff);
-            border-left: 4px solid var(--primary, #4361ee);
+            background: var(--card-bg);
+            border-left: 4px solid #4361ee;
             box-shadow: var(--shadow-md);
             display: flex;
             align-items: center;
             gap: 10px;
             animation: notificationSlideIn 0.5s ease forwards;
             max-width: 350px;
-            position: relative;
         }
 
         .notification.success {
-            border-left-color: var(--completed-color, #10b981);
+            border-left-color: var(--completed-color);
         }
 
         .notification.error {
-            border-left-color: var(--overdue-color, #ef4444);
+            border-left-color: var(--overdue-color);
         }
 
-        .notification.info {
-            border-left-color: var(--primary, #4361ee);
-        }
-
-        .notification button.notification-close {
+        .notification-close {
             background: none;
             border: none;
             cursor: pointer;
             margin-left: auto;
-            color: var(--text-secondary, #6b7280);
+            color: var(--text-secondary);
             padding: 4px;
             border-radius: 4px;
-            transition: background-color 0.2s ease;
         }
 
-        .notification button.notification-close:hover {
-            color: var(--text-primary, #111827);
-            background-color: rgba(0, 0, 0, 0.1);
+        .notification-close:hover {
+            color: var(--text-primary);
+            background: rgba(0, 0, 0, 0.1);
         }
 
         .notification.hiding {
@@ -557,24 +637,69 @@
             }
         }
 
+        /* Connection Status */
+        .connection-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            border-radius: var(--radius-md);
+            font-size: var(--text-sm);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 1000;
+        }
+
+        .status-connected {
+            background: var(--completed-color);
+            color: white;
+        }
+
+        .status-disconnected {
+            background: var(--overdue-color);
+            color: white;
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Super Admin Badge */
+        .super-admin-badge {
+            background: var(--warning-gradient);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: var(--text-xs);
+            margin-left: 8px;
+        }
+
+        /* Current Month Highlight */
+        .chat-item.current-month {
+            border-left: 3px solid #4361ee;
+        }
+
+        /* Responsive */
         @media (max-width: 1024px) {
+            .chat-content {
+                grid-template-columns: 1fr;
+            }
+            
             .header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: var(--space-md);
             }
-
+            
             .header-actions {
                 width: 100%;
                 justify-content: space-between;
-            }
-
-            .search-bar input {
-                width: 200px;
-            }
-
-            .chat-content {
-                grid-template-columns: 1fr;
             }
         }
 
@@ -582,25 +707,18 @@
             .chat-stats {
                 grid-template-columns: 1fr;
             }
-
-            .header-actions {
-                flex-wrap: wrap;
-                gap: var(--space-sm);
-            }
-
-            .search-bar {
-                order: 3;
-                width: 100%;
-            }
-
-            .search-bar input {
-                width: 100%;
-            }
-
-            .chat-header {
+            
+            .pagination-container {
                 flex-direction: column;
-                align-items: flex-start;
-                gap: var(--space-md);
+                align-items: stretch;
+            }
+            
+            .pagination-controls {
+                justify-content: center;
+            }
+            
+            .page-size-selector {
+                justify-content: center;
             }
         }
 
@@ -610,51 +728,28 @@
                 align-items: flex-start;
                 gap: var(--space-md);
             }
-
+            
             .chat-actions {
                 width: 100%;
-                justify-content: space-between;
+                justify-content: flex-end;
             }
-
+            
             .form-actions {
                 flex-direction: column;
             }
-
+            
             .btn {
                 width: 100%;
             }
         }
-        
-        .connection-status {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    padding: 10px 15px;
-    border-radius: var(--radius-md);
-    font-size: var(--text-sm);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    z-index: 1000;
-}
-
-.status-connected {
-    background: var(--completed-color, #10b981);
-    color: white;
-}
-
-.status-disconnected {
-    background: var(--overdue-color, #ef4444);
-    color: white;
-}
-
     </style>
 </head>
 <body>
     <div id="sidebar-container"></div>
     <button class="menu-toggle">
-                <i class="fas fa-bars"></i>
-            </button>
+        <i class="fas fa-bars"></i>
+    </button>
+    
     <div class="main-content">
         <div class="header">
             <h1><i class="fas fa-comments"></i> Chat Response Dashboard</h1>
@@ -663,11 +758,7 @@
                     <i class="fas fa-search"></i>
                     <input type="text" placeholder="Cari chat response..." id="chatSearch">
                 </div>
-                
-<button class="menu-toggle">
-                    <i class="fas fa-bars"></i>
-                </button>
-<div class="user-profile">
+                <div class="user-profile">
                     <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
                     <div class="user-info">
                         <h4 id="userName">Loading...</h4>
@@ -676,1474 +767,1393 @@
                 </div>
             </div>
         </div>
-            
-            <div class="chat-stats">
-                <div class="stat-card fade-in">
-                    <div class="stat-header">
-                        <span class="stat-title">Total Chat Responses</span>
-                        <div class="stat-icon">
-                            <i class="fas fa-comment-dots"></i>
-                        </div>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="total-chats">0</h3>
-                        <p>Jumlah chat yang telah direspons</p>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%; background: var(--primary-gradient);"></div>
+
+        <!-- Month Indicator -->
+        <div id="monthIndicator" class="month-indicator">
+            <i class="fas fa-calendar-alt"></i>
+            <span id="monthIndicatorText">Data Bulan Januari 2024</span>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="chat-stats">
+            <div class="stat-card fade-in">
+                <div class="stat-header">
+                    <span class="stat-title">Total Chat Responses</span>
+                    <div class="stat-icon">
+                        <i class="fas fa-comment-dots"></i>
                     </div>
                 </div>
-
-                <div class="stat-card fade-in">
-                    <div class="stat-header">
-                        <span class="stat-title">Rata-rata Waktu Respons</span>
-                        <div class="stat-icon">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="avg-response-time">0 menit</h3>
-                        <p>Rata-rata waktu respons chat</p>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%; background: var(--info-gradient);"></div>
-                    </div>
+                <div class="stat-content">
+                    <h3 id="total-chats">0</h3>
+                    <p>Jumlah chat yang telah direspons bulan ini</p>
                 </div>
-
-                <div class="stat-card fade-in">
-                    <div class="stat-header">
-                        <span class="stat-title">Respons Cepat (< 3 menit)</span>
-                        <div class="stat-icon">
-                            <i class="fas fa-bolt"></i>
-                        </div>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="fast-responses">0</h3>
-                        <p>Respons dalam waktu target</p>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%; background: var(--success-gradient);"></div>
-                    </div>
-                </div>
-
-                <div class="stat-card fade-in">
-                    <div class="stat-header">
-                        <span class="stat-title">KPI Chat Response</span>
-                        <div class="stat-icon">
-                            <i class="fas fa-percentage"></i>
-                        </div>
-                    </div>
-                    <div class="stat-content">
-                        <h3 id="kpi-chat">0%</h3>
-                        <p>Pencapaian target respons chat</p>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%; background: var(--warning-gradient);"></div>
-                    </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%; background: var(--primary-gradient);"></div>
                 </div>
             </div>
 
-            <div class="chat-content">
-                <div class="chat-list">
-                    <div class="list-header">
-                        <h2 class="list-title">Daftar Chat Responses</h2>
-                        <button class="add-chat-btn" id="add-chat-btn">
-                            <i class="fas fa-plus"></i>
-                            Tambah Response
+            <div class="stat-card fade-in">
+                <div class="stat-header">
+                    <span class="stat-title">Rata-rata Waktu Respons</span>
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+                <div class="stat-content">
+                    <h3 id="avg-response-time">0 menit</h3>
+                    <p>Rata-rata waktu respons chat bulan ini</p>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%; background: var(--info-gradient);"></div>
+                </div>
+            </div>
+
+            <div class="stat-card fade-in">
+                <div class="stat-header">
+                    <span class="stat-title">Respons Cepat (&lt; 3 menit)</span>
+                    <div class="stat-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                </div>
+                <div class="stat-content">
+                    <h3 id="fast-responses">0</h3>
+                    <p>Respons dalam waktu target bulan ini</p>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%; background: var(--success-gradient);"></div>
+                </div>
+            </div>
+
+            <div class="stat-card fade-in">
+                <div class="stat-header">
+                    <span class="stat-title">KPI Chat Response</span>
+                    <div class="stat-icon">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                </div>
+                <div class="stat-content">
+                    <h3 id="kpi-chat">0%</h3>
+                    <p>Pencapaian target respons chat bulan ini</p>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%; background: var(--warning-gradient);"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="chat-content">
+            <div class="chat-list">
+                <div class="list-header">
+                    <h2 class="list-title">Daftar Chat Responses</h2>
+                    <button class="add-chat-btn" id="add-chat-btn">
+                        <i class="fas fa-plus"></i> Tambah Response
+                    </button>
+                </div>
+                <div class="chat-items" id="chat-items">
+                    <!-- Chat items will be added here dynamically -->
+                </div>
+                
+                <!-- Pagination -->
+                <div class="pagination-container" id="pagination-container">
+                    <div class="items-per-page">
+                        Menampilkan <span id="showing-start">0</span> - <span id="showing-end">0</span> dari <span id="total-items">0</span> chat
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="pagination-btn" id="prev-page-btn" disabled>
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </button>
+                        <span class="page-info" id="page-info">Halaman 1</span>
+                        <button class="pagination-btn" id="next-page-btn">
+                            Next <i class="fas fa-chevron-right"></i>
                         </button>
                     </div>
-                    <div class="chat-items" id="chat-items">
-                        <!-- Chat items will be added here dynamically -->
+                    <div class="page-size-selector">
+                        <label>Tampilkan:</label>
+                        <select id="page-size-select">
+                            <option value="5">5</option>
+                            <option value="10" selected>10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                        </select>
                     </div>
                 </div>
-
-                <div class="chat-form" id="chat-form">
-                    <h2 class="form-title">Tambah Chat Response Baru</h2>
-                    <form id="new-chat-form">
-                        <div class="form-group">
-                            <label class="form-label" for="chat-customer">Nama Customer</label>
-                            <input type="text" id="chat-customer" class="form-input" placeholder="Nama customer" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="chat-platform">Platform</label>
-                            <select id="chat-platform" class="form-select" required>
-                                <option value="">Pilih platform</option>
-                                <option value="Telegram">Telegram</option>
-                                <option value="Website">Live Chat Website</option>
-                                <option value="Lainnya">Lainnya</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="chat-topic">Topik Percakapan</label>
-                            <input type="text" id="chat-topic" class="form-input" placeholder="Topik percakapan" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="chat-time">Waktu Respons (menit)</label>
-                            <input type="number" id="chat-time" class="form-input" placeholder="Waktu respons dalam menit" min="0" step="0.1" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="chat-date">Tanggal Respons</label>
-                            <input type="date" id="chat-date" class="form-input" required>
-                        </div>
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-secondary" id="cancel-chat-btn">Batal</button>
-                            <button type="submit" class="btn btn-primary">Simpan Response</button>
-                        </div>
-                    </form>
-                </div>
             </div>
-        </div>   
+
+            <div class="chat-form" id="chat-form">
+                <div id="form-mode-indicator" class="form-mode-indicator" style="display: none;">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Mode: </span>
+                    <span id="mode-badge" class="mode-badge add-mode-badge">Tambah Baru</span>
+                </div>
+                <h2 class="form-title" id="form-main-title">Tambah Chat Response Baru</h2>
+                <form id="new-chat-form">
+                    <input type="hidden" id="edit-chat-id" value="">
+                    <div class="form-group">
+                        <label class="form-label" for="chat-customer">Nama Customer*</label>
+                        <input type="text" id="chat-customer" class="form-input" placeholder="Nama customer" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="chat-platform">Platform*</label>
+                        <select id="chat-platform" class="form-select" required>
+                            <option value="">Pilih platform</option>
+                            <option value="Telegram">Telegram</option>
+                            <option value="Website">Live Chat Website</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="chat-topic">Topik Percakapan*</label>
+                        <input type="text" id="chat-topic" class="form-input" placeholder="Topik percakapan" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="chat-time">Waktu Respons (menit)*</label>
+                        <input type="number" id="chat-time" class="form-input" placeholder="Waktu respons dalam menit" min="0" step="0.1" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="chat-date">Tanggal Respons*</label>
+                        <input type="date" id="chat-date" class="form-input" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancel-chat-btn">Batal</button>
+                        <button type="submit" class="btn btn-primary" id="submit-chat-btn">Simpan Response</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification-container" id="notificationContainer"></div>
+    
     <script src="sidebar-loader.js"></script>
     <script src="user-profile.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
     <script>
-    // Konfigurasi Firebase
-// Konfigurasi Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
-    authDomain: "dashboard-css.firebaseapp.com",
-    databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "dashboard-css",
-    storageBucket: "dashboard-css.appspot.com",
-    messagingSenderId: "771131792881",
-    appId: "1:771131792881:web:ad634424225bd7de847850",
-    measurementId: "G-3CYBC5B101"
-};
-
-// Inisialisasi Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-// Data Chat Response
-let chatData = [];
-let currentEditId = null;
-let currentUser = null;
-let currentUserData = null;
-let unsubscribeChats = null;
-
-// Target KPI
-const chatTarget = 4; // Target chat response per bulan
-
-// Elemen DOM
-const chatItemsContainer = document.getElementById('chat-items');
-const chatFormElement = document.getElementById('chat-form');
-const newChatForm = document.getElementById('new-chat-form');
-const addChatBtn = document.getElementById('add-chat-btn');
-const cancelChatBtn = document.getElementById('cancel-chat-btn');
-const notificationContainer = document.getElementById('notificationContainer');
-const chatSearch = document.getElementById('chatSearch');
-
-// Statistik elements
-const totalChatsEl = document.getElementById('total-chats');
-const avgResponseTimeEl = document.getElementById('avg-response-time');
-const fastResponsesEl = document.getElementById('fast-responses');
-const kpiChatEl = document.getElementById('kpi-chat');
-
-// Buat elemen status koneksi jika belum ada
-let connectionStatus = document.getElementById('connectionStatus');
-if (!connectionStatus) {
-    connectionStatus = document.createElement('div');
-    connectionStatus.id = 'connectionStatus';
-    connectionStatus.className = 'connection-status status-connected';
-    connectionStatus.innerHTML = '<i class="fas fa-check-circle"></i> Terhubung dengan Firebase';
-    document.body.appendChild(connectionStatus);
-    
-    setTimeout(() => {
-        connectionStatus.style.display = 'none';
-    }, 3000);
-}
-
-// Fungsi untuk menampilkan notifikasi
-function showNotification(message, type = 'info') {
-    // 🔥 TAMBAHKAN: Buat container jika belum ada
-    let notificationContainer = document.getElementById('notificationContainer');
-    if (!notificationContainer) {
-        notificationContainer = document.createElement('div');
-        notificationContainer.id = 'notificationContainer';
-        notificationContainer.className = 'notification-container';
-        document.body.appendChild(notificationContainer);
-        console.log('✅ Notification container created dynamically');
-    }
-    
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-        <span>${message}</span>
-        <button class="notification-close">
-            <i class="fas fa-times"></i>
-        </button>
-    `;
-    
-    notificationContainer.appendChild(notification);
-    
-    const closeBtn = notification.querySelector('.notification-close');
-    closeBtn.addEventListener('click', function() {
-        closeNotification(notification);
-    });
-    
-    const timeoutId = setTimeout(() => {
-        closeNotification(notification);
-    }, 5000);
-    
-    notification.dataset.timeoutId = timeoutId;
-}
-
-function closeNotification(notification) {
-    const notificationContainer = document.getElementById('notificationContainer');
-    if (!notificationContainer) return;
-    
-    if (notification.dataset.timeoutId) {
-        clearTimeout(parseInt(notification.dataset.timeoutId));
-    }
-    
-    notification.classList.add('hiding');
-    
-    setTimeout(() => {
-        if (notification.parentElement) {
-            notificationContainer.removeChild(notification);
-        }
-    }, 500);
-}
-
-// Fungsi untuk memastikan user document ada (FIXED VERSION)
-async function ensureUserDocument(user) {
-    try {
-        const userRef = db.collection('users').doc(user.uid);
-        const userDoc = await userRef.get();
-        
-        // Daftar email super admin
-        const superAdminEmails = [
-            "superadmin@gachaengine.com",
-            "admin@gachaengine.com"
-        ];
-        
-        const isSuperAdmin = superAdminEmails.includes(user.email);
-        
-        if (userDoc.exists) {
-            // Document sudah ada - update tanpa overwrite role/isSuperAdmin
-            const currentData = userDoc.data();
-            const updateData = {
-                lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
-                email: user.email,
-                displayName: user.displayName || currentData.displayName || user.email
-            };
+        // ========== TRANSLATIONS FOR CHAT RESPONSE DASHBOARD ==========
+        const chatTranslations = {
+            id: {
+                // Header
+                "chatTitle": "Chat Response Dashboard",
+                "searchPlaceholder": "Cari chat response...",
+                
+                // Stats Section
+                "totalChats": "Total Chat Responses",
+                "totalChatsDesc": "Jumlah chat yang telah direspons bulan ini",
+                "avgResponseTime": "Rata-rata Waktu Respons",
+                "avgResponseTimeDesc": "Rata-rata waktu respons chat bulan ini",
+                "fastResponses": "Respons Cepat (< 3 menit)",
+                "fastResponsesDesc": "Respons dalam waktu target bulan ini",
+                "kpiChat": "KPI Chat Response",
+                "kpiChatDesc": "Pencapaian target respons chat bulan ini",
+                
+                // List Section
+                "listTitle": "Daftar Chat Responses",
+                "addChat": "Tambah Response",
+                "noChats": "Belum ada data chat response",
+                "noChatsMessage": "Tambahkan data untuk memulai.",
+                "noSearchResults": "Tidak ada chat response yang sesuai dengan pencarian.",
+                "previousMonthInfo": "Anda memiliki {count} chat dari bulan sebelumnya. Statistik di atas hanya menampilkan data bulan ini.",
+                
+                // Form Section
+                "addNewChat": "Tambah Chat Response Baru",
+                "editChat": "Edit Chat Response",
+                "customerLabel": "Nama Customer*",
+                "customerPlaceholder": "Nama customer",
+                "platformLabel": "Platform*",
+                "platformPlaceholder": "Pilih platform",
+                "topicLabel": "Topik Percakapan*",
+                "topicPlaceholder": "Topik percakapan",
+                "responseTimeLabel": "Waktu Respons (menit)*",
+                "responseTimePlaceholder": "Waktu respons dalam menit",
+                "dateLabel": "Tanggal Respons*",
+                "telegramOption": "Telegram",
+                "websiteOption": "Live Chat Website",
+                "otherOption": "Lainnya",
+                
+                // Status Badges
+                "statusFast": "Cepat",
+                "statusMedium": "Sedang",
+                "statusSlow": "Lambat",
+                
+                // Actions
+                "edit": "Edit",
+                "delete": "Hapus",
+                "readOnly": "Read Only",
+                "cancel": "Batal",
+                "saveChat": "Simpan Response",
+                "updateChat": "Perbarui Response",
+                
+                // Form Mode
+                "addMode": "Tambah Baru",
+                "editMode": "Edit",
+                
+                // Pagination
+                "showing": "Menampilkan",
+                "to": "-",
+                "of": "dari",
+                "page": "Halaman",
+                "previous": "Previous",
+                "next": "Next",
+                "show": "Tampilkan:",
+                
+                // Notifications
+                "chatAdded": "Chat response berhasil ditambahkan",
+                "chatUpdated": "Chat response berhasil diperbarui",
+                "chatDeleted": "Chat response berhasil dihapus",
+                "errorLoading": "Gagal memuat data chat response",
+                "allFieldsRequired": "Harap isi semua field yang wajib diisi",
+                "responseTimePositive": "Waktu respons harus lebih dari 0",
+                "confirmDelete": "Apakah Anda yakin ingin menghapus data chat response ini?",
+                "noPermissionEdit": "Anda tidak memiliki izin untuk mengedit chat response ini",
+                "noPermissionDelete": "Anda tidak memiliki izin untuk menghapus chat response ini",
+                "superAdminMode": "Super Admin Mode: Memuat {count} chat response dari semua user ({monthly} chat bulan ini)",
+                "editModeNotification": "Anda sedang dalam mode edit. Perbarui data dan klik \"Perbarui Response\" untuk menyimpan perubahan.",
+                "dataRefreshed": "Daftar chat response diperbarui",
+                "loginRequired": "Silakan login untuk mengakses dashboard chat response",
+                "connected": "Terhubung dengan Server",
+                
+                // User Roles
+                "superAdmin": "Super Administrator",
+                "customerSupport": "Customer Service Support",
+                "superAdminView": "Super Admin View"
+            },
             
-            // Hanya update role/isSuperAdmin jika belum ada atau user baru
-            if (!currentData.hasOwnProperty('role')) {
-                updateData.role = isSuperAdmin ? 'super_admin' : 'user';
+            en: {
+                // Header
+                "chatTitle": "Chat Response Dashboard",
+                "searchPlaceholder": "Search chat response...",
+                
+                // Stats Section
+                "totalChats": "Total Chat Responses",
+                "totalChatsDesc": "Number of chats responded this month",
+                "avgResponseTime": "Average Response Time",
+                "avgResponseTimeDesc": "Average chat response time this month",
+                "fastResponses": "Fast Responses (< 3 minutes)",
+                "fastResponsesDesc": "Responses within target time this month",
+                "kpiChat": "KPI Chat Response",
+                "kpiChatDesc": "Chat response target achievement this month",
+                
+                // List Section
+                "listTitle": "Chat Response List",
+                "addChat": "Add Response",
+                "noChats": "No chat response data",
+                "noChatsMessage": "Add data to get started.",
+                "noSearchResults": "No chat response matching your search.",
+                "previousMonthInfo": "You have {count} chats from previous months. Statistics above only show data from this month.",
+                
+                // Form Section
+                "addNewChat": "Add New Chat Response",
+                "editChat": "Edit Chat Response",
+                "customerLabel": "Customer Name*",
+                "customerPlaceholder": "Customer name",
+                "platformLabel": "Platform*",
+                "platformPlaceholder": "Select platform",
+                "topicLabel": "Conversation Topic*",
+                "topicPlaceholder": "Conversation topic",
+                "responseTimeLabel": "Response Time (minutes)*",
+                "responseTimePlaceholder": "Response time in minutes",
+                "dateLabel": "Response Date*",
+                "telegramOption": "Telegram",
+                "websiteOption": "Live Chat Website",
+                "otherOption": "Other",
+                
+                // Status Badges
+                "statusFast": "Fast",
+                "statusMedium": "Medium",
+                "statusSlow": "Slow",
+                
+                // Actions
+                "edit": "Edit",
+                "delete": "Delete",
+                "readOnly": "Read Only",
+                "cancel": "Cancel",
+                "saveChat": "Save Response",
+                "updateChat": "Update Response",
+                
+                // Form Mode
+                "addMode": "Add New",
+                "editMode": "Edit",
+                
+                // Pagination
+                "showing": "Showing",
+                "to": "to",
+                "of": "of",
+                "page": "Page",
+                "previous": "Previous",
+                "next": "Next",
+                "show": "Show:",
+                
+                // Notifications
+                "chatAdded": "Chat response successfully added",
+                "chatUpdated": "Chat response successfully updated",
+                "chatDeleted": "Chat response successfully deleted",
+                "errorLoading": "Failed to load chat response data",
+                "allFieldsRequired": "Please fill in all required fields",
+                "responseTimePositive": "Response time must be greater than 0",
+                "confirmDelete": "Are you sure you want to delete this chat response?",
+                "noPermissionEdit": "You don't have permission to edit this chat response",
+                "noPermissionDelete": "You don't have permission to delete this chat response",
+                "superAdminMode": "Super Admin Mode: Loading {count} chat responses from all users ({monthly} this month)",
+                "editModeNotification": "You are in edit mode. Update the data and click \"Update Response\" to save changes.",
+                "dataRefreshed": "Chat response list refreshed",
+                "loginRequired": "Please login to access the chat response dashboard",
+                "connected": "Connected to Server",
+                
+                // User Roles
+                "superAdmin": "Super Administrator",
+                "customerSupport": "Customer Service Support",
+                "superAdminView": "Super Admin View"
             }
-            if (!currentData.hasOwnProperty('isSuperAdmin')) {
-                updateData.isSuperAdmin = isSuperAdmin;
-            }
-            
-            await userRef.update(updateData);
-            console.log('User document updated for:', user.uid, 'Role:', currentData.role || updateData.role);
-            
-            // Return user data dengan role yang sudah diupdate
-            return { ...currentData, ...updateData };
-        } else {
-            // Document baru - buat dengan role dan isSuperAdmin yang benar
-            const newUserDoc = {
-                email: user.email,
-                displayName: user.displayName || user.email,
-                role: isSuperAdmin ? 'super_admin' : 'user',
-                isSuperAdmin: isSuperAdmin,
-                lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            };
-            
-            await userRef.set(newUserDoc);
-            console.log('New user document created for:', user.uid, 'Role:', newUserDoc.role);
-            
-            return newUserDoc;
-        }
-    } catch (error) {
-        console.error('Error ensuring user document:', error);
-        throw error;
-    }
-}
-
-// Fungsi untuk memeriksa autentikasi pengguna (MODIFIED VERSION)
-async function checkAuth() {
-    return new Promise((resolve, reject) => {
-        const unsubscribe = auth.onAuthStateChanged(async user => {
-            unsubscribe();
-            if (user) {
-                currentUser = user;
-                try {
-                    // Dapatkan data user yang lengkap termasuk role
-                    currentUserData = await ensureUserDocument(user);
-                    resolve(user);
-                } catch (error) {
-                    reject(error);
-                }
-            } else {
-                reject(new Error('User not authenticated'));
-            }
-        });
-    });
-}
-
-// Fungsi untuk mendapatkan data chat dari Firestore (MODIFIED VERSION)
-async function getChatData() {
-    try {
-        await checkAuth();
-        
-        let query;
-        
-        // Jika super admin, ambil semua data tanpa filter user
-        if (currentUserData && currentUserData.isSuperAdmin) {
-            query = db.collection('chats');
-            console.log('Super admin mode: Loading all chat data');
-        } else {
-            // Jika user biasa, hanya ambil data miliknya sendiri
-            query = db.collection('chats').where('userId', '==', currentUser.uid);
-            console.log('User mode: Loading user-specific chat data');
-        }
-        
-        const snapshot = await query.get();
-        
-        chatData = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }));
-        
-        // Sort secara manual di client side
-        chatData.sort((a, b) => {
-            const dateA = a.date ? (a.date.toDate ? a.date.toDate() : new Date(a.date)) : new Date(0);
-            const dateB = b.date ? (b.date.toDate ? b.date.toDate() : new Date(b.date)) : new Date(0);
-            return dateB - dateA;
-        });
-        
-        renderChatList();
-        updateChatStats();
-        
-    } catch (error) {
-        console.error('Error getting chat data:', error);
-        showNotification('Gagal memuat data chat response', 'error');
-    }
-}
-
-// Fungsi untuk menyimpan chat ke Firestore
-async function saveChat(chatData) {
-    try {
-        await checkAuth();
-        
-        const chatWithUser = {
-            customer: chatData.customer,
-            platform: chatData.platform,
-            topic: chatData.topic,
-            responseTime: parseFloat(chatData.responseTime),
-            date: chatData.date,
-            userId: currentUser.uid,
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         };
 
-        if (chatData.id) {
-            // Update existing chat
-            await db.collection('chats').doc(chatData.id).update(chatWithUser);
-            return chatData.id;
-        } else {
-            // Add new chat
-            chatWithUser.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-            const docRef = await db.collection('chats').add(chatWithUser);
-            return docRef.id;
-        }
-    } catch (error) {
-        console.error('Error saving chat:', error);
-        throw error;
-    }
-}
+        // ========== TRANSLATION FUNCTIONS ==========
+        let currentLanguage = localStorage.getItem('language') || 'id';
+        let chatTarget = 10; // Target chat response per bulan
 
-// Fungsi untuk menghapus chat dari Firestore
-async function deleteChatFromFirestore(chatId) {
-    try {
-        await checkAuth();
-        await db.collection('chats').doc(chatId).delete();
-    } catch (error) {
-        console.error('Error deleting chat:', error);
-        throw error;
-    }
-}
-
-// Fungsi untuk memperbarui statistik chat
-function updateChatStats() {
-    if (!totalChatsEl || !avgResponseTimeEl || !fastResponsesEl || !kpiChatEl) {
-        console.error('Statistic elements not found');
-        return;
-    }
-    
-    const totalChats = chatData.length;
-    const fastResponses = chatData.filter(item => parseFloat(item.responseTime) <= 3).length;
-    const totalResponseTime = chatData.reduce((sum, item) => sum + parseFloat(item.responseTime), 0);
-    const avgResponseTime = totalChats > 0 ? (totalResponseTime / totalChats).toFixed(1) : 0;
-    
-    // Hitung KPI Chat Response (persentase respons cepat)
-    const kpiChat = totalChats > 0 ? Math.round((fastResponses / totalChats) * 100) : 0;
-    
-    // Update elemen statistik
-    totalChatsEl.textContent = totalChats;
-    avgResponseTimeEl.textContent = `${avgResponseTime} menit`;
-    fastResponsesEl.textContent = fastResponses;
-    kpiChatEl.textContent = `${kpiChat}%`;
-    
-    // Update progress bars
-    const progressBars = document.querySelectorAll('.progress-fill');
-    if (progressBars.length >= 4) {
-        setTimeout(() => {
-            progressBars[0].style.width = `${Math.min(100, (totalChats / 10) * 100)}%`;
-            progressBars[1].style.width = `${avgResponseTime > 0 ? Math.max(0, 100 - (avgResponseTime / 10 * 100)) : 0}%`;
-            progressBars[2].style.width = `${totalChats > 0 ? (fastResponses / totalChats) * 100 : 0}%`;
-            progressBars[3].style.width = `${kpiChat}%`;
-        }, 100);
-    }
-    
-    updateChatKPI(totalChats, kpiChat);
-}
-
-// Fungsi untuk memperbarui KPI chat
-function updateChatKPI(count, kpiScore) {
-    localStorage.setItem('chatCount', count);
-    localStorage.setItem('chatKPI', kpiScore);
-    
-    window.dispatchEvent(new CustomEvent('chatDataChanged', { 
-        detail: { 
-            chatCount: count,
-            chatKPI: kpiScore
-        } 
-    }));
-    
-    if (connectionStatus) {
-        connectionStatus.className = 'connection-status status-connected';
-        connectionStatus.innerHTML = '<i class="fas fa-check-circle"></i> Data chat tersimpan';
-        connectionStatus.style.display = 'flex';
-        
-        setTimeout(() => {
-            connectionStatus.style.display = 'none';
-        }, 3000);
-    }
-}
-
-// Fungsi untuk mendapatkan status berdasarkan waktu respons
-function getResponseStatus(responseTime) {
-    if (responseTime <= 3) {
-        return { status: 'fast', text: 'Cepat' };
-    } else if (responseTime <= 5) {
-        return { status: 'medium', text: 'Sedang' };
-    } else {
-        return { status: 'slow', text: 'Lambat' };
-    }
-}
-
-// Fungsi untuk memformat tanggal
-function formatDate(dateString) {
-    if (!dateString) return 'Tanggal tidak tersedia';
-    
-    try {
-        const date = dateString.toDate ? dateString.toDate() : new Date(dateString);
-        return date.toLocaleDateString('id-ID', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-        });
-    } catch (error) {
-        console.error('Error formatting date:', error);
-        return 'Format tanggal tidak valid';
-    }
-}
-
-// Fungsi untuk merender daftar chat (MODIFIED VERSION)
-function renderChatList(filteredChats = null) {
-    if (!chatItemsContainer) {
-        console.error('chatItemsContainer not found');
-        return;
-    }
-    
-    const chatsToRender = filteredChats || chatData;
-    
-    chatItemsContainer.innerHTML = '';
-    
-    if (chatsToRender.length === 0) {
-        chatItemsContainer.innerHTML = `
-            <div style="text-align: center; padding: 20px; color: var(--text-secondary);">
-                <i class="fas fa-comments" style="font-size: 48px; margin-bottom: 10px;"></i>
-                <p>Belum ada data chat response. ${currentUserData && currentUserData.isSuperAdmin ? 'Data dari semua user akan muncul di sini.' : 'Tambahkan data untuk memulai.'}</p>
-            </div>
-        `;
-        return;
-    }
-    
-    chatsToRender.forEach((chat) => {
-        const status = getResponseStatus(chat.responseTime);
-        
-        // Tampilkan info pemilik chat untuk super admin
-        const ownerInfo = currentUserData && currentUserData.isSuperAdmin ? 
-            `<p class="chat-owner" style="font-size: var(--text-xs); color: var(--text-tertiary); margin-bottom: 5px;">
-                <i class="fas fa-user"></i> User ID: ${chat.userId}
-            </p>` : '';
-        
-        const chatItem = document.createElement('div');
-        chatItem.className = 'chat-item fade-in';
-        chatItem.innerHTML = `
-            <div class="chat-info">
-                ${ownerInfo}
-                <div class="chat-name">${chat.customer} - ${chat.platform}</div>
-                <div class="chat-desc">Topik: ${chat.topic}</div>
-                <div class="chat-date">Tanggal: ${formatDate(chat.date)}</div>
-            </div>
-            <div class="chat-actions">
-                <span class="chat-status status-${status.status}">
-                    <span class="response-time">${chat.responseTime}m</span> - ${status.text}
-                </span>
-                ${currentUserData && (currentUserData.isSuperAdmin || chat.userId === currentUser.uid) ? `
-                    <button class="action-btn edit-btn" data-id="${chat.id}">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="action-btn delete-btn" data-id="${chat.id}">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                ` : `
-                    <span style="color: var(--text-secondary); font-size: var(--text-xs);">Read Only</span>
-                `}
-            </div>
-        `;
-        
-        chatItemsContainer.appendChild(chatItem);
-    });
-    
-    // Tambahkan event listeners untuk tombol edit dan delete
-    document.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const id = this.getAttribute('data-id');
-            editChat(id);
-        });
-    });
-    
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const id = this.getAttribute('data-id');
-            deleteChat(id);
-        });
-    });
-}
-
-// Fungsi untuk menambah chat baru
-async function addChat(e) {
-    e.preventDefault();
-    
-    if (!newChatForm) {
-        console.error('newChatForm not found');
-        return;
-    }
-    
-    const customer = document.getElementById('chat-customer')?.value.trim() || '';
-    const platform = document.getElementById('chat-platform')?.value || '';
-    const topic = document.getElementById('chat-topic')?.value.trim() || '';
-    const responseTime = document.getElementById('chat-time')?.value || '';
-    const date = document.getElementById('chat-date')?.value || '';
-    
-    // Validasi input
-    if (!customer || !platform || !topic || !responseTime || !date) {
-        showNotification('Harap isi semua field dengan benar', 'error');
-        return;
-    }
-    
-    if (parseFloat(responseTime) <= 0) {
-        showNotification('Waktu respons harus lebih dari 0', 'error');
-        return;
-    }
-    
-    try {
-        const chatToSave = {
-            customer,
-            platform,
-            topic,
-            responseTime: parseFloat(responseTime),
-            date
-        };
-
-        if (currentEditId) {
-            // Update existing chat
-            chatToSave.id = currentEditId;
-            await saveChat(chatToSave);
-            showNotification('Chat response berhasil diperbarui', 'success');
-        } else {
-            // Add new chat
-            await saveChat(chatToSave);
-            showNotification('Chat response berhasil ditambahkan', 'success');
-        }
-        
-        resetForm();
-        
-    } catch (error) {
-        console.error('Error saving chat:', error);
-        showNotification('Gagal menyimpan chat response: ' + error.message, 'error');
-    }
-}
-
-// Fungsi untuk mengedit chat (MODIFIED VERSION)
-function editChat(chatId) {
-    const chat = chatData.find(item => item.id === chatId);
-    if (!chat) return;
-    
-    // Cek izin: hanya super admin atau pemilik chat yang bisa mengedit
-    if (!currentUserData.isSuperAdmin && chat.userId !== currentUser.uid) {
-        showNotification('Anda tidak memiliki izin untuk mengedit chat response ini', 'error');
-        return;
-    }
-    
-    currentEditId = chatId;
-    
-    // Isi form dengan data chat
-    const customerInput = document.getElementById('chat-customer');
-    const platformInput = document.getElementById('chat-platform');
-    const topicInput = document.getElementById('chat-topic');
-    const responseTimeInput = document.getElementById('chat-time');
-    const dateInput = document.getElementById('chat-date');
-    
-    if (customerInput) customerInput.value = chat.customer || '';
-    if (platformInput) platformInput.value = chat.platform || '';
-    if (topicInput) topicInput.value = chat.topic || '';
-    if (responseTimeInput) responseTimeInput.value = chat.responseTime || '';
-    
-    // Format tanggal untuk input date
-    if (dateInput && chat.date) {
-        try {
-            const dateObj = chat.date.toDate ? chat.date.toDate() : new Date(chat.date);
-            const formattedDate = dateObj.toISOString().split('T')[0];
-            dateInput.value = formattedDate;
-        } catch (error) {
-            console.error('Error formatting date for input:', error);
-            dateInput.value = '';
-        }
-    }
-    
-    // Scroll ke form
-    if (chatFormElement) {
-        chatFormElement.scrollIntoView({ behavior: 'smooth' });
-    }
-    
-    showNotification('Anda sedang dalam mode edit. Perbarui data dan klik "Simpan Response" untuk menyimpan perubahan.', 'info');
-}
-
-// Fungsi untuk menghapus chat (MODIFIED VERSION)
-async function deleteChat(chatId) {
-    const chat = chatData.find(item => item.id === chatId);
-    if (!chat) return;
-    
-    // Cek izin: hanya super admin atau pemilik chat yang bisa menghapus
-    if (!currentUserData.isSuperAdmin && chat.userId !== currentUser.uid) {
-        showNotification('Anda tidak memiliki izin untuk menghapus chat response ini', 'error');
-        return;
-    }
-    
-    if (confirm('Apakah Anda yakin ingin menghapus data chat response ini?')) {
-        try {
-            await deleteChatFromFirestore(chatId);
-            showNotification('Chat response berhasil dihapus', 'success');
+        function applyChatTranslations(language) {
+            const lang = chatTranslations[language] || chatTranslations['id'];
             
-            // Jika sedang mengedit chat yang dihapus, reset form
-            if (currentEditId === chatId) {
-                resetForm();
-            }
-            
-        } catch (error) {
-            console.error('Error deleting chat:', error);
-            showNotification('Gagal menghapus chat response', 'error');
-        }
-    }
-}
+            if (!lang) return;
 
-// Fungsi untuk mereset form
-function resetForm() {
-    if (newChatForm) newChatForm.reset();
-    currentEditId = null;
-    
-    // Set tanggal default ke hari ini
-    const dateInput = document.getElementById('chat-date');
-    if (dateInput) {
-        dateInput.valueAsDate = new Date();
-    }
-}
+            console.log("Applying chat translations for:", language);
 
-// Fungsi untuk mencari chat
-function searchChat() {
-    const searchTerm = chatSearch?.value.toLowerCase() || '';
-    
-    if (searchTerm === '') {
-        renderChatList();
-        return;
-    }
-    
-    const filteredChats = chatData.filter(chat => 
-        chat.customer.toLowerCase().includes(searchTerm) ||
-        chat.platform.toLowerCase().includes(searchTerm) ||
-        chat.topic.toLowerCase().includes(searchTerm)
-    );
-    
-    renderChatList(filteredChats);
-}
-
-// Setup real-time listener untuk data chat (MODIFIED VERSION)
-function setupRealTimeListener() {
-    if (unsubscribeChats) {
-        unsubscribeChats();
-    }
-    
-    let query;
-    
-    // Jika super admin, ambil semua data tanpa filter user
-    if (currentUserData && currentUserData.isSuperAdmin) {
-        query = db.collection('chats');
-        console.log('Super admin mode: Loading all chat data');
-    } else {
-        // Jika user biasa, hanya ambil data miliknya sendiri
-        query = db.collection('chats').where('userId', '==', currentUser.uid);
-        console.log('User mode: Loading user-specific chat data');
-    }
-    
-    unsubscribeChats = query.onSnapshot(snapshot => {
-        chatData = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }));
-        
-        // Sort secara manual di client side
-        chatData.sort((a, b) => {
-            const dateA = a.date ? (a.date.toDate ? a.date.toDate() : new Date(a.date)) : new Date(0);
-            const dateB = b.date ? (b.date.toDate ? b.date.toDate() : new Date(b.date)) : new Date(0);
-            return dateB - dateA;
-        });
-        
-        renderChatList();
-        updateChatStats();
-        
-        // Tampilkan info mode akses
-        if (currentUserData && currentUserData.isSuperAdmin) {
-            showNotification(`Super Admin Mode: Memuat ${chatData.length} chat response dari semua user`, 'info');
-        }
-    }, error => {
-        console.error('Error in real-time listener:', error);
-        showNotification('Gagal memuat data real-time', 'error');
-    });
-}
-
-// Update user profile info (MODIFIED VERSION)
-function updateUserProfile(user) {
-    const userProfile = document.querySelector('.user-info h4');
-    const userRole = document.querySelector('.user-info p');
-    
-    if (userProfile) {
-        userProfile.textContent = user.displayName || user.email || 'User';
-    }
-    if (userRole) {
-        const roleText = currentUserData && currentUserData.isSuperAdmin ? 
-            'Super Administrator' : 
-            'Customer Service Support';
-        userRole.textContent = roleText;
-        
-        // Tambahkan badge super admin jika diperlukan
-        if (currentUserData && currentUserData.isSuperAdmin) {
+            // Header
             const headerTitle = document.querySelector('.header h1');
-            if (headerTitle && !headerTitle.querySelector('.super-admin-badge')) {
-                const badge = document.createElement('span');
-                badge.className = 'super-admin-badge';
-                badge.style.background = 'var(--warning-gradient)';
-                badge.style.color = 'white';
-                badge.style.padding = '2px 8px';
-                badge.style.borderRadius = '12px';
-                badge.style.fontSize = 'var(--text-xs)';
-                badge.style.marginLeft = '8px';
-                badge.textContent = 'Super Admin';
-                headerTitle.appendChild(badge);
+            if (headerTitle && lang.chatTitle) {
+                const icon = headerTitle.querySelector('i');
+                if (icon) {
+                    headerTitle.innerHTML = icon.outerHTML + ' ' + lang.chatTitle;
+                } else {
+                    headerTitle.textContent = lang.chatTitle;
+                }
             }
-        }
-    }
-}
 
-// Event Listeners
-document.addEventListener('DOMContentLoaded', async function() {
-    console.log('DOM Content Loaded - Initializing Chat Response Dashboard');
-    
-    try {
-        // Periksa autentikasi pengguna
-        await checkAuth();
-        await ensureUserDocument(currentUser);
-        
-        console.log('User authenticated:', currentUser.uid);
-        
-        // Setup real-time listener
-        setupRealTimeListener();
-        
-        // Setup event listeners
-        if (newChatForm) {
-            newChatForm.addEventListener('submit', addChat);
+            // Search placeholder
+            const searchInput = document.getElementById('chatSearch');
+            if (searchInput && lang.searchPlaceholder) {
+                searchInput.placeholder = lang.searchPlaceholder;
+            }
+
+            // Stat cards titles
+            const statTitles = document.querySelectorAll('.stat-title');
+            if (statTitles.length >= 4) {
+                if (lang.totalChats) statTitles[0].textContent = lang.totalChats;
+                if (lang.avgResponseTime) statTitles[1].textContent = lang.avgResponseTime;
+                if (lang.fastResponses) statTitles[2].textContent = lang.fastResponses;
+                if (lang.kpiChat) statTitles[3].textContent = lang.kpiChat;
+            }
+
+            // Stat descriptions
+            const statDescriptions = document.querySelectorAll('.stat-content p');
+            if (statDescriptions.length >= 4) {
+                if (lang.totalChatsDesc) statDescriptions[0].textContent = lang.totalChatsDesc;
+                if (lang.avgResponseTimeDesc) statDescriptions[1].textContent = lang.avgResponseTimeDesc;
+                if (lang.fastResponsesDesc) statDescriptions[2].textContent = lang.fastResponsesDesc;
+                if (lang.kpiChatDesc) statDescriptions[3].textContent = lang.kpiChatDesc;
+            }
+
+            // List section
+            const listTitle = document.querySelector('.list-title');
+            if (listTitle && lang.listTitle) listTitle.textContent = lang.listTitle;
+
+            const addChatBtn = document.getElementById('add-chat-btn');
+            if (addChatBtn && lang.addChat) {
+                addChatBtn.innerHTML = `<i class="fas fa-plus"></i> ${lang.addChat}`;
+            }
+
+            // Form section
+            const formTitle = document.getElementById('form-main-title');
+            if (formTitle) {
+                const isEdit = formTitle.textContent.includes('Edit') || formTitle.textContent.includes('編集') || formTitle.textContent.includes('编辑');
+                formTitle.textContent = isEdit ? lang.editChat : lang.addNewChat;
+            }
+
+            // Form labels
+            const customerLabel = document.querySelector('label[for="chat-customer"]');
+            if (customerLabel && lang.customerLabel) customerLabel.textContent = lang.customerLabel;
+            
+            const platformLabel = document.querySelector('label[for="chat-platform"]');
+            if (platformLabel && lang.platformLabel) platformLabel.textContent = lang.platformLabel;
+            
+            const topicLabel = document.querySelector('label[for="chat-topic"]');
+            if (topicLabel && lang.topicLabel) topicLabel.textContent = lang.topicLabel;
+            
+            const timeLabel = document.querySelector('label[for="chat-time"]');
+            if (timeLabel && lang.responseTimeLabel) timeLabel.textContent = lang.responseTimeLabel;
+            
+            const dateLabel = document.querySelector('label[for="chat-date"]');
+            if (dateLabel && lang.dateLabel) dateLabel.textContent = lang.dateLabel;
+
+            // Placeholders
+            const customerInput = document.getElementById('chat-customer');
+            if (customerInput && lang.customerPlaceholder) customerInput.placeholder = lang.customerPlaceholder;
+            
+            const topicInput = document.getElementById('chat-topic');
+            if (topicInput && lang.topicPlaceholder) topicInput.placeholder = lang.topicPlaceholder;
+            
+            const timeInput = document.getElementById('chat-time');
+            if (timeInput && lang.responseTimePlaceholder) timeInput.placeholder = lang.responseTimePlaceholder;
+
+            // Platform options
+            const platformSelect = document.getElementById('chat-platform');
+            if (platformSelect) {
+                const options = platformSelect.querySelectorAll('option');
+                if (options.length >= 4) {
+                    if (lang.platformPlaceholder) options[0].textContent = lang.platformPlaceholder;
+                    if (lang.telegramOption) options[1].textContent = lang.telegramOption;
+                    if (lang.websiteOption) options[2].textContent = lang.websiteOption;
+                    if (lang.otherOption) options[3].textContent = lang.otherOption;
+                }
+            }
+
+            // Buttons
+            const cancelBtn = document.getElementById('cancel-chat-btn');
+            if (cancelBtn && lang.cancel) {
+                cancelBtn.innerHTML = `<i class="fas fa-times"></i> ${lang.cancel}`;
+            }
+
+            const submitBtn = document.getElementById('submit-chat-btn');
+            if (submitBtn) {
+                const isEdit = submitBtn.textContent.includes('Perbarui') || submitBtn.textContent.includes('Update');
+                submitBtn.innerHTML = `<i class="fas fa-save"></i> ${isEdit ? lang.updateChat : lang.saveChat}`;
+            }
+
+            // Pagination
+            const pageSizeLabel = document.querySelector('.page-size-selector label');
+            if (pageSizeLabel && lang.show) pageSizeLabel.textContent = lang.show;
+
+            const prevPageBtn = document.getElementById('prev-page-btn');
+            if (prevPageBtn && lang.previous) {
+                prevPageBtn.innerHTML = `<i class="fas fa-chevron-left"></i> ${lang.previous}`;
+            }
+
+            const nextPageBtn = document.getElementById('next-page-btn');
+            if (nextPageBtn && lang.next) {
+                nextPageBtn.innerHTML = `${lang.next} <i class="fas fa-chevron-right"></i>`;
+            }
+
+            // Update any existing cards
+            updateChatStatusTranslations(language);
+            updateChatActionButtons(language);
         }
-        
-        if (addChatBtn) {
-            addChatBtn.addEventListener('click', function() {
-                resetForm();
-                if (chatFormElement) {
-                    chatFormElement.scrollIntoView({ behavior: 'smooth' });
+
+        function updateChatStatusTranslations(language) {
+            const lang = chatTranslations[language] || chatTranslations['id'];
+            
+            document.querySelectorAll('.chat-status').forEach(statusElement => {
+                const statusText = statusElement.textContent.trim();
+                if (statusText.includes('Cepat') || statusText.includes('Fast')) {
+                    const timeMatch = statusText.match(/([\d.]+)m/);
+                    const time = timeMatch ? timeMatch[1] : '';
+                    statusElement.innerHTML = `<span class="response-time">${time}m</span> - ${lang.statusFast}`;
+                } else if (statusText.includes('Sedang') || statusText.includes('Medium')) {
+                    const timeMatch = statusText.match(/([\d.]+)m/);
+                    const time = timeMatch ? timeMatch[1] : '';
+                    statusElement.innerHTML = `<span class="response-time">${time}m</span> - ${lang.statusMedium}`;
+                } else if (statusText.includes('Lambat') || statusText.includes('Slow')) {
+                    const timeMatch = statusText.match(/([\d.]+)m/);
+                    const time = timeMatch ? timeMatch[1] : '';
+                    statusElement.innerHTML = `<span class="response-time">${time}m</span> - ${lang.statusSlow}`;
                 }
             });
         }
-        
-        if (cancelChatBtn) {
-            cancelChatBtn.addEventListener('click', resetForm);
+
+        function updateChatActionButtons(language) {
+            const lang = chatTranslations[language] || chatTranslations['id'];
+            
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.title = lang.edit || 'Edit';
+            });
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.title = lang.delete || 'Delete';
+            });
         }
-        
-        if (chatSearch) {
-            chatSearch.addEventListener('input', searchChat);
+
+        function updateChatNotificationMessages(language) {
+            const lang = chatTranslations[language] || chatTranslations['id'];
+            
+            const originalShowNotification = window.showNotification;
+            
+            window.showNotification = function(message, type = 'info') {
+                let translatedMessage = message;
+                
+                const translations = {
+                    'Chat response berhasil ditambahkan': lang.chatAdded,
+                    'Chat response berhasil diperbarui': lang.chatUpdated,
+                    'Chat response berhasil dihapus': lang.chatDeleted,
+                    'Gagal memuat data chat response': lang.errorLoading,
+                    'Harap isi semua field yang wajib diisi': lang.allFieldsRequired,
+                    'Waktu respons harus lebih dari 0': lang.responseTimePositive,
+                    'Anda tidak memiliki izin untuk mengedit chat response ini': lang.noPermissionEdit,
+                    'Anda tidak memiliki izin untuk menghapus chat response ini': lang.noPermissionDelete,
+                    'Daftar chat response diperbarui': lang.dataRefreshed,
+                    'Terhubung dengan Server': lang.connected
+                };
+                
+                for (const [key, value] of Object.entries(translations)) {
+                    if (message.includes(key)) {
+                        translatedMessage = value;
+                        break;
+                    }
+                }
+                
+                if (message.includes('Super Admin Mode: Memuat') && lang.superAdminMode) {
+                    const countMatch = message.match(/\d+/g);
+                    const count = countMatch ? countMatch[0] : '0';
+                    const monthly = countMatch && countMatch[1] ? countMatch[1] : '0';
+                    translatedMessage = lang.superAdminMode.replace('{count}', count).replace('{monthly}', monthly);
+                }
+                
+                if (message.includes('Anda sedang dalam mode edit') && lang.editModeNotification) {
+                    translatedMessage = lang.editModeNotification;
+                }
+                
+                originalShowNotification(translatedMessage, type);
+            };
         }
-        
-        // Update user profile info
-        updateUserProfile(currentUser);
-        
-        // Set tanggal default ke hari ini
-        const dateInput = document.getElementById('chat-date');
-        if (dateInput) {
-            dateInput.valueAsDate = new Date();
+
+        function initializeChatLanguage() {
+            const savedLanguage = localStorage.getItem('language') || 'id';
+            currentLanguage = savedLanguage;
+            console.log("Initializing chat response dashboard with language:", savedLanguage);
+            
+            applyChatTranslations(savedLanguage);
+            updateChatNotificationMessages(savedLanguage);
+            
+            window.addEventListener('languageChanged', function(event) {
+                console.log("Language changed in chat response to:", event.detail.language);
+                currentLanguage = event.detail.language;
+                applyChatTranslations(event.detail.language);
+                updateChatNotificationMessages(event.detail.language);
+            });
         }
-        
-        console.log('Chat response dashboard initialized successfully');
-        
-    } catch (error) {
-        console.error('Authentication error:', error);
-        showNotification('Silakan login untuk mengakses dashboard chat response', 'error');
-        
-        setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 3000);
-    }
-});
 
-// Handle auth state changes
-auth.onAuthStateChanged(async user => {
-    if (user) {
-        currentUser = user;
-        currentUserData = await ensureUserDocument(user);
-        console.log('User is signed in:', user.uid);
+        // ========== KONFIGURASI FIREBASE ==========
+        const firebaseConfig = {
+            apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
+            authDomain: "dashboard-css.firebaseapp.com",
+            databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "dashboard-css",
+            storageBucket: "dashboard-css.appspot.com",
+            messagingSenderId: "771131792881",
+            appId: "1:771131792881:web:ad634424225bd7de847850",
+            measurementId: "G-3CYBC5B101"
+        };
+
+        // Inisialisasi Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Data Chat Response
+        let chatData = [];
+        let filteredChatData = [];
+        let currentEditId = null;
+        let currentUser = null;
+        let currentUserData = null;
+        let unsubscribeChats = null;
         
-        if (unsubscribeChats) {
-            unsubscribeChats();
+        // Pagination variables
+        let currentPage = 1;
+        let pageSize = 10;
+        let searchTerm = '';
+
+        // Elemen DOM
+        const chatItemsContainer = document.getElementById('chat-items');
+        const chatFormElement = document.getElementById('chat-form');
+        const newChatForm = document.getElementById('new-chat-form');
+        const addChatBtn = document.getElementById('add-chat-btn');
+        const cancelChatBtn = document.getElementById('cancel-chat-btn');
+        const notificationContainer = document.getElementById('notificationContainer');
+        const chatSearch = document.getElementById('chatSearch');
+        const formModeIndicator = document.getElementById('form-mode-indicator');
+        const modeBadge = document.getElementById('mode-badge');
+        const formMainTitle = document.getElementById('form-main-title');
+        const submitChatBtn = document.getElementById('submit-chat-btn');
+        const editChatIdField = document.getElementById('edit-chat-id');
+        
+        // Pagination elements
+        const prevPageBtn = document.getElementById('prev-page-btn');
+        const nextPageBtn = document.getElementById('next-page-btn');
+        const pageInfo = document.getElementById('page-info');
+        const pageSizeSelect = document.getElementById('page-size-select');
+        const showingStart = document.getElementById('showing-start');
+        const showingEnd = document.getElementById('showing-end');
+        const totalItemsSpan = document.getElementById('total-items');
+
+        // Statistik elements
+        const totalChatsEl = document.getElementById('total-chats');
+        const avgResponseTimeEl = document.getElementById('avg-response-time');
+        const fastResponsesEl = document.getElementById('fast-responses');
+        const kpiChatEl = document.getElementById('kpi-chat');
+
+        // Connection status
+        let connectionStatus = document.getElementById('connectionStatus');
+        if (!connectionStatus) {
+            connectionStatus = document.createElement('div');
+            connectionStatus.id = 'connectionStatus';
+            connectionStatus.className = 'connection-status status-connected';
+            document.body.appendChild(connectionStatus);
         }
-        setupRealTimeListener();
-        updateUserProfile(user);
-        
-    } else {
-        console.log('User is signed out');
-        if (unsubscribeChats) {
-            unsubscribeChats();
-        }
-        showNotification('Anda telah logout', 'info');
-        
-        setTimeout(() => {
-            window.location.href = 'login.html';
-        }, 2000);
-    }
-});
-// ========== TRANSLATIONS FOR CHAT RESPONSE DASHBOARD ==========
-const chatTranslations = {
-    id: {
-        // Header
-        "chatTitle": "Chat Response Dashboard",
-        "searchPlaceholder": "Cari chat response...",
-        
-        // Stats Section
-        "totalChats": "Total Chat Responses",
-        "avgResponseTime": "Rata-rata Waktu Respons",
-        "fastResponses": "Respons Cepat (< 3 menit)",
-        "kpiChat": "KPI Chat Response",
-        "totalChatsDescription": "Jumlah chat yang telah direspons",
-        "avgResponseTimeDescription": "Rata-rata waktu respons chat",
-        "fastResponsesDescription": "Respons dalam waktu target",
-        "kpiDescription": "Pencapaian target respons chat",
-        
-        // List Section
-        "listTitle": "Daftar Chat Responses",
-        "addChat": "Tambah Response",
-        "noChats": "Belum ada data chat response",
-        "noChatsMessage": "Tambahkan data untuk memulai.",
-        "superAdminNoChats": "Belum ada data chat response. Data dari semua user akan muncul di sini.",
-        "noSearchResults": "Tidak ada chat response yang sesuai dengan pencarian.",
-        
-        // Form Section
-        "addNewChat": "Tambah Chat Response Baru",
-        "editChat": "Edit Chat Response",
-        "customerLabel": "Nama Customer",
-        "customerPlaceholder": "Nama customer",
-        "platformLabel": "Platform",
-        "platformPlaceholder": "Pilih platform",
-        "topicLabel": "Topik Percakapan",
-        "topicPlaceholder": "Topik percakapan",
-        "responseTimeLabel": "Waktu Respons (menit)",
-        "responseTimePlaceholder": "Waktu respons dalam menit",
-        "dateLabel": "Tanggal Respons",
-        "telegramOption": "Telegram",
-        "websiteOption": "Live Chat Website",
-        "otherOption": "Lainnya",
-        
-        // Status Badges
-        "statusFast": "Cepat",
-        "statusMedium": "Sedang",
-        "statusSlow": "Lambat",
-        
-        // Actions
-        "edit": "Edit",
-        "delete": "Hapus",
-        "readOnly": "Read Only",
-        "cancel": "Batal",
-        "saveChat": "Simpan Response",
-        "updateChat": "Perbarui Response",
-        
-        // Form Mode
-        "addMode": "Tambah Baru",
-        "editMode": "Edit",
-        
-        // Notifications
-        "chatAdded": "Chat response berhasil ditambahkan",
-        "chatUpdated": "Chat response berhasil diperbarui",
-        "chatDeleted": "Chat response berhasil dihapus",
-        "errorLoading": "Gagal memuat data chat response",
-        "allFieldsRequired": "Harap isi semua field dengan benar",
-        "responseTimePositive": "Waktu respons harus lebih dari 0",
-        "confirmDelete": "Apakah Anda yakin ingin menghapus data chat response ini?",
-        "noPermissionEdit": "Anda tidak memiliki izin untuk mengedit chat response ini",
-        "noPermissionDelete": "Anda tidak memiliki izin untuk menghapus chat response ini",
-        "superAdminMode": "Super Admin Mode: Memuat {count} chat response dari semua user",
-        "editModeNotification": "Anda sedang dalam mode edit. Perbarui data dan klik \"Simpan Response\" untuk menyimpan perubahan.",
-        
-        // User Roles
-        "superAdmin": "Super Administrator",
-        "customerSupport": "Customer Service Support",
-        "superAdminView": "Super Admin View"
-    },
-    
-    en: {
-        // Header
-        "chatTitle": "Chat Response Dashboard",
-        "searchPlaceholder": "Search chat response...",
-        
-        // Stats Section
-        "totalChats": "Total Chat Responses",
-        "avgResponseTime": "Average Response Time",
-        "fastResponses": "Fast Responses (< 3 minutes)",
-        "kpiChat": "KPI Chat Response",
-        "totalChatsDescription": "Number of chats that have been responded to",
-        "avgResponseTimeDescription": "Average chat response time",
-        "fastResponsesDescription": "Responses within target time",
-        "kpiDescription": "Chat response target achievement",
-        
-        // List Section
-        "listTitle": "Chat Response List",
-        "addChat": "Add Response",
-        "noChats": "No chat response data yet",
-        "noChatsMessage": "Add data to get started.",
-        "superAdminNoChats": "No chat response data yet. Data from all users will appear here.",
-        "noSearchResults": "No chat response matching your search.",
-        
-        // Form Section
-        "addNewChat": "Add New Chat Response",
-        "editChat": "Edit Chat Response",
-        "customerLabel": "Customer Name",
-        "customerPlaceholder": "Customer name",
-        "platformLabel": "Platform",
-        "platformPlaceholder": "Select platform",
-        "topicLabel": "Conversation Topic",
-        "topicPlaceholder": "Conversation topic",
-        "responseTimeLabel": "Response Time (minutes)",
-        "responseTimePlaceholder": "Response time in minutes",
-        "dateLabel": "Response Date",
-        "telegramOption": "Telegram",
-        "websiteOption": "Live Chat Website",
-        "otherOption": "Other",
-        
-        // Status Badges
-        "statusFast": "Fast",
-        "statusMedium": "Medium",
-        "statusSlow": "Slow",
-        
-        // Actions
-        "edit": "Edit",
-        "delete": "Delete",
-        "readOnly": "Read Only",
-        "cancel": "Cancel",
-        "saveChat": "Save Response",
-        "updateChat": "Update Response",
-        
-        // Form Mode
-        "addMode": "Add New",
-        "editMode": "Edit",
-        
-        // Notifications
-        "chatAdded": "Chat response successfully added",
-        "chatUpdated": "Chat response successfully updated",
-        "chatDeleted": "Chat response successfully deleted",
-        "errorLoading": "Failed to load chat response data",
-        "allFieldsRequired": "Please fill all fields correctly",
-        "responseTimePositive": "Response time must be greater than 0",
-        "confirmDelete": "Are you sure you want to delete this chat response data?",
-        "noPermissionEdit": "You don't have permission to edit this chat response",
-        "noPermissionDelete": "You don't have permission to delete this chat response",
-        "superAdminMode": "Super Admin Mode: Loading {count} chat responses from all users",
-        "editModeNotification": "You are in edit mode. Update the data and click \"Save Response\" to save changes.",
-        
-        // User Roles
-        "superAdmin": "Super Administrator",
-        "customerSupport": "Customer Service Support",
-        "superAdminView": "Super Admin View"
-    },
-    
-    ja: {
-        // Header
-        "chatTitle": "チャット応答ダッシュボード",
-        "searchPlaceholder": "チャット応答を検索...",
-        
-        // Stats Section
-        "totalChats": "総チャット応答数",
-        "avgResponseTime": "平均応答時間",
-        "fastResponses": "高速応答（3分未満）",
-        "kpiChat": "KPIチャット応答",
-        "totalChatsDescription": "応答済みのチャット数",
-        "avgResponseTimeDescription": "チャットの平均応答時間",
-        "fastResponsesDescription": "目標時間内の応答",
-        "kpiDescription": "チャット応答目標達成率",
-        
-        // List Section
-        "listTitle": "チャット応答リスト",
-        "addChat": "応答を追加",
-        "noChats": "チャット応答データがまだありません",
-        "noChatsMessage": "データを追加して開始してください。",
-        "superAdminNoChats": "チャット応答データがまだありません。全ユーザーのデータがここに表示されます。",
-        "noSearchResults": "検索条件に一致するチャット応答はありません。",
-        
-        // Form Section
-        "addNewChat": "新しいチャット応答を追加",
-        "editChat": "チャット応答を編集",
-        "customerLabel": "顧客名",
-        "customerPlaceholder": "顧客名",
-        "platformLabel": "プラットフォーム",
-        "platformPlaceholder": "プラットフォームを選択",
-        "topicLabel": "会話トピック",
-        "topicPlaceholder": "会話トピック",
-        "responseTimeLabel": "応答時間（分）",
-        "responseTimePlaceholder": "応答時間（分）",
-        "dateLabel": "応答日",
-        "telegramOption": "Telegram",
-        "websiteOption": "ライブチャットウェブサイト",
-        "otherOption": "その他",
-        
-        // Status Badges
-        "statusFast": "高速",
-        "statusMedium": "中速",
-        "statusSlow": "低速",
-        
-        // Actions
-        "edit": "編集",
-        "delete": "削除",
-        "readOnly": "読み取り専用",
-        "cancel": "キャンセル",
-        "saveChat": "応答を保存",
-        "updateChat": "応答を更新",
-        
-        // Form Mode
-        "addMode": "新規追加",
-        "editMode": "編集",
-        
-        // Notifications
-        "chatAdded": "チャット応答が正常に追加されました",
-        "chatUpdated": "チャット応答が正常に更新されました",
-        "chatDeleted": "チャット応答が正常に削除されました",
-        "errorLoading": "チャット応答データの読み込みに失敗しました",
-        "allFieldsRequired": "すべてのフィールドを正しく入力してください",
-        "responseTimePositive": "応答時間は0より大きい必要があります",
-        "confirmDelete": "このチャット応答データを削除してもよろしいですか？",
-        "noPermissionEdit": "このチャット応答を編集する権限がありません",
-        "noPermissionDelete": "このチャット応答を削除する権限がありません",
-        "superAdminMode": "スーパー管理者モード：全ユーザーから{count}件のチャット応答を読み込み中",
-        "editModeNotification": "編集モードです。データを更新し「応答を保存」をクリックして変更を保存してください。",
-        
-        // User Roles
-        "superAdmin": "スーパー管理者",
-        "customerSupport": "カスタマーサービスサポート",
-        "superAdminView": "スーパー管理者ビュー"
-    },
-    
-    zh: {
-        // Header
-        "chatTitle": "聊天回复仪表板",
-        "searchPlaceholder": "搜索聊天回复...",
-        
-        // Stats Section
-        "totalChats": "总聊天回复数",
-        "avgResponseTime": "平均回复时间",
-        "fastResponses": "快速回复（< 3分钟）",
-        "kpiChat": "KPI聊天回复",
-        "totalChatsDescription": "已回复的聊天数量",
-        "avgResponseTimeDescription": "平均聊天回复时间",
-        "fastResponsesDescription": "目标时间内的回复",
-        "kpiDescription": "聊天回复目标达成率",
-        
-        // List Section
-        "listTitle": "聊天回复列表",
-        "addChat": "添加回复",
-        "noChats": "尚无聊天回复数据",
-        "noChatsMessage": "添加数据以开始。",
-        "superAdminNoChats": "尚无聊天回复数据。所有用户的数据将显示在此处。",
-        "noSearchResults": "没有符合搜索条件的聊天回复。",
-        
-        // Form Section
-        "addNewChat": "添加新聊天回复",
-        "editChat": "编辑聊天回复",
-        "customerLabel": "客户姓名",
-        "customerPlaceholder": "客户姓名",
-        "platformLabel": "平台",
-        "platformPlaceholder": "选择平台",
-        "topicLabel": "对话主题",
-        "topicPlaceholder": "对话主题",
-        "responseTimeLabel": "回复时间（分钟）",
-        "responseTimePlaceholder": "回复时间（分钟）",
-        "dateLabel": "回复日期",
-        "telegramOption": "Telegram",
-        "websiteOption": "网站在线聊天",
-        "otherOption": "其他",
-        
-        // Status Badges
-        "statusFast": "快速",
-        "statusMedium": "中等",
-        "statusSlow": "缓慢",
-        
-        // Actions
-        "edit": "编辑",
-        "delete": "删除",
-        "readOnly": "只读",
-        "cancel": "取消",
-        "saveChat": "保存回复",
-        "updateChat": "更新回复",
-        
-        // Form Mode
-        "addMode": "新增",
-        "editMode": "编辑",
-        
-        // Notifications
-        "chatAdded": "聊天回复已成功添加",
-        "chatUpdated": "聊天回复已成功更新",
-        "chatDeleted": "聊天回复已成功删除",
-        "errorLoading": "加载聊天回复数据失败",
-        "allFieldsRequired": "请正确填写所有字段",
-        "responseTimePositive": "回复时间必须大于0",
-        "confirmDelete": "您确定要删除此聊天回复数据吗？",
-        "noPermissionEdit": "您没有权限编辑此聊天回复",
-        "noPermissionDelete": "您没有权限删除此聊天回复",
-        "superAdminMode": "超级管理员模式：正在从所有用户加载{count}个聊天回复",
-        "editModeNotification": "您处于编辑模式。更新数据并点击\"保存回复\"以保存更改。",
-        
-        // User Roles
-        "superAdmin": "超级管理员",
-        "customerSupport": "客户服务支持",
-        "superAdminView": "超级管理员视图"
-    }
-};
 
-// ========== TRANSLATION FUNCTIONS ==========
-
-// Fungsi untuk menerapkan terjemahan ke halaman chat response
-function applyChatTranslations(language) {
-    const lang = chatTranslations[language] || chatTranslations['id'];
-    
-    if (!lang) return;
-
-    console.log("Applying chat translations for:", language);
-
-    // Terjemahkan elemen utama
-    const elements = {
-        'chatTitle': '.header h1',
-        'searchPlaceholder': '#chatSearch',
-        'listTitle': '.list-title',
-        'noChats': '.chat-items .no-chats h3',
-        'noChatsMessage': '.chat-items .no-chats p'
-    };
-
-    Object.keys(elements).forEach(key => {
-        const element = document.querySelector(elements[key]);
-        if (element && lang[key]) {
-            if (key === 'searchPlaceholder') {
-                element.placeholder = lang[key];
-            } else {
-                // Simpan ikon jika ada
-                const iconMatch = element.innerHTML.match(/(<i[^>]*><\/i>)/);
-                if (iconMatch) {
-                    element.innerHTML = iconMatch[0] + ' ' + lang[key];
+        // ========== MONTHLY DATA FILTER FUNCTION ==========
+        function filterChatDataByCurrentMonth(data) {
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth();
+            const currentYear = currentDate.getFullYear();
+            
+            return data.filter(item => {
+                if (!item.date) return false;
+                
+                let itemDate;
+                if (item.date.toDate) {
+                    itemDate = item.date.toDate();
+                } else if (item.date instanceof Date) {
+                    itemDate = item.date;
+                } else if (typeof item.date === 'string') {
+                    itemDate = new Date(item.date);
                 } else {
-                    element.textContent = lang[key];
+                    return false;
+                }
+                
+                return itemDate.getMonth() === currentMonth && 
+                       itemDate.getFullYear() === currentYear;
+            });
+        }
+
+        function isChatFromCurrentMonth(chat) {
+            if (!chat.date) return false;
+            
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth();
+            const currentYear = currentDate.getFullYear();
+            
+            let chatDate;
+            if (chat.date.toDate) {
+                chatDate = chat.date.toDate();
+            } else if (chat.date instanceof Date) {
+                chatDate = chat.date;
+            } else if (typeof chat.date === 'string') {
+                chatDate = new Date(chat.date);
+            } else {
+                return false;
+            }
+            
+            return chatDate.getMonth() === currentMonth && chatDate.getFullYear() === currentYear;
+        }
+
+        // ========== ADD MONTH INDICATOR FUNCTION ==========
+        function addMonthIndicator() {
+            const statsContainer = document.querySelector('.chat-stats');
+            if (!statsContainer) return;
+            
+            const existingIndicator = document.getElementById('monthIndicator');
+            if (existingIndicator) return;
+            
+            const currentDate = new Date();
+            const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const currentMonth = monthNames[currentDate.getMonth()];
+            const currentYear = currentDate.getFullYear();
+            
+            const monthIndicator = document.createElement('div');
+            monthIndicator.id = 'monthIndicator';
+            monthIndicator.className = 'month-indicator';
+            monthIndicator.innerHTML = `
+                <i class="fas fa-calendar-alt"></i>
+                <span id="monthIndicatorText">Data Bulan ${currentMonth} ${currentYear}</span>
+            `;
+            
+            statsContainer.parentNode.insertBefore(monthIndicator, statsContainer);
+        }
+
+        function updateMonthIndicator() {
+            const monthIndicatorText = document.getElementById('monthIndicatorText');
+            if (monthIndicatorText) {
+                const currentDate = new Date();
+                const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                                    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                const currentMonth = monthNames[currentDate.getMonth()];
+                const currentYear = currentDate.getFullYear();
+                monthIndicatorText.textContent = `Data Bulan ${currentMonth} ${currentYear}`;
+            }
+        }
+
+        // ========== FUNGSI UTILITY ==========
+        function showNotification(message, type = 'info') {
+            if (!notificationContainer) return;
+            
+            const lang = chatTranslations[currentLanguage] || chatTranslations['id'];
+            
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+                <button class="notification-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            notificationContainer.appendChild(notification);
+            
+            const closeBtn = notification.querySelector('.notification-close');
+            closeBtn.addEventListener('click', function() {
+                closeNotification(notification);
+            });
+            
+            const timeoutId = setTimeout(() => {
+                closeNotification(notification);
+            }, 5000);
+            
+            notification.dataset.timeoutId = timeoutId;
+        }
+
+        function closeNotification(notification) {
+            if (notification.dataset.timeoutId) {
+                clearTimeout(parseInt(notification.dataset.timeoutId));
+            }
+            
+            notification.classList.add('hiding');
+            
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notificationContainer.removeChild(notification);
+                }
+            }, 500);
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'Tanggal tidak tersedia';
+            
+            try {
+                const date = dateString.toDate ? dateString.toDate() : new Date(dateString);
+                return date.toLocaleDateString('id-ID', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+            } catch (error) {
+                console.error('Error formatting date:', error);
+                return 'Format tanggal tidak valid';
+            }
+        }
+
+        function getResponseStatus(responseTime) {
+            if (responseTime <= 3) {
+                return { status: 'fast', text: 'Cepat' };
+            } else if (responseTime <= 5) {
+                return { status: 'medium', text: 'Sedang' };
+            } else {
+                return { status: 'slow', text: 'Lambat' };
+            }
+        }
+
+        // ========== FUNGSI AUTHENTIKASI ==========
+        async function ensureUserDocument(user) {
+            try {
+                const userRef = db.collection('users').doc(user.uid);
+                const userDoc = await userRef.get();
+                
+                const superAdminEmails = [
+                    "superadmin@gachaengine.com",
+                    "admin@gachaengine.com"
+                ];
+                
+                const isSuperAdmin = superAdminEmails.includes(user.email);
+                
+                if (userDoc.exists) {
+                    const currentData = userDoc.data();
+                    const updateData = {
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                        email: user.email,
+                        displayName: user.displayName || currentData.displayName || user.email
+                    };
+                    
+                    if (!currentData.hasOwnProperty('role')) {
+                        updateData.role = isSuperAdmin ? 'super_admin' : 'user';
+                    }
+                    if (!currentData.hasOwnProperty('isSuperAdmin')) {
+                        updateData.isSuperAdmin = isSuperAdmin;
+                    }
+                    
+                    await userRef.update(updateData);
+                    return { ...currentData, ...updateData };
+                } else {
+                    const newUserDoc = {
+                        email: user.email,
+                        displayName: user.displayName || user.email,
+                        role: isSuperAdmin ? 'super_admin' : 'user',
+                        isSuperAdmin: isSuperAdmin,
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                    
+                    await userRef.set(newUserDoc);
+                    return newUserDoc;
+                }
+            } catch (error) {
+                console.error('Error ensuring user document:', error);
+                throw error;
+            }
+        }
+
+        async function checkAuth() {
+            return new Promise((resolve, reject) => {
+                const unsubscribe = auth.onAuthStateChanged(async user => {
+                    unsubscribe();
+                    if (user) {
+                        currentUser = user;
+                        try {
+                            currentUserData = await ensureUserDocument(user);
+                            resolve(user);
+                        } catch (error) {
+                            reject(error);
+                        }
+                    } else {
+                        reject(new Error('User not authenticated'));
+                    }
+                });
+            });
+        }
+
+        // ========== FUNGSI CRUD ==========
+        async function saveChat(chat) {
+            try {
+                await checkAuth();
+                
+                const chatDataToSave = {
+                    customer: chat.customer,
+                    platform: chat.platform,
+                    topic: chat.topic,
+                    responseTime: parseFloat(chat.responseTime),
+                    date: chat.date,
+                    userId: currentUser.uid,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                if (chat.id) {
+                    await db.collection('chats').doc(chat.id).update(chatDataToSave);
+                } else {
+                    chatDataToSave.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                    await db.collection('chats').add(chatDataToSave);
+                }
+                
+            } catch (error) {
+                console.error('Error in saveChat:', error);
+                throw error;
+            }
+        }
+
+        async function deleteChatFromFirestore(chatId) {
+            try {
+                await checkAuth();
+                await db.collection('chats').doc(chatId).delete();
+            } catch (error) {
+                console.error('Error deleting chat:', error);
+                throw error;
+            }
+        }
+
+        // ========== FUNGSI STATISTIK ==========
+        function updateChatStats() {
+            const monthlyChatData = filterChatDataByCurrentMonth(chatData);
+            
+            const totalChats = monthlyChatData.length;
+            const fastResponses = monthlyChatData.filter(item => parseFloat(item.responseTime) <= 3).length;
+            const totalResponseTime = monthlyChatData.reduce((sum, item) => sum + parseFloat(item.responseTime), 0);
+            const avgResponseTime = totalChats > 0 ? (totalResponseTime / totalChats).toFixed(1) : 0;
+            const kpiChat = totalChats > 0 ? Math.round((fastResponses / totalChats) * 100) : 0;
+            
+            if (totalChatsEl) totalChatsEl.textContent = totalChats;
+            if (avgResponseTimeEl) avgResponseTimeEl.textContent = `${avgResponseTime} menit`;
+            if (fastResponsesEl) fastResponsesEl.textContent = fastResponses;
+            if (kpiChatEl) kpiChatEl.textContent = `${kpiChat}%`;
+            
+            const progressBars = document.querySelectorAll('.progress-fill');
+            if (progressBars.length >= 4) {
+                setTimeout(() => {
+                    progressBars[0].style.width = `${Math.min(100, (totalChats / chatTarget) * 100)}%`;
+                    progressBars[1].style.width = `${avgResponseTime > 0 ? Math.max(0, 100 - (avgResponseTime / 10 * 100)) : 0}%`;
+                    progressBars[2].style.width = `${totalChats > 0 ? (fastResponses / totalChats) * 100 : 0}%`;
+                    progressBars[3].style.width = `${kpiChat}%`;
+                }, 100);
+            }
+            
+            localStorage.setItem('chatCount', totalChats);
+            localStorage.setItem('chatKPI', kpiChat);
+            
+            window.dispatchEvent(new CustomEvent('chatDataChanged', { 
+                detail: { 
+                    chatCount: totalChats,
+                    chatKPI: kpiChat
+                } 
+            }));
+            
+            updateMonthIndicator();
+        }
+
+        // ========== FUNGSI RENDER ==========
+        function renderChatList(items) {
+            if (!chatItemsContainer) return;
+            
+            const lang = chatTranslations[currentLanguage] || chatTranslations['id'];
+            
+            chatItemsContainer.innerHTML = '';
+            
+            if (items.length === 0) {
+                const monthlyCount = filterChatDataByCurrentMonth(chatData).length;
+                const previousMonthCount = chatData.length - monthlyCount;
+                
+                let message = searchTerm ? lang.noSearchResults : (lang.noChatsMessage || 'Tambahkan data untuk memulai.');
+                
+                if (!searchTerm && previousMonthCount > 0 && monthlyCount === 0) {
+                    message = lang.previousMonthInfo?.replace('{count}', previousMonthCount) || 
+                              `Anda memiliki ${previousMonthCount} chat dari bulan sebelumnya. Statistik di atas hanya menampilkan data bulan ini.`;
+                }
+                
+                chatItemsContainer.innerHTML = `
+                    <div style="text-align: center; padding: 20px; color: var(--text-secondary);">
+                        <i class="fas fa-comments" style="font-size: 48px; margin-bottom: 10px;"></i>
+                        <p>${message}</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            items.forEach((chat) => {
+                const status = getResponseStatus(chat.responseTime);
+                const isCurrentMonth = isChatFromCurrentMonth(chat);
+                const lang = chatTranslations[currentLanguage] || chatTranslations['id'];
+                
+                const statusText = status.status === 'fast' ? lang.statusFast :
+                                  (status.status === 'medium' ? lang.statusMedium : lang.statusSlow);
+                
+                const ownerInfo = currentUserData && currentUserData.isSuperAdmin ? 
+                    `<p class="chat-owner" style="font-size: var(--text-xs); color: var(--text-tertiary); margin-bottom: 5px;">
+                        <i class="fas fa-user"></i> User ID: ${chat.userId}
+                    </p>` : '';
+                
+                const chatItem = document.createElement('div');
+                chatItem.className = `chat-item fade-in ${isCurrentMonth ? 'current-month' : ''}`;
+                if (isCurrentMonth) {
+                    chatItem.style.borderLeft = '3px solid #4361ee';
+                }
+                chatItem.innerHTML = `
+                    <div class="chat-info">
+                        ${ownerInfo}
+                        <h3 class="chat-name">${escapeHtml(chat.customer)} - ${escapeHtml(chat.platform)}</h3>
+                        <div class="chat-desc">Topik: ${escapeHtml(chat.topic)}</div>
+                        <p class="chat-date">Tanggal: ${formatDate(chat.date)}</p>
+                    </div>
+                    <div class="chat-actions">
+                        <span class="chat-status status-${status.status}">
+                            <span class="response-time">${chat.responseTime}m</span> - ${statusText}
+                        </span>
+                        ${currentUserData && (currentUserData.isSuperAdmin || chat.userId === currentUser.uid) ? `
+                            <button class="action-btn edit-btn" data-id="${chat.id}" title="${lang.edit}">
+                                <i class="fas fa-edit"></i> ${lang.edit}
+                            </button>
+                            <button class="action-btn delete-btn" data-id="${chat.id}" title="${lang.delete}">
+                                <i class="fas fa-trash"></i> ${lang.delete}
+                            </button>
+                        ` : `
+                            <span style="color: var(--text-secondary); font-size: var(--text-xs);">${lang.readOnly}</span>
+                        `}
+                    </div>
+                `;
+                
+                chatItemsContainer.appendChild(chatItem);
+            });
+            
+            // Event listeners
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    editChat(id);
+                });
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    deleteChat(id);
+                });
+            });
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        // ========== FUNGSI PAGINATION ==========
+        function updatePaginationInfo() {
+            const lang = chatTranslations[currentLanguage] || chatTranslations['id'];
+            const totalItems = filteredChatData.length;
+            const totalPages = Math.ceil(totalItems / pageSize);
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = Math.min(startIndex + pageSize, totalItems);
+            
+            if (showingStart) showingStart.textContent = totalItems > 0 ? startIndex + 1 : 0;
+            if (showingEnd) showingEnd.textContent = endIndex;
+            if (totalItemsSpan) totalItemsSpan.textContent = totalItems;
+            if (pageInfo) pageInfo.textContent = `${lang.page || 'Halaman'} ${currentPage} ${lang.of || 'dari'} ${totalPages || 1}`;
+            
+            if (prevPageBtn) prevPageBtn.disabled = currentPage === 1;
+            if (nextPageBtn) nextPageBtn.disabled = currentPage === totalPages || totalItems === 0;
+        }
+
+        function renderChatListWithPagination() {
+            const startIndex = (currentPage - 1) * pageSize;
+            const paginatedData = filteredChatData.slice(startIndex, startIndex + pageSize);
+            renderChatList(paginatedData);
+            updatePaginationInfo();
+        }
+
+        function filterChatData() {
+            if (!searchTerm) {
+                filteredChatData = [...chatData];
+            } else {
+                filteredChatData = chatData.filter(chat => 
+                    chat.customer.toLowerCase().includes(searchTerm) ||
+                    chat.platform.toLowerCase().includes(searchTerm) ||
+                    chat.topic.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            currentPage = 1;
+            renderChatListWithPagination();
+        }
+
+        function searchChat() {
+            searchTerm = chatSearch?.value.toLowerCase() || '';
+            filterChatData();
+        }
+
+        // ========== FUNGSI FORM ==========
+        function resetForm() {
+            if (newChatForm) newChatForm.reset();
+            currentEditId = null;
+            
+            if (formModeIndicator) formModeIndicator.style.display = 'none';
+            if (formMainTitle) {
+                const lang = chatTranslations[currentLanguage] || chatTranslations['id'];
+                formMainTitle.textContent = lang.addNewChat;
+            }
+            if (submitChatBtn) {
+                const lang = chatTranslations[currentLanguage] || chatTranslations['id'];
+                submitChatBtn.innerHTML = `<i class="fas fa-save"></i> ${lang.saveChat}`;
+            }
+            if (editChatIdField) editChatIdField.value = '';
+            
+            const dateInput = document.getElementById('chat-date');
+            if (dateInput) {
+                dateInput.valueAsDate = new Date();
+            }
+        }
+
+        async function addChat(e) {
+            e.preventDefault();
+            
+            const lang = chatTranslations[currentLanguage] || chatTranslations['id'];
+            const customer = document.getElementById('chat-customer')?.value.trim() || '';
+            const platform = document.getElementById('chat-platform')?.value || '';
+            const topic = document.getElementById('chat-topic')?.value.trim() || '';
+            const responseTime = document.getElementById('chat-time')?.value || '';
+            const date = document.getElementById('chat-date')?.value || '';
+            
+            if (!customer || !platform || !topic || !responseTime || !date) {
+                showNotification(lang.allFieldsRequired, 'error');
+                return;
+            }
+            
+            if (parseFloat(responseTime) <= 0) {
+                showNotification(lang.responseTimePositive, 'error');
+                return;
+            }
+            
+            try {
+                const chatToSave = { customer, platform, topic, responseTime: parseFloat(responseTime), date };
+                
+                if (currentEditId) {
+                    chatToSave.id = currentEditId;
+                    await saveChat(chatToSave);
+                    showNotification(lang.chatUpdated, 'success');
+                } else {
+                    await saveChat(chatToSave);
+                    showNotification(lang.chatAdded, 'success');
+                }
+                
+                resetForm();
+                
+            } catch (error) {
+                console.error('Error saving chat:', error);
+                showNotification(lang.errorLoading, 'error');
+            }
+        }
+
+        function editChat(chatId) {
+            const lang = chatTranslations[currentLanguage] || chatTranslations['id'];
+            const chat = chatData.find(item => item.id === chatId);
+            if (!chat) return;
+            
+            if (!currentUserData.isSuperAdmin && chat.userId !== currentUser.uid) {
+                showNotification(lang.noPermissionEdit, 'error');
+                return;
+            }
+            
+            currentEditId = chatId;
+            
+            const customerInput = document.getElementById('chat-customer');
+            const platformInput = document.getElementById('chat-platform');
+            const topicInput = document.getElementById('chat-topic');
+            const responseTimeInput = document.getElementById('chat-time');
+            const dateInput = document.getElementById('chat-date');
+            
+            if (customerInput) customerInput.value = chat.customer || '';
+            if (platformInput) platformInput.value = chat.platform || '';
+            if (topicInput) topicInput.value = chat.topic || '';
+            if (responseTimeInput) responseTimeInput.value = chat.responseTime || '';
+            
+            if (dateInput && chat.date) {
+                try {
+                    const dateObj = chat.date.toDate ? chat.date.toDate() : new Date(chat.date);
+                    const formattedDate = dateObj.toISOString().split('T')[0];
+                    dateInput.value = formattedDate;
+                } catch (error) {
+                    console.error('Error formatting date:', error);
+                }
+            }
+            
+            if (formModeIndicator) formModeIndicator.style.display = 'flex';
+            if (modeBadge) {
+                modeBadge.textContent = lang.edit || 'Edit';
+                modeBadge.className = 'mode-badge edit-mode-badge';
+            }
+            if (formMainTitle) formMainTitle.textContent = lang.editChat;
+            if (submitChatBtn) submitChatBtn.innerHTML = `<i class="fas fa-save"></i> ${lang.updateChat}`;
+            if (editChatIdField) editChatIdField.value = chat.id;
+            
+            if (chatFormElement) {
+                chatFormElement.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            showNotification(lang.editModeNotification, 'info');
+        }
+
+        async function deleteChat(chatId) {
+            const lang = chatTranslations[currentLanguage] || chatTranslations['id'];
+            const chat = chatData.find(item => item.id === chatId);
+            if (!chat) return;
+            
+            if (!currentUserData.isSuperAdmin && chat.userId !== currentUser.uid) {
+                showNotification(lang.noPermissionDelete, 'error');
+                return;
+            }
+            
+            if (confirm(lang.confirmDelete)) {
+                try {
+                    await deleteChatFromFirestore(chatId);
+                    showNotification(lang.chatDeleted, 'success');
+                    
+                    if (currentEditId === chatId) {
+                        resetForm();
+                    }
+                } catch (error) {
+                    console.error('Error deleting chat:', error);
+                    showNotification(lang.errorLoading, 'error');
                 }
             }
         }
-    });
 
-    // Update form labels dan placeholders
-    updateChatFormTranslations(language);
-    
-    // Update tombol
-    updateChatButtonsTranslations(language);
-    
-    // Update statistik
-    updateChatStatsTranslations(language);
-    
-    // Update status badges
-    updateChatStatusTranslations(language);
-    
-    // Update user role display
-    updateChatUserRoleTranslations(language);
-}
-
-// Update terjemahan form
-function updateChatFormTranslations(language) {
-    const lang = chatTranslations[language] || chatTranslations['id'];
-    
-    // Form labels
-    const formLabels = {
-        'customerLabel': 'label[for="chat-customer"]',
-        'platformLabel': 'label[for="chat-platform"]',
-        'topicLabel': 'label[for="chat-topic"]',
-        'responseTimeLabel': 'label[for="chat-time"]',
-        'dateLabel': 'label[for="chat-date"]'
-    };
-    
-    Object.keys(formLabels).forEach(key => {
-        const element = document.querySelector(formLabels[key]);
-        if (element && lang[key]) {
-            element.textContent = lang[key];
+        // ========== REAL-TIME LISTENER ==========
+        function setupRealTimeListener() {
+            if (unsubscribeChats) {
+                unsubscribeChats();
+            }
+            
+            let query;
+            
+            if (currentUserData && currentUserData.isSuperAdmin) {
+                query = db.collection('chats');
+            } else {
+                query = db.collection('chats').where('userId', '==', currentUser.uid);
+            }
+            
+            unsubscribeChats = query.onSnapshot(snapshot => {
+                chatData = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                
+                chatData.sort((a, b) => {
+                    const dateA = a.date ? (a.date.toDate ? a.date.toDate() : new Date(a.date)) : new Date(0);
+                    const dateB = b.date ? (b.date.toDate ? b.date.toDate() : new Date(b.date)) : new Date(0);
+                    return dateB - dateA;
+                });
+                
+                filterChatData();
+                updateChatStats();
+                
+                const lang = chatTranslations[currentLanguage] || chatTranslations['id'];
+                const monthlyCount = filterChatDataByCurrentMonth(chatData).length;
+                if (currentUserData && currentUserData.isSuperAdmin) {
+                    showNotification(lang.superAdminMode.replace('{count}', chatData.length).replace('{monthly}', monthlyCount), 'info');
+                }
+            }, error => {
+                console.error('Error in real-time listener:', error);
+                const lang = chatTranslations[currentLanguage] || chatTranslations['id'];
+                showNotification(lang.errorLoading, 'error');
+            });
         }
-    });
-    
-    // Placeholders
-    const customerInput = document.getElementById('chat-customer');
-    const topicInput = document.getElementById('chat-topic');
-    const responseTimeInput = document.getElementById('chat-time');
-    
-    if (customerInput && lang.customerPlaceholder) {
-        customerInput.placeholder = lang.customerPlaceholder;
-    }
-    if (topicInput && lang.topicPlaceholder) {
-        topicInput.placeholder = lang.topicPlaceholder;
-    }
-    if (responseTimeInput && lang.responseTimePlaceholder) {
-        responseTimeInput.placeholder = lang.responseTimePlaceholder;
-    }
-    
-    // Platform options
-    const platformSelect = document.getElementById('chat-platform');
-    if (platformSelect) {
-        const options = platformSelect.querySelectorAll('option');
-        if (options.length >= 4) {
-            if (lang.platformPlaceholder) options[0].text = lang.platformPlaceholder;
-            if (lang.telegramOption) options[1].text = lang.telegramOption;
-            if (lang.websiteOption) options[2].text = lang.websiteOption;
-            if (lang.otherOption) options[3].text = lang.otherOption;
+
+        function updateUserProfile(user, userData) {
+            const userProfile = document.querySelector('.user-info h4');
+            const userRole = document.querySelector('.user-info p');
+            const lang = chatTranslations[currentLanguage] || chatTranslations['id'];
+            
+            if (userProfile) {
+                userProfile.textContent = user.displayName || user.email || 'User';
+            }
+            if (userRole) {
+                const roleText = userData && userData.isSuperAdmin ? 
+                    lang.superAdmin : 
+                    lang.customerSupport;
+                userRole.textContent = roleText;
+                
+                if (userData && userData.isSuperAdmin) {
+                    const headerTitle = document.querySelector('.header h1');
+                    if (headerTitle && !headerTitle.querySelector('.super-admin-badge')) {
+                        const badge = document.createElement('span');
+                        badge.className = 'super-admin-badge';
+                        badge.textContent = lang.superAdmin || 'Super Admin';
+                        headerTitle.appendChild(badge);
+                    }
+                }
+            }
         }
-    }
-    
-    // Form title
-    const formTitle = document.querySelector('.form-title');
-    if (formTitle) {
-        const isEditMode = formTitle.textContent.includes('Edit') || formTitle.textContent.includes('編集') || formTitle.textContent.includes('编辑');
-        formTitle.textContent = isEditMode ? lang.editChat : lang.addNewChat;
-    }
-}
 
-// Update terjemahan tombol
-function updateChatButtonsTranslations(language) {
-    const lang = chatTranslations[language] || chatTranslations['id'];
-    
-    // Add chat button
-    const addChatBtn = document.getElementById('add-chat-btn');
-    if (addChatBtn && lang.addChat) {
-        addChatBtn.innerHTML = `<i class="fas fa-plus"></i> ${lang.addChat}`;
-    }
-    
-    // Form buttons
-    const cancelBtn = document.getElementById('cancel-chat-btn');
-    const submitBtn = document.querySelector('#new-chat-form .btn-primary');
-    
-    if (cancelBtn && lang.cancel) {
-        cancelBtn.textContent = lang.cancel;
-    }
-    if (submitBtn) {
-        const isEditMode = submitBtn.textContent.includes('Perbarui') || submitBtn.textContent.includes('Update');
-        submitBtn.textContent = isEditMode ? lang.updateChat : lang.saveChat;
-    }
-}
+        // ========== EVENT LISTENERS ==========
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('DOM Content Loaded - Initializing Chat Response Dashboard');
+            
+            initializeChatLanguage();
+            addMonthIndicator();
+            
+            try {
+                await checkAuth();
+                await ensureUserDocument(currentUser);
+                
+                console.log('User authenticated:', currentUser.uid);
+                
+                setupRealTimeListener();
+                
+                if (newChatForm) {
+                    newChatForm.addEventListener('submit', addChat);
+                }
+                
+                if (addChatBtn) {
+                    addChatBtn.addEventListener('click', function() {
+                        resetForm();
+                        if (chatFormElement) {
+                            chatFormElement.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    });
+                }
+                
+                if (cancelChatBtn) {
+                    cancelChatBtn.addEventListener('click', resetForm);
+                }
+                
+                if (chatSearch) {
+                    chatSearch.addEventListener('input', searchChat);
+                }
+                
+                // Pagination event listeners
+                if (prevPageBtn) {
+                    prevPageBtn.addEventListener('click', function() {
+                        if (currentPage > 1) {
+                            currentPage--;
+                            renderChatListWithPagination();
+                        }
+                    });
+                }
+                
+                if (nextPageBtn) {
+                    nextPageBtn.addEventListener('click', function() {
+                        const totalPages = Math.ceil(filteredChatData.length / pageSize);
+                        if (currentPage < totalPages) {
+                            currentPage++;
+                            renderChatListWithPagination();
+                        }
+                    });
+                }
+                
+                if (pageSizeSelect) {
+                    pageSizeSelect.addEventListener('change', function() {
+                        pageSize = parseInt(this.value);
+                        currentPage = 1;
+                        renderChatListWithPagination();
+                    });
+                }
+                
+                updateUserProfile(currentUser, currentUserData);
+                
+                // Set default date
+                const dateInput = document.getElementById('chat-date');
+                if (dateInput) {
+                    dateInput.valueAsDate = new Date();
+                }
+                
+                console.log('Chat response dashboard initialized successfully');
+                
+            } catch (error) {
+                console.error('Authentication error:', error);
+                const lang = chatTranslations[currentLanguage] || chatTranslations['id'];
+                showNotification(lang.loginRequired, 'error');
+                
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 3000);
+            }
+        });
 
-// Update terjemahan statistik
-function updateChatStatsTranslations(language) {
-    const lang = chatTranslations[language] || chatTranslations['id'];
-    
-    // Stat cards
-    const statTitles = document.querySelectorAll('.stat-title');
-    if (statTitles.length >= 4) {
-        if (lang.totalChats) statTitles[0].textContent = lang.totalChats;
-        if (lang.avgResponseTime) statTitles[1].textContent = lang.avgResponseTime;
-        if (lang.fastResponses) statTitles[2].textContent = lang.fastResponses;
-        if (lang.kpiChat) statTitles[3].textContent = lang.kpiChat;
-    }
-    
-    // Stat descriptions
-    const statDescriptions = document.querySelectorAll('.stat-content p');
-    if (statDescriptions.length >= 4) {
-        if (lang.totalChatsDescription) statDescriptions[0].textContent = lang.totalChatsDescription;
-        if (lang.avgResponseTimeDescription) statDescriptions[1].textContent = lang.avgResponseTimeDescription;
-        if (lang.fastResponsesDescription) statDescriptions[2].textContent = lang.fastResponsesDescription;
-        if (lang.kpiDescription) statDescriptions[3].textContent = lang.kpiDescription;
-    }
-}
-
-// Update terjemahan status
-function updateChatStatusTranslations(language) {
-    const lang = chatTranslations[language] || chatTranslations['id'];
-    
-    // Update status badges di cards yang sudah ada
-    document.querySelectorAll('.chat-status').forEach(statusElement => {
-        const statusClass = statusElement.className;
-        let statusText = statusElement.textContent.trim();
-        
-        if (statusClass.includes('status-fast') && lang.statusFast) {
-            // Simpan waktu respons dan update teks status
-            const timeMatch = statusText.match(/([\d.]+)m/);
-            const time = timeMatch ? timeMatch[1] : '';
-            statusElement.innerHTML = `<span class="response-time">${time}m</span> - ${lang.statusFast}`;
-        } else if (statusClass.includes('status-medium') && lang.statusMedium) {
-            const timeMatch = statusText.match(/([\d.]+)m/);
-            const time = timeMatch ? timeMatch[1] : '';
-            statusElement.innerHTML = `<span class="response-time">${time}m</span> - ${lang.statusMedium}`;
-        } else if (statusClass.includes('status-slow') && lang.statusSlow) {
-            const timeMatch = statusText.match(/([\d.]+)m/);
-            const time = timeMatch ? timeMatch[1] : '';
-            statusElement.innerHTML = `<span class="response-time">${time}m</span> - ${lang.statusSlow}`;
-        }
-    });
-}
-
-// Update terjemahan peran pengguna
-function updateChatUserRoleTranslations(language) {
-    const lang = chatTranslations[language] || chatTranslations['id'];
-    
-    // Update role display di user profile
-    const userRoleElement = document.querySelector('.user-info p');
-    if (userRoleElement) {
-        const currentText = userRoleElement.textContent;
-        if (currentText.includes('Customer Service Support') && lang.customerSupport) {
-            userRoleElement.textContent = lang.customerSupport;
-        } else if (currentText.includes('Super Administrator') && lang.superAdmin) {
-            userRoleElement.textContent = lang.superAdmin;
-        }
-    }
-    
-    // Update action buttons text
-    document.querySelectorAll('.edit-btn').forEach(btn => {
-        const icon = btn.querySelector('i');
-        if (icon && lang.edit) {
-            btn.title = lang.edit;
-        }
-    });
-    
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-        const icon = btn.querySelector('i');
-        if (icon && lang.delete) {
-            btn.title = lang.delete;
-        }
-    });
-    
-    // Update read-only text
-    document.querySelectorAll('.chat-actions span').forEach(span => {
-        if (span.textContent.includes('Read Only') && lang.readOnly) {
-            span.textContent = lang.readOnly;
-        }
-    });
-}
-
-// ========== NOTIFICATION TRANSLATIONS ==========
-
-// Fungsi untuk update notifikasi
-function updateChatNotificationMessages(language) {
-    const lang = chatTranslations[language] || chatTranslations['id'];
-    
-    // Simpan referensi ke fungsi showNotification asli
-    const originalShowNotification = window.showNotification;
-    
-    // Override fungsi showNotification untuk menerjemahkan pesan tertentu
-    window.showNotification = function(message, type = 'info') {
-        let translatedMessage = message;
-        
-        // Terjemahkan pesan-pesan umum
-        if (message.includes('Chat response berhasil ditambahkan') || message.includes('Chat response successfully added')) {
-            translatedMessage = lang.chatAdded;
-        } else if (message.includes('Chat response berhasil diperbarui') || message.includes('Chat response successfully updated')) {
-            translatedMessage = lang.chatUpdated;
-        } else if (message.includes('Chat response berhasil dihapus') || message.includes('Chat response successfully deleted')) {
-            translatedMessage = lang.chatDeleted;
-        } else if (message.includes('Gagal memuat data chat response') || message.includes('Failed to load chat response data')) {
-            translatedMessage = lang.errorLoading;
-        } else if (message.includes('Harap isi semua field dengan benar') || message.includes('Please fill all fields correctly')) {
-            translatedMessage = lang.allFieldsRequired;
-        } else if (message.includes('Waktu respons harus lebih dari 0') || message.includes('Response time must be greater than 0')) {
-            translatedMessage = lang.responseTimePositive;
-        } else if (message.includes('Apakah Anda yakin ingin menghapus data chat response ini') || message.includes('Are you sure you want to delete this chat response data')) {
-            translatedMessage = lang.confirmDelete;
-        } else if (message.includes('tidak memiliki izin untuk mengedit chat response ini') || message.includes("don't have permission to edit this chat response")) {
-            translatedMessage = lang.noPermissionEdit;
-        } else if (message.includes('tidak memiliki izin untuk menghapus chat response ini') || message.includes("don't have permission to delete this chat response")) {
-            translatedMessage = lang.noPermissionDelete;
-        } else if (message.includes('Super Admin Mode: Memuat') || message.includes('Super Admin Mode: Loading')) {
-            // Extract count and format message
-            const countMatch = message.match(/\d+/);
-            const count = countMatch ? countMatch[0] : '0';
-            translatedMessage = lang.superAdminMode.replace('{count}', count);
-        } else if (message.includes('Anda sedang dalam mode edit') || message.includes('You are in edit mode')) {
-            translatedMessage = lang.editModeNotification;
-        }
-        
-        // Panggil fungsi asli dengan pesan yang sudah diterjemahkan
-        originalShowNotification(translatedMessage, type);
-    };
-}
-
-// ========== LANGUAGE INITIALIZATION ==========
-
-// Fungsi inisialisasi bahasa untuk chat response
-function initializeChatLanguage() {
-    const savedLanguage = localStorage.getItem('language') || 'id';
-    console.log("Initializing chat response with language:", savedLanguage);
-    
-    // Terapkan terjemahan
-    applyChatTranslations(savedLanguage);
-    updateChatNotificationMessages(savedLanguage);
-    
-    // Setup listener untuk perubahan bahasa
-    window.addEventListener('languageChanged', function(event) {
-        console.log("Language changed in chat response to:", event.detail.language);
-        applyChatTranslations(event.detail.language);
-        updateChatNotificationMessages(event.detail.language);
-    });
-}
-
-// Panggil inisialisasi saat DOM ready
-document.addEventListener('DOMContentLoaded', function() {
-    // Tunggu sebentar untuk memastikan semua element sudah terload
-    setTimeout(() => {
-        initializeChatLanguage();
-    }, 100);
-});
-
-// Juga panggil saat halaman sepenuhnya loaded
-window.addEventListener('load', function() {
-    initializeChatLanguage();
-});
-</script>
+        // Handle auth state changes
+        auth.onAuthStateChanged(async user => {
+            if (user) {
+                currentUser = user;
+                currentUserData = await ensureUserDocument(user);
+                console.log('User is signed in:', user.uid, 'Role:', currentUserData.role);
+                
+                if (unsubscribeChats) {
+                    unsubscribeChats();
+                }
+                setupRealTimeListener();
+                updateUserProfile(user, currentUserData);
+            } else {
+                console.log('User is signed out');
+                currentUser = null;
+                currentUserData = null;
+                if (unsubscribeChats) {
+                    unsubscribeChats();
+                }
+                const lang = chatTranslations[currentLanguage] || chatTranslations['id'];
+                showNotification('Anda telah logout', 'info');
+                
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+            }
+        });
+    </script>
 </body>
 </html>

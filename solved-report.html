@@ -774,7 +774,7 @@
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    min-width: 900px;
+    min-width: 1000px;
 }
 
 .maintenance-table th {
@@ -1286,6 +1286,28 @@
     gap: 10px;
 }
 
+/* ========== SCREENSHOT STYLES ========== */
+.screenshot-link {
+    color: var(--primary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+}
+
+.screenshot-link:hover {
+    background: var(--hover-color);
+    text-decoration: underline;
+}
+
+.text-muted {
+    color: var(--text-tertiary);
+    font-size: var(--text-xs);
+}
+
 /* ========== RESPONSIVE ADJUSTMENTS ========== */
 @media (max-width: 1024px) {
     .chart-section {
@@ -1792,8 +1814,9 @@
                             <th>Report ID</th>
                             <th>Brand</th>
                             <th>Reported By</th>
-                            <th>Title</th>  <!-- Kolom Title ditambahkan -->
+                            <th>Title</th>
                             <th>Category</th>
+                            <th>Screenshot</th>
                             <th>Reported At</th>
                             <th>Resolved At</th>
                             <th>Status</th>
@@ -1858,6 +1881,28 @@
             </div>
         </div>
     </div>
+
+    <!-- TAMBAHAN: Image Modal untuk melihat screenshot -->
+    <div class="modal-overlay" id="imageModal">
+        <div class="modal" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-image"></i> Screenshot Report</h3>
+                <button class="modal-close" id="closeImageModal">&times;</button>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <img id="modalImage" src="" alt="Screenshot" style="max-width: 100%; max-height: 60vh;">
+                <div style="margin-top: 15px;">
+                    <a href="#" id="modalImageLink" target="_blank" class="btn btn-outline" style="display: inline-flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-external-link-alt"></i> Open in New Tab
+                    </a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="closeImageBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
     <script src="sidebar-loader.js"></script>
     <script src="user-profile.js"></script>
     
@@ -1893,6 +1938,25 @@ let unsubscribeSolved = null;
 let currentReportId = null;
 let currentPage = 1;
 const reportsPerPage = 10;
+
+// ========== FUNGSI SCREENSHOT ==========
+
+// Fungsi untuk membuka modal gambar
+function viewScreenshot(imageUrl) {
+    const modalImage = document.getElementById('modalImage');
+    const modalImageLink = document.getElementById('modalImageLink');
+    
+    if (modalImage && imageUrl) {
+        modalImage.src = imageUrl;
+        if (modalImageLink) {
+            modalImageLink.href = imageUrl;
+        }
+        document.getElementById('imageModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    } else if (imageUrl) {
+        window.open(imageUrl, '_blank');
+    }
+}
 
 function setupSolvedReportsListener() {
     if (unsubscribeSolved) {
@@ -1968,7 +2032,7 @@ async function updateSolvedReportsUI() {
     if (solvedReports.length === 0) {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="10" class="empty-state">
+                <td colspan="11" class="empty-state">
                     <i class="fas fa-database"></i>
                     <h3>No Solved Reports Found</h3>
                     <p>There are no completed reports in the database yet.</p>
@@ -2009,7 +2073,7 @@ async function updateSolvedReportsUI() {
     if (currentPageReports.length === 0) {
         const emptyRow = document.createElement('tr');
         emptyRow.innerHTML = `
-            <td colspan="10" style="text-align: center; padding: 40px 20px;">
+            <td colspan="11" style="text-align: center; padding: 40px 20px;">
                 <i class="fas fa-inbox" style="font-size: 3rem; color: var(--text-tertiary); margin-bottom: 15px; display: block;"></i>
                 <h3 style="color: var(--text-secondary); margin-bottom: 10px;">No solved reports found</h3>
                 <p style="color: var(--text-tertiary);">Try adjusting your filters or check back later.</p>
@@ -2030,6 +2094,14 @@ async function updateSolvedReportsUI() {
         // Get user name
         const reportedBy = await getCachedUserName(report.userId);
         
+        // Tampilkan screenshot jika ada
+        let screenshotHtml = '<span class="text-muted">No screenshot</span>';
+        if (report.screenshotUrl) {
+            screenshotHtml = `<a href="#" class="screenshot-link" onclick="event.preventDefault(); viewScreenshot('${report.screenshotUrl}');">
+                <i class="fas fa-image"></i> View Screenshot
+            </a>`;
+        }
+        
         // Hanya super admin yang bisa melihat tombol hapus
         const deleteButtonHtml = isAdmin ? 
             `<button class="btn-icon delete" data-id="${report.id}" title="Delete Report">
@@ -2042,6 +2114,7 @@ async function updateSolvedReportsUI() {
             <td>${reportedBy}</td>
             <td>${report.title || 'No Title'}</td>
             <td>${report.category || 'N/A'}</td>
+            <td>${screenshotHtml}</td>
             <td>${reportedDate}</td>
             <td>${resolvedDate}</td>
             <td><span class="status-badge status-${report.status}">${report.status}</span></td>
@@ -2545,6 +2618,14 @@ async function showReportDetails(reportId) {
         completedBy = await getCachedUserName(report.resolvedBy);
     }
     
+    // Tampilkan screenshot jika ada
+    let screenshotHtml = '<span class="text-muted">No screenshot attached</span>';
+    if (report.screenshotUrl) {
+        screenshotHtml = `<a href="#" class="screenshot-link" onclick="event.preventDefault(); viewScreenshot('${report.screenshotUrl}');">
+            <i class="fas fa-image"></i> View Screenshot
+        </a>`;
+    }
+    
     console.log(`Completed by: ${completedBy} (UID: ${report.completedBy})`);
     
     // Calculate resolution time
@@ -2577,6 +2658,10 @@ async function showReportDetails(reportId) {
             <div class="report-detail-item">
                 <span class="report-detail-label">Category</span>
                 <span class="report-detail-value">${report.category || 'N/A'}</span>
+            </div>
+            <div class="report-detail-item">
+                <span class="report-detail-label">Screenshot</span>
+                <span class="report-detail-value">${screenshotHtml}</span>
             </div>
             <div class="report-detail-item">
                 <span class="report-detail-label">Status</span>
@@ -2749,7 +2834,7 @@ function formatDateTime(date) {
 }
 
 function convertToCSV(reports) {
-    const headers = ['ID', 'Brand', 'User', 'Title', 'Category', 'Reported Date', 'Solved Date', 'Status'];
+    const headers = ['ID', 'Brand', 'User', 'Title', 'Category', 'Screenshot', 'Reported Date', 'Solved Date', 'Status'];
     
     const rows = reports.map(report => [
         report.id,
@@ -2757,8 +2842,9 @@ function convertToCSV(reports) {
         report.userId || report.reportedBy || '',
         report.title || '',
         report.category || '',
+        report.screenshotUrl || '',
         report.dateCreated ? formatDate(report.dateCreated.toDate()) : '',
-        report.dateCreated ? formatDate(report.dateSolved.toDate()) : '',
+        report.dateSolved ? formatDate(report.dateSolved.toDate()) : '',
         report.status || ''
     ]);
     
@@ -2931,7 +3017,25 @@ function setupFilterListeners() {
     }
 }
 
-// Cari kode ini di dalam file solved-report.html
+// Setup image modal close listeners
+function setupImageModalListeners() {
+    const closeImageModal = document.getElementById('closeImageModal');
+    if (closeImageModal) {
+        closeImageModal.addEventListener('click', () => {
+            document.getElementById('imageModal').classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    }
+    
+    const closeImageBtn = document.getElementById('closeImageBtn');
+    if (closeImageBtn) {
+        closeImageBtn.addEventListener('click', () => {
+            document.getElementById('imageModal').classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    }
+}
+
 // Cari kode ini di dalam file solved-report.html
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM loaded, initializing solved reports...");
@@ -2940,6 +3044,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const preferredLanguage = localStorage.getItem('language') || 'id';
     applyTranslations(preferredLanguage);
     setupLanguageListener();
+    
+    // Setup image modal listeners
+    setupImageModalListeners();
     
     auth.onAuthStateChanged(async (user) => {
         if (user) {
@@ -3127,16 +3234,17 @@ function applyTranslations(language = 'id') {
 
         // Table Headers
         const tableHeaders = document.querySelectorAll('.maintenance-table th');
-        if (tableHeaders.length >= 9) {
+        if (tableHeaders.length >= 10) {
             tableHeaders[0].textContent = lang.reportId || 'Report ID';
             tableHeaders[1].textContent = lang.brand || 'Brand';
             tableHeaders[2].textContent = lang.reportedBy || 'Reported By';
             tableHeaders[3].textContent = lang.title || 'Title';
             tableHeaders[4].textContent = lang.category || 'Category';
-            tableHeaders[5].textContent = lang.reportedAt || 'Reported At';
-            tableHeaders[6].textContent = lang.resolvedAt || 'Resolved At';
-            tableHeaders[7].textContent = lang.status || 'Status';
-            tableHeaders[8].textContent = lang.actions || 'Actions';
+            tableHeaders[5].textContent = lang.screenshot || 'Screenshot';
+            tableHeaders[6].textContent = lang.reportedAt || 'Reported At';
+            tableHeaders[7].textContent = lang.resolvedAt || 'Resolved At';
+            tableHeaders[8].textContent = lang.status || 'Status';
+            tableHeaders[9].textContent = lang.actions || 'Actions';
         }
 
         // Pagination
@@ -3298,10 +3406,12 @@ function exportToExcel(data, filename = 'solved_reports') {
         '',
         '',
         '',
+        '',
         ''
     ]);
     worksheetData.push([
         `Generated: ${new Date().toLocaleString()}`,
+        '',
         '',
         '',
         '',
@@ -3322,6 +3432,7 @@ function exportToExcel(data, filename = 'solved_reports') {
         'REPORTED BY',
         'TITLE',
         'CATEGORY',
+        'SCREENSHOT URL',
         'REPORTED AT',
         'RESOLVED AT',
         'RESOLUTION TIME',
@@ -3353,6 +3464,7 @@ function exportToExcel(data, filename = 'solved_reports') {
             report.userId || report.reportedBy || 'Unknown',
             report.title || 'No Title',
             report.category || 'N/A',
+            report.screenshotUrl || '',
             reportedDate,
             resolvedDate,
             resolutionTime,
@@ -3372,11 +3484,13 @@ function exportToExcel(data, filename = 'solved_reports') {
         '',
         '',
         '',
+        '',
         ''
     ]);
     worksheetData.push([
         'Total Reports',
         data.length.toString(),
+        '',
         '',
         '',
         '',
@@ -3400,11 +3514,13 @@ function exportToExcel(data, filename = 'solved_reports') {
         '',
         '',
         '',
+        '',
         ''
     ]);
     worksheetData.push([
         'Reopened Reports',
         reopenedCount.toString(),
+        '',
         '',
         '',
         '',
@@ -3437,6 +3553,7 @@ function exportToExcel(data, filename = 'solved_reports') {
             '',
             '',
             '',
+            '',
             ''
         ]);
     }
@@ -3452,6 +3569,7 @@ function exportToExcel(data, filename = 'solved_reports') {
         {wch: 20},  // REPORTED BY
         {wch: 30},  // TITLE
         {wch: 15},  // CATEGORY
+        {wch: 40},  // SCREENSHOT URL
         {wch: 20},  // REPORTED AT
         {wch: 20},  // RESOLVED AT
         {wch: 15},  // RESOLUTION TIME
@@ -3461,8 +3579,8 @@ function exportToExcel(data, filename = 'solved_reports') {
     
     // Style untuk header (merge cells untuk title)
     if (!ws['!merges']) ws['!merges'] = [];
-    ws['!merges'].push({s: {r: 0, c: 0}, e: {r: 0, c: 9}}); // Merge title row
-    ws['!merges'].push({s: {r: 1, c: 0}, e: {r: 1, c: 9}}); // Merge date row
+    ws['!merges'].push({s: {r: 0, c: 0}, e: {r: 0, c: 10}}); // Merge title row
+    ws['!merges'].push({s: {r: 1, c: 0}, e: {r: 1, c: 10}}); // Merge date row
     
     // Create workbook
     const wb = XLSX.utils.book_new();
@@ -3492,7 +3610,7 @@ function exportFullDetailsToExcel(data, filename = 'solved_reports_full') {
     // Headers lengkap
     worksheetData.push([
         'NO', 'REPORT ID', 'BRAND', 'REPORTED BY', 'TITLE', 'CATEGORY',
-        'DESCRIPTION', 'RESOLUTION', 'REPORTED AT', 'RESOLVED AT',
+        'SCREENSHOT URL', 'DESCRIPTION', 'RESOLUTION', 'REPORTED AT', 'RESOLVED AT',
         'RESOLUTION TIME', 'STATUS', 'COMPLETED BY'
     ]);
     
@@ -3522,6 +3640,7 @@ function exportFullDetailsToExcel(data, filename = 'solved_reports_full') {
             report.userId || report.reportedBy || 'Unknown',
             report.title || 'No Title',
             report.category || 'N/A',
+            report.screenshotUrl || '',
             report.description || 'No description',
             report.resolution || 'No resolution notes',
             reportedDate,
@@ -3558,8 +3677,8 @@ function exportFullDetailsToExcel(data, filename = 'solved_reports_full') {
     // Set column widths
     ws['!cols'] = [
         {wch: 5}, {wch: 20}, {wch: 25}, {wch: 20}, {wch: 30},
-        {wch: 15}, {wch: 40}, {wch: 40}, {wch: 20}, {wch: 20},
-        {wch: 15}, {wch: 12}, {wch: 20}
+        {wch: 15}, {wch: 40}, {wch: 40}, {wch: 40}, {wch: 20},
+        {wch: 20}, {wch: 15}, {wch: 12}, {wch: 20}
     ];
     
     const wb = XLSX.utils.book_new();

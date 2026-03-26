@@ -917,7 +917,7 @@
                     <input type="text" id="searchStaff" placeholder="Cari staff...">
                 </div>
                 
-<div class="user-profile">
+                <div class="user-profile">
                     <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
                     <div class="user-info">
                         <h4 id="userName">Loading...</h4>
@@ -1247,8 +1247,16 @@
                 "staffDetailTitle": "Detail Staff",
                 "joined": "Bergabung",
                 "lastLogin": "Terakhir Login",
+                "lastLoginNever": "Belum pernah login",
                 "staffId": "ID Staff",
                 "close": "Tutup",
+                "justNow": "Baru saja",
+                "minutesAgo": "menit yang lalu",
+                "hoursAgo": "jam yang lalu",
+                "yesterday": "Kemarin",
+                "daysAgo": "hari yang lalu",
+                "invalidData": "Data tidak valid",
+                "staffNotFound": "Staff tidak ditemukan",
                 
                 // Staff Status
                 "statusActive": "Aktif",
@@ -1279,9 +1287,11 @@
                 "verify": "Verifikasi",
                 
                 // Notifications
+                "staffAdded": "Staff berhasil ditambahkan",
                 "superAdminAdded": "Super Admin berhasil ditambahkan",
                 "staffUpdated": "Staff berhasil diperbarui",
                 "passwordReset": "Password berhasil direset",
+                "passwordResetEmailSent": "Email reset password telah dikirim ke {email}",
                 "staffActivated": "Staff {name} berhasil diaktifkan",
                 "staffSuspended": "Staff {name} berhasil di-suspend",
                 "staffDeleted": "Staff berhasil dihapus",
@@ -1305,7 +1315,6 @@
                 
                 // Staff List Section
                 "staffListTitle": "Staff List",
-                "addStaff": "Add Staff",
                 "addSuperAdmin": "Add Admin",
                 
                 // Filter Labels
@@ -1355,8 +1364,16 @@
                 "staffDetailTitle": "Staff Details",
                 "joined": "Joined",
                 "lastLogin": "Last Login",
+                "lastLoginNever": "Never logged in",
                 "staffId": "Staff ID",
                 "close": "Close",
+                "justNow": "Just now",
+                "minutesAgo": "minutes ago",
+                "hoursAgo": "hours ago",
+                "yesterday": "Yesterday",
+                "daysAgo": "days ago",
+                "invalidData": "Invalid data",
+                "staffNotFound": "Staff not found",
                 
                 // Staff Status
                 "statusActive": "Active",
@@ -1391,6 +1408,7 @@
                 "superAdminAdded": "Super Admin successfully added",
                 "staffUpdated": "Staff successfully updated",
                 "passwordReset": "Password successfully reset",
+                "passwordResetEmailSent": "Password reset email has been sent to {email}",
                 "staffActivated": "Staff {name} successfully activated",
                 "staffSuspended": "Staff {name} successfully suspended",
                 "staffDeleted": "Staff successfully deleted",
@@ -1414,7 +1432,6 @@
                 
                 // Staff List Section
                 "staffListTitle": "スタッフリスト",
-                "addStaff": "スタッフを追加",
                 "addSuperAdmin": "スーパー管理者を追加",
                 
                 // Filter Labels
@@ -1464,8 +1481,16 @@
                 "staffDetailTitle": "スタッフ詳細",
                 "joined": "登録日",
                 "lastLogin": "最終ログイン",
+                "lastLoginNever": "ログイン履歴なし",
                 "staffId": "スタッフID",
                 "close": "閉じる",
+                "justNow": "たった今",
+                "minutesAgo": "分前",
+                "hoursAgo": "時間前",
+                "yesterday": "昨日",
+                "daysAgo": "日前",
+                "invalidData": "無効なデータ",
+                "staffNotFound": "スタッフが見つかりません",
                 
                 // Staff Status
                 "statusActive": "アクティブ",
@@ -1500,6 +1525,7 @@
                 "superAdminAdded": "スーパー管理者が正常に追加されました",
                 "staffUpdated": "スタッフが正常に更新されました",
                 "passwordReset": "パスワードが正常にリセットされました",
+                "passwordResetEmailSent": "{email} にパスワードリセットメールを送信しました",
                 "staffActivated": "スタッフ {name} が正常に有効化されました",
                 "staffSuspended": "スタッフ {name} が正常に停止されました",
                 "staffDeleted": "スタッフが正常に削除されました",
@@ -1523,7 +1549,6 @@
                 
                 // Staff List Section
                 "staffListTitle": "员工列表",
-                "addStaff": "添加员工",
                 "addSuperAdmin": "添加超级管理员",
                 
                 // Filter Labels
@@ -1573,8 +1598,16 @@
                 "staffDetailTitle": "员工详情",
                 "joined": "加入时间",
                 "lastLogin": "最后登录",
+                "lastLoginNever": "从未登录",
                 "staffId": "员工ID",
                 "close": "关闭",
+                "justNow": "刚刚",
+                "minutesAgo": "分钟前",
+                "hoursAgo": "小时前",
+                "yesterday": "昨天",
+                "daysAgo": "天前",
+                "invalidData": "无效数据",
+                "staffNotFound": "未找到员工",
                 
                 // Staff Status
                 "statusActive": "活跃",
@@ -1609,6 +1642,7 @@
                 "superAdminAdded": "超级管理员添加成功",
                 "staffUpdated": "员工更新成功",
                 "passwordReset": "密码重置成功",
+                "passwordResetEmailSent": "密码重置邮件已发送至 {email}",
                 "staffActivated": "员工 {name} 已成功激活",
                 "staffSuspended": "员工 {name} 已成功暂停",
                 "staffDeleted": "员工删除成功",
@@ -1645,7 +1679,6 @@
             // Staff List Section
             const staffListTitle = document.getElementById('staff-list-title');
             if (staffListTitle && lang.staffListTitle) staffListTitle.textContent = lang.staffListTitle;
-            
             
             const addSuperAdminBtnText = document.getElementById('add-super-admin-btn-text');
             if (addSuperAdminBtnText && lang.addSuperAdmin) addSuperAdminBtnText.textContent = lang.addSuperAdmin;
@@ -1695,11 +1728,6 @@
             if (addFirstStaffText && lang.addFirstStaff) addFirstStaffText.textContent = lang.addFirstStaff;
             
             // Add Staff Modal
-            const addModalTitleText = document.getElementById('add-modal-title-text');
-            if (addModalTitleText) {
-                // Will be updated when modal opens based on role type
-            }
-            
             const fullNameLabel = document.getElementById('full-name-label');
             if (fullNameLabel && lang.fullName) fullNameLabel.textContent = lang.fullName;
             
@@ -1721,7 +1749,7 @@
             const saveBtn = document.getElementById('save-btn');
             if (saveBtn && lang.save) saveBtn.textContent = lang.save;
             
-            // Role options in add modal
+            // Role options
             const staffRoleOption = document.getElementById('staff-role-option');
             if (staffRoleOption && lang.staff) staffRoleOption.textContent = lang.staff;
             
@@ -1918,7 +1946,6 @@
                 if (this.filterStatus) {
                     this.filterStatus.addEventListener('change', () => this.filterStaff());
                 }
-                
                 
                 if (this.addSuperAdminBtn) {
                     this.addSuperAdminBtn.addEventListener('click', () => this.openSuperAdminVerification());
@@ -2315,7 +2342,6 @@
             }
 
             openAddStaffModal(roleType = 'staff') {
-                const modalTitle = document.getElementById('addModalTitle');
                 const modalTitleSpan = document.getElementById('add-modal-title-text');
                 const roleSelect = document.getElementById('staffRole');
                 const lang = this.getLang();
@@ -2348,8 +2374,25 @@
                     return;
                 }
                 
-                this.closeModal('superAdminVerificationModal');
-                this.openAddStaffModal('super_admin');
+                // Verify current super admin password
+                if (this.currentUser) {
+                    try {
+                        const credential = firebase.auth.EmailAuthProvider.credential(
+                            this.currentUser.email,
+                            password
+                        );
+                        await this.currentUser.reauthenticateWithCredential(credential);
+                        
+                        this.closeModal('superAdminVerificationModal');
+                        this.openAddStaffModal('super_admin');
+                    } catch (error) {
+                        console.error('Verification failed:', error);
+                        this.showNotification('Verifikasi gagal. Password salah.', 'error');
+                    }
+                } else {
+                    this.closeModal('superAdminVerificationModal');
+                    this.openAddStaffModal('super_admin');
+                }
             }
 
             openResetPasswordModal(staffId) {
@@ -2359,6 +2402,134 @@
                     document.getElementById('resetPasswordModal').classList.add('active');
                     document.getElementById('resetPasswordForm').reset();
                 }
+            }
+
+            // ===== FIXED RESET PASSWORD FUNCTION =====
+            async handleResetPassword(e) {
+                e.preventDefault();
+                
+                const staffId = document.getElementById('resetStaffId').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                const lang = this.getLang();
+                
+                // Validasi input
+                if (!newPassword || !confirmPassword) {
+                    this.showNotification(lang.allFieldsRequired, 'error');
+                    return;
+                }
+                
+                if (newPassword !== confirmPassword) {
+                    this.showNotification(lang.passwordMismatch, 'error');
+                    return;
+                }
+                
+                if (newPassword.length < 6) {
+                    this.showNotification(lang.passwordMinLength, 'error');
+                    return;
+                }
+                
+                try {
+                    // Cari staff berdasarkan ID
+                    const staff = this.staffData.find(s => s.id === staffId);
+                    if (!staff) {
+                        this.showNotification('Staff tidak ditemukan', 'error');
+                        return;
+                    }
+                    
+                    // Cek apakah staff memiliki akun di Firebase Auth
+                    if (auth && staff.email) {
+                        try {
+                            // Kirim email reset password
+                            const actionCodeSettings = {
+                                url: window.location.origin + '/index.html',
+                                handleCodeInApp: false
+                            };
+                            
+                            await auth.sendPasswordResetEmail(staff.email, actionCodeSettings);
+                            
+                            this.showNotification(lang.passwordResetEmailSent.replace('{email}', staff.email), 'success');
+                            this.closeModal('resetPasswordModal');
+                            document.getElementById('resetPasswordForm').reset();
+                            
+                        } catch (authError) {
+                            console.error('Firebase Auth error:', authError);
+                            
+                            // Jika staff belum memiliki akun Auth (mungkin staff lama dari localStorage)
+                            if (authError.code === 'auth/user-not-found') {
+                                // Tawarkan untuk membuat akun Auth baru
+                                const confirmCreate = confirm(`Staff ${staff.name} belum memiliki akun login. Buat akun sekarang?`);
+                                
+                                if (confirmCreate) {
+                                    try {
+                                        // Buat akun Auth baru
+                                        const userCredential = await auth.createUserWithEmailAndPassword(staff.email, newPassword);
+                                        
+                                        // Update user profile dengan display name
+                                        await userCredential.user.updateProfile({
+                                            displayName: staff.name
+                                        });
+                                        
+                                        // Update Firestore dengan status aktif
+                                        if (db) {
+                                            await db.collection('users').doc(staffId).update({
+                                                status: 'Active',
+                                                lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                                            });
+                                        }
+                                        
+                                        // Update staff data
+                                        staff.hasAuthAccount = true;
+                                        this.saveToLocalStorage();
+                                        
+                                        this.showNotification(`Akun Auth berhasil dibuat untuk ${staff.name}`, 'success');
+                                        this.closeModal('resetPasswordModal');
+                                        document.getElementById('resetPasswordForm').reset();
+                                        
+                                    } catch (createError) {
+                                        console.error('Error creating auth account:', createError);
+                                        this.showNotification('Gagal membuat akun Auth untuk staff', 'error');
+                                    }
+                                } else {
+                                    this.closeModal('resetPasswordModal');
+                                }
+                            } else {
+                                this.showNotification(`Gagal mengirim email reset password: ${authError.message}`, 'error');
+                            }
+                        }
+                    } else if (db) {
+                        // Jika hanya menggunakan Firestore (tanpa Auth), update password di Firestore
+                        await db.collection('users').doc(staffId).update({
+                            password: newPassword,
+                            lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        this.showNotification(lang.passwordReset, 'success');
+                        this.closeModal('resetPasswordModal');
+                        document.getElementById('resetPasswordForm').reset();
+                    } else {
+                        // Fallback ke localStorage
+                        staff.password = newPassword;
+                        this.saveToLocalStorage();
+                        this.showNotification(lang.passwordReset, 'success');
+                        this.closeModal('resetPasswordModal');
+                        document.getElementById('resetPasswordForm').reset();
+                    }
+                    
+                } catch (error) {
+                    console.error('Error resetting password:', error);
+                    this.showNotification(`Gagal reset password: ${error.message}`, 'error');
+                }
+            }
+
+            // Helper function untuk generate random password
+            generateRandomPassword() {
+                const length = 10;
+                const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%";
+                let password = "";
+                for (let i = 0; i < length; i++) {
+                    password += charset.charAt(Math.floor(Math.random() * charset.length));
+                }
+                return password;
             }
 
             openEditStaffModal(staffId) {
@@ -2371,10 +2542,6 @@
                     document.getElementById('editStaffEmail').value = staff.email;
                     document.getElementById('editStaffRole').value = staff.role;
                     document.getElementById('editStaffStatus').value = staff.status;
-                    
-                    // Update modal title
-                    const editTitleSpan = document.getElementById('edit-staff-title');
-                    if (editTitleSpan) editTitleSpan.textContent = lang.editStaffTitle;
                     
                     document.getElementById('editStaffModal').classList.add('active');
                 }
@@ -2406,6 +2573,7 @@
                         
                         await db.collection('users').doc(staffId).update({
                             name: updatedData.name,
+                            displayName: updatedData.name,
                             email: updatedData.email,
                             role: firestoreRole,
                             status: firestoreStatus,
@@ -2633,7 +2801,8 @@
                         avatar: 'https://iili.io/KfDh0EN.png',
                         joinDate: new Date().toISOString().split('T')[0],
                         lastLogin: null,
-                        isSuperAdmin: isSuperAdmin
+                        isSuperAdmin: isSuperAdmin,
+                        hasAuthAccount: true
                     };
                     
                     this.staffData.push(newStaff);
@@ -2648,49 +2817,6 @@
                 } catch (error) {
                     console.error('Error adding staff:', error);
                     this.showNotification(lang.errorAdding.replace('{error}', error.message), 'error');
-                }
-            }
-
-            async handleResetPassword(e) {
-                e.preventDefault();
-                
-                const staffId = document.getElementById('resetStaffId').value;
-                const newPassword = document.getElementById('newPassword').value;
-                const confirmPassword = document.getElementById('confirmPassword').value;
-                const lang = this.getLang();
-                
-                if (!newPassword || !confirmPassword) {
-                    this.showNotification(lang.allFieldsRequired, 'error');
-                    return;
-                }
-                
-                if (newPassword !== confirmPassword) {
-                    this.showNotification(lang.passwordMismatch, 'error');
-                    return;
-                }
-                
-                if (newPassword.length < 6) {
-                    this.showNotification(lang.passwordMinLength, 'error');
-                    return;
-                }
-                
-                try {
-                    if (auth) {
-                        this.showNotification(lang.passwordReset, 'success');
-                    } else {
-                        const staff = this.staffData.find(s => s.id === staffId);
-                        if (staff) {
-                            staff.password = newPassword;
-                            this.saveToLocalStorage();
-                            this.showNotification(lang.passwordReset, 'success');
-                        }
-                    }
-                    
-                    this.closeModal('resetPasswordModal');
-                    
-                } catch (error) {
-                    console.error('Error resetting password:', error);
-                    this.showNotification(lang.errorUpdating.replace('{error}', error.message), 'error');
                 }
             }
 
@@ -2760,9 +2886,6 @@
                     </div>
                 `;
                 
-                const detailTitle = document.getElementById('staff-detail-title');
-                if (detailTitle) detailTitle.textContent = lang.staffDetailTitle;
-                
                 document.getElementById('staffDetailsModal').classList.add('active');
             }
 
@@ -2803,7 +2926,6 @@
             }
 
             formatDate(dateString) {
-                const lang = this.getLang();
                 try {
                     const date = new Date(dateString);
                     return date.toLocaleDateString(currentLanguage === 'id' ? 'id-ID' : currentLanguage === 'ja' ? 'ja-JP' : currentLanguage === 'zh' ? 'zh-CN' : 'en-US', {
@@ -2856,7 +2978,10 @@
             }
 
             closeModal(modalId) {
-                document.getElementById(modalId).classList.remove('active');
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.remove('active');
+                }
             }
 
             showNotification(message, type = 'info') {
@@ -2885,6 +3010,16 @@
                 
                 notificationContainer.appendChild(notification);
                 
+                const closeBtn = notification.querySelector('.notification-close');
+                closeBtn.addEventListener('click', () => {
+                    notification.classList.add('hiding');
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                    }, 300);
+                });
+                
                 setTimeout(() => {
                     if (notification.parentNode) {
                         notification.classList.add('hiding');
@@ -2895,15 +3030,6 @@
                         }, 300);
                     }
                 }, 5000);
-                
-                notification.querySelector('.notification-close').addEventListener('click', () => {
-                    notification.classList.add('hiding');
-                    setTimeout(() => {
-                        if (notification.parentNode) {
-                            notification.parentNode.removeChild(notification);
-                        }
-                    }, 300);
-                });
             }
         }
 

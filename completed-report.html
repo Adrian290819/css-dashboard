@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="global.css">
     <script src="global-time.js"></script>
     <script src="solved.translation.js"></script>
@@ -967,7 +968,95 @@
         padding: 20px;
     }
 }
+/* ========== EXPORT BUTTON STYLES ========== */
+.btn-export {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 10px 20px;
+    font-weight: var(--font-semibold);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all var(--transition-smooth);
+    font-size: var(--text-sm);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
+.btn-export:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.btn-export i {
+    font-size: 1rem;
+}
+
+.export-options {
+    position: relative;
+    display: inline-block;
+}
+
+.export-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--border-color);
+    min-width: 260px;
+    z-index: 1000;
+    display: none;
+    overflow: hidden;
+}
+
+.export-dropdown.active {
+    display: block;
+    animation: fadeInDown 0.2s ease forwards;
+}
+
+.export-option {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: background var(--transition-smooth);
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+}
+
+.export-option:hover {
+    background: var(--hover-color);
+}
+
+.export-option i {
+    width: 24px;
+    color: var(--primary);
+    font-size: 1rem;
+}
+
+.export-option small {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-left: auto;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
     </style>
 </head>
 <body>
@@ -2374,6 +2463,9 @@ function setupEventListeners() {
         if (maintenance) exportTaskDetails(maintenance);
     });
 }
+ setTimeout(() => {
+        setupCompletedExportButton();
+    }, 500);
 
 // ========== MULTI-LANGUAGE SUPPORT ==========
 let currentLanguage = localStorage.getItem('language') || 'id';
@@ -2550,6 +2642,618 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('beforeunload', cleanupResources);
     window.addEventListener('pagehide', cleanupResources);
 });
+// ========== EXPORT TO EXCEL FUNCTIONS ==========
+
+/**
+ * Format date dan time untuk Excel
+ */
+function formatDateTimeExcelCompleted(date) {
+    if (!date) return 'N/A';
+    const d = new Date(date);
+    return d.toLocaleString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+    });
+}
+
+/**
+ * Format date only untuk Excel
+ */
+function formatDateExcelCompleted(date) {
+    if (!date) return 'N/A';
+    const d = new Date(date);
+    return d.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    });
+}
+
+/**
+ * Get category text for export
+ */
+function getCategoryTextExportCompleted(category) {
+    switch(category) {
+        case 'server': return 'Server Maintenance';
+        case 'database': return 'Database';
+        case 'network': return 'Network';
+        case 'security': return 'Security';
+        default: return category || 'N/A';
+    }
+}
+
+/**
+ * Calculate completion time in hours
+ */
+function getCompletionTimeHours(createdDate, completedDate) {
+    if (!createdDate || !completedDate) return 'N/A';
+    const created = new Date(createdDate);
+    const completed = new Date(completedDate);
+    const diffMs = completed - created;
+    const diffHours = diffMs / (1000 * 60 * 60);
+    
+    if (diffHours < 1) {
+        const diffMinutes = Math.floor(diffMs / (1000 * 60));
+        return `${diffMinutes} minutes`;
+    } else if (diffHours < 24) {
+        return `${Math.round(diffHours * 10) / 10} hours`;
+    } else {
+        const days = Math.floor(diffHours / 24);
+        const hours = Math.round(diffHours % 24);
+        return `${days} days ${hours} hours`;
+    }
+}
+
+/**
+ * Format completion time for summary
+ */
+function getCompletionTimeSummary(createdDate, completedDate) {
+    if (!createdDate || !completedDate) return 0;
+    const created = new Date(createdDate);
+    const completed = new Date(completedDate);
+    return (completed - created) / (1000 * 60 * 60);
+}
+
+/**
+ * Export completed maintenance to Excel (Standard)
+ */
+function exportCompletedToExcel(data, filename = 'completed_maintenance') {
+    if (!data || data.length === 0) {
+        showToast("No data to export", "error");
+        return;
+    }
+    
+    const worksheetData = [];
+    
+    // Title and header
+    worksheetData.push(['COMPLETED MAINTENANCE REPORT', '', '', '', '', '', '', '']);
+    worksheetData.push([`Generated: ${new Date().toLocaleString()}`, '', '', '', '', '', '', '']);
+    worksheetData.push([]);
+    
+    // Main headers
+    worksheetData.push([
+        'NO', 'TASK ID', 'TITLE', 'CATEGORY', 'STATUS',
+        'COMPLETED DATE', 'COMPLETION TIME', 'ASSIGNED TO'
+    ]);
+    
+    // Data rows
+    data.forEach((task, index) => {
+        const completedDate = task.dateCompleted ? formatDateExcelCompleted(convertToDate(task.dateCompleted)) : 'N/A';
+        const completionTime = getCompletionTimeHours(task.dateCreated, task.dateCompleted);
+        
+        worksheetData.push([
+            index + 1,
+            task.id || '',
+            task.title || 'N/A',
+            getCategoryTextExportCompleted(task.category),
+            'Completed',
+            completedDate,
+            completionTime,
+            task.assignedTo || 'N/A'
+        ]);
+    });
+    
+    // Summary section
+    worksheetData.push([]);
+    worksheetData.push(['SUMMARY', '', '', '', '', '', '', '']);
+    worksheetData.push(['Total Completed Tasks', data.length, '', '', '', '', '', '']);
+    
+    // Category distribution
+    const categoryCounts = {};
+    data.forEach(task => {
+        const cat = getCategoryTextExportCompleted(task.category);
+        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+    });
+    
+    worksheetData.push([]);
+    worksheetData.push(['CATEGORY DISTRIBUTION', '', '', '', '', '', '', '']);
+    worksheetData.push(['Category', 'Count', 'Percentage', '', '', '', '', '']);
+    
+    Object.entries(categoryCounts).sort((a, b) => b[1] - a[1]).forEach(([cat, count]) => {
+        const percentage = ((count / data.length) * 100).toFixed(1);
+        worksheetData.push([cat, count, `${percentage}%`, '', '', '', '', '']);
+    });
+    
+    // Monthly completion statistics
+    const monthlyStats = {};
+    data.forEach(task => {
+        if (task.dateCompleted) {
+            const date = convertToDate(task.dateCompleted);
+            const monthYear = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+            monthlyStats[monthYear] = (monthlyStats[monthYear] || 0) + 1;
+        }
+    });
+    
+    worksheetData.push([]);
+    worksheetData.push(['MONTHLY COMPLETION STATISTICS', '', '', '', '', '', '', '']);
+    worksheetData.push(['Month', 'Tasks Completed', '', '', '', '', '', '']);
+    
+    Object.entries(monthlyStats).sort((a, b) => {
+        const dateA = new Date(a[0]);
+        const dateB = new Date(b[0]);
+        return dateA - dateB;
+    }).forEach(([month, count]) => {
+        worksheetData.push([month, count, '', '', '', '', '', '']);
+    });
+    
+    // Average completion time by category
+    const categoryCompletionTimes = {};
+    data.forEach(task => {
+        if (task.dateCreated && task.dateCompleted) {
+            const cat = getCategoryTextExportCompleted(task.category);
+            const timeHours = getCompletionTimeSummary(task.dateCreated, task.dateCompleted);
+            if (!categoryCompletionTimes[cat]) {
+                categoryCompletionTimes[cat] = { total: 0, count: 0 };
+            }
+            categoryCompletionTimes[cat].total += timeHours;
+            categoryCompletionTimes[cat].count++;
+        }
+    });
+    
+    worksheetData.push([]);
+    worksheetData.push(['AVERAGE COMPLETION TIME BY CATEGORY', '', '', '', '', '', '', '']);
+    worksheetData.push(['Category', 'Average Time', 'Total Tasks', '', '', '', '', '']);
+    
+    Object.entries(categoryCompletionTimes).forEach(([cat, stats]) => {
+        const avgHours = stats.total / stats.count;
+        let avgText = '';
+        if (avgHours < 1) {
+            avgText = `${Math.round(avgHours * 60)} minutes`;
+        } else if (avgHours < 24) {
+            avgText = `${Math.round(avgHours * 10) / 10} hours`;
+        } else {
+            const days = Math.floor(avgHours / 24);
+            const hours = Math.round(avgHours % 24);
+            avgText = `${days} days ${hours} hours`;
+        }
+        worksheetData.push([cat, avgText, stats.count, '', '', '', '', '']);
+    });
+    
+    const ws = XLSX.utils.aoa_to_sheet(worksheetData);
+    
+    // Set column widths
+    ws['!cols'] = [
+        {wch: 5},   // NO
+        {wch: 22},  // TASK ID
+        {wch: 35},  // TITLE
+        {wch: 20},  // CATEGORY
+        {wch: 12},  // STATUS
+        {wch: 15},  // COMPLETED DATE
+        {wch: 15},  // COMPLETION TIME
+        {wch: 20}   // ASSIGNED TO
+    ];
+    
+    // Merge title rows
+    if (!ws['!merges']) ws['!merges'] = [];
+    ws['!merges'].push({s: {r: 0, c: 0}, e: {r: 0, c: 7}});
+    ws['!merges'].push({s: {r: 1, c: 0}, e: {r: 1, c: 7}});
+    
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Completed Maintenance');
+    XLSX.writeFile(wb, `${filename}_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.xlsx`);
+    showToast(`Exported ${data.length} completed tasks to Excel`, "success");
+}
+
+/**
+ * Export completed maintenance with full details
+ */
+function exportCompletedFullDetails(data, filename = 'completed_maintenance_full') {
+    if (!data || data.length === 0) {
+        showToast("No data to export", "error");
+        return;
+    }
+    
+    const worksheetData = [];
+    
+    // Title and header
+    worksheetData.push(['COMPLETED MAINTENANCE - FULL DETAILS']);
+    worksheetData.push([`Generated: ${new Date().toLocaleString()}`]);
+    worksheetData.push([]);
+    
+    // Full headers
+    worksheetData.push([
+        'NO', 'TASK ID', 'TITLE', 'CATEGORY', 'STATUS',
+        'CREATED DATE', 'COMPLETED DATE', 'DUE DATE', 'COMPLETION TIME',
+        'ASSIGNED TO', 'DESCRIPTION', 'NOTES', 'ESTIMATED TIME', 'ACTUAL TIME'
+    ]);
+    
+    // Data rows with full details
+    data.forEach((task, index) => {
+        const createdDate = task.dateCreated ? formatDateTimeExcelCompleted(convertToDate(task.dateCreated)) : 'N/A';
+        const completedDate = task.dateCompleted ? formatDateTimeExcelCompleted(convertToDate(task.dateCompleted)) : 'N/A';
+        const dueDate = task.dueDate ? formatDateTimeExcelCompleted(convertToDate(task.dueDate)) : 'N/A';
+        const completionTime = getCompletionTimeHours(task.dateCreated, task.dateCompleted);
+        
+        worksheetData.push([
+            index + 1,
+            task.id || '',
+            task.title || 'N/A',
+            getCategoryTextExportCompleted(task.category),
+            'Completed',
+            createdDate,
+            completedDate,
+            dueDate,
+            completionTime,
+            task.assignedTo || 'N/A',
+            task.description || 'No description',
+            task.notes || 'No notes',
+            task.estimatedTime || 'N/A',
+            task.actualTime || 'N/A'
+        ]);
+    });
+    
+    // Summary statistics
+    worksheetData.push([]);
+    worksheetData.push(['SUMMARY STATISTICS']);
+    worksheetData.push(['Total Completed Tasks', data.length]);
+    
+    // Category distribution
+    const categoryCounts = {};
+    data.forEach(task => {
+        const cat = getCategoryTextExportCompleted(task.category);
+        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+    });
+    
+    worksheetData.push([]);
+    worksheetData.push(['CATEGORY DISTRIBUTION']);
+    worksheetData.push(['Category', 'Count', 'Percentage']);
+    Object.entries(categoryCounts).sort((a, b) => b[1] - a[1]).forEach(([cat, count]) => {
+        const percentage = ((count / data.length) * 100).toFixed(1);
+        worksheetData.push([cat, count, `${percentage}%`]);
+    });
+    
+    // Time efficiency analysis
+    let totalEstimated = 0;
+    let totalActual = 0;
+    let tasksWithTime = 0;
+    
+    data.forEach(task => {
+        if (task.estimatedTime && task.actualTime) {
+            const estimated = parseTimeToHours(task.estimatedTime);
+            const actual = parseTimeToHours(task.actualTime);
+            if (estimated > 0) {
+                totalEstimated += estimated;
+                totalActual += actual;
+                tasksWithTime++;
+            }
+        }
+    });
+    
+    if (tasksWithTime > 0) {
+        const avgEstimated = totalEstimated / tasksWithTime;
+        const avgActual = totalActual / tasksWithTime;
+        const efficiency = ((avgEstimated - avgActual) / avgEstimated) * 100;
+        
+        worksheetData.push([]);
+        worksheetData.push(['TIME EFFICIENCY ANALYSIS']);
+        worksheetData.push(['Average Estimated Time', `${avgEstimated.toFixed(1)} hours`]);
+        worksheetData.push(['Average Actual Time', `${avgActual.toFixed(1)} hours`]);
+        worksheetData.push(['Average Efficiency', `${efficiency > 0 ? '+' : ''}${efficiency.toFixed(1)}% ${efficiency >= 0 ? 'faster' : 'slower'}`]);
+    }
+    
+    const ws = XLSX.utils.aoa_to_sheet(worksheetData);
+    
+    // Set column widths
+    ws['!cols'] = [
+        {wch: 5}, {wch: 22}, {wch: 35}, {wch: 20}, {wch: 12},
+        {wch: 22}, {wch: 22}, {wch: 22}, {wch: 15}, {wch: 20},
+        {wch: 45}, {wch: 40}, {wch: 15}, {wch: 15}
+    ];
+    
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Completed Tasks Full');
+    XLSX.writeFile(wb, `${filename}_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.xlsx`);
+    showToast(`Exported ${data.length} tasks with full details to Excel`, "success");
+}
+
+/**
+ * Export filtered completed maintenance
+ */
+function exportCompletedFiltered() {
+    // Apply same filters as in updateSolvedMaintenanceUI
+    const categoryFilter = document.getElementById('categoryFilter')?.value || 'all';
+    const timeFilter = document.getElementById('timeFilter')?.value || 'all';
+    const sortFilter = document.getElementById('sortFilter')?.value || 'newest';
+    const searchTerm = document.getElementById('completedSearch')?.value.toLowerCase() || '';
+    
+    let filteredTasks = [...solvedMaintenance];
+    
+    // Apply category filter
+    if (categoryFilter !== 'all') {
+        filteredTasks = filteredTasks.filter(task => task.category === categoryFilter);
+    }
+    
+    // Apply time filter
+    if (timeFilter !== 'all') {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        
+        filteredTasks = filteredTasks.filter(task => {
+            if (!task.dateCompleted) return false;
+            const completedDate = convertToDate(task.dateCompleted);
+            
+            switch(timeFilter) {
+                case 'today':
+                    const completedDay = new Date(completedDate.getFullYear(), completedDate.getMonth(), completedDate.getDate());
+                    return completedDay.getTime() === today.getTime();
+                case 'week':
+                    const weekAgo = new Date(now);
+                    weekAgo.setDate(weekAgo.getDate() - 7);
+                    return completedDate >= weekAgo;
+                case 'month':
+                    return completedDate.getMonth() === now.getMonth() && 
+                           completedDate.getFullYear() === now.getFullYear();
+                case 'quarter':
+                    const quarterStart = new Date(now);
+                    quarterStart.setMonth(quarterStart.getMonth() - 3);
+                    return completedDate >= quarterStart;
+                default:
+                    return true;
+            }
+        });
+    }
+    
+    // Apply search
+    if (searchTerm) {
+        filteredTasks = filteredTasks.filter(task => 
+            (task.title && task.title.toLowerCase().includes(searchTerm)) ||
+            (task.description && task.description.toLowerCase().includes(searchTerm)) ||
+            (task.id && task.id.toLowerCase().includes(searchTerm)) ||
+            (task.assignedTo && task.assignedTo.toLowerCase().includes(searchTerm))
+        );
+    }
+    
+    // Apply sort
+    switch(sortFilter) {
+        case 'newest':
+            filteredTasks.sort((a, b) => {
+                const dateA = convertToDate(a.dateCompleted);
+                const dateB = convertToDate(b.dateCompleted);
+                return dateB - dateA;
+            });
+            break;
+        case 'oldest':
+            filteredTasks.sort((a, b) => {
+                const dateA = convertToDate(a.dateCompleted);
+                const dateB = convertToDate(b.dateCompleted);
+                return dateA - dateB;
+            });
+            break;
+        case 'category':
+            filteredTasks.sort((a, b) => (a.category || '').localeCompare(b.category || ''));
+            break;
+    }
+    
+    if (filteredTasks.length === 0) {
+        showToast("No data matches current filters", "error");
+        return;
+    }
+    
+    exportCompletedToExcel(filteredTasks, 'completed_maintenance_filtered');
+}
+
+/**
+ * Parse time string to hours
+ */
+function parseTimeToExport(timeString) {
+    if (!timeString || timeString === 'N/A') return 0;
+    const hoursMatch = timeString.match(/(\d+)\s*h/);
+    const minutesMatch = timeString.match(/(\d+)\s*m/);
+    
+    const hours = hoursMatch ? parseInt(hoursMatch[1]) : 0;
+    const minutes = minutesMatch ? parseInt(minutesMatch[1]) : 0;
+    
+    return hours + (minutes / 60);
+}
+
+/**
+ * Setup export button for completed maintenance page
+ */
+function setupCompletedExportButton() {
+    const maintenanceActions = document.querySelector('.maintenance-actions');
+    if (!maintenanceActions) return;
+    
+    // Check if export button already exists
+    if (document.querySelector('.export-options')) return;
+    
+    // Create export container
+    const exportContainer = document.createElement('div');
+    exportContainer.className = 'export-options';
+    
+    // Export button
+    const exportBtn = document.createElement('button');
+    exportBtn.className = 'btn-export';
+    exportBtn.innerHTML = '<i class="fas fa-file-excel"></i> Export to Excel <i class="fas fa-chevron-down"></i>';
+    
+    // Dropdown menu
+    const dropdown = document.createElement('div');
+    dropdown.className = 'export-dropdown';
+    dropdown.innerHTML = `
+        <div class="export-option" data-export-type="standard">
+            <i class="fas fa-table"></i>
+            <span>Standard Export</span>
+            <small>Basic columns</small>
+        </div>
+        <div class="export-option" data-export-type="full">
+            <i class="fas fa-file-alt"></i>
+            <span>Full Details Export</span>
+            <small>With descriptions</small>
+        </div>
+        <div class="export-option" data-export-type="current-filter">
+            <i class="fas fa-filter"></i>
+            <span>Export Current Filter View</span>
+            <small>Filtered data</small>
+        </div>
+        <div class="export-option" data-export-type="summary">
+            <i class="fas fa-chart-pie"></i>
+            <span>Export Summary Report</span>
+            <small>Statistics only</small>
+        </div>
+    `;
+    
+    exportContainer.appendChild(exportBtn);
+    exportContainer.appendChild(dropdown);
+    
+    // Find the spacer or add to maintenance-actions
+    const spacer = maintenanceActions.querySelector('div[style*="flex: 1"]');
+    if (spacer) {
+        spacer.insertAdjacentElement('afterend', exportContainer);
+    } else {
+        maintenanceActions.appendChild(exportContainer);
+    }
+    
+    // Toggle dropdown
+    exportBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('active');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!exportContainer.contains(e.target)) {
+            dropdown.classList.remove('active');
+        }
+    });
+    
+    // Handle export options
+    dropdown.querySelectorAll('.export-option').forEach(option => {
+        option.addEventListener('click', (e) => {
+            const exportType = option.getAttribute('data-export-type');
+            dropdown.classList.remove('active');
+            
+            switch(exportType) {
+                case 'standard':
+                    if (solvedMaintenance && solvedMaintenance.length > 0) {
+                        exportCompletedToExcel(solvedMaintenance);
+                    } else {
+                        showToast("No data to export", "error");
+                    }
+                    break;
+                case 'full':
+                    if (solvedMaintenance && solvedMaintenance.length > 0) {
+                        exportCompletedFullDetails(solvedMaintenance);
+                    } else {
+                        showToast("No data to export", "error");
+                    }
+                    break;
+                case 'current-filter':
+                    exportCompletedFiltered();
+                    break;
+                case 'summary':
+                    if (solvedMaintenance && solvedMaintenance.length > 0) {
+                        exportSummaryOnly(solvedMaintenance);
+                    } else {
+                        showToast("No data to export", "error");
+                    }
+                    break;
+            }
+        });
+    });
+}
+
+/**
+ * Export summary only (statistics)
+ */
+function exportSummaryOnly(data) {
+    if (!data || data.length === 0) {
+        showToast("No data to export", "error");
+        return;
+    }
+    
+    const worksheetData = [];
+    
+    // Title
+    worksheetData.push(['COMPLETED MAINTENANCE - SUMMARY REPORT']);
+    worksheetData.push([`Generated: ${new Date().toLocaleString()}`]);
+    worksheetData.push([]);
+    
+    // Overview
+    worksheetData.push(['OVERVIEW']);
+    worksheetData.push(['Total Completed Tasks', data.length]);
+    worksheetData.push([]);
+    
+    // Category distribution
+    const categoryCounts = {};
+    data.forEach(task => {
+        const cat = getCategoryTextExportCompleted(task.category);
+        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+    });
+    
+    worksheetData.push(['CATEGORY DISTRIBUTION']);
+    worksheetData.push(['Category', 'Count', 'Percentage']);
+    Object.entries(categoryCounts).sort((a, b) => b[1] - a[1]).forEach(([cat, count]) => {
+        const percentage = ((count / data.length) * 100).toFixed(1);
+        worksheetData.push([cat, count, `${percentage}%`]);
+    });
+    
+    // Monthly completion
+    const monthlyStats = {};
+    data.forEach(task => {
+        if (task.dateCompleted) {
+            const date = convertToDate(task.dateCompleted);
+            const monthYear = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+            monthlyStats[monthYear] = (monthlyStats[monthYear] || 0) + 1;
+        }
+    });
+    
+    worksheetData.push([]);
+    worksheetData.push(['MONTHLY COMPLETION']);
+    worksheetData.push(['Month', 'Tasks Completed']);
+    Object.entries(monthlyStats).sort((a, b) => {
+        const dateA = new Date(a[0]);
+        const dateB = new Date(b[0]);
+        return dateA - dateB;
+    }).forEach(([month, count]) => {
+        worksheetData.push([month, count]);
+    });
+    
+    // Completion time analysis
+    const completionTimes = data.map(task => getCompletionTimeSummary(task.dateCreated, task.dateCompleted)).filter(t => t > 0);
+    if (completionTimes.length > 0) {
+        const avgTime = completionTimes.reduce((a, b) => a + b, 0) / completionTimes.length;
+        const minTime = Math.min(...completionTimes);
+        const maxTime = Math.max(...completionTimes);
+        
+        worksheetData.push([]);
+        worksheetData.push(['COMPLETION TIME ANALYSIS']);
+        worksheetData.push(['Average Completion Time', `${Math.round(avgTime * 10) / 10} hours`]);
+        worksheetData.push(['Fastest Completion', `${Math.round(minTime * 10) / 10} hours`]);
+        worksheetData.push(['Slowest Completion', `${Math.round(maxTime * 10) / 10} hours`]);
+    }
+    
+    const ws = XLSX.utils.aoa_to_sheet(worksheetData);
+    ws['!cols'] = [{wch: 25}, {wch: 20}];
+    
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Summary Report');
+    XLSX.writeFile(wb, `completed_maintenance_summary_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.xlsx`);
+    showToast("Summary report exported successfully", "success");
+}
 </script>
 </body>
 </html>

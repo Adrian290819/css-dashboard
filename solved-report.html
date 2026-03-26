@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="global.css">
         <link rel="stylesheet" href="stylemobile.css">
         <script src="global-time.js"></script>
@@ -53,6 +54,111 @@
         ::-webkit-scrollbar-thumb:hover {
             background: var(--primary-light);
         }
+
+        .btn-export {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 10px 20px;
+    font-weight: var(--font-semibold);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: var(--text-sm);
+    box-shadow: var(--shadow-xs);
+}
+
+.btn-export:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.btn-export i {
+    font-size: 1rem;
+}
+
+.export-options {
+    position: relative;
+    display: inline-block;
+}
+
+.export-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+    min-width: 200px;
+    z-index: 100;
+    display: none;
+    overflow: hidden;
+}
+
+.export-dropdown.active {
+    display: block;
+    animation: fadeInDown 0.2s ease forwards;
+}
+
+.export-option {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: background var(--transition-fast);
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+}
+
+.export-option:hover {
+    background: var(--hover-color);
+}
+
+.export-option i {
+    width: 20px;
+    color: var(--primary);
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Print Styles untuk Excel */
+@media print {
+    .btn-export, .export-dropdown, .filter-panel, .pagination, .sidebar, .header-actions {
+        display: none !important;
+    }
+    
+    .main-content {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    .maintenance-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+    }
+    
+    .maintenance-table th,
+    .maintenance-table td {
+        border: 1px solid #ddd !important;
+        padding: 8px !important;
+    }
+}
 /* ========== PERBAIKAN STATISTIC CARDS ========== */
 .filter-panel {
     background: var(--card-bg);
@@ -2825,7 +2931,8 @@ function setupFilterListeners() {
     }
 }
 
-// Event listeners
+// Cari kode ini di dalam file solved-report.html
+// Cari kode ini di dalam file solved-report.html
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM loaded, initializing solved reports...");
     
@@ -2896,6 +3003,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 reopenReport(currentReportId);
             });
+            
+            // ========== TAMBAHKAN KODE INI DI SINI ==========
+            // Setup export button setelah data tersedia
+            setTimeout(() => {
+                setupExportButton();
+            }, 1000);
+            // ========== AKHIR TAMBAHAN KODE ==========
             
         } else {
             // Pengguna belum login, redirect ke halaman login
@@ -3153,6 +3267,403 @@ function setupLanguageListener() {
     window.addEventListener('focus', () => {
         const language = localStorage.getItem('language') || 'id';
         applyTranslations(language);
+    });
+}
+// Tambahkan fungsi export ke Excel di dalam tag <script>
+
+// ========== EXPORT TO EXCEL FUNCTIONS ==========
+
+/**
+ * Export data ke Excel dengan format yang rapi
+ * @param {Array} data - Data laporan yang akan diexport
+ * @param {string} filename - Nama file export
+ */
+function exportToExcel(data, filename = 'solved_reports') {
+    if (!data || data.length === 0) {
+        showToast("No data to export", "error");
+        return;
+    }
+    
+    // Buat worksheet data
+    const worksheetData = [];
+    
+    // Header dengan styling
+    worksheetData.push([
+        'SOLVED REPORTS REPORT',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+    ]);
+    worksheetData.push([
+        `Generated: ${new Date().toLocaleString()}`,
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+    ]);
+    worksheetData.push([]); // Empty row
+    
+    // Main headers
+    worksheetData.push([
+        'NO',
+        'REPORT ID',
+        'BRAND',
+        'REPORTED BY',
+        'TITLE',
+        'CATEGORY',
+        'REPORTED AT',
+        'RESOLVED AT',
+        'RESOLUTION TIME',
+        'STATUS'
+    ]);
+    
+    // Data rows
+    data.forEach((report, index) => {
+        const reportedDate = report.dateCreated ? formatDateTimeExcel(report.dateCreated.toDate()) : 'N/A';
+        const resolvedDate = report.dateSolved ? formatDateTimeExcel(report.dateSolved.toDate()) : 'N/A';
+        
+        // Hitung resolution time
+        let resolutionTime = 'N/A';
+        if (report.dateCreated && report.dateSolved) {
+            const diffHours = Math.abs(report.dateSolved.toDate() - report.dateCreated.toDate()) / 36e5;
+            if (diffHours < 1) {
+                resolutionTime = `${Math.round(diffHours * 60)} minutes`;
+            } else if (diffHours < 24) {
+                resolutionTime = `${Math.round(diffHours)} hours`;
+            } else {
+                resolutionTime = `${Math.round(diffHours / 24)} days`;
+            }
+        }
+        
+        worksheetData.push([
+            index + 1,
+            report.id || '',
+            report.brand || 'N/A',
+            report.userId || report.reportedBy || 'Unknown',
+            report.title || 'No Title',
+            report.category || 'N/A',
+            reportedDate,
+            resolvedDate,
+            resolutionTime,
+            report.status === 'completed' ? 'COMPLETED' : 'REOPENED'
+        ]);
+    });
+    
+    // Add summary row
+    worksheetData.push([]);
+    worksheetData.push([
+        'SUMMARY',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+    ]);
+    worksheetData.push([
+        'Total Reports',
+        data.length.toString(),
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+    ]);
+    
+    const completedCount = data.filter(r => r.status === 'completed').length;
+    const reopenedCount = data.filter(r => r.status === 'reopened').length;
+    
+    worksheetData.push([
+        'Completed Reports',
+        completedCount.toString(),
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+    ]);
+    worksheetData.push([
+        'Reopened Reports',
+        reopenedCount.toString(),
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
+    ]);
+    
+    // Hitung rata-rata waktu resolusi
+    let totalResolutionMs = 0;
+    let resolutionCount = 0;
+    data.forEach(report => {
+        if (report.dateCreated && report.dateSolved) {
+            totalResolutionMs += Math.abs(report.dateSolved.toDate() - report.dateCreated.toDate());
+            resolutionCount++;
+        }
+    });
+    
+    if (resolutionCount > 0) {
+        const avgHours = totalResolutionMs / resolutionCount / 36e5;
+        worksheetData.push([
+            'Average Resolution Time',
+            `${Math.round(avgHours * 10) / 10} hours`,
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            ''
+        ]);
+    }
+    
+    // Buat workbook
+    const ws = XLSX.utils.aoa_to_sheet(worksheetData);
+    
+    // Set column widths
+    const colWidths = [
+        {wch: 5},   // NO
+        {wch: 20},  // REPORT ID
+        {wch: 25},  // BRAND
+        {wch: 20},  // REPORTED BY
+        {wch: 30},  // TITLE
+        {wch: 15},  // CATEGORY
+        {wch: 20},  // REPORTED AT
+        {wch: 20},  // RESOLVED AT
+        {wch: 15},  // RESOLUTION TIME
+        {wch: 12}   // STATUS
+    ];
+    ws['!cols'] = colWidths;
+    
+    // Style untuk header (merge cells untuk title)
+    if (!ws['!merges']) ws['!merges'] = [];
+    ws['!merges'].push({s: {r: 0, c: 0}, e: {r: 0, c: 9}}); // Merge title row
+    ws['!merges'].push({s: {r: 1, c: 0}, e: {r: 1, c: 9}}); // Merge date row
+    
+    // Create workbook
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Solved Reports');
+    
+    // Export
+    XLSX.writeFile(wb, `${filename}_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.xlsx`);
+    showToast(`Exported ${data.length} reports to Excel`, "success");
+}
+
+/**
+ * Export dengan format yang lebih detail (full data)
+ */
+function exportFullDetailsToExcel(data, filename = 'solved_reports_full') {
+    if (!data || data.length === 0) {
+        showToast("No data to export", "error");
+        return;
+    }
+    
+    const worksheetData = [];
+    
+    // Header
+    worksheetData.push(['SOLVED REPORTS - FULL DETAILS']);
+    worksheetData.push([`Generated: ${new Date().toLocaleString()}`]);
+    worksheetData.push([]);
+    
+    // Headers lengkap
+    worksheetData.push([
+        'NO', 'REPORT ID', 'BRAND', 'REPORTED BY', 'TITLE', 'CATEGORY',
+        'DESCRIPTION', 'RESOLUTION', 'REPORTED AT', 'RESOLVED AT',
+        'RESOLUTION TIME', 'STATUS', 'COMPLETED BY'
+    ]);
+    
+    // Data rows dengan detail lengkap
+    for (let i = 0; i < data.length; i++) {
+        const report = data[i];
+        
+        const reportedDate = report.dateCreated ? formatDateTimeExcel(report.dateCreated.toDate()) : 'N/A';
+        const resolvedDate = report.dateSolved ? formatDateTimeExcel(report.dateSolved.toDate()) : 'N/A';
+        
+        let resolutionTime = 'N/A';
+        if (report.dateCreated && report.dateSolved) {
+            const diffHours = Math.abs(report.dateSolved.toDate() - report.dateCreated.toDate()) / 36e5;
+            if (diffHours < 1) {
+                resolutionTime = `${Math.round(diffHours * 60)} minutes`;
+            } else if (diffHours < 24) {
+                resolutionTime = `${Math.round(diffHours)} hours`;
+            } else {
+                resolutionTime = `${Math.round(diffHours / 24)} days, ${Math.round(diffHours % 24)} hours`;
+            }
+        }
+        
+        worksheetData.push([
+            i + 1,
+            report.id || '',
+            report.brand || 'N/A',
+            report.userId || report.reportedBy || 'Unknown',
+            report.title || 'No Title',
+            report.category || 'N/A',
+            report.description || 'No description',
+            report.resolution || 'No resolution notes',
+            reportedDate,
+            resolvedDate,
+            resolutionTime,
+            report.status === 'completed' ? 'COMPLETED' : 'REOPENED',
+            report.completedByName || report.completedBy || 'N/A'
+        ]);
+    }
+    
+    // Summary
+    worksheetData.push([]);
+    worksheetData.push(['SUMMARY STATISTICS']);
+    worksheetData.push(['Total Reports', data.length]);
+    worksheetData.push(['Completed', data.filter(r => r.status === 'completed').length]);
+    worksheetData.push(['Reopened', data.filter(r => r.status === 'reopened').length]);
+    
+    // Brand distribution
+    const brandCounts = {};
+    data.forEach(report => {
+        const brand = report.brand || 'Unknown';
+        brandCounts[brand] = (brandCounts[brand] || 0) + 1;
+    });
+    
+    worksheetData.push([]);
+    worksheetData.push(['BRAND DISTRIBUTION']);
+    worksheetData.push(['Brand', 'Count']);
+    Object.entries(brandCounts).sort((a, b) => b[1] - a[1]).forEach(([brand, count]) => {
+        worksheetData.push([brand, count]);
+    });
+    
+    const ws = XLSX.utils.aoa_to_sheet(worksheetData);
+    
+    // Set column widths
+    ws['!cols'] = [
+        {wch: 5}, {wch: 20}, {wch: 25}, {wch: 20}, {wch: 30},
+        {wch: 15}, {wch: 40}, {wch: 40}, {wch: 20}, {wch: 20},
+        {wch: 15}, {wch: 12}, {wch: 20}
+    ];
+    
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Full Details');
+    XLSX.writeFile(wb, `${filename}_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.xlsx`);
+    showToast(`Exported ${data.length} reports with full details to Excel`, "success");
+}
+
+/**
+ * Format date untuk Excel
+ */
+function formatDateTimeExcel(date) {
+    return date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+    });
+}
+
+/**
+ * Setup export button dengan dropdown
+ */
+function setupExportButton() {
+    const sectionActions = document.querySelector('.section-actions');
+    if (!sectionActions) return;
+    
+    // Buat container export
+    const exportContainer = document.createElement('div');
+    exportContainer.className = 'export-options';
+    
+    // Tombol export utama
+    const exportBtn = document.createElement('button');
+    exportBtn.className = 'btn-export';
+    exportBtn.innerHTML = '<i class="fas fa-file-excel"></i> Export to Excel <i class="fas fa-chevron-down"></i>';
+    
+    // Dropdown menu
+    const dropdown = document.createElement('div');
+    dropdown.className = 'export-dropdown';
+    dropdown.innerHTML = `
+        <div class="export-option" data-export-type="standard">
+            <i class="fas fa-table"></i>
+            <span>Standard Export</span>
+            <small style="margin-left: auto; color: var(--text-tertiary);">Basic columns</small>
+        </div>
+        <div class="export-option" data-export-type="full">
+            <i class="fas fa-file-alt"></i>
+            <span>Full Details Export</span>
+            <small style="margin-left: auto; color: var(--text-tertiary);">With descriptions</small>
+        </div>
+        <div class="export-option" data-export-type="current-filter">
+            <i class="fas fa-filter"></i>
+            <span>Export Current Filter View</span>
+            <small style="margin-left: auto; color: var(--text-tertiary);">Filtered data</small>
+        </div>
+    `;
+    
+    exportContainer.appendChild(exportBtn);
+    exportContainer.appendChild(dropdown);
+    sectionActions.appendChild(exportContainer);
+    
+    // Toggle dropdown
+    exportBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('active');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!exportContainer.contains(e.target)) {
+            dropdown.classList.remove('active');
+        }
+    });
+    
+    // Handle export options
+    dropdown.querySelectorAll('.export-option').forEach(option => {
+        option.addEventListener('click', async (e) => {
+            const exportType = option.getAttribute('data-export-type');
+            dropdown.classList.remove('active');
+            
+            let dataToExport = [];
+            
+            switch(exportType) {
+                case 'standard':
+                    dataToExport = solvedReports;
+                    exportToExcel(dataToExport);
+                    break;
+                case 'full':
+                    dataToExport = solvedReports;
+                    exportFullDetailsToExcel(dataToExport);
+                    break;
+                case 'current-filter':
+                    dataToExport = filterReports(solvedReports);
+                    if (dataToExport.length === 0) {
+                        showToast("No data matches current filters", "error");
+                        return;
+                    }
+                    exportToExcel(dataToExport, 'solved_reports_filtered');
+                    break;
+            }
+        });
     });
 }
 </script>

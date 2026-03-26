@@ -15,6 +15,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-auth-compat.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
 
     <style>
         :root {
@@ -2525,39 +2526,119 @@ function openImageModal(imageUrl) {
     }
 
     // Fungsi untuk export ke Excel
-    function exportToExcel() {
-        const lang = promosiLeadsTranslations[currentLanguage] || promosiLeadsTranslations['id'];
+    // Fungsi untuk export ke Excel dengan format yang lebih rapi
+function exportToExcel() {
+    const lang = promosiLeadsTranslations[currentLanguage] || promosiLeadsTranslations['id'];
+    
+    // Header dengan format yang lebih jelas
+    const headers = [
+        lang.thTanggalMasuk,
+        lang.thPlatform, 
+        lang.thContactUsername,
+        lang.thScreenshotChat,
+        lang.thNamaCSS,
+        lang.thLeadQualification,
+        lang.thLeadsFollow,
+        lang.thStatus,
+        lang.thReason,
+        lang.thRequestLeads,
+        lang.thFollowUp1,
+        lang.thFollowUp2,
+        lang.thFollowUp3,
+        lang.thFollowUp4,
+        lang.thFollowUp5
+    ];
+    
+    // Buat worksheet data
+    const worksheetData = [headers];
+    
+    // Tambahkan data leads
+    leadsData.forEach(lead => {
+        // Format status untuk tampilan yang lebih baik
+        let statusText = lead.leadStatus || 'Progres';
+        if (lead.leadStatus === 'Progres' && currentLanguage !== 'id') {
+            statusText = lang.selectProgres || 'Progres';
+        } else if (lead.leadStatus === 'Closing' && currentLanguage !== 'id') {
+            statusText = lang.selectClosing || 'Closing';
+        }
         
-        const headers = [
-            lang.thTanggalMasuk, lang.thPlatform, lang.thContactUsername, lang.thScreenshotChat,
-            lang.thNamaCSS, lang.thLeadQualification, lang.thLeadsFollow, lang.thStatus,
-            lang.thReason, lang.thRequestLeads, lang.thFollowUp1, lang.thFollowUp2,
-            lang.thFollowUp3, lang.thFollowUp4, lang.thFollowUp5
+        // Format leads/follow
+        let leadsFollowText = lead.leadsFollow || '-';
+        
+        // Format qualification
+        let qualificationText = lead.leadQualification || '-';
+        
+        const row = [
+            lead.tanggalMasuk || '',
+            lead.platform || '',
+            lead.contactUsername || '',
+            lead.screenshotUrl || '',
+            lead.namaCSS || '',
+            qualificationText,
+            leadsFollowText,
+            statusText,
+            (lead.reason || '').replace(/,/g, ';').replace(/\n/g, ' ').replace(/\r/g, ' '),
+            (lead.requestLeads || '').replace(/,/g, ';').replace(/\n/g, ' ').replace(/\r/g, ' '),
+            (lead.followUp1 || '').replace(/,/g, ';').replace(/\n/g, ' ').replace(/\r/g, ' '),
+            (lead.followUp2 || '').replace(/,/g, ';').replace(/\n/g, ' ').replace(/\r/g, ' '),
+            (lead.followUp3 || '').replace(/,/g, ';').replace(/\n/g, ' ').replace(/\r/g, ' '),
+            (lead.followUp4 || '').replace(/,/g, ';').replace(/\n/g, ' ').replace(/\r/g, ' '),
+            (lead.followUp5 || '').replace(/,/g, ';').replace(/\n/g, ' ').replace(/\r/g, ' ')
+        ];
+        worksheetData.push(row);
+    });
+    
+    // Buat workbook menggunakan SheetJS jika tersedia, atau fallback ke CSV
+    if (typeof XLSX !== 'undefined') {
+        // Gunakan SheetJS untuk export Excel yang lebih baik
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(worksheetData);
+        
+        // Atur lebar kolom
+        ws['!cols'] = [
+            { wch: 12 }, // Tanggal Masuk
+            { wch: 12 }, // Platform
+            { wch: 20 }, // Contact Username
+            { wch: 30 }, // Screenshot Chat
+            { wch: 15 }, // Nama CSS
+            { wch: 15 }, // Lead Qualification
+            { wch: 12 }, // Leads / Follow
+            { wch: 12 }, // Status
+            { wch: 25 }, // Reason
+            { wch: 25 }, // Request Leads
+            { wch: 30 }, // Follow Up 1
+            { wch: 30 }, // Follow Up 2
+            { wch: 30 }, // Follow Up 3
+            { wch: 30 }, // Follow Up 4
+            { wch: 30 }  // Follow Up 5
         ];
         
-        let csvContent = headers.join(',') + '\n';
+        // Style header (opsional)
+        const headerRange = XLSX.utils.decode_range(ws['!ref']);
+        for (let C = headerRange.s.c; C <= headerRange.e.c; ++C) {
+            const address = XLSX.utils.encode_cell({ r: 0, c: C });
+            if (!ws[address]) continue;
+            ws[address].s = {
+                font: { bold: true, sz: 12 },
+                fill: { fgColor: { rgb: "4361ee" } },
+                alignment: { horizontal: "center" }
+            };
+        }
         
-        leadsData.forEach(lead => {
-            const row = [
-                lead.tanggalMasuk || '',
-                lead.platform || '',
-                lead.contactUsername || '',
-                lead.screenshotUrl || '',
-                lead.namaCSS || '',
-                lead.leadQualification || '',
-                lead.leadsFollow || '',
-                lead.leadStatus || 'Progres',
-                (lead.reason || '').replace(/,/g, ';').replace(/\n/g, ' '),
-                (lead.requestLeads || '').replace(/,/g, ';').replace(/\n/g, ' '),
-                (lead.followUp1 || '').replace(/,/g, ';').replace(/\n/g, ' '),
-                (lead.followUp2 || '').replace(/,/g, ';').replace(/\n/g, ' '),
-                (lead.followUp3 || '').replace(/,/g, ';').replace(/\n/g, ' '),
-                (lead.followUp4 || '').replace(/,/g, ';').replace(/\n/g, ' '),
-                (lead.followUp5 || '').replace(/,/g, ';').replace(/\n/g, ' ')
-            ];
-            
-            csvContent += row.map(cell => `"${cell}"`).join(',') + '\n';
-        });
+        XLSX.utils.book_append_sheet(wb, ws, "Promosi Leads");
+        
+        // Download file
+        const fileName = `promosi_leads_${new Date().toISOString().split('T')[0]}.xlsx`;
+        XLSX.writeFile(wb, fileName);
+        
+        if (window.toastMessages && window.toastMessages.exportSuccess) {
+            showToast(window.toastMessages.exportSuccess, 'success');
+        }
+    } else {
+        // Fallback ke CSV jika SheetJS tidak tersedia
+        let csvContent = worksheetData.map(row => 
+            row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')
+        ).join('\n');
         
         const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
@@ -2570,10 +2651,9 @@ function openImageModal(imageUrl) {
         
         if (window.toastMessages && window.toastMessages.exportSuccess) {
             showToast(window.toastMessages.exportSuccess, 'success');
-        } else {
-            showToast('Data berhasil diexport!', 'success');
         }
     }
+}
 
     // ========== EVENT LISTENERS ==========
     function setupEventListeners() {

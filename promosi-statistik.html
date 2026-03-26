@@ -484,9 +484,6 @@
             <div class="section-header">
                 <h2 class="section-title" id="recapTitle"><i class="fas fa-table"></i> Rekapitulasi Promosi per CSS</h2>
                 <div class="section-actions">
-                    <button class="btn btn-outline" id="exportExcel">
-                        <i class="fas fa-file-excel"></i> <span id="exportBtnText">Export Excel</span>
-                    </button>
                     <button class="btn btn-outline" id="refreshStats">
                         <i class="fas fa-sync-alt"></i> <span id="refreshBtnText">Refresh</span>
                     </button>
@@ -568,7 +565,6 @@
             
             // Table Headers
             "recapTitle": "Rekapitulasi Promosi per CSS",
-            "exportBtnText": "Export Excel",
             "refreshBtnText": "Refresh",
             "thCssName": "NAMA CSS",
             "thTotalPromosi": "JUMLAH PROMOSI",
@@ -635,7 +631,6 @@
             
             // Table Headers
             "recapTitle": "Promotion Recap per CSS",
-            "exportBtnText": "Export Excel",
             "refreshBtnText": "Refresh",
             "thCssName": "CSS NAME",
             "thTotalPromosi": "TOTAL PROMOTIONS",
@@ -702,7 +697,6 @@
             
             // Table Headers
             "recapTitle": "CSS別プロモーション集計",
-            "exportBtnText": "Excel出力",
             "refreshBtnText": "更新",
             "thCssName": "CSS名",
             "thTotalPromosi": "プロモーション数",
@@ -769,7 +763,6 @@
             
             // Table Headers
             "recapTitle": "CSS促销汇总",
-            "exportBtnText": "导出Excel",
             "refreshBtnText": "刷新",
             "thCssName": "CSS名称",
             "thTotalPromosi": "促销数量",
@@ -905,9 +898,6 @@
         // Section header
         const recapTitle = document.getElementById('recapTitle');
         if (recapTitle) recapTitle.innerHTML = `<i class="fas fa-table"></i> ${lang.recapTitle}`;
-        
-        const exportBtnText = document.getElementById('exportBtnText');
-        if (exportBtnText) exportBtnText.textContent = lang.exportBtnText;
         
         const refreshBtnText = document.getElementById('refreshBtnText');
         if (refreshBtnText) refreshBtnText.textContent = lang.refreshBtnText;

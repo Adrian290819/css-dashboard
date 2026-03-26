@@ -117,7 +117,89 @@
                 width: 100%;
             }
         }
-
+   .btn-export {
+        background: var(--success-gradient);
+        color: white;
+        border: none;
+        padding: var(--space-sm) var(--space-md);
+        border-radius: var(--radius-md);
+        font-size: var(--text-sm);
+        font-weight: var(--font-medium);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: var(--space-xs);
+        transition: all var(--transition-fast);
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .btn-export:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        opacity: 0.9;
+    }
+    
+    .btn-export:active {
+        transform: translateY(0);
+    }
+    
+    /* Light mode specific styling untuk tombol export */
+    :root {
+        --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+    
+    /* Fallback untuk memastikan tombol terlihat di semua mode */
+    .btn-export {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Dark mode adjustment */
+    @media (prefers-color-scheme: dark) {
+        .btn-export {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+        }
+    }
+    
+    /* Light mode explicit styling */
+    body.light-mode .btn-export,
+    .light-mode .btn-export {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: #ffffff;
+        border: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    body.light-mode .btn-export:hover,
+    .light-mode .btn-export:hover {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Memastikan icon terlihat */
+    .btn-export i {
+        color: #ffffff;
+        font-size: 1rem;
+    }
+    
+    /* Tombol lainnya yang mungkin terpengaruh */
+    .btn-primary {
+        background: var(--primary-gradient);
+        color: white;
+        border: none;
+    }
+    
+    .btn-outline {
+        background: transparent;
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+    }
+    
+    .btn-outline:hover {
+        background: var(--hover-color);
+    }
         /* ========== PERBAIKAN STATISTIC CARDS ========== */
         .summary-stats {
             display: grid;

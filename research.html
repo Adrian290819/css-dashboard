@@ -1,3 +1,4 @@
+<!-- research.html - Modified version with monthly statistics -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -106,31 +107,19 @@
             color: var(--text-secondary);
         }
 
-        .research-container {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: var(--space-lg);
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-color);
-            margin-bottom: var(--space-xl);
-        }
-
-        .research-header {
-            display: flex;
-            justify-content: space-between;
+        /* Month Indicator Styles */
+        .month-indicator {
+            background: rgba(67, 97, 238, 0.1);
+            color: #4361ee;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
             align-items: center;
-            margin-bottom: var(--space-lg);
-            padding-bottom: var(--space-md);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .research-title {
-            font-size: var(--text-xl);
-            font-weight: var(--font-semibold);
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
+            gap: 8px;
+            margin-bottom: 20px;
+            width: fit-content;
         }
 
         .research-stats {
@@ -206,6 +195,33 @@
             height: 100%;
             border-radius: var(--radius-full);
             transition: width 1s ease;
+        }
+
+        .research-container {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            margin-bottom: var(--space-xl);
+        }
+
+        .research-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+            padding-bottom: var(--space-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .research-title {
+            font-size: var(--text-xl);
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
         }
 
         .research-content {
@@ -1042,7 +1058,7 @@
                     <i class="fas fa-search"></i>
                     <input type="text" placeholder="Cari research..." id="researchSearch">
                 </div>
-<div class="user-profile">
+                <div class="user-profile">
                     <img class="profile-img" src="https://iili.io/Fpiva7S.png" alt="Profile">
                     <div class="user-info">
                         <h4 id="userName">Loading...</h4>
@@ -1050,6 +1066,12 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Month Indicator -->
+        <div id="monthIndicator" class="month-indicator">
+            <i class="fas fa-calendar-alt"></i>
+            <span id="monthIndicatorText">Data Research</span>
         </div>
 
         <div class="research-stats">
@@ -1955,6 +1977,101 @@
             document.body.appendChild(connectionStatus);
         }
 
+        // ========== MONTHLY DATA FILTER FUNCTION ==========
+        function filterDataByCurrentMonth(data) {
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth();
+            const currentYear = currentDate.getFullYear();
+            
+            return data.filter(item => {
+                if (!item.createdAt) return false;
+                
+                let itemDate;
+                if (item.createdAt.toDate) {
+                    itemDate = item.createdAt.toDate();
+                } else if (item.createdAt instanceof Date) {
+                    itemDate = item.createdAt;
+                } else if (typeof item.createdAt === 'string') {
+                    itemDate = new Date(item.createdAt);
+                } else {
+                    return false;
+                }
+                
+                return itemDate.getMonth() === currentMonth && 
+                       itemDate.getFullYear() === currentYear;
+            });
+        }
+
+        // ========== ADD MONTH INDICATOR FUNCTION ==========
+        function addMonthIndicator() {
+            const statsContainer = document.querySelector('.research-stats');
+            if (!statsContainer) return;
+            
+            // Remove existing month indicator if any
+            const existingIndicator = document.getElementById('monthIndicator');
+            if (existingIndicator) return;
+            
+            const currentDate = new Date();
+            const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const currentMonth = monthNames[currentDate.getMonth()];
+            const currentYear = currentDate.getFullYear();
+            
+            const monthIndicator = document.createElement('div');
+            monthIndicator.id = 'monthIndicator';
+            monthIndicator.className = 'month-indicator';
+            monthIndicator.innerHTML = `
+                <i class="fas fa-calendar-alt"></i>
+                <span>Data Bulan ${currentMonth} ${currentYear}</span>
+            `;
+            
+            // Insert month indicator before stats container
+            statsContainer.parentNode.insertBefore(monthIndicator, statsContainer);
+        }
+
+        // ========== UPDATE STATISTICS WITH MONTHLY DATA ==========
+        function updateResearchStats() {
+            // Filter data for current month only
+            const monthlyResearchData = filterDataByCurrentMonth(researchData);
+            
+            const totalResearch = monthlyResearchData.length;
+            const completedResearch = monthlyResearchData.filter(item => item.status === 'completed').length;
+            const pendingResearch = monthlyResearchData.filter(item => item.status === 'pending' || item.status === 'overdue').length;
+            const kpiResearch = Math.min(100, Math.round((totalResearch / researchTarget) * 100));
+            
+            if (totalResearchEl) totalResearchEl.textContent = totalResearch;
+            if (completedResearchEl) completedResearchEl.textContent = completedResearch;
+            if (pendingResearchEl) pendingResearchEl.textContent = pendingResearch;
+            if (kpiResearchEl) kpiResearchEl.textContent = `${kpiResearch}%`;
+            
+            const progressBars = document.querySelectorAll('.progress-fill');
+            if (progressBars.length >= 4) {
+                setTimeout(() => {
+                    progressBars[0].style.width = `${Math.min(100, (totalResearch / researchTarget) * 100)}%`;
+                    progressBars[1].style.width = `${completedResearch > 0 ? (completedResearch / totalResearch) * 100 : 0}%`;
+                    progressBars[2].style.width = `${pendingResearch > 0 ? (pendingResearch / totalResearch) * 100 : 0}%`;
+                    progressBars[3].style.width = `${kpiResearch}%`;
+                }, 100);
+            }
+            
+            // Update month indicator text
+            const monthIndicatorText = document.getElementById('monthIndicatorText');
+            if (monthIndicatorText) {
+                const currentDate = new Date();
+                const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                                    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                const currentMonth = monthNames[currentDate.getMonth()];
+                const currentYear = currentDate.getFullYear();
+                monthIndicatorText.textContent = `Data Bulan ${currentMonth} ${currentYear}`;
+            }
+            
+            // Store only monthly count for dashboard integration
+            localStorage.setItem('researchCount', totalResearch);
+            window.dispatchEvent(new CustomEvent('researchDataChanged', { 
+                detail: { researchCount: totalResearch } 
+            }));
+        }
+
         // Fungsi untuk menampilkan notifikasi (dengan terjemahan)
         function showNotification(message, type = 'info') {
             if (!notificationContainer) return;
@@ -2181,34 +2298,6 @@
                 console.error('Error deleting research:', error);
                 throw error;
             }
-        }
-
-        // Fungsi untuk memperbarui statistik research
-        function updateResearchStats() {
-            const totalResearch = researchData.length;
-            const completedResearch = researchData.filter(item => item.status === 'completed').length;
-            const pendingResearch = researchData.filter(item => item.status === 'pending' || item.status === 'overdue').length;
-            const kpiResearch = Math.min(100, Math.round((totalResearch / researchTarget) * 100));
-            
-            if (totalResearchEl) totalResearchEl.textContent = totalResearch;
-            if (completedResearchEl) completedResearchEl.textContent = completedResearch;
-            if (pendingResearchEl) pendingResearchEl.textContent = pendingResearch;
-            if (kpiResearchEl) kpiResearchEl.textContent = `${kpiResearch}%`;
-            
-            const progressBars = document.querySelectorAll('.progress-fill');
-            if (progressBars.length >= 4) {
-                setTimeout(() => {
-                    progressBars[0].style.width = `${Math.min(100, (totalResearch / researchTarget) * 100)}%`;
-                    progressBars[1].style.width = `${completedResearch > 0 ? (completedResearch / totalResearch) * 100 : 0}%`;
-                    progressBars[2].style.width = `${pendingResearch > 0 ? (pendingResearch / totalResearch) * 100 : 0}%`;
-                    progressBars[3].style.width = `${kpiResearch}%`;
-                }, 100);
-            }
-            
-            localStorage.setItem('researchCount', totalResearch);
-            window.dispatchEvent(new CustomEvent('researchDataChanged', { 
-                detail: { researchCount: totalResearch } 
-            }));
         }
 
         // Fungsi untuk memeriksa deadline dan update status
@@ -2526,7 +2615,7 @@
                 
                 checkDeadlines();
                 filterResearchData();
-                updateResearchStats();
+                updateResearchStats(); // This now uses monthly data
                 
                 const lang = researchTranslations[currentLanguage] || researchTranslations['id'];
                 if (currentUserData && currentUserData.isSuperAdmin) {
@@ -2716,6 +2805,7 @@
             console.log('DOM Content Loaded - Initializing Research Dashboard');
             
             initializeResearchLanguage();
+            addMonthIndicator();
             
             try {
                 await checkAuth();

@@ -1019,20 +1019,25 @@
     </div>
 
     <!-- View Image Modal -->
-    <div class="modal-overlay" id="imageModal">
-        <div class="modal" style="max-width: 800px;">
-            <div class="modal-header">
-                <h3 class="modal-title"><i class="fas fa-image"></i> <span id="imageModalTitle">Screenshot Chat</span></h3>
-                <button class="modal-close" id="closeImageModal">&times;</button>
-            </div>
-            <div class="modal-body" style="text-align: center;">
-                <img id="modalImage" src="" alt="Screenshot" style="max-width: 100%; max-height: 70vh;">
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline" id="closeImageBtn"><span id="closeBtnText">Tutup</span></button>
+<div class="modal-overlay" id="imageModal">
+    <div class="modal" style="max-width: 800px;">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="fas fa-image"></i> <span id="imageModalTitle">Screenshot Chat</span></h3>
+            <button class="modal-close" id="closeImageModal">&times;</button>
+        </div>
+        <div class="modal-body" style="text-align: center;">
+            <img id="modalImage" src="" alt="Screenshot" style="max-width: 100%; max-height: 60vh;">
+            <div style="margin-top: 15px;">
+                <a href="#" id="modalImageLink" target="_blank" class="btn btn-outline" style="display: inline-flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-external-link-alt"></i> <span id="openNewTabText">Buka di Tab Baru</span>
+                </a>
             </div>
         </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" id="closeImageBtn"><span id="closeBtnText">Tutup</span></button>
+        </div>
     </div>
+</div>
 
     <!-- Delete Confirmation Modal -->
     <div class="modal-overlay" id="deleteModal">
@@ -1102,6 +1107,7 @@
             "cssBaihaqi": "BAIHAQI",
             "cssDicky": "DICKY",
             "dateLabel": "Tanggal Masuk",
+        
             
             // Section Header
             "sectionTitle": "Data Leads Promosi",
@@ -1240,6 +1246,7 @@
             "leadsFollowLabel": "Leads / Follow",
             "leadsFollowAll": "All",
             "leadsFollowLeads": "Leads",
+            "openNewTabText": "Open in New Tab",
             "leadsFollowFollow": "Follow",
             "cssLabel": "CSS Name",
             "cssAll": "All CSS",
@@ -1341,6 +1348,7 @@
             "viewImage": "View",
             "edit": "Edit",
             "delete": "Delete"
+            
         },
         ja: {
             "pageTitle": "プロモーションリード管理",
@@ -1349,6 +1357,7 @@
             "filterTitle": "リードフィルター",
             "resetBtnText": "フィルターリセット",
             "platformLabel": "プラットフォーム",
+            "openNewTabText": "新しいタブで開く",
             "platformAll": "すべてのプラットフォーム",
             "platformWhatsApp": "WhatsApp",
             "platformTelegram": "Telegram",
@@ -1476,6 +1485,7 @@
             "filterTitle": "线索筛选",
             "resetBtnText": "重置筛选",
             "platformLabel": "平台",
+            "openNewTabText": "在新标签页中打开",
             "platformAll": "所有平台",
             "platformWhatsApp": "WhatsApp",
             "platformTelegram": "Telegram",
@@ -2117,17 +2127,27 @@
         });
     }
 
-    // Fungsi untuk membuka modal gambar
-    function openImageModal(imageUrl) {
-        const modalImage = document.getElementById('modalImage');
-        if (modalImage) {
-            modalImage.src = imageUrl;
-            document.getElementById('imageModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        } else {
-            window.open(imageUrl, '_blank');
+   // Fungsi untuk membuka modal gambar dengan link ke tab baru
+function openImageModal(imageUrl) {
+    const modalImage = document.getElementById('modalImage');
+    const modalImageLink = document.getElementById('modalImageLink');
+    
+    if (modalImage) {
+        modalImage.src = imageUrl;
+        
+        // Update link untuk membuka di tab baru
+        if (modalImageLink) {
+            modalImageLink.href = imageUrl;
+            modalImageLink.style.display = 'inline-flex';
         }
+        
+        document.getElementById('imageModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    } else {
+        // Fallback: buka di tab baru
+        window.open(imageUrl, '_blank');
     }
+}
 
     // Fungsi untuk membuka modal tambah
     function openAddModal() {

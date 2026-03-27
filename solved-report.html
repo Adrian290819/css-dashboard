@@ -3785,6 +3785,319 @@ function setupExportButton() {
         });
     });
 }
+// ========== DELETE ALL REPORTS - SUPER ADMIN ONLY (FIXED) ==========
+
+// Flag untuk mencegah multiple initialization
+let deleteAllButtonInitialized = false;
+let deleteAllButtonCheckInterval = null;
+
+/**
+ * Menampilkan konfirmasi untuk menghapus semua data
+ */
+function showDeleteAllConfirmation() {
+    const totalReports = solvedReports.length;
+    
+    if (totalReports === 0) {
+        showToast("No data to delete", "error");
+        return;
+    }
+    
+    // Hapus modal yang sudah ada jika ada
+    const existingModal = document.querySelector('.delete-all-modal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Buat modal konfirmasi hapus semua
+    const confirmModal = document.createElement('div');
+    confirmModal.className = 'modal-overlay active delete-all-modal';
+    confirmModal.innerHTML = `
+        <div class="modal confirm-modal" style="max-width: 550px;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);">
+                <h2 class="modal-title"><i class="fas fa-trash-alt"></i> Delete All Reports</h2>
+                <button class="modal-close" id="closeDeleteAllModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="confirm-icon">
+                    <i class="fas fa-exclamation-triangle" style="color: var(--danger); font-size: 4rem;"></i>
+                </div>
+                <p class="confirm-message" style="font-size: 1rem;">
+                    <strong>⚠️ WARNING: This action cannot be undone!</strong><br><br>
+                    You are about to delete <strong style="color: var(--danger);">${totalReports}</strong> solved report(s) permanently.<br><br>
+                    Are you ABSOLUTELY sure you want to delete ALL solved reports?
+                </p>
+                <div style="background: var(--bg-secondary); padding: 12px; border-radius: var(--radius-md); margin-top: 15px;">
+                    <small style="color: var(--text-secondary);">
+                        <i class="fas fa-info-circle"></i> This will remove all solved reports from the database.
+                    </small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelDeleteAllBtn">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="btn btn-danger" id="confirmDeleteAllBtn" style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);">
+                    <i class="fas fa-trash-alt"></i> Delete All (${totalReports})
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(confirmModal);
+    
+    // Event listeners untuk modal hapus semua
+    const closeModal = () => {
+        const modal = document.querySelector('.delete-all-modal');
+        if (modal) modal.remove();
+    };
+    
+    const closeBtn = document.getElementById('closeDeleteAllModal');
+    const cancelBtn = document.getElementById('cancelDeleteAllBtn');
+    const confirmBtn = document.getElementById('confirmDeleteAllBtn');
+    
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+    
+    if (confirmBtn) {
+        confirmBtn.addEventListener('click', async () => {
+            await deleteAllReports();
+            closeModal();
+        });
+    }
+    
+    // Close modal ketika klik di luar
+    confirmModal.addEventListener('click', (e) => {
+        if (e.target === confirmModal) {
+            closeModal();
+        }
+    });
+}
+
+/**
+ * Menghapus semua data di collection solvedReports
+ */
+async function deleteAllReports() {
+    // Cek apakah user adalah super admin
+    const isAdmin = await isSuperAdmin();
+    if (!isAdmin) {
+        showToast("Access denied: Only super admin can delete all reports", "error");
+        return;
+    }
+    
+    const totalReports = solvedReports.length;
+    
+    if (totalReports === 0) {
+        showToast("No data to delete", "error");
+        return;
+    }
+    
+    try {
+        showToast(`Deleting ${totalReports} reports...`, "info");
+        
+        // Gunakan batch delete untuk efisiensi
+        const batch = db.batch();
+        let batchCount = 0;
+        let deletedCount = 0;
+        
+        // Firestore batch memiliki batas 500 operasi per batch
+        for (let i = 0; i < solvedReports.length; i++) {
+            const report = solvedReports[i];
+            const reportRef = db.collection('solvedReports').doc(report.id);
+            batch.delete(reportRef);
+            batchCount++;
+            
+            // Commit batch setiap 500 operasi
+            if (batchCount === 500) {
+                await batch.commit();
+                deletedCount += batchCount;
+                batchCount = 0;
+                // Buat batch baru untuk sisa data
+                if (i < solvedReports.length - 1) {
+                    const newBatch = db.batch();
+                    // Lanjutkan dengan batch baru
+                    for (let j = i + 1; j < solvedReports.length; j++) {
+                        const nextReport = solvedReports[j];
+                        const nextRef = db.collection('solvedReports').doc(nextReport.id);
+                        newBatch.delete(nextRef);
+                        if ((j - (i + 1) + 1) % 500 === 0 || j === solvedReports.length - 1) {
+                            await newBatch.commit();
+                            deletedCount += (j - (i + 1) + 1);
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        
+        // Commit batch terakhir jika ada
+        if (batchCount > 0) {
+            await batch.commit();
+            deletedCount += batchCount;
+        }
+        
+        showToast(`Successfully deleted ${deletedCount} reports`, "success");
+        
+        // Refresh data
+        setupSolvedReportsListener();
+        
+    } catch (error) {
+        console.error("Error deleting all reports:", error);
+        showToast("Error deleting reports: " + error.message, "error");
+    }
+}
+
+/**
+ * Menambahkan tombol Delete All di halaman - HANYA SATU TOMBOL
+ */
+async function addDeleteAllButton() {
+    // Cari section-actions container
+    const sectionActions = document.querySelector('.section-actions');
+    if (!sectionActions) return;
+    
+    // CEK APAKAH SUDAH ADA TOMBOL - HAPUS YANG LAMA
+    const existingButton = document.getElementById('deleteAllBtn');
+    if (existingButton) {
+        // Jika tombol sudah ada, jangan buat baru
+        return;
+    }
+    
+    // CEK ROLE USER - HANYA SUPER ADMIN YANG BISA MELIHAT TOMBOL
+    const isAdmin = await isSuperAdmin();
+    
+    // Jika BUKAN Super Admin, jangan tampilkan tombol
+    if (!isAdmin) {
+        return;
+    }
+    
+    // Buat tombol delete all
+    const deleteAllBtn = document.createElement('button');
+    deleteAllBtn.id = 'deleteAllBtn';
+    deleteAllBtn.className = 'btn-danger';
+    deleteAllBtn.style.cssText = `
+        background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+        color: white;
+        border: none;
+        border-radius: var(--radius-md);
+        padding: 10px 20px;
+        font-weight: var(--font-semibold);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        font-size: var(--text-sm);
+        box-shadow: var(--shadow-xs);
+        margin-left: 12px;
+    `;
+    deleteAllBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Delete All';
+    deleteAllBtn.title = 'Delete all solved reports (Super Admin only)';
+    
+    // Tambahkan event listener
+    deleteAllBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        
+        // Pengecekan ulang role saat tombol diklik
+        const isAdminClick = await isSuperAdmin();
+        if (!isAdminClick) {
+            showToast("Access denied: Only super admin can delete all reports", "error");
+            return;
+        }
+        
+        if (solvedReports.length === 0) {
+            showToast("No data to delete", "error");
+            return;
+        }
+        
+        showDeleteAllConfirmation();
+    });
+    
+    // Tambahkan tombol ke section-actions
+    sectionActions.appendChild(deleteAllBtn);
+}
+
+/**
+ * Memastikan tombol Delete All hanya muncul untuk Super Admin dan hanya 1 tombol
+ */
+async function ensureSingleDeleteAllButton() {
+    const isAdmin = await isSuperAdmin();
+    const existingButtons = document.querySelectorAll('#deleteAllBtn');
+    
+    if (isAdmin) {
+        // Jika Super Admin dan tidak ada tombol, tambahkan
+        if (existingButtons.length === 0) {
+            await addDeleteAllButton();
+        } 
+        // Jika ada lebih dari 1 tombol, hapus kelebihannya
+        else if (existingButtons.length > 1) {
+            console.log(`Removing ${existingButtons.length - 1} duplicate delete buttons`);
+            for (let i = 1; i < existingButtons.length; i++) {
+                existingButtons[i].remove();
+            }
+        }
+    } else {
+        // Jika BUKAN Super Admin, hapus semua tombol yang ada
+        if (existingButtons.length > 0) {
+            existingButtons.forEach(btn => btn.remove());
+        }
+    }
+}
+
+/**
+ * Setup dengan interval yang aman (hanya 1 interval)
+ */
+function setupDeleteAllButtonManager() {
+    // Hentikan interval yang sudah ada
+    if (deleteAllButtonCheckInterval) {
+        clearInterval(deleteAllButtonCheckInterval);
+        deleteAllButtonCheckInterval = null;
+    }
+    
+    // Jalankan pengecekan pertama
+    ensureSingleDeleteAllButton();
+    
+    // Pengecekan setiap 5 detik (lebih jarang untuk mengurangi beban)
+    deleteAllButtonCheckInterval = setInterval(() => {
+        ensureSingleDeleteAllButton();
+    }, 5000);
+}
+
+/**
+ * Cleanup function untuk membersihkan semua resource
+ */
+function cleanupDeleteAllButton() {
+    if (deleteAllButtonCheckInterval) {
+        clearInterval(deleteAllButtonCheckInterval);
+        deleteAllButtonCheckInterval = null;
+    }
+    
+    const allButtons = document.querySelectorAll('#deleteAllBtn');
+    allButtons.forEach(btn => btn.remove());
+    
+    deleteAllButtonInitialized = false;
+}
+
+// HANYA PANGGIL SATU KALI saat DOM ready
+document.addEventListener('DOMContentLoaded', function() {
+    // ... kode yang sudah ada ...
+    
+    // Setup delete all button manager (hanya 1 kali)
+    if (!deleteAllButtonInitialized) {
+        deleteAllButtonInitialized = true;
+        
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                // Tunggu sebentar agar data siap
+                setTimeout(() => {
+                    setupDeleteAllButtonManager();
+                }, 2000);
+            } else {
+                // Cleanup jika user logout
+                cleanupDeleteAllButton();
+            }
+        });
+    }
+});
 </script>
 </body>
 </html>

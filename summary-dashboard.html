@@ -23,9 +23,84 @@
             --primary-gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
             --warning-gradient: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
             --info-gradient: linear-gradient(135deg, #4895ef 0%, #3f37c9 100%);
+            --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --bg-secondary: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-tertiary: #94a3b8;
+            --input-bg: #ffffff;
+            --table-header-bg: #f1f5f9;
+            --hover-color: #f8fafc;
+            --success: #10b981;
+            --info: #3b82f6;
+            --warning: #f59e0b;
+            --primary: #4361ee;
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --radius-full: 50%;
+            --text-xs: 12px;
+            --text-sm: 14px;
+            --text-md: 16px;
+            --text-lg: 18px;
+            --text-xl: 22px;
+            --font-medium: 500;
+            --font-semibold: 600;
+            --font-bold: 700;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-secondary: #0f172a;
+                --card-bg: #1e293b;
+                --border-color: #334155;
+                --text-primary: #f1f5f9;
+                --text-secondary: #94a3b8;
+                --text-tertiary: #64748b;
+                --input-bg: #334155;
+                --table-header-bg: #0f172a;
+                --hover-color: #334155;
+            }
+        }
+
+        body.light-mode {
+            --bg-secondary: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --input-bg: #ffffff;
+            --table-header-bg: #f1f5f9;
+            --hover-color: #f8fafc;
         }
 
         /* ========== PERBAIKAN UTAMA UNTUK LAYOUT ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
         .main-content {
             padding: var(--space-lg);
             background-color: var(--bg-secondary);
@@ -117,89 +192,29 @@
                 width: 100%;
             }
         }
-   .btn-export {
-        background: var(--success-gradient);
-        color: white;
-        border: none;
-        padding: var(--space-sm) var(--space-md);
-        border-radius: var(--radius-md);
-        font-size: var(--text-sm);
-        font-weight: var(--font-medium);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: var(--space-xs);
-        transition: all var(--transition-fast);
-        box-shadow: var(--shadow-sm);
-    }
-    
-    .btn-export:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
-        opacity: 0.9;
-    }
-    
-    .btn-export:active {
-        transform: translateY(0);
-    }
-    
-    /* Light mode specific styling untuk tombol export */
-    :root {
-        --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    }
-    
-    /* Fallback untuk memastikan tombol terlihat di semua mode */
-    .btn-export {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        color: #ffffff;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    /* Dark mode adjustment */
-    @media (prefers-color-scheme: dark) {
+
         .btn-export {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: #ffffff;
+            background: var(--success-gradient);
+            color: white;
+            border: none;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            transition: all var(--transition-fast);
+            box-shadow: var(--shadow-sm);
         }
-    }
-    
-    /* Light mode explicit styling */
-    body.light-mode .btn-export,
-    .light-mode .btn-export {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        color: #ffffff;
-        border: none;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    
-    body.light-mode .btn-export:hover,
-    .light-mode .btn-export:hover {
-        background: linear-gradient(135deg, #059669 0%, #047857 100%);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    }
-    
-    /* Memastikan icon terlihat */
-    .btn-export i {
-        color: #ffffff;
-        font-size: 1rem;
-    }
-    
-    /* Tombol lainnya yang mungkin terpengaruh */
-    .btn-primary {
-        background: var(--primary-gradient);
-        color: white;
-        border: none;
-    }
-    
-    .btn-outline {
-        background: transparent;
-        color: var(--text-primary);
-        border: 1px solid var(--border-color);
-    }
-    
-    .btn-outline:hover {
-        background: var(--hover-color);
-    }
+        
+        .btn-export:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            opacity: 0.9;
+        }
+        
         /* ========== PERBAIKAN STATISTIC CARDS ========== */
         .summary-stats {
             display: grid;
@@ -244,18 +259,6 @@
 
         .summary-stat-card.comparison::before {
             background: var(--warning-gradient);
-        }
-
-        .summary-stat-card.pending::before {
-            background: #f72585;
-        }
-
-        .summary-stat-card.solved::before {
-            background: #10b981;
-        }
-
-        .summary-stat-card.maintenance::before {
-            background: #4895ef;
         }
 
         .stat-header {
@@ -310,6 +313,10 @@
             color: var(--text-secondary);
         }
 
+        .positive {
+            color: var(--success);
+        }
+
         /* Tooltip */
         .info-tooltip {
             position: relative;
@@ -322,7 +329,7 @@
             visibility: hidden;
             width: 200px;
             background-color: var(--text-primary);
-            color: var(--bg-primary);
+            color: var(--bg-secondary);
             text-align: center;
             border-radius: var(--radius-md);
             padding: var(--space-sm);
@@ -411,7 +418,6 @@
             display: flex;
             flex-direction: column;
             gap: var(--space-xs);
-            min-height: 70px;
         }
 
         .filter-group label {
@@ -586,21 +592,6 @@
             background: transparent;
             color: var(--text-primary);
             border: 1px solid var(--border-color);
-        }
-
-        .btn-export {
-            background: var(--success-gradient);
-            color: white;
-            border: none;
-            padding: var(--space-sm) var(--space-md);
-            border-radius: var(--radius-md);
-            font-size: var(--text-sm);
-            font-weight: var(--font-medium);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: var(--space-xs);
-            transition: all var(--transition-fast);
         }
 
         .btn-icon {
@@ -863,7 +854,7 @@
 </head>
 <body>
     <div id="sidebar-container"></div>
-    <button class="menu-toggle">
+    <button class="menu-toggle" id="menuToggleBtn">
         <i class="fas fa-bars"></i>
     </button>
 
@@ -991,8 +982,8 @@
                     <option value="Solved" id="categorySolved">Solved Report</option>
                     <option value="Maintenance" id="categoryMaintenance">Pending Maintenance</option>
                     <option value="Maintenance Solved" id="categoryMaintenanceSolved">Solved Maintenance</option>
-                    <option value="Releases New Feature" id="categoryNewFeature">Releases New Feature</option>
-                    <option value="Releases New Game" id="categoryNewGame">Releases New Game</option>
+                    <option value="Event Provider" id="categoryNewFeature">Event Provider</option>
+                    <option value="Agent Ideas" id="categoryNewGame">Ide &amp; Saran Agent</option>
                     <option value="Report Autoqris PAVPG" id="categoryAutoqris">Report Autoqris PAVPG</option>
                 </select>
             </div>
@@ -1001,34 +992,6 @@
                 <label id="brandLabel">Brand</label>
                 <select class="filter-select" id="brandFilter">
                     <option value="all" id="brandAll">All Brands</option>
-                    <option value="CERIASLOT99 (D-GAMING)">CERIASLOT99 (D-GAMING)</option>
-                    <option value="RAJASCATTER88 (D-GAMING)">RAJASCATTER88 (D-GAMING)</option>
-                    <option value="MAHJONGJP88 (D-GAMING)">MAHJONGJP88 (D-GAMING)</option>
-                    <option value="NAGAHOKI88 (D-GAMING)">NAGAHOKI88 (D-GAMING)</option>
-                    <option value="SPACEMAN88 (D-GAMING)">SPACEMAN88 (D-GAMING)</option>
-                    <option value="RAJAPANEN (D-GAMING)">RAJAPANEN (D-GAMING)</option>
-                    <option value="BROTO88 (D-GAMING)">BROTO88 (D-GAMING)</option>
-                    <option value="WOY99 (D-GAMING)">WOY99 (D-GAMING)</option>
-                    <option value="MEDUSA88 (GACHA)">MEDUSA88 (GACHA)</option>
-                    <option value="ATHENA168 (GACHA)">ATHENA168 (GACHA)</option>
-                    <option value="ARES GACOR (GACHA)">ARES GACOR (GACHA)</option>
-                    <option value="RAJA MAHJONG (GACHA)">RAJA MAHJONG (GACHA)</option>
-                    <option value="OLYMPUS1000 (GACHA)">OLYMPUS1000 (GACHA)</option>
-                    <option value="CLICKBET (GACHA)">CBWL (GACHA)</option>
-                    <option value="RAJA COVID (GACHA)">RAJA COVID (GACHA)</option>
-                    <option value="BANG GACOR 88 (GACHA)">BANG GACOR 88 (GACHA)</option>
-                    <option value="HACKSAW88 (GACHA)">HACKSAW88 (GACHA)</option>
-                    <option value="GACHA99 (GACHA)">GACHA99 (GACHA)</option>
-                    <option value="RAJAOLYMPUS (GACHA)">RAJAOLYMPUS (GACHA)</option>
-                    <option value="UJANGBET (BREM)">UJANGBET (BREM)</option>
-                    <option value="EPISODEBET (BREM)">EPISODEBET (BREM)</option>
-                    <option value="FOKUSBET88 (89ENGINE)">FOKUSBET88 (89ENGINE)</option>
-                    <option value="RAJAKING88 (89ENGINE)">RAJAKING88 (89ENGINE)</option>
-                    <option value="RAJANAGA99 (89ENGINE)">RAJANAGA99 (89ENGINE)</option>
-                    <option value="KUDAHOKI88 (89ENGINE)">KUDAHOKI88 (89ENGINE)</option>
-                    <option value="MAPAN99 (89ENGINE)">MAPAN99 (89ENGINE)</option>
-                    <option value="RAJAMERAK (89ENGINE)">RAJAMERAK (89ENGINE)</option>
-                    <option value="JOIN999 (LUXION)">JOIN999 (LUXION)</option>
                 </select>
             </div>
 
@@ -1094,10 +1057,13 @@
                     <canvas id="categoryChart" class="chart-canvas"></canvas>
                 </div>
             </div>
-            
-            <div class="chart-card fade-in" style="animation-delay: 0.9s;">
+        </div>
+
+        <!-- Additional Chart for Brand -->
+        <div class="charts-container" id="brandChartContainer" style="display: none;">
+            <div class="chart-card fade-in">
                 <div class="chart-header">
-                    <h3 class="chart-title" id="brandChartTitle"><i class="fas fa-chart-horizontal"></i> Reports by Brand</h3>
+                    <h3 class="chart-title" id="brandChartTitle"><i class="fas fa-chart-horizontal"></i> Reports by Brand / Provider</h3>
                     <div class="chart-actions">
                         <button class="btn-icon" onclick="expandChart('brandChart')">
                             <i class="fas fa-expand"></i>
@@ -1108,32 +1074,36 @@
                     <canvas id="brandChart" class="chart-canvas"></canvas>
                 </div>
             </div>
-            
-            <div class="chart-card fade-in" style="animation-delay: 1.0s;">
+        </div>
+
+        <div class="charts-container" id="agentIdeasChartContainer" style="display: none;">
+            <div class="chart-card fade-in">
                 <div class="chart-header">
-                    <h3 class="chart-title" id="gameReleasesChartTitle"><i class="fas fa-gamepad"></i> New Game Releases</h3>
+                    <h3 class="chart-title" id="agentIdeasChartTitle"><i class="fas fa-lightbulb"></i> Agent Ideas</h3>
                     <div class="chart-actions">
-                        <button class="btn-icon" onclick="expandChart('gameReleasesChart')">
+                        <button class="btn-icon" onclick="expandChart('agentIdeasChart')">
                             <i class="fas fa-expand"></i>
                         </button>
                     </div>
                 </div>
                 <div class="chart-content">
-                    <canvas id="gameReleasesChart" class="chart-canvas"></canvas>
+                    <canvas id="agentIdeasChart" class="chart-canvas"></canvas>
                 </div>
             </div>
-            
-            <div class="chart-card fade-in" style="animation-delay: 1.1s;">
+        </div>
+
+        <div class="charts-container" id="eventProviderChartContainer" style="display: none;">
+            <div class="chart-card fade-in">
                 <div class="chart-header">
-                    <h3 class="chart-title" id="featureReleasesChartTitle"><i class="fas fa-star"></i> New Feature Releases</h3>
+                    <h3 class="chart-title" id="eventProviderChartTitle"><i class="fas fa-calendar-alt"></i> Event Provider</h3>
                     <div class="chart-actions">
-                        <button class="btn-icon" onclick="expandChart('featureReleasesChart')">
+                        <button class="btn-icon" onclick="expandChart('eventProviderChart')">
                             <i class="fas fa-expand"></i>
                         </button>
                     </div>
                 </div>
                 <div class="chart-content">
-                    <canvas id="featureReleasesChart" class="chart-canvas"></canvas>
+                    <canvas id="eventProviderChart" class="chart-canvas"></canvas>
                 </div>
             </div>
         </div>
@@ -1195,691 +1165,186 @@
     <script src="user-profile.js"></script>
 
     <script>
-    // ========== TRANSLATIONS FOR SUMMARY DASHBOARD ==========
     const summaryTranslations = {
         id: {
-            // Page Title
-            "pageTitle": "Dashboard Overview",
-            "userRole": "Dashboard Overview",
-            
-            // Search
-            "searchPlaceholder": "Cari...",
-            
-            // Stat Cards
-            "weeklyPerfTitle": "Kinerja Mingguan",
-            "weeklyPerfTooltip": "Persentase laporan yang diselesaikan dalam 7 hari terakhir",
-            "fromLastWeek": "dari minggu lalu",
-            "resolutionTitle": "Tren Resolusi",
-            "resolutionTooltip": "Tingkat resolusi keseluruhan (laporan terselesaikan / total laporan)",
-            "improvementText": "peningkatan",
-            "topBrandTitle": "Brand Teratas berdasarkan Laporan",
-            "topBrandTooltip": "Brand dengan jumlah laporan terbanyak",
-            "reportsThisMonth": "laporan bulan ini",
-            
-            // Additional Stats Labels
-            "totalReportsLabel": "Total Laporan",
-            "solvedReportsLabel": "Laporan Selesai",
-            "pendingReportsLabel": "Laporan Tertunda",
-            "maintenanceReportsLabel": "Laporan Maintenance",
-            "solvedMaintenanceLabel": "Maintenance Selesai",
-            "newGameReleasesLabel": "Rilis Game Baru",
-            "newFeatureReleasesLabel": "Rilis Fitur Baru",
-            
-            // Filter Labels
-            "categoryLabel": "Kategori",
-            "brandLabel": "Brand",
-            "dateRangeLabel": "Rentang Tanggal",
-            "dateToText": "sampai",
-            "applyFiltersText": "Terapkan Filter",
-            "resetFiltersText": "Reset",
-            
-            // Category Options
-            "categoryAll": "Semua Kategori",
-            "categoryPending": "Laporan Tertunda",
-            "categorySolved": "Laporan Selesai",
-            "categoryMaintenance": "Maintenance Tertunda",
-            "categoryMaintenanceSolved": "Maintenance Selesai",
-            "categoryNewFeature": "Rilis Fitur Baru",
-            "categoryNewGame": "Rilis Game Baru",
-            "categoryAutoqris": "Laporan Autoqris PAVPG",
-            
-            "brandAll": "Semua Brand",
-            
-            // Chart Titles
-            "statusChartTitle": "Laporan berdasarkan Status",
-            "trendChartTitle": "Tren Resolusi Mingguan",
-            "categoryChartTitle": "Laporan berdasarkan Kategori",
-            "brandChartTitle": "Laporan berdasarkan Brand",
-            "gameReleasesChartTitle": "Rilis Game Baru",
-            "featureReleasesChartTitle": "Rilis Fitur Baru",
-            
-            // Table Headers
-            "allReportsTitle": "Semua Laporan",
-            "exportDataText": "Ekspor Data",
-            "thDate": "Tanggal",
-            "thReportId": "ID Laporan",
-            "thCategory": "Kategori",
-            "thStatus": "Status",
-            "thBrand": "Brand",
-            "thResolutionTime": "Waktu Resolusi",
-            "thActions": "Aksi",
-            
-            // Empty State
-            "noReportsTitle": "Tidak Ada Laporan",
-            "noReportsMessage": "Tidak ada laporan yang sesuai dengan filter Anda.",
-            
-            // Pagination
-            "prevText": "Sebelumnya",
-            "nextText": "Selanjutnya",
-            
-            // Toast Messages
-            "dataLoaded": "Data berhasil dimuat",
-            "dataError": "Gagal memuat data",
-            "filtersReset": "Filter direset",
-            "exportSuccess": "Data berhasil diekspor!",
-            "exportFailed": "Gagal mengekspor data",
-            "refreshSuccess": "Data dashboard diperbarui!",
-            "noDataExport": "Tidak ada data untuk diekspor",
-            
-            // Chart Labels
-            "solvedStatus": "Selesai",
-            "pendingStatus": "Tertunda",
-            "maintenanceStatus": "Maintenance",
-            "maintenanceSolvedStatus": "Maintenance Selesai",
-            "releasedStatus": "Rilis",
-            "solvedDataset": "Selesai",
-            "pendingDataset": "Tertunda",
-            "reportsByCategory": "Laporan berdasarkan Kategori",
-            "reportsByBrand": "Laporan berdasarkan Brand",
-            "numberOfReports": "Jumlah Laporan",
-            "numberOfReleases": "Jumlah Rilis",
-            "newGameReleasesDataset": "Rilis Game Baru",
-            "newFeatureReleasesDataset": "Rilis Fitur Baru"
+            pageTitle: "Dashboard Overview",
+            userRole: "Dashboard Overview",
+            searchPlaceholder: "Cari...",
+            weeklyPerfTitle: "Kinerja Mingguan",
+            weeklyPerfTooltip: "Persentase laporan report yang diselesaikan dalam 7 hari terakhir",
+            fromLastWeek: "dari minggu lalu",
+            resolutionTitle: "Tren Resolusi",
+            resolutionTooltip: "Tingkat resolusi keseluruhan (laporan terselesaikan / total laporan report)",
+            improvementText: "peningkatan",
+            topBrandTitle: "Brand Teratas berdasarkan Laporan",
+            topBrandTooltip: "Brand dengan jumlah laporan terbanyak",
+            reportsThisMonth: "laporan bulan ini",
+            totalReportsLabel: "Total Laporan",
+            solvedReportsLabel: "Laporan Selesai",
+            pendingReportsLabel: "Laporan Tertunda",
+            maintenanceReportsLabel: "Laporan Maintenance",
+            solvedMaintenanceLabel: "Maintenance Selesai",
+            newGameReleasesLabel: "Ide & Saran Agent",
+            newFeatureReleasesLabel: "Event Provider",
+            categoryLabel: "Kategori",
+            brandLabel: "Brand / Provider",
+            dateRangeLabel: "Rentang Tanggal",
+            dateToText: "sampai",
+            applyFiltersText: "Terapkan Filter",
+            resetFiltersText: "Reset",
+            categoryAll: "Semua Kategori",
+            categoryPending: "Laporan Tertunda",
+            categorySolved: "Laporan Selesai",
+            categoryMaintenance: "Maintenance Tertunda",
+            categoryMaintenanceSolved: "Maintenance Selesai",
+            categoryNewFeature: "Event Provider",
+            categoryNewGame: "Ide & Saran Agent",
+            categoryAutoqris: "Laporan Autoqris PAVPG",
+            brandAll: "Semua Brand / Provider",
+            statusChartTitle: "Laporan berdasarkan Status",
+            trendChartTitle: "Tren Resolusi Mingguan",
+            categoryChartTitle: "Laporan berdasarkan Kategori",
+            brandChartTitle: "Laporan berdasarkan Brand / Provider",
+            gameReleasesChartTitle: "Ide & Saran Agent",
+            featureReleasesChartTitle: "Event Provider",
+            allReportsTitle: "Semua Laporan",
+            exportDataText: "Ekspor Data",
+            thDate: "Tanggal",
+            thReportId: "ID Laporan",
+            thCategory: "Kategori",
+            thStatus: "Status",
+            thBrand: "Brand / Provider",
+            thResolutionTime: "Waktu Resolusi",
+            thActions: "Aksi",
+            noReportsTitle: "Tidak Ada Laporan",
+            noReportsMessage: "Tidak ada data yang sesuai dengan filter Anda.",
+            prevText: "Sebelumnya",
+            nextText: "Selanjutnya",
+            dataLoaded: "Data berhasil dimuat",
+            dataError: "Gagal memuat data",
+            filtersReset: "Filter direset",
+            exportSuccess: "Data berhasil diekspor!",
+            exportFailed: "Gagal mengekspor data",
+            refreshSuccess: "Data dashboard diperbarui!",
+            noDataExport: "Tidak ada data untuk diekspor",
+            solvedStatus: "Selesai",
+            pendingStatus: "Tertunda",
+            maintenanceStatus: "Maintenance",
+            maintenanceSolvedStatus: "Maintenance Selesai",
+            releasedStatus: "Sumber Tambahan",
+            solvedDataset: "Selesai",
+            pendingDataset: "Tertunda",
+            reportsByCategory: "Laporan berdasarkan Kategori",
+            reportsByBrand: "Laporan berdasarkan Brand / Provider",
+            numberOfReports: "Jumlah Laporan",
+            numberOfReleases: "Jumlah Data",
+            newGameReleasesDataset: "Ide & Saran Agent",
+            newFeatureReleasesDataset: "Event Provider"
         },
         en: {
-            // Page Title
-            "pageTitle": "Dashboard Overview",
-            "userRole": "Dashboard Overview",
-            
-            // Search
-            "searchPlaceholder": "Search...",
-            
-            // Stat Cards
-            "weeklyPerfTitle": "Weekly Performance",
-            "weeklyPerfTooltip": "Percentage of reports resolved in the last 7 days",
-            "fromLastWeek": "from last week",
-            "resolutionTitle": "Resolution Trend",
-            "resolutionTooltip": "Overall resolution rate (resolved reports / total reports)",
-            "improvementText": "improvement",
-            "topBrandTitle": "Top Brand by Reports",
-            "topBrandTooltip": "Brand with the most reports",
-            "reportsThisMonth": "reports this month",
-            
-            // Additional Stats Labels
-            "totalReportsLabel": "Total Reports",
-            "solvedReportsLabel": "Solved Reports",
-            "pendingReportsLabel": "Pending Reports",
-            "maintenanceReportsLabel": "Maintenance Reports",
-            "solvedMaintenanceLabel": "Solved Maintenance",
-            "newGameReleasesLabel": "New Game Releases",
-            "newFeatureReleasesLabel": "New Feature Releases",
-            
-            // Filter Labels
-            "categoryLabel": "Category",
-            "brandLabel": "Brand",
-            "dateRangeLabel": "Date Range",
-            "dateToText": "to",
-            "applyFiltersText": "Apply Filters",
-            "resetFiltersText": "Reset",
-            
-            // Category Options
-            "categoryAll": "All Categories",
-            "categoryPending": "Pending Report",
-            "categorySolved": "Solved Report",
-            "categoryMaintenance": "Pending Maintenance",
-            "categoryMaintenanceSolved": "Solved Maintenance",
-            "categoryNewFeature": "Releases New Feature",
-            "categoryNewGame": "Releases New Game",
-            "categoryAutoqris": "Report Autoqris PAVPG",
-            
-            "brandAll": "All Brands",
-            
-            // Chart Titles
-            "statusChartTitle": "Reports by Status",
-            "trendChartTitle": "Weekly Resolution Trend",
-            "categoryChartTitle": "Reports by Category",
-            "brandChartTitle": "Reports by Brand",
-            "gameReleasesChartTitle": "New Game Releases",
-            "featureReleasesChartTitle": "New Feature Releases",
-            
-            // Table Headers
-            "allReportsTitle": "All Reports",
-            "exportDataText": "Export Data",
-            "thDate": "Date",
-            "thReportId": "Report ID",
-            "thCategory": "Category",
-            "thStatus": "Status",
-            "thBrand": "Brand",
-            "thResolutionTime": "Resolution Time",
-            "thActions": "Actions",
-            
-            // Empty State
-            "noReportsTitle": "No Reports Found",
-            "noReportsMessage": "No reports match your current filters.",
-            
-            // Pagination
-            "prevText": "Previous",
-            "nextText": "Next",
-            
-            // Toast Messages
-            "dataLoaded": "Data loaded successfully",
-            "dataError": "Failed to load data",
-            "filtersReset": "Filters reset",
-            "exportSuccess": "Data exported successfully!",
-            "exportFailed": "Failed to export data",
-            "refreshSuccess": "Dashboard data updated!",
-            "noDataExport": "No data to export",
-            
-            // Chart Labels
-            "solvedStatus": "Solved",
-            "pendingStatus": "Pending",
-            "maintenanceStatus": "Maintenance",
-            "maintenanceSolvedStatus": "Maintenance Solved",
-            "releasedStatus": "Released",
-            "solvedDataset": "Solved",
-            "pendingDataset": "Pending",
-            "reportsByCategory": "Reports by Category",
-            "reportsByBrand": "Reports by Brand",
-            "numberOfReports": "Number of Reports",
-            "numberOfReleases": "Number of Releases",
-            "newGameReleasesDataset": "New Game Releases",
-            "newFeatureReleasesDataset": "New Feature Releases"
-        },
-        ja: {
-            // Page Title
-            "pageTitle": "ダッシュボード概要",
-            "userRole": "ダッシュボード概要",
-            
-            // Search
-            "searchPlaceholder": "検索...",
-            
-            // Stat Cards
-            "weeklyPerfTitle": "週次パフォーマンス",
-            "weeklyPerfTooltip": "過去7日間に解決されたレポートの割合",
-            "fromLastWeek": "前週比",
-            "resolutionTitle": "解決トレンド",
-            "resolutionTooltip": "全体の解決率（解決済みレポート / 総レポート数）",
-            "improvementText": "改善",
-            "topBrandTitle": "レポート最多ブランド",
-            "topBrandTooltip": "最も多くのレポートがあるブランド",
-            "reportsThisMonth": "今月のレポート",
-            
-            // Additional Stats Labels
-            "totalReportsLabel": "総レポート数",
-            "solvedReportsLabel": "解決済みレポート",
-            "pendingReportsLabel": "保留中レポート",
-            "maintenanceReportsLabel": "メンテナンスレポート",
-            "solvedMaintenanceLabel": "完了メンテナンス",
-            "newGameReleasesLabel": "新ゲームリリース",
-            "newFeatureReleasesLabel": "新機能リリース",
-            
-            // Filter Labels
-            "categoryLabel": "カテゴリー",
-            "brandLabel": "ブランド",
-            "dateRangeLabel": "日付範囲",
-            "dateToText": "から",
-            "applyFiltersText": "フィルター適用",
-            "resetFiltersText": "リセット",
-            
-            // Category Options
-            "categoryAll": "すべてのカテゴリー",
-            "categoryPending": "保留中レポート",
-            "categorySolved": "解決済みレポート",
-            "categoryMaintenance": "保留中メンテナンス",
-            "categoryMaintenanceSolved": "完了メンテナンス",
-            "categoryNewFeature": "新機能リリース",
-            "categoryNewGame": "新ゲームリリース",
-            "categoryAutoqris": "Autoqris PAVPGレポート",
-            
-            "brandAll": "すべてのブランド",
-            
-            // Chart Titles
-            "statusChartTitle": "ステータス別レポート",
-            "trendChartTitle": "週次解決トレンド",
-            "categoryChartTitle": "カテゴリー別レポート",
-            "brandChartTitle": "ブランド別レポート",
-            "gameReleasesChartTitle": "新ゲームリリース",
-            "featureReleasesChartTitle": "新機能リリース",
-            
-            // Table Headers
-            "allReportsTitle": "全レポート",
-            "exportDataText": "データエクスポート",
-            "thDate": "日付",
-            "thReportId": "レポートID",
-            "thCategory": "カテゴリー",
-            "thStatus": "ステータス",
-            "thBrand": "ブランド",
-            "thResolutionTime": "解決時間",
-            "thActions": "アクション",
-            
-            // Empty State
-            "noReportsTitle": "レポートが見つかりません",
-            "noReportsMessage": "現在のフィルターに一致するレポートはありません。",
-            
-            // Pagination
-            "prevText": "前へ",
-            "nextText": "次へ",
-            
-            // Toast Messages
-            "dataLoaded": "データを読み込みました",
-            "dataError": "データの読み込みに失敗しました",
-            "filtersReset": "フィルターをリセットしました",
-            "exportSuccess": "データをエクスポートしました！",
-            "exportFailed": "データのエクスポートに失敗しました",
-            "refreshSuccess": "ダッシュボードデータを更新しました！",
-            "noDataExport": "エクスポートするデータがありません",
-            
-            // Chart Labels
-            "solvedStatus": "解決済み",
-            "pendingStatus": "保留中",
-            "maintenanceStatus": "メンテナンス",
-            "maintenanceSolvedStatus": "メンテナンス完了",
-            "releasedStatus": "リリース済み",
-            "solvedDataset": "解決済み",
-            "pendingDataset": "保留中",
-            "reportsByCategory": "カテゴリー別レポート",
-            "reportsByBrand": "ブランド別レポート",
-            "numberOfReports": "レポート数",
-            "numberOfReleases": "リリース数",
-            "newGameReleasesDataset": "新ゲームリリース",
-            "newFeatureReleasesDataset": "新機能リリース"
-        },
-        zh: {
-            // Page Title
-            "pageTitle": "仪表板概览",
-            "userRole": "仪表板概览",
-            
-            // Search
-            "searchPlaceholder": "搜索...",
-            
-            // Stat Cards
-            "weeklyPerfTitle": "每周绩效",
-            "weeklyPerfTooltip": "过去7天内解决的报告百分比",
-            "fromLastWeek": "较上周",
-            "resolutionTitle": "解决趋势",
-            "resolutionTooltip": "整体解决率（已解决报告/总报告）",
-            "improvementText": "改善",
-            "topBrandTitle": "报告最多的品牌",
-            "topBrandTooltip": "报告数量最多的品牌",
-            "reportsThisMonth": "本月报告",
-            
-            // Additional Stats Labels
-            "totalReportsLabel": "总报告数",
-            "solvedReportsLabel": "已解决报告",
-            "pendingReportsLabel": "待处理报告",
-            "maintenanceReportsLabel": "维护报告",
-            "solvedMaintenanceLabel": "已完成维护",
-            "newGameReleasesLabel": "新游戏发布",
-            "newFeatureReleasesLabel": "新功能发布",
-            
-            // Filter Labels
-            "categoryLabel": "类别",
-            "brandLabel": "品牌",
-            "dateRangeLabel": "日期范围",
-            "dateToText": "至",
-            "applyFiltersText": "应用筛选",
-            "resetFiltersText": "重置",
-            
-            // Category Options
-            "categoryAll": "所有类别",
-            "categoryPending": "待处理报告",
-            "categorySolved": "已解决报告",
-            "categoryMaintenance": "待处理维护",
-            "categoryMaintenanceSolved": "已完成维护",
-            "categoryNewFeature": "新功能发布",
-            "categoryNewGame": "新游戏发布",
-            "categoryAutoqris": "Autoqris PAVPG报告",
-            
-            "brandAll": "所有品牌",
-            
-            // Chart Titles
-            "statusChartTitle": "按状态分类的报告",
-            "trendChartTitle": "每周解决趋势",
-            "categoryChartTitle": "按类别分类的报告",
-            "brandChartTitle": "按品牌分类的报告",
-            "gameReleasesChartTitle": "新游戏发布",
-            "featureReleasesChartTitle": "新功能发布",
-            
-            // Table Headers
-            "allReportsTitle": "所有报告",
-            "exportDataText": "导出数据",
-            "thDate": "日期",
-            "thReportId": "报告ID",
-            "thCategory": "类别",
-            "thStatus": "状态",
-            "thBrand": "品牌",
-            "thResolutionTime": "解决时间",
-            "thActions": "操作",
-            
-            // Empty State
-            "noReportsTitle": "未找到报告",
-            "noReportsMessage": "没有符合当前筛选条件的报告。",
-            
-            // Pagination
-            "prevText": "上一页",
-            "nextText": "下一页",
-            
-            // Toast Messages
-            "dataLoaded": "数据加载成功",
-            "dataError": "数据加载失败",
-            "filtersReset": "筛选已重置",
-            "exportSuccess": "数据导出成功！",
-            "exportFailed": "数据导出失败",
-            "refreshSuccess": "仪表板数据已更新！",
-            "noDataExport": "没有数据可导出",
-            
-            // Chart Labels
-            "solvedStatus": "已解决",
-            "pendingStatus": "待处理",
-            "maintenanceStatus": "维护中",
-            "maintenanceSolvedStatus": "维护完成",
-            "releasedStatus": "已发布",
-            "solvedDataset": "已解决",
-            "pendingDataset": "待处理",
-            "reportsByCategory": "按类别分类的报告",
-            "reportsByBrand": "按品牌分类的报告",
-            "numberOfReports": "报告数量",
-            "numberOfReleases": "发布数量",
-            "newGameReleasesDataset": "新游戏发布",
-            "newFeatureReleasesDataset": "新功能发布"
+            pageTitle: "Dashboard Overview",
+            userRole: "Dashboard Overview",
+            searchPlaceholder: "Search...",
+            weeklyPerfTitle: "Weekly Performance",
+            weeklyPerfTooltip: "Percentage of report items resolved in the last 7 days",
+            fromLastWeek: "from last week",
+            resolutionTitle: "Resolution Trend",
+            resolutionTooltip: "Overall resolution rate for report items",
+            improvementText: "improvement",
+            topBrandTitle: "Top Brand by Reports",
+            topBrandTooltip: "Brand or provider with the most entries",
+            reportsThisMonth: "reports this month",
+            totalReportsLabel: "Total Reports",
+            solvedReportsLabel: "Solved Reports",
+            pendingReportsLabel: "Pending Reports",
+            maintenanceReportsLabel: "Maintenance Reports",
+            solvedMaintenanceLabel: "Solved Maintenance",
+            newGameReleasesLabel: "Agent Ideas",
+            newFeatureReleasesLabel: "Event Provider",
+            categoryLabel: "Category",
+            brandLabel: "Brand / Provider",
+            dateRangeLabel: "Date Range",
+            dateToText: "to",
+            applyFiltersText: "Apply Filters",
+            resetFiltersText: "Reset",
+            categoryAll: "All Categories",
+            categoryPending: "Pending Report",
+            categorySolved: "Solved Report",
+            categoryMaintenance: "Pending Maintenance",
+            categoryMaintenanceSolved: "Solved Maintenance",
+            categoryNewFeature: "Event Provider",
+            categoryNewGame: "Agent Ideas",
+            categoryAutoqris: "Report Autoqris PAVPG",
+            brandAll: "All Brands / Providers",
+            statusChartTitle: "Reports by Status",
+            trendChartTitle: "Weekly Resolution Trend",
+            categoryChartTitle: "Reports by Category",
+            brandChartTitle: "Reports by Brand / Provider",
+            gameReleasesChartTitle: "Agent Ideas",
+            featureReleasesChartTitle: "Event Provider",
+            allReportsTitle: "All Reports",
+            exportDataText: "Export Data",
+            thDate: "Date",
+            thReportId: "Report ID",
+            thCategory: "Category",
+            thStatus: "Status",
+            thBrand: "Brand / Provider",
+            thResolutionTime: "Resolution Time",
+            thActions: "Actions",
+            noReportsTitle: "No Reports Found",
+            noReportsMessage: "No data matches your current filters.",
+            prevText: "Previous",
+            nextText: "Next",
+            dataLoaded: "Data loaded successfully",
+            dataError: "Failed to load data",
+            filtersReset: "Filters reset",
+            exportSuccess: "Data exported successfully!",
+            exportFailed: "Failed to export data",
+            refreshSuccess: "Dashboard data updated!",
+            noDataExport: "No data to export",
+            solvedStatus: "Solved",
+            pendingStatus: "Pending",
+            maintenanceStatus: "Maintenance",
+            maintenanceSolvedStatus: "Maintenance Solved",
+            releasedStatus: "Additional Sources",
+            solvedDataset: "Solved",
+            pendingDataset: "Pending",
+            reportsByCategory: "Reports by Category",
+            reportsByBrand: "Reports by Brand / Provider",
+            numberOfReports: "Number of Reports",
+            numberOfReleases: "Number of Items",
+            newGameReleasesDataset: "Agent Ideas",
+            newFeatureReleasesDataset: "Event Provider"
         }
     };
 
-    // ========== TRANSLATION FUNCTIONS ==========
     let currentLanguage = 'id';
+    let currentUser = null;
+    let allReportsData = [];
+    let filteredReportsData = [];
+    let currentPage = 1;
+    const itemsPerPage = 10;
+    let totalPages = 1;
+    let currentSearchTerm = '';
+    const DASHBOARD_FETCH_LIMIT = 100;
+    const EXTRA_FETCH_LIMIT = 100;
 
-    function applySummaryTranslations(language) {
-        const lang = summaryTranslations[language] || summaryTranslations['id'];
-        currentLanguage = language;
-        
-        if (!lang) return;
-        
-        console.log("Applying summary dashboard translations for:", language);
-        
-        // Page Title
-        document.title = lang.pageTitle + " - CSS Admin Dashboard";
-        const pageTitleSpan = document.getElementById('pageTitle');
-        if (pageTitleSpan) pageTitleSpan.textContent = lang.pageTitle;
-        
-        const userRoleSpan = document.getElementById('userRole');
-        if (userRoleSpan) userRoleSpan.textContent = lang.userRole;
-        
-        // Search placeholder
-        const searchInput = document.getElementById('summarySearch');
-        if (searchInput) searchInput.placeholder = lang.searchPlaceholder;
-        
-        // Stat Cards
-        const weeklyPerfTitle = document.getElementById('weeklyPerfTitle');
-        if (weeklyPerfTitle) {
-            const titleSpan = weeklyPerfTitle.childNodes[0];
-            if (titleSpan && titleSpan.nodeType === Node.TEXT_NODE) {
-                titleSpan.textContent = lang.weeklyPerfTitle;
-            } else {
-                weeklyPerfTitle.childNodes[0]?.replaceWith?.(lang.weeklyPerfTitle);
-            }
-        }
-        
-        const weeklyPerfTooltip = document.getElementById('weeklyPerfTooltip');
-        if (weeklyPerfTooltip) weeklyPerfTooltip.textContent = lang.weeklyPerfTooltip;
-        
-        const fromLastWeekSpan = document.getElementById('fromLastWeek');
-        if (fromLastWeekSpan) fromLastWeekSpan.textContent = lang.fromLastWeek;
-        
-        const resolutionTitle = document.getElementById('resolutionTitle');
-        if (resolutionTitle) {
-            const titleSpan = resolutionTitle.childNodes[0];
-            if (titleSpan && titleSpan.nodeType === Node.TEXT_NODE) {
-                titleSpan.textContent = lang.resolutionTitle;
-            }
-        }
-        
-        const resolutionTooltip = document.getElementById('resolutionTooltip');
-        if (resolutionTooltip) resolutionTooltip.textContent = lang.resolutionTooltip;
-        
-        const improvementText = document.getElementById('improvementText');
-        if (improvementText) improvementText.textContent = lang.improvementText;
-        
-        const topBrandTitle = document.getElementById('topBrandTitle');
-        if (topBrandTitle) {
-            const titleSpan = topBrandTitle.childNodes[0];
-            if (titleSpan && titleSpan.nodeType === Node.TEXT_NODE) {
-                titleSpan.textContent = lang.topBrandTitle;
-            }
-        }
-        
-        const topBrandTooltip = document.getElementById('topBrandTooltip');
-        if (topBrandTooltip) topBrandTooltip.textContent = lang.topBrandTooltip;
-        
-        const reportsThisMonth = document.getElementById('reportsThisMonth');
-        if (reportsThisMonth) reportsThisMonth.textContent = lang.reportsThisMonth;
-        
-        // Additional Stats Labels
-        const totalReportsLabel = document.getElementById('totalReportsLabel');
-        if (totalReportsLabel) totalReportsLabel.textContent = lang.totalReportsLabel;
-        
-        const solvedReportsLabel = document.getElementById('solvedReportsLabel');
-        if (solvedReportsLabel) solvedReportsLabel.textContent = lang.solvedReportsLabel;
-        
-        const pendingReportsLabel = document.getElementById('pendingReportsLabel');
-        if (pendingReportsLabel) pendingReportsLabel.textContent = lang.pendingReportsLabel;
-        
-        const maintenanceReportsLabel = document.getElementById('maintenanceReportsLabel');
-        if (maintenanceReportsLabel) maintenanceReportsLabel.textContent = lang.maintenanceReportsLabel;
-        
-        const solvedMaintenanceLabel = document.getElementById('solvedMaintenanceLabel');
-        if (solvedMaintenanceLabel) solvedMaintenanceLabel.textContent = lang.solvedMaintenanceLabel;
-        
-        const newGameReleasesLabel = document.getElementById('newGameReleasesLabel');
-        if (newGameReleasesLabel) newGameReleasesLabel.textContent = lang.newGameReleasesLabel;
-        
-        const newFeatureReleasesLabel = document.getElementById('newFeatureReleasesLabel');
-        if (newFeatureReleasesLabel) newFeatureReleasesLabel.textContent = lang.newFeatureReleasesLabel;
-        
-        // Filter Labels
-        const categoryLabel = document.getElementById('categoryLabel');
-        if (categoryLabel) categoryLabel.textContent = lang.categoryLabel;
-        
-        const brandLabel = document.getElementById('brandLabel');
-        if (brandLabel) brandLabel.textContent = lang.brandLabel;
-        
-        const dateRangeLabel = document.getElementById('dateRangeLabel');
-        if (dateRangeLabel) dateRangeLabel.textContent = lang.dateRangeLabel;
-        
-        const dateToText = document.getElementById('dateToText');
-        if (dateToText) dateToText.textContent = lang.dateToText;
-        
-        const applyFiltersText = document.getElementById('applyFiltersText');
-        if (applyFiltersText) applyFiltersText.textContent = lang.applyFiltersText;
-        
-        const resetFiltersText = document.getElementById('resetFiltersText');
-        if (resetFiltersText) resetFiltersText.textContent = lang.resetFiltersText;
-        
-        // Category Options
-        const categoryAll = document.getElementById('categoryAll');
-        if (categoryAll) categoryAll.textContent = lang.categoryAll;
-        
-        const categoryPending = document.getElementById('categoryPending');
-        if (categoryPending) categoryPending.textContent = lang.categoryPending;
-        
-        const categorySolved = document.getElementById('categorySolved');
-        if (categorySolved) categorySolved.textContent = lang.categorySolved;
-        
-        const categoryMaintenance = document.getElementById('categoryMaintenance');
-        if (categoryMaintenance) categoryMaintenance.textContent = lang.categoryMaintenance;
-        
-        const categoryMaintenanceSolved = document.getElementById('categoryMaintenanceSolved');
-        if (categoryMaintenanceSolved) categoryMaintenanceSolved.textContent = lang.categoryMaintenanceSolved;
-        
-        const categoryNewFeature = document.getElementById('categoryNewFeature');
-        if (categoryNewFeature) categoryNewFeature.textContent = lang.categoryNewFeature;
-        
-        const categoryNewGame = document.getElementById('categoryNewGame');
-        if (categoryNewGame) categoryNewGame.textContent = lang.categoryNewGame;
-        
-        const categoryAutoqris = document.getElementById('categoryAutoqris');
-        if (categoryAutoqris) categoryAutoqris.textContent = lang.categoryAutoqris;
-        
-        const brandAll = document.getElementById('brandAll');
-        if (brandAll) brandAll.textContent = lang.brandAll;
-        
-        // Chart Titles
-        const statusChartTitle = document.getElementById('statusChartTitle');
-        if (statusChartTitle) statusChartTitle.innerHTML = `<i class="fas fa-chart-pie"></i> ${lang.statusChartTitle}`;
-        
-        const trendChartTitle = document.getElementById('trendChartTitle');
-        if (trendChartTitle) trendChartTitle.innerHTML = `<i class="fas fa-chart-line"></i> ${lang.trendChartTitle}`;
-        
-        const categoryChartTitle = document.getElementById('categoryChartTitle');
-        if (categoryChartTitle) categoryChartTitle.innerHTML = `<i class="fas fa-chart-bar"></i> ${lang.categoryChartTitle}`;
-        
-        const brandChartTitle = document.getElementById('brandChartTitle');
-        if (brandChartTitle) brandChartTitle.innerHTML = `<i class="fas fa-chart-horizontal"></i> ${lang.brandChartTitle}`;
-        
-        const gameReleasesChartTitle = document.getElementById('gameReleasesChartTitle');
-        if (gameReleasesChartTitle) gameReleasesChartTitle.innerHTML = `<i class="fas fa-gamepad"></i> ${lang.gameReleasesChartTitle}`;
-        
-        const featureReleasesChartTitle = document.getElementById('featureReleasesChartTitle');
-        if (featureReleasesChartTitle) featureReleasesChartTitle.innerHTML = `<i class="fas fa-star"></i> ${lang.featureReleasesChartTitle}`;
-        
-        // Table Headers
-        const allReportsTitle = document.getElementById('allReportsTitle');
-        if (allReportsTitle) allReportsTitle.innerHTML = `<i class="fas fa-table"></i> ${lang.allReportsTitle} <span class="badge" id="totalReportsCount">0</span>`;
-        
-        const exportDataText = document.getElementById('exportDataText');
-        if (exportDataText) exportDataText.textContent = lang.exportDataText;
-        
-        const thDate = document.getElementById('thDate');
-        if (thDate) thDate.textContent = lang.thDate;
-        
-        const thReportId = document.getElementById('thReportId');
-        if (thReportId) thReportId.textContent = lang.thReportId;
-        
-        const thCategory = document.getElementById('thCategory');
-        if (thCategory) thCategory.textContent = lang.thCategory;
-        
-        const thStatus = document.getElementById('thStatus');
-        if (thStatus) thStatus.textContent = lang.thStatus;
-        
-        const thBrand = document.getElementById('thBrand');
-        if (thBrand) thBrand.textContent = lang.thBrand;
-        
-        const thResolutionTime = document.getElementById('thResolutionTime');
-        if (thResolutionTime) thResolutionTime.textContent = lang.thResolutionTime;
-        
-        const thActions = document.getElementById('thActions');
-        if (thActions) thActions.textContent = lang.thActions;
-        
-        // Empty State
-        const noReportsTitle = document.getElementById('noReportsTitle');
-        if (noReportsTitle) noReportsTitle.textContent = lang.noReportsTitle;
-        
-        const noReportsMessage = document.getElementById('noReportsMessage');
-        if (noReportsMessage) noReportsMessage.textContent = lang.noReportsMessage;
-        
-        // Pagination
-        const prevText = document.getElementById('prevText');
-        if (prevText) prevText.textContent = lang.prevText;
-        
-        const nextText = document.getElementById('nextText');
-        if (nextText) nextText.textContent = lang.nextText;
-        
-        // Store translations for toast messages
-        window.summaryToastMessages = {
-            dataLoaded: lang.dataLoaded,
-            dataError: lang.dataError,
-            filtersReset: lang.filtersReset,
-            exportSuccess: lang.exportSuccess,
-            exportFailed: lang.exportFailed,
-            refreshSuccess: lang.refreshSuccess,
-            noDataExport: lang.noDataExport
-        };
-        
-        // Refresh charts to update labels
-        refreshAllChartsLabels(lang);
-    }
-    
-    function refreshAllChartsLabels(lang) {
-        // Update chart datasets labels if charts exist
-        if (statusChartInstance && statusChartInstance.data) {
-            statusChartInstance.data.labels = [
-                lang.solvedStatus, 
-                lang.pendingStatus, 
-                lang.maintenanceStatus, 
-                lang.maintenanceSolvedStatus, 
-                lang.releasedStatus
-            ];
-            statusChartInstance.update();
-        }
-        
-        if (trendChartInstance && trendChartInstance.data) {
-            trendChartInstance.data.datasets[0].label = lang.solvedDataset;
-            trendChartInstance.data.datasets[1].label = lang.pendingDataset;
-            trendChartInstance.update();
-        }
-        
-        if (categoryChartInstance && categoryChartInstance.data) {
-            categoryChartInstance.data.datasets[0].label = lang.reportsByCategory;
-            categoryChartInstance.update();
-        }
-        
-        if (brandChartInstance && brandChartInstance.data) {
-            brandChartInstance.data.datasets[0].label = lang.reportsByBrand;
-            brandChartInstance.update();
-        }
-        
-        if (gameReleasesChartInstance && gameReleasesChartInstance.data) {
-            gameReleasesChartInstance.data.datasets[0].label = lang.newGameReleasesDataset;
-            gameReleasesChartInstance.update();
-        }
-        
-        if (featureReleasesChartInstance && featureReleasesChartInstance.data) {
-            featureReleasesChartInstance.data.datasets[0].label = lang.newFeatureReleasesDataset;
-            featureReleasesChartInstance.update();
-        }
-    }
-    
-    function showToast(message, type = 'info') {
-        const existing = document.querySelector('.toast-notification');
-        if (existing) existing.remove();
-        
-        const toast = document.createElement('div');
-        toast.className = `toast-notification ${type}`;
-        toast.innerHTML = `<div><i class="fas ${type==='success'?'fa-check-circle':type==='error'?'fa-exclamation-circle':'fa-info-circle'}"></i> ${message}</div>`;
-        document.body.appendChild(toast);
-        
-        setTimeout(() => {
-            toast.classList.add('hide');
-            setTimeout(() => toast.remove(), 400);
-        }, 3000);
-    }
-    
-    function initializeSummaryLanguage() {
-        const savedLanguage = localStorage.getItem('language') || 'id';
-        console.log("Initializing summary dashboard with language:", savedLanguage);
-        
-        applySummaryTranslations(savedLanguage);
-        
-        window.addEventListener('languageChanged', function(event) {
-            console.log("Language changed in summary dashboard to:", event.detail.language);
-            applySummaryTranslations(event.detail.language);
-        });
-    }
-    
-    // ========== FIREBASE AND DATA FUNCTIONS ==========
-    
-    // Firebase Configuration
+    let activeFilters = {
+        category: 'all',
+        brand: 'all',
+        startDate: '',
+        endDate: ''
+    };
+
+    let statusChartInstance = null;
+    let trendChartInstance = null;
+    let categoryChartInstance = null;
+    let brandChartInstance = null;
+    let gameReleasesChartInstance = null;
+    let featureReleasesChartInstance = null;
+
     if (!firebase.apps.length) {
-        const firebaseConfig = {
+        firebase.initializeApp({
             apiKey: "AIzaSyDUZka4FZyLi_cv6X_5D4zeRsfkpqOlBpY",
             authDomain: "dashboard-css.firebaseapp.com",
             databaseURL: "https://dashboard-css-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -1888,354 +1353,161 @@
             messagingSenderId: "771131792881",
             appId: "1:771131792881:web:ad634424225bd7de847850",
             measurementId: "G-3CYBC5B101"
-        };
-        firebase.initializeApp(firebaseConfig);
+        });
     }
 
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    let currentUser = null;
-    let allReportsData = [];
-    let filteredReportsData = [];
-    let reportsListener = null;
-    let newGamesListener = null;
-    let currentPage = 1;
-    const itemsPerPage = 10;
-    let totalPages = 1;
-    let currentSearchTerm = '';
-    
-    // Filter state
-    let activeFilters = {
-        category: 'all',
-        brand: 'all',
-        startDate: '',
-        endDate: ''
-    };
+    function showToast(message, type = 'info') {
+        const existing = document.querySelector('.toast-notification');
+        if (existing) existing.remove();
 
-    // Chart instances
-    let statusChartInstance = null;
-    let trendChartInstance = null;
-    let categoryChartInstance = null;
-    let brandChartInstance = null;
-    let gameReleasesChartInstance = null;
-    let featureReleasesChartInstance = null;
+        const toast = document.createElement('div');
+        toast.className = `toast-notification ${type}`;
+        toast.innerHTML = `<div><i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i> ${message}</div>`;
+        document.body.appendChild(toast);
 
-    // Cache data
-    window.pendingReportsCache = [];
-    window.solvedReportsCache = [];
-    window.maintenanceReportsCache = [];
-    window.solvedMaintenanceCache = [];
-    window.newGamesData = [];
-    window.featuresData = [];
-
-    function showNotification(message, type = 'info') {
-        showToast(message, type);
+        setTimeout(() => {
+            toast.classList.add('hide');
+            setTimeout(() => toast.remove(), 400);
+        }, 3000);
     }
 
-    // Fungsi untuk setup listener data laporan
-    function setupReportsListener() {
-        console.log("Setting up reports listener");
-        
-        if (reportsListener) {
-            reportsListener();
+    function normalizeDateValue(...values) {
+        for (const value of values) {
+            if (!value) continue;
+            try {
+                const parsed = value.toDate ? value.toDate() : new Date(value);
+                if (!isNaN(parsed.getTime())) return parsed;
+            } catch (error) {}
         }
-        
-        const pendingQuery = db.collection('pendingReports');
-        const solvedQuery = db.collection('solvedReports');
-        const maintenanceQuery = db.collection('maintenanceReports');
-        const solvedMaintenanceQuery = db.collection('solvedMaintenance');
-        
-        const unsubscribeFunctions = [];
-        
-        const pendingUnsubscribe = pendingQuery.onSnapshot(
-            (snapshot) => {
-                console.log(`[PENDING] Snapshot received: ${snapshot.docs.length} documents`);
-                processPendingSnapshot(snapshot);
-                updateCombinedReports();
-            },
-            (error) => {
-                console.error("[PENDING] Error:", error);
-                showNotification('Gagal memuat data pending reports', 'error');
-            }
-        );
-        unsubscribeFunctions.push(pendingUnsubscribe);
-
-        const solvedUnsubscribe = solvedQuery.onSnapshot(
-            (snapshot) => {
-                console.log(`[SOLVED] Snapshot received: ${snapshot.docs.length} documents`);
-                processSolvedSnapshot(snapshot);
-                updateCombinedReports();
-            },
-            (error) => {
-                console.error("[SOLVED] Error:", error);
-                showNotification('Gagal memuat data solved reports', 'error');
-            }
-        );
-        unsubscribeFunctions.push(solvedUnsubscribe);
-        
-        const maintenanceUnsubscribe = maintenanceQuery.onSnapshot(
-            (snapshot) => {
-                console.log("[MAINTENANCE] Snapshot received:", snapshot.docs.length, "documents");
-                processMaintenanceSnapshot(snapshot);
-                updateCombinedReports();
-            },
-            (error) => {
-                console.error("[MAINTENANCE] Error:", error);
-                showNotification('Gagal memuat data maintenance', 'error');
-            }
-        );
-        unsubscribeFunctions.push(maintenanceUnsubscribe);
-        
-        const solvedMaintenanceUnsubscribe = solvedMaintenanceQuery.onSnapshot(
-            (snapshot) => {
-                console.log("[SOLVED MAINTENANCE] Snapshot received:", snapshot.docs.length, "documents");
-                processSolvedMaintenanceSnapshot(snapshot);
-                updateCombinedReports();
-            },
-            (error) => {
-                console.error("[SOLVED MAINTENANCE] Error:", error);
-                showNotification('Gagal memuat data solved maintenance', 'error');
-            }
-        );
-        unsubscribeFunctions.push(solvedMaintenanceUnsubscribe);
-        
-        reportsListener = () => {
-            unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
-            console.log("Reports listeners removed");
-        };
+        return new Date();
     }
 
-    function processPendingSnapshot(snapshot) {
-        const pendingReports = snapshot.docs.map(doc => {
-            const data = doc.data();
-            return { 
-                id: doc.id, 
-                ...data,
-                status: 'Pending',
-                collection: 'pendingReports',
-                date: data.dateCreated || new Date(),
-                dateCreated: data.dateCreated || new Date(),
-                isSolved: false,
-                category: 'Pending Report',
-                type: 'Report'
-            };
-        });
-        window.pendingReportsCache = pendingReports;
-    }
-
-    function processSolvedSnapshot(snapshot) {
-        const solvedReports = snapshot.docs.map(doc => {
-            const data = doc.data();
-            return { 
-                id: doc.id, 
-                ...data,
-                status: 'Solved',
-                collection: 'solvedReports',
-                date: data.dateCreated || data.dateSolved || new Date(),
-                dateCreated: data.dateCreated || data.dateSolved || new Date(),
-                dateSolved: data.dateSolved || new Date(),
-                isSolved: true,
-                category: 'Solved Report',
-                type: 'Report',
-                resolutionTime: calculateResolutionTime(data.dateCreated, data.dateSolved)
-            };
-        });
-        window.solvedReportsCache = solvedReports;
-    }
-
-    function processMaintenanceSnapshot(snapshot) {
-        const maintenanceReports = snapshot.docs.map(doc => {
-            const data = doc.data();
-            return { 
-                id: doc.id, 
-                ...data,
-                status: 'Maintenance',
-                collection: 'maintenanceReports',
-                date: data.dateCreated || new Date(),
-                dateCreated: data.dateCreated || new Date(),
-                isSolved: false,
-                category: 'Pending Maintenance',
-                type: 'Maintenance'
-            };
-        });
-        window.maintenanceReportsCache = maintenanceReports;
-    }
-
-    function processSolvedMaintenanceSnapshot(snapshot) {
-        const solvedMaintenanceReports = snapshot.docs.map(doc => {
-            const data = doc.data();
-            return { 
-                id: doc.id, 
-                ...data,
-                status: 'Maintenance Solved',
-                collection: 'solvedMaintenance',
-                date: data.dateCompleted || data.dateCreated || new Date(),
-                dateCreated: data.dateCreated || new Date(),
-                dateCompleted: data.dateCompleted || new Date(),
-                isSolved: true,
-                category: 'Solved Maintenance',
-                type: 'Maintenance',
-                resolutionTime: calculateResolutionTime(data.dateCreated, data.dateCompleted)
-            };
-        });
-        window.solvedMaintenanceCache = solvedMaintenanceReports;
+    function formatDateForDisplay(value) {
+        const date = normalizeDateValue(value);
+        return date.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
     }
 
     function calculateResolutionTime(startDate, endDate) {
         if (!startDate || !endDate) return 0;
-        try {
-            const start = startDate.toDate ? startDate.toDate() : new Date(startDate);
-            const end = endDate.toDate ? endDate.toDate() : new Date(endDate);
-            if (isNaN(start.getTime()) || isNaN(end.getTime())) return 0;
-            const diffMs = end - start;
-            return Math.round(diffMs / (1000 * 60));
-        } catch (error) {
-            return 0;
-        }
+        const start = normalizeDateValue(startDate);
+        const end = normalizeDateValue(endDate);
+        if (isNaN(start.getTime()) || isNaN(end.getTime())) return 0;
+        return Math.max(0, Math.round((end - start) / (1000 * 60)));
     }
 
-    function setupNewReleasesListener() {
-        console.log("Setting up new releases listener...");
-        
-        if (newGamesListener) {
-            newGamesListener();
-        }
-        
-        try {
-            const unsubscribeGames = db.collection('newGame').onSnapshot(snapshot => {
-                const gamesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                window.newGamesData = gamesData;
-                updateCombinedReports();
-                console.log(`New Game Releases: ${gamesData.length} games`);
-            }, error => {
-                console.error("Error fetching new games:", error);
-                window.newGamesData = [];
-            });
-
-            const unsubscribeFeatures = db.collection('releases').onSnapshot(snapshot => {
-                const featuresData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                window.featuresData = featuresData;
-                updateCombinedReports();
-                console.log(`New Feature Releases: ${featuresData.length} features`);
-            }, error => {
-                console.error("Error fetching new features:", error);
-                window.featuresData = [];
-            });
-
-            newGamesListener = () => {
-                unsubscribeGames();
-                unsubscribeFeatures();
-                console.log("New releases listeners removed");
-            };
-            
-            return newGamesListener;
-        } catch (error) {
-            console.error("Error setting up new releases listener:", error);
-            window.newGamesData = [];
-            window.featuresData = [];
-            return () => {};
-        }
-    }
-
-    function updateCombinedReports() {
-        const pending = window.pendingReportsCache || [];
-        const solved = window.solvedReportsCache || [];
-        const maintenance = window.maintenanceReportsCache || [];
-        const solvedMaintenance = window.solvedMaintenanceCache || [];
-        const newGames = window.newGamesData || [];
-        const newFeatures = window.featuresData || [];
-        
-        const gameReleases = newGames.map(game => ({
-            id: game.id,
-            ...game,
-            status: 'Released',
-            collection: 'newGame',
-            date: game.dateCreated || new Date(),
-            dateCreated: game.dateCreated || new Date(),
-            category: 'Releases New Game',
-            type: 'Release',
-            brand: game.brand || 'Unknown'
-        }));
-        
-        const featureReleases = newFeatures.map(feature => ({
-            id: feature.id,
-            ...feature,
-            status: 'Released',
-            collection: 'releases',
-            date: feature.dateCreated || new Date(),
-            dateCreated: feature.dateCreated || new Date(),
-            category: 'Releases New Feature',
-            type: 'Release',
-            brand: feature.brand || 'Unknown'
-        }));
-        
-        allReportsData = [...pending, ...solved, ...maintenance, ...solvedMaintenance, ...gameReleases, ...featureReleases];
-        console.log(`Total combined reports: ${allReportsData.length}`);
-        
-        applyCurrentFilters();
-    }
-
-    function applyCurrentFilters() {
-        let filtered = [...allReportsData];
-        
-        if (activeFilters.category !== 'all') {
-            filtered = filtered.filter(report => {
-                if (activeFilters.category === 'Pending') return report.category === 'Pending Report';
-                if (activeFilters.category === 'Solved') return report.category === 'Solved Report';
-                if (activeFilters.category === 'Maintenance') return report.category === 'Pending Maintenance';
-                if (activeFilters.category === 'Maintenance Solved') return report.category === 'Solved Maintenance';
-                if (activeFilters.category === 'Releases New Feature') return report.category === 'Releases New Feature';
-                if (activeFilters.category === 'Releases New Game') return report.category === 'Releases New Game';
-                return true;
-            });
-        }
-        
-        if (activeFilters.brand !== 'all') {
-            filtered = filtered.filter(report => report.brand === activeFilters.brand);
-        }
-        
-        if (activeFilters.startDate) {
-            const startDate = new Date(activeFilters.startDate);
-            startDate.setHours(0, 0, 0, 0);
-            filtered = filtered.filter(report => {
-                const reportDate = report.date?.toDate ? report.date.toDate() : new Date(report.date);
-                return reportDate >= startDate;
-            });
-        }
-        
-        if (activeFilters.endDate) {
-            const endDate = new Date(activeFilters.endDate);
-            endDate.setHours(23, 59, 59, 999);
-            filtered = filtered.filter(report => {
-                const reportDate = report.date?.toDate ? report.date.toDate() : new Date(report.date);
-                return reportDate <= endDate;
-            });
-        }
-        
-        if (currentSearchTerm) {
-            filtered = filterDataBySearch(filtered, currentSearchTerm);
-        }
-        
-        filteredReportsData = filtered;
-        
-        updateDashboardStats(filteredReportsData);
-        updateCharts(filteredReportsData);
-        setupPagination(filteredReportsData);
-    }
-
-    function filterDataBySearch(reports, searchTerm) {
-        if (!searchTerm || searchTerm.trim() === '') return reports;
-        const term = searchTerm.toLowerCase().trim();
-        return reports.filter(report => {
-            return (
-                (report.id && report.id.toLowerCase().includes(term)) ||
-                (report.category && report.category.toLowerCase().includes(term)) ||
-                (report.status && report.status.toLowerCase().includes(term)) ||
-                (report.brand && report.brand.toLowerCase().includes(term)) ||
-                (report.description && report.description.toLowerCase().includes(term))
-            );
+    function buildMonthlyCounts(items, getDateValue) {
+        const counts = {};
+        items.forEach(item => {
+            const date = normalizeDateValue(getDateValue(item));
+            const monthYear = date.toLocaleDateString('id-ID', { month: 'short', year: 'numeric' });
+            counts[monthYear] = (counts[monthYear] || 0) + 1;
         });
+        return counts;
+    }
+
+    function applySummaryTranslations(language) {
+        const lang = summaryTranslations[language] || summaryTranslations.id;
+        currentLanguage = language;
+
+        document.title = `${lang.pageTitle} - CSS Admin Dashboard`;
+        const simpleTextIds = [
+            'pageTitle','userRole','weeklyPerfTooltip','fromLastWeek','resolutionTooltip','improvementText',
+            'topBrandTooltip','reportsThisMonth','totalReportsLabel','solvedReportsLabel','pendingReportsLabel',
+            'maintenanceReportsLabel','solvedMaintenanceLabel','newGameReleasesLabel','newFeatureReleasesLabel',
+            'categoryLabel','brandLabel','dateRangeLabel','dateToText','applyFiltersText','resetFiltersText',
+            'categoryAll','categoryPending','categorySolved','categoryMaintenance','categoryMaintenanceSolved',
+            'categoryNewFeature','categoryNewGame','categoryAutoqris','brandAll','exportDataText','thDate',
+            'thReportId','thCategory','thStatus','thBrand','thResolutionTime','thActions','noReportsTitle',
+            'noReportsMessage','prevText','nextText'
+        ];
+        simpleTextIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el && lang[id]) el.textContent = lang[id];
+        });
+
+        const searchInput = document.getElementById('summarySearch');
+        if (searchInput) searchInput.placeholder = lang.searchPlaceholder;
+
+        const setTitle = (id, icon, text) => {
+            const el = document.getElementById(id);
+            if (el) el.innerHTML = `<i class="${icon}"></i> ${text}`;
+        };
+
+        setTitle('statusChartTitle', 'fas fa-chart-pie', lang.statusChartTitle);
+        setTitle('trendChartTitle', 'fas fa-chart-line', lang.trendChartTitle);
+        setTitle('categoryChartTitle', 'fas fa-chart-bar', lang.categoryChartTitle);
+        setTitle('brandChartTitle', 'fas fa-chart-horizontal', lang.brandChartTitle);
+        setTitle('agentIdeasChartTitle', 'fas fa-lightbulb', lang.gameReleasesChartTitle);
+        setTitle('eventProviderChartTitle', 'fas fa-calendar-alt', lang.featureReleasesChartTitle);
+
+        const allReportsTitle = document.getElementById('allReportsTitle');
+        if (allReportsTitle) {
+            allReportsTitle.innerHTML = `<i class="fas fa-table"></i> ${lang.allReportsTitle} <span class="badge" id="totalReportsCount">${filteredReportsData.length || 0}</span>`;
+        }
+    }
+
+    async function fetchCollection(collectionName, options = {}) {
+        const { orderByField = null, limitCount = DASHBOARD_FETCH_LIMIT, whereField = null, whereOp = '==', whereValue = null } = options;
+        try {
+            let query = db.collection(collectionName);
+            if (whereField !== null) query = query.where(whereField, whereOp, whereValue);
+            if (orderByField) {
+                try {
+                    query = query.orderBy(orderByField, 'desc');
+                } catch (error) {}
+            }
+            if (limitCount) query = query.limit(limitCount);
+            return await query.get();
+        } catch (error) {
+            console.warn(`Fetch fallback for ${collectionName}:`, error);
+            let query = db.collection(collectionName);
+            if (whereField !== null) query = query.where(whereField, whereOp, whereValue);
+            if (limitCount) query = query.limit(limitCount);
+            return await query.get();
+        }
+    }
+
+    function mapReportDocs(snapshot, config) {
+        return snapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                ...data,
+                status: config.statusValue ? config.statusValue(data) : (data.status || 'Pending'),
+                collection: config.collection,
+                date: normalizeDateValue(config.dateValue(data)),
+                dateCreated: config.dateCreatedValue ? config.dateCreatedValue(data) : config.dateValue(data),
+                dateSolved: config.dateSolvedValue ? config.dateSolvedValue(data) : null,
+                dateCompleted: config.dateCompletedValue ? config.dateCompletedValue(data) : null,
+                isSolved: config.isSolved ? config.isSolved(data) : false,
+                category: config.category,
+                type: config.type,
+                brand: config.brandValue ? config.brandValue(data) : (data.brand || 'N/A'),
+                resolutionTime: config.resolutionValue ? config.resolutionValue(data) : 0
+            };
+        });
+    }
+
+    function rebuildBrandFilter(data) {
+        const select = document.getElementById('brandFilter');
+        if (!select) return;
+        const currentValue = select.value || 'all';
+        const lang = summaryTranslations[currentLanguage] || summaryTranslations.id;
+
+        const values = [...new Set(data.map(item => item.brand).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+        select.innerHTML = `<option value="all" id="brandAll">${lang.brandAll}</option>`;
+        values.forEach(value => {
+            const option = document.createElement('option');
+            option.value = value;
+            option.textContent = value;
+            select.appendChild(option);
+        });
+
+        if (values.includes(currentValue)) select.value = currentValue;
+        else select.value = 'all';
     }
 
     function calculateRealStats(reports) {
@@ -2244,88 +1516,87 @@
         const solvedReports = reports.filter(report => report.category === 'Solved Report').length;
         const maintenanceReports = reports.filter(report => report.category === 'Pending Maintenance').length;
         const solvedMaintenance = reports.filter(report => report.category === 'Solved Maintenance').length;
-        const newGameReleases = reports.filter(report => report.category === 'Releases New Game').length;
-        const newFeatureReleases = reports.filter(report => report.category === 'Releases New Feature').length;
-        
+        const agentIdeas = reports.filter(report => report.category === 'Agent Ideas').length;
+        const eventProvider = reports.filter(report => report.category === 'Event Provider').length;
+
         const regularReports = reports.filter(report => report.type === 'Report');
         const solvedRegularReports = regularReports.filter(report => report.isSolved).length;
         const resolutionRate = regularReports.length > 0 ? Math.round((solvedRegularReports / regularReports.length) * 100) : 0;
-        
+
         const sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
         const recentSolvedReports = regularReports.filter(report => {
             if (!report.isSolved) return false;
-            const solvedDate = report.dateSolved?.toDate ? report.dateSolved.toDate() : 
-                             report.dateCompleted?.toDate ? report.dateCompleted.toDate() : 
-                             new Date(report.date);
+            const solvedDate = normalizeDateValue(report.dateSolved, report.dateCompleted, report.date);
             return solvedDate >= sevenDaysAgo;
         }).length;
         const weeklyPerformance = regularReports.length > 0 ? Math.round((recentSolvedReports / regularReports.length) * 100) : 0;
-        
+
         const brandCounts = {};
         reports.forEach(report => {
             if (report.brand) brandCounts[report.brand] = (brandCounts[report.brand] || 0) + 1;
         });
-        let topBrand = { name: "None", count: 0 };
-        for (const brand in brandCounts) {
-            if (brandCounts[brand] > topBrand.count) topBrand = { name: brand, count: brandCounts[brand] };
-        }
-        
-        const categoryCounts = {
-            'Pending Report': pendingReports,
-            'Solved Report': solvedReports,
-            'Pending Maintenance': maintenanceReports,
-            'Solved Maintenance': solvedMaintenance,
-            'Releases New Game': newGameReleases,
-            'Releases New Feature': newFeatureReleases
-        };
-        
-        const statusCounts = {
-            'Solved': solvedReports,
-            'Pending': pendingReports,
-            'Maintenance': maintenanceReports,
-            'Maintenance Solved': solvedMaintenance,
-            'Released': newGameReleases + newFeatureReleases
-        };
-        
+
+        let topBrand = { name: '-', count: 0 };
+        Object.entries(brandCounts).forEach(([name, count]) => {
+            if (count > topBrand.count) topBrand = { name, count };
+        });
+
         return {
-            totalReports, pendingReports, solvedReports, maintenanceReports,
-            solvedMaintenance, newGameReleases, newFeatureReleases,
-            resolutionRate, weeklyPerformance, topBrand,
-            categoryCounts, statusCounts, brandCounts
+            totalReports,
+            pendingReports,
+            solvedReports,
+            maintenanceReports,
+            solvedMaintenance,
+            agentIdeas,
+            eventProvider,
+            resolutionRate,
+            weeklyPerformance,
+            topBrand,
+            brandCounts,
+            categoryCounts: {
+                'Pending Report': pendingReports,
+                'Solved Report': solvedReports,
+                'Pending Maintenance': maintenanceReports,
+                'Solved Maintenance': solvedMaintenance,
+                'Agent Ideas': agentIdeas,
+                'Event Provider': eventProvider
+            },
+            statusCounts: {
+                'Solved': solvedReports,
+                'Pending': pendingReports,
+                'Maintenance': maintenanceReports,
+                'Maintenance Solved': solvedMaintenance,
+                'Released': agentIdeas + eventProvider
+            }
         };
     }
 
     function updateDashboardStats(reports) {
         const stats = calculateRealStats(reports);
-        const lang = summaryTranslations[currentLanguage] || summaryTranslations['id'];
-        
         document.getElementById('weeklyPerformance').textContent = `${stats.weeklyPerformance}%`;
         document.getElementById('resolutionRate').textContent = `${stats.resolutionRate}%`;
         document.getElementById('topBrand').textContent = stats.topBrand.name;
         document.getElementById('topBrandCount').textContent = stats.topBrand.count;
-        
         document.getElementById('totalReports').textContent = stats.totalReports;
         document.getElementById('solvedReports').textContent = stats.solvedReports;
         document.getElementById('pendingReports').textContent = stats.pendingReports;
         document.getElementById('maintenanceReports').textContent = stats.maintenanceReports;
         document.getElementById('solvedMaintenance').textContent = stats.solvedMaintenance;
-        document.getElementById('newGameReleases').textContent = stats.newGameReleases;
-        document.getElementById('newfeatureReleases').textContent = stats.newFeatureReleases;
-        document.getElementById('totalReportsCount').textContent = reports.length;
-        
-        // Update performance change (mock data for demo)
-        const performanceChange = document.getElementById('performanceChangeValue');
-        if (performanceChange) performanceChange.textContent = '+5%';
-        const trendChangeValue = document.getElementById('trendChangeValue');
-        if (trendChangeValue) trendChangeValue.textContent = '+8%';
+        document.getElementById('newGameReleases').textContent = stats.agentIdeas;
+        document.getElementById('newfeatureReleases').textContent = stats.eventProvider;
+        const badge = document.getElementById('totalReportsCount');
+        if (badge) badge.textContent = reports.length;
+        const perfChange = document.getElementById('performanceChangeValue');
+        const trendChange = document.getElementById('trendChangeValue');
+        if (perfChange) perfChange.textContent = '+0%';
+        if (trendChange) trendChange.textContent = '+0%';
     }
 
     function updateCharts(reports) {
+        const lang = summaryTranslations[currentLanguage] || summaryTranslations.id;
         const stats = calculateRealStats(reports);
-        const lang = summaryTranslations[currentLanguage] || summaryTranslations['id'];
-        
-        // Status Chart
+
         const statusCtx = document.getElementById('statusChart').getContext('2d');
         if (statusChartInstance) statusChartInstance.destroy();
         statusChartInstance = new Chart(statusCtx, {
@@ -2333,38 +1604,42 @@
             data: {
                 labels: [lang.solvedStatus, lang.pendingStatus, lang.maintenanceStatus, lang.maintenanceSolvedStatus, lang.releasedStatus],
                 datasets: [{
-                    data: [stats.statusCounts.Solved, stats.statusCounts.Pending, stats.statusCounts.Maintenance, stats.statusCounts['Maintenance Solved'], stats.statusCounts.Released],
+                    data: [
+                        stats.statusCounts.Solved,
+                        stats.statusCounts.Pending,
+                        stats.statusCounts.Maintenance,
+                        stats.statusCounts['Maintenance Solved'],
+                        stats.statusCounts.Released
+                    ],
                     backgroundColor: ['#4cc9f0', '#f72585', '#4895ef', '#3a0ca3', '#7209b7'],
                     borderWidth: 0
                 }]
             },
             options: { responsive: true, maintainAspectRatio: false }
         });
-        
-        // Trend Chart
+
         const trendCtx = document.getElementById('trendChart').getContext('2d');
-        const dates = [];
+        const labels = [];
         const solvedCounts = [];
         const pendingCounts = [];
         for (let i = 6; i >= 0; i--) {
             const date = new Date();
             date.setDate(date.getDate() - i);
-            const dateStr = date.toLocaleDateString('id-ID', { weekday: 'short' });
-            dates.push(dateStr);
-            const dayStart = new Date(date); dayStart.setHours(0,0,0,0);
-            const dayEnd = new Date(date); dayEnd.setHours(23,59,59,999);
-            const dayReports = reports.filter(report => {
-                const reportDate = report.date?.toDate ? report.date.toDate() : new Date(report.date);
-                return reportDate >= dayStart && reportDate <= dayEnd;
+            const dayStart = new Date(date); dayStart.setHours(0, 0, 0, 0);
+            const dayEnd = new Date(date); dayEnd.setHours(23, 59, 59, 999);
+            labels.push(date.toLocaleDateString('id-ID', { weekday: 'short' }));
+            const dayData = reports.filter(item => {
+                const itemDate = normalizeDateValue(item.date, item.dateCreated);
+                return itemDate >= dayStart && itemDate <= dayEnd && item.type === 'Report';
             });
-            solvedCounts.push(dayReports.filter(r => r.isSolved).length);
-            pendingCounts.push(dayReports.filter(r => !r.isSolved && r.type === 'Report').length);
+            solvedCounts.push(dayData.filter(item => item.isSolved).length);
+            pendingCounts.push(dayData.filter(item => !item.isSolved).length);
         }
         if (trendChartInstance) trendChartInstance.destroy();
         trendChartInstance = new Chart(trendCtx, {
             type: 'line',
             data: {
-                labels: dates,
+                labels,
                 datasets: [
                     { label: lang.solvedDataset, data: solvedCounts, borderColor: '#4cc9f0', backgroundColor: 'rgba(76, 201, 240, 0.1)', fill: true, tension: 0.4 },
                     { label: lang.pendingDataset, data: pendingCounts, borderColor: '#f72585', backgroundColor: 'rgba(247, 37, 133, 0.1)', fill: true, tension: 0.4 }
@@ -2372,333 +1647,440 @@
             },
             options: { responsive: true, maintainAspectRatio: false }
         });
-        
-        // Category Chart
+
         const categoryCtx = document.getElementById('categoryChart').getContext('2d');
         if (categoryChartInstance) categoryChartInstance.destroy();
         categoryChartInstance = new Chart(categoryCtx, {
             type: 'bar',
             data: {
                 labels: Object.keys(stats.categoryCounts),
-                datasets: [{ label: lang.reportsByCategory, data: Object.values(stats.categoryCounts), backgroundColor: ['#f72585', '#4cc9f0', '#4895ef', '#3a0ca3', '#7209b7', '#4361ee'], borderWidth: 0 }]
+                datasets: [{
+                    label: lang.reportsByCategory,
+                    data: Object.values(stats.categoryCounts),
+                    backgroundColor: ['#f72585', '#4cc9f0', '#4895ef', '#3a0ca3', '#7209b7', '#4361ee'],
+                    borderWidth: 0
+                }]
             },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, title: { display: true, text: lang.numberOfReports } } } }
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, title: { display: true, text: lang.numberOfReports } } }
+            }
         });
-        
-        // Brand Chart
-        const brandCtx = document.getElementById('brandChart').getContext('2d');
-        const brandEntries = Object.entries(stats.brandCounts);
-        brandEntries.sort((a, b) => b[1] - a[1]);
-        const topBrands = brandEntries.slice(0, 10);
-        if (brandChartInstance) brandChartInstance.destroy();
-        brandChartInstance = new Chart(brandCtx, {
-            type: 'bar',
-            data: { labels: topBrands.map(b => b[0]), datasets: [{ label: lang.reportsByBrand, data: topBrands.map(b => b[1]), backgroundColor: '#4895ef', borderWidth: 0 }] },
-            options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', scales: { x: { beginAtZero: true, title: { display: true, text: lang.numberOfReports } } } }
-        });
-        
-        // Game Releases Chart
-        const gameCtx = document.getElementById('gameReleasesChart').getContext('2d');
-        const gameReleases = reports.filter(r => r.category === 'Releases New Game');
-        const monthlyGameData = {};
-        gameReleases.forEach(release => {
-            const date = release.date?.toDate ? release.date.toDate() : new Date(release.date);
-            const monthYear = date.toLocaleDateString('id-ID', { month: 'short', year: 'numeric' });
-            monthlyGameData[monthYear] = (monthlyGameData[monthYear] || 0) + 1;
-        });
-        if (gameReleasesChartInstance) gameReleasesChartInstance.destroy();
-        gameReleasesChartInstance = new Chart(gameCtx, {
-            type: 'line',
-            data: { labels: Object.keys(monthlyGameData), datasets: [{ label: lang.newGameReleasesDataset, data: Object.values(monthlyGameData), borderColor: '#7209b7', backgroundColor: 'rgba(114, 9, 183, 0.1)', fill: true, tension: 0.4 }] },
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, title: { display: true, text: lang.numberOfReleases } } } }
-        });
-        
-        // Feature Releases Chart
-        const featureCtx = document.getElementById('featureReleasesChart').getContext('2d');
-        const featureReleases = reports.filter(r => r.category === 'Releases New Feature');
-        const monthlyFeatureData = {};
-        featureReleases.forEach(release => {
-            const date = release.date?.toDate ? release.date.toDate() : new Date(release.date);
-            const monthYear = date.toLocaleDateString('id-ID', { month: 'short', year: 'numeric' });
-            monthlyFeatureData[monthYear] = (monthlyFeatureData[monthYear] || 0) + 1;
-        });
-        if (featureReleasesChartInstance) featureReleasesChartInstance.destroy();
-        featureReleasesChartInstance = new Chart(featureCtx, {
-            type: 'line',
-            data: { labels: Object.keys(monthlyFeatureData), datasets: [{ label: lang.newFeatureReleasesDataset, data: Object.values(monthlyFeatureData), borderColor: '#4361ee', backgroundColor: 'rgba(67, 97, 238, 0.1)', fill: true, tension: 0.4 }] },
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, title: { display: true, text: lang.numberOfReleases } } } }
-        });
+
+        // Brand Chart - create canvas if needed
+        let brandCanvas = document.getElementById('brandChart');
+        if (!brandCanvas) {
+            const brandContainer = document.getElementById('brandChartContainer');
+            if (brandContainer) brandContainer.style.display = 'block';
+        }
+        const brandCtx = document.getElementById('brandChart');
+        if (brandCtx) {
+            const topBrands = Object.entries(stats.brandCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+            if (brandChartInstance) brandChartInstance.destroy();
+            brandChartInstance = new Chart(brandCtx, {
+                type: 'bar',
+                data: {
+                    labels: topBrands.map(entry => entry[0]),
+                    datasets: [{
+                        label: lang.reportsByBrand,
+                        data: topBrands.map(entry => entry[1]),
+                        backgroundColor: '#4895ef',
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: { x: { beginAtZero: true, title: { display: true, text: lang.numberOfReports } } }
+                }
+            });
+        }
+
+        // Agent Ideas Chart
+        let ideasCanvas = document.getElementById('agentIdeasChart');
+        if (!ideasCanvas) {
+            const ideasContainer = document.getElementById('agentIdeasChartContainer');
+            if (ideasContainer) ideasContainer.style.display = 'block';
+        }
+        const ideas = allReportsData.filter(item => item.category === 'Agent Ideas');
+        const ideasMonthly = buildMonthlyCounts(ideas, item => item.dateCreated || item.date);
+        const ideasCtx = document.getElementById('agentIdeasChart');
+        if (ideasCtx) {
+            if (gameReleasesChartInstance) gameReleasesChartInstance.destroy();
+            gameReleasesChartInstance = new Chart(ideasCtx, {
+                type: 'line',
+                data: {
+                    labels: Object.keys(ideasMonthly),
+                    datasets: [{
+                        label: lang.newGameReleasesDataset,
+                        data: Object.values(ideasMonthly),
+                        borderColor: '#7209b7',
+                        backgroundColor: 'rgba(114, 9, 183, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, title: { display: true, text: lang.numberOfReleases } } }
+                }
+            });
+        }
+
+        // Event Provider Chart
+        let eventCanvas = document.getElementById('eventProviderChart');
+        if (!eventCanvas) {
+            const eventContainer = document.getElementById('eventProviderChartContainer');
+            if (eventContainer) eventContainer.style.display = 'block';
+        }
+        const events = allReportsData.filter(item => item.category === 'Event Provider');
+        const eventsMonthly = buildMonthlyCounts(events, item => item.dateCreated || item.date);
+        const eventCtx = document.getElementById('eventProviderChart');
+        if (eventCtx) {
+            if (featureReleasesChartInstance) featureReleasesChartInstance.destroy();
+            featureReleasesChartInstance = new Chart(eventCtx, {
+                type: 'line',
+                data: {
+                    labels: Object.keys(eventsMonthly),
+                    datasets: [{
+                        label: lang.newFeatureReleasesDataset,
+                        data: Object.values(eventsMonthly),
+                        borderColor: '#4361ee',
+                        backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, title: { display: true, text: lang.numberOfReleases } } }
+                }
+            });
+        }
     }
 
-    function setupPagination(reports) {
-        const searchedReports = filterDataBySearch(reports, currentSearchTerm);
-        totalPages = Math.ceil(searchedReports.length / itemsPerPage);
-        document.getElementById('pageNumbers').textContent = `Page ${currentPage} of ${totalPages || 1}`;
-        document.getElementById('prevPage').disabled = currentPage === 1;
-        document.getElementById('nextPage').disabled = currentPage === totalPages || totalPages === 0;
-        displayPageData(searchedReports);
+    function filterDataBySearch(data, searchTerm) {
+        if (!searchTerm || !searchTerm.trim()) return data;
+        const term = searchTerm.toLowerCase().trim();
+        return data.filter(item =>
+            String(item.id || '').toLowerCase().includes(term) ||
+            String(item.category || '').toLowerCase().includes(term) ||
+            String(item.status || '').toLowerCase().includes(term) ||
+            String(item.brand || '').toLowerCase().includes(term) ||
+            String(item.title || '').toLowerCase().includes(term) ||
+            String(item.description || '').toLowerCase().includes(term)
+        );
     }
 
-    function displayPageData(reports) {
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
-        const pageData = reports.slice(startIndex, endIndex);
-        renderTableData(pageData);
+    function applyCurrentFilters() {
+        let data = [...allReportsData];
+
+        if (activeFilters.category !== 'all') {
+            data = data.filter(item => {
+                if (activeFilters.category === 'Pending') return item.category === 'Pending Report';
+                if (activeFilters.category === 'Solved') return item.category === 'Solved Report';
+                if (activeFilters.category === 'Maintenance') return item.category === 'Pending Maintenance';
+                if (activeFilters.category === 'Maintenance Solved') return item.category === 'Solved Maintenance';
+                if (activeFilters.category === 'Agent Ideas') return item.category === 'Agent Ideas';
+                if (activeFilters.category === 'Event Provider') return item.category === 'Event Provider';
+                return true;
+            });
+        }
+
+        if (activeFilters.brand !== 'all') {
+            data = data.filter(item => item.brand === activeFilters.brand);
+        }
+
+        if (activeFilters.startDate) {
+            const start = new Date(activeFilters.startDate);
+            start.setHours(0, 0, 0, 0);
+            data = data.filter(item => normalizeDateValue(item.date, item.dateCreated) >= start);
+        }
+
+        if (activeFilters.endDate) {
+            const end = new Date(activeFilters.endDate);
+            end.setHours(23, 59, 59, 999);
+            data = data.filter(item => normalizeDateValue(item.date, item.dateCreated) <= end);
+        }
+
+        filteredReportsData = filterDataBySearch(data, currentSearchTerm);
+        currentPage = Math.min(currentPage, Math.max(1, Math.ceil(filteredReportsData.length / itemsPerPage)));
+        updateDashboardStats(filteredReportsData);
+        updateCharts(filteredReportsData);
+        setupPagination(filteredReportsData);
     }
 
-    function renderTableData(reports) {
-        const tableBody = document.getElementById('summaryTableBody');
-        const emptyState = document.getElementById('noSummaryData');
-        const lang = summaryTranslations[currentLanguage] || summaryTranslations['id'];
-        
-        tableBody.innerHTML = '';
-        
-        if (reports.length === 0) {
-            emptyState.style.display = 'block';
+    function renderTableData(rows) {
+        const body = document.getElementById('summaryTableBody');
+        const empty = document.getElementById('noSummaryData');
+        const lang = summaryTranslations[currentLanguage] || summaryTranslations.id;
+        if (!body) return;
+        body.innerHTML = '';
+
+        if (rows.length === 0) {
+            if (empty) empty.style.display = 'block';
             return;
         }
-        
-        emptyState.style.display = 'none';
-        
-        reports.forEach((report, index) => {
-            const row = document.createElement('tr');
-            
-            let reportDate;
-            try {
-                let dateToFormat;
-                if (report.dateCreated) dateToFormat = report.dateCreated.toDate ? report.dateCreated.toDate() : new Date(report.dateCreated);
-                else if (report.date) dateToFormat = report.date.toDate ? report.date.toDate() : new Date(report.date);
-                else dateToFormat = new Date();
-                reportDate = dateToFormat.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
-            } catch (error) {
-                reportDate = 'N/A';
+
+        if (empty) empty.style.display = 'none';
+
+        rows.forEach((row, index) => {
+            const tr = document.createElement('tr');
+            const statusClass =
+                row.status === 'Solved' ? 'status-solved' :
+                String(row.status).includes('Maintenance') ? 'status-maintenance' :
+                row.category === 'Agent Ideas' || row.category === 'Event Provider' ? 'status-solved' :
+                'status-pending';
+
+            let resolutionText = 'N/A';
+            if (row.resolutionTime > 0) {
+                const hours = Math.floor(row.resolutionTime / 60);
+                const minutes = row.resolutionTime % 60;
+                resolutionText = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
             }
-            
-            let resolutionTime = 'N/A';
-            if (report.resolutionTime && report.resolutionTime > 0) {
-                const hours = Math.floor(report.resolutionTime / 60);
-                const minutes = report.resolutionTime % 60;
-                resolutionTime = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
-            }
-            
-            let statusClass = 'status-pending';
-            let statusText = report.status || 'Pending';
-            if (statusText === 'Solved' || report.isSolved) statusClass = 'status-solved';
-            else if (statusText.includes('Maintenance')) statusClass = 'status-maintenance';
-            else if (statusText === 'Released') statusClass = 'status-solved';
-            
-            const reportId = report.id || `report-${index}`;
-            const collectionName = report.collection || 'pendingReports';
-            
-            row.innerHTML = `
-                <td>${reportDate}</td>
-                <td>${reportId}</td>
-                <td>${report.category || 'N/A'}</td>
-                <td><span class="${statusClass}">${statusText}</span></td>
-                <td>${report.brand || 'N/A'}</td>
-                <td>${resolutionTime}</td>
+
+            tr.innerHTML = `
+                <td>${formatDateForDisplay(row.dateCreated || row.date)}</td>
+                <td>${row.id || `row-${index}`}</td>
+                <td>${row.category || 'N/A'}</td>
+                <td><span class="${statusClass}">${row.status || 'N/A'}</span></td>
+                <td>${row.brand || 'N/A'}</td>
+                <td>${resolutionText}</td>
                 <td>
                     <div class="action-buttons">
-                        <button class="btn-icon view" title="${lang.thActions}" onclick="viewReportDetails('${reportId}', '${collectionName}')">
+                        <button class="btn-icon view" title="${lang.thActions}" onclick="viewReportDetails('${row.id}', '${row.collection}')">
                             <i class="fas fa-eye"></i>
                         </button>
                     </div>
                 </td>
             `;
-            tableBody.appendChild(row);
+            body.appendChild(tr);
         });
     }
 
-    function viewReportDetails(reportId, collection) {
-        console.log("View Report Details:", { reportId, collection });
-        if (!reportId || !collection) {
-            showNotification('Cannot view details: missing information', 'error');
-            return;
-        }
-        try {
-            if (collection === 'pendingReports') window.location.href = `pending-report.html?id=${encodeURIComponent(reportId)}`;
-            else if (collection === 'solvedReports') window.location.href = `solved-report.html?id=${encodeURIComponent(reportId)}`;
-            else if (collection === 'maintenanceReports') window.location.href = `maintenance.html?id=${encodeURIComponent(reportId)}`;
-            else if (collection === 'solvedMaintenance') window.location.href = `completed-maintenance.html?id=${encodeURIComponent(reportId)}`;
-            else if (collection === 'newGame') {
-                if (confirm('View game release details?')) window.location.href = `releases-newgame.html?id=${encodeURIComponent(reportId)}`;
-            } else if (collection === 'releases') {
-                if (confirm('View feature release details?')) window.location.href = `releases-newfeature.html?id=${encodeURIComponent(reportId)}`;
-            } else {
-                showNotification('Cannot view details for this type of report', 'error');
-            }
-        } catch (error) {
-            console.error('Error viewing report details:', error);
-            showNotification('Error opening report details', 'error');
-        }
+    function setupPagination(data) {
+        totalPages = Math.max(1, Math.ceil(data.length / itemsPerPage));
+        const pageNumbersSpan = document.getElementById('pageNumbers');
+        if (pageNumbersSpan) pageNumbersSpan.textContent = `Page ${currentPage} of ${totalPages}`;
+        const prevBtn = document.getElementById('prevPage');
+        const nextBtn = document.getElementById('nextPage');
+        if (prevBtn) prevBtn.disabled = currentPage === 1;
+        if (nextBtn) nextBtn.disabled = currentPage >= totalPages;
+        const start = (currentPage - 1) * itemsPerPage;
+        renderTableData(data.slice(start, start + itemsPerPage));
     }
 
-    function goToPage(page) {
-        if (page < 1 || page > totalPages) return;
-        currentPage = page;
-        setupPagination(filteredReportsData);
+    function viewReportDetails(reportId, collection) {
+        if (!reportId || !collection) return;
+        if (collection === 'pendingReports') window.location.href = `pending-reports.html?id=${encodeURIComponent(reportId)}`;
+        else if (collection === 'solvedReports') window.location.href = `solved-report.html?id=${encodeURIComponent(reportId)}`;
+        else if (collection === 'maintenanceReports') window.location.href = `maintenance.html?id=${encodeURIComponent(reportId)}`;
+        else if (collection === 'solvedMaintenance') window.location.href = `completed-report.html?id=${encodeURIComponent(reportId)}`;
+        else if (collection === 'reports') window.location.href = `idesaran-agent.html?id=${encodeURIComponent(reportId)}`;
+        else if (collection === 'events') window.location.href = `eventprovider.html?id=${encodeURIComponent(reportId)}`;
     }
 
     function handleFilterChange() {
-        const categoryFilter = document.getElementById('categoryFilter');
-        const brandFilter = document.getElementById('brandFilter');
-        const startDate = document.getElementById('startDate');
-        const endDate = document.getElementById('endDate');
-        
         activeFilters = {
-            category: categoryFilter.value,
-            brand: brandFilter.value,
-            startDate: startDate.value,
-            endDate: endDate.value
+            category: document.getElementById('categoryFilter').value,
+            brand: document.getElementById('brandFilter').value,
+            startDate: document.getElementById('startDate').value,
+            endDate: document.getElementById('endDate').value
         };
-        
         currentPage = 1;
         applyCurrentFilters();
     }
 
     function resetFilters() {
-        document.getElementById('categoryFilter').value = 'all';
-        document.getElementById('brandFilter').value = 'all';
-        document.getElementById('startDate').value = '';
-        document.getElementById('endDate').value = '';
-        
+        const categoryFilter = document.getElementById('categoryFilter');
+        const brandFilter = document.getElementById('brandFilter');
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+        if (categoryFilter) categoryFilter.value = 'all';
+        if (brandFilter) brandFilter.value = 'all';
+        if (startDateInput) startDateInput.value = '';
+        if (endDateInput) endDateInput.value = '';
         activeFilters = { category: 'all', brand: 'all', startDate: '', endDate: '' };
+        currentSearchTerm = '';
+        const search = document.getElementById('summarySearch');
+        if (search) search.value = '';
         currentPage = 1;
         applyCurrentFilters();
-        showToast(window.summaryToastMessages?.filtersReset || 'Filter direset', 'success');
+        showToast((summaryTranslations[currentLanguage] || summaryTranslations.id).filtersReset, 'success');
     }
 
     function handleSearch() {
-        const searchInput = document.getElementById('summarySearch');
-        if (searchInput) {
-            currentSearchTerm = searchInput.value;
-            currentPage = 1;
-            applyCurrentFilters();
-        }
+        currentSearchTerm = document.getElementById('summarySearch').value || '';
+        currentPage = 1;
+        applyCurrentFilters();
     }
 
     function exportData() {
-        const lang = summaryTranslations[currentLanguage] || summaryTranslations['id'];
-        const exportBtn = document.getElementById('exportBtn');
-        const originalText = exportBtn.innerHTML;
-        
+        const lang = summaryTranslations[currentLanguage] || summaryTranslations.id;
+        if (filteredReportsData.length === 0) {
+            showToast(lang.noDataExport, 'info');
+            return;
+        }
+
         try {
-            if (filteredReportsData.length === 0) {
-                showToast(lang.noDataExport, 'info');
-                return;
-            }
-            
-            exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
-            exportBtn.disabled = true;
-            
-            const excelData = filteredReportsData.map((report, index) => {
-                let reportDate;
-                try {
-                    let dateToFormat;
-                    if (report.dateCreated) dateToFormat = report.dateCreated.toDate ? report.dateCreated.toDate() : new Date(report.dateCreated);
-                    else if (report.date) dateToFormat = report.date.toDate ? report.date.toDate() : new Date(report.date);
-                    else dateToFormat = new Date();
-                    reportDate = dateToFormat.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
-                } catch (error) {
-                    reportDate = 'N/A';
-                }
-                
-                let resolutionTime = 'N/A';
-                if (report.resolutionTime && report.resolutionTime > 0) {
-                    const hours = Math.floor(report.resolutionTime / 60);
-                    const minutes = report.resolutionTime % 60;
-                    resolutionTime = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
-                }
-                
-                return {
-                    'No.': index + 1,
-                    'Date': reportDate,
-                    'Report ID': report.id || 'N/A',
-                    'Category': report.category || 'N/A',
-                    'Status': report.status || 'N/A',
-                    'Brand': report.brand || 'N/A',
-                    'Resolution Time': resolutionTime
-                };
-            });
-            
-            const ws = XLSX.utils.json_to_sheet(excelData);
-            const wscols = [{ wch: 5 }, { wch: 12 }, { wch: 25 }, { wch: 20 }, { wch: 15 }, { wch: 30 }, { wch: 18 }];
-            ws['!cols'] = wscols;
-            
+            const rows = filteredReportsData.map((item, index) => ({
+                'No.': index + 1,
+                'Date': formatDateForDisplay(item.dateCreated || item.date),
+                'Report ID': item.id || 'N/A',
+                'Category': item.category || 'N/A',
+                'Status': item.status || 'N/A',
+                'Brand / Provider': item.brand || 'N/A',
+                'Resolution Time': item.resolutionTime || 0
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(rows);
+            ws['!cols'] = [{ wch: 5 }, { wch: 12 }, { wch: 24 }, { wch: 22 }, { wch: 18 }, { wch: 28 }, { wch: 18 }];
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Reports");
-            
-            const timestamp = new Date().toISOString().split('T')[0];
-            const fileName = `Reports_Export_${timestamp}.xlsx`;
-            XLSX.writeFile(wb, fileName);
-            
+            XLSX.utils.book_append_sheet(wb, ws, 'Reports');
+            XLSX.writeFile(wb, `summary_dashboard_${new Date().toISOString().split('T')[0]}.xlsx`);
             showToast(lang.exportSuccess, 'success');
         } catch (error) {
-            console.error('Export error:', error);
+            console.error(error);
             showToast(lang.exportFailed, 'error');
-        } finally {
-            exportBtn.innerHTML = originalText;
-            exportBtn.disabled = false;
         }
     }
 
     function expandChart(chartId) {
-        const chartCanvas = document.getElementById(chartId);
-        const chartCard = chartCanvas?.closest('.chart-card');
-        if (chartCard) chartCard.classList.toggle('expanded');
+        const canvas = document.getElementById(chartId);
+        const card = canvas ? canvas.closest('.chart-card') : null;
+        if (card) card.classList.toggle('expanded');
+    }
+
+    async function loadDashboardData(showSuccess = false) {
+        try {
+            const [pendingSnap, solvedSnap, maintenanceSnap, solvedMaintenanceSnap, ideasSnap, eventsSnap] = await Promise.all([
+                fetchCollection('pendingReports', { orderByField: 'dateCreated', limitCount: DASHBOARD_FETCH_LIMIT }),
+                fetchCollection('solvedReports', { orderByField: 'dateSolved', limitCount: DASHBOARD_FETCH_LIMIT }),
+                fetchCollection('maintenanceReports', { orderByField: 'dateCreated', limitCount: DASHBOARD_FETCH_LIMIT }),
+                fetchCollection('solvedMaintenance', { orderByField: 'dateCompleted', limitCount: DASHBOARD_FETCH_LIMIT }),
+                fetchCollection('reports', { whereField: 'projectcss', whereValue: 'pengshui', limitCount: EXTRA_FETCH_LIMIT }),
+                fetchCollection('events', { orderByField: 'dateCreated', limitCount: EXTRA_FETCH_LIMIT })
+            ]);
+
+            const pending = mapReportDocs(pendingSnap, {
+                collection: 'pendingReports',
+                category: 'Pending Report',
+                type: 'Report',
+                dateValue: data => data.dateCreated,
+                isSolved: () => false,
+                statusValue: () => 'Pending'
+            });
+
+            const solved = mapReportDocs(solvedSnap, {
+                collection: 'solvedReports',
+                category: 'Solved Report',
+                type: 'Report',
+                dateValue: data => data.dateSolved || data.dateCreated,
+                dateSolvedValue: data => data.dateSolved,
+                isSolved: () => true,
+                statusValue: () => 'Solved',
+                resolutionValue: data => calculateResolutionTime(data.dateCreated, data.dateSolved)
+            });
+
+            const maintenance = mapReportDocs(maintenanceSnap, {
+                collection: 'maintenanceReports',
+                category: 'Pending Maintenance',
+                type: 'Maintenance',
+                dateValue: data => data.dateCreated,
+                isSolved: () => false,
+                statusValue: () => 'Maintenance'
+            });
+
+            const solvedMaintenance = mapReportDocs(solvedMaintenanceSnap, {
+                collection: 'solvedMaintenance',
+                category: 'Solved Maintenance',
+                type: 'Maintenance',
+                dateValue: data => data.dateCompleted || data.dateCreated,
+                dateCompletedValue: data => data.dateCompleted,
+                isSolved: () => true,
+                statusValue: () => 'Maintenance Solved',
+                resolutionValue: data => calculateResolutionTime(data.dateCreated, data.dateCompleted)
+            });
+
+            const agentIdeas = mapReportDocs(ideasSnap, {
+                collection: 'reports',
+                category: 'Agent Ideas',
+                type: 'Agent Idea',
+                dateValue: data => data.dateCreated || data.createdAt || data.dateUpdated,
+                statusValue: data => data.status || 'Pending',
+                brandValue: data => data.brand || 'N/A'
+            });
+
+            const eventProvider = mapReportDocs(eventsSnap, {
+                collection: 'events',
+                category: 'Event Provider',
+                type: 'Event',
+                dateValue: data => data.dateCreated || data.startDate || data.dateUpdated,
+                statusValue: data => data.status || 'Active',
+                brandValue: data => data.provider || 'N/A'
+            });
+
+            allReportsData = [...pending, ...solved, ...maintenance, ...solvedMaintenance, ...agentIdeas, ...eventProvider];
+            rebuildBrandFilter(allReportsData);
+            applyCurrentFilters();
+
+            if (showSuccess) {
+                showToast((summaryTranslations[currentLanguage] || summaryTranslations.id).refreshSuccess, 'success');
+            }
+        } catch (error) {
+            console.error(error);
+            showToast((summaryTranslations[currentLanguage] || summaryTranslations.id).dataError, 'error');
+        }
     }
 
     function refreshDashboard() {
-        console.log("Manually refreshing dashboard...");
-        if (reportsListener) reportsListener();
-        window.pendingReportsCache = [];
-        window.solvedReportsCache = [];
-        window.maintenanceReportsCache = [];
-        window.solvedMaintenanceCache = [];
-        window.newGamesData = [];
-        window.featuresData = [];
-        allReportsData = [];
-        filteredReportsData = [];
-        setupReportsListener();
-        setupNewReleasesListener();
-        showToast(window.summaryToastMessages?.refreshSuccess || 'Dashboard data updated!', 'success');
+        loadDashboardData(true);
     }
 
-    // Event Listeners
     document.addEventListener('DOMContentLoaded', function() {
-        console.log("Dashboard initialized");
-        
-        initializeSummaryLanguage();
-        
-        // Set default dates
+        const savedLanguage = localStorage.getItem('language') || 'id';
+        applySummaryTranslations(savedLanguage);
+
         const endDate = new Date();
         const startDate = new Date();
         startDate.setDate(startDate.getDate() - 30);
-        document.getElementById('startDate').value = startDate.toISOString().split('T')[0];
-        document.getElementById('endDate').value = endDate.toISOString().split('T')[0];
-        
-        // Setup listeners
-        setTimeout(() => {
-            setupReportsListener();
-            setupNewReleasesListener();
-        }, 1000);
-        
-        // Setup event listeners
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+        if (startDateInput) startDateInput.value = startDate.toISOString().split('T')[0];
+        if (endDateInput) endDateInput.value = endDate.toISOString().split('T')[0];
+        activeFilters.startDate = startDateInput ? startDateInput.value : '';
+        activeFilters.endDate = endDateInput ? endDateInput.value : '';
+
         const searchInput = document.getElementById('summarySearch');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const brandFilter = document.getElementById('brandFilter');
+        const startDateElem = document.getElementById('startDate');
+        const endDateElem = document.getElementById('endDate');
+        const applyFiltersBtn = document.getElementById('applyFilters');
+        const resetFiltersBtn = document.getElementById('resetFilters');
+        const prevPageBtn = document.getElementById('prevPage');
+        const nextPageBtn = document.getElementById('nextPage');
+        const exportBtn = document.getElementById('exportBtn');
+
         if (searchInput) searchInput.addEventListener('input', handleSearch);
-        
-        document.getElementById('categoryFilter').addEventListener('change', handleFilterChange);
-        document.getElementById('brandFilter').addEventListener('change', handleFilterChange);
-        document.getElementById('startDate').addEventListener('change', handleFilterChange);
-        document.getElementById('endDate').addEventListener('change', handleFilterChange);
-        document.getElementById('applyFilters').addEventListener('click', handleFilterChange);
-        document.getElementById('resetFilters').addEventListener('click', resetFilters);
-        document.getElementById('prevPage').addEventListener('click', () => goToPage(currentPage - 1));
-        document.getElementById('nextPage').addEventListener('click', () => goToPage(currentPage + 1));
-        document.getElementById('exportBtn').addEventListener('click', exportData);
-        
-        // Menu toggle for mobile
-        const menuToggle = document.querySelector('.menu-toggle');
+        if (categoryFilter) categoryFilter.addEventListener('change', handleFilterChange);
+        if (brandFilter) brandFilter.addEventListener('change', handleFilterChange);
+        if (startDateElem) startDateElem.addEventListener('change', handleFilterChange);
+        if (endDateElem) endDateElem.addEventListener('change', handleFilterChange);
+        if (applyFiltersBtn) applyFiltersBtn.addEventListener('click', handleFilterChange);
+        if (resetFiltersBtn) resetFiltersBtn.addEventListener('click', resetFilters);
+        if (prevPageBtn) prevPageBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; setupPagination(filteredReportsData); } });
+        if (nextPageBtn) nextPageBtn.addEventListener('click', () => { if (currentPage < totalPages) { currentPage++; setupPagination(filteredReportsData); } });
+        if (exportBtn) exportBtn.addEventListener('click', exportData);
+
+        window.addEventListener('languageChanged', event => applySummaryTranslations(event.detail.language));
+
+        const menuToggle = document.getElementById('menuToggleBtn');
         const sidebarContainer = document.getElementById('sidebar-container');
         if (menuToggle && sidebarContainer) {
             menuToggle.addEventListener('click', function() {
@@ -2706,29 +2088,23 @@
                 if (sidebar) sidebar.classList.toggle('active');
             });
         }
-        
-        // Auth state listener
+
         auth.onAuthStateChanged(user => {
             if (!user) {
                 window.location.href = 'index.html';
-            } else {
-                console.log(`User authenticated: ${user.email}`);
-                const userNameSpan = document.getElementById('userName');
-                if (userNameSpan) userNameSpan.textContent = user.displayName || user.email;
+                return;
             }
+            currentUser = user;
+            const userNameSpan = document.getElementById('userName');
+            if (userNameSpan) userNameSpan.textContent = user.displayName || user.email || 'User';
+            loadDashboardData(false);
         });
-        
-        handleFilterChange();
     });
-    
-    window.addEventListener('beforeunload', function() {
-        if (reportsListener) reportsListener();
-        if (newGamesListener) newGamesListener();
-    });
-    
+
     window.refreshDashboard = refreshDashboard;
     window.viewReportDetails = viewReportDetails;
     window.expandChart = expandChart;
     </script>
+    
 </body>
 </html>

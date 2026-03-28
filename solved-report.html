@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="global.css">
         <link rel="stylesheet" href="stylemobile.css">
         <script src="global-time.js"></script>
-            <script src="translations.js"></script>
     <style>
 :root {
     --primary-gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
@@ -1785,6 +1784,13 @@
                 </div>
 
                 <div class="filter-group">
+                    <label class="filter-label">Category</label>
+                    <select class="filter-select" id="categoryFilter">
+                        <option value="">All Categories</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
                     <label class="filter-label">Date Range</label>
                     <div class="date-range-inputs">
                         <input type="date" class="filter-select" id="startDate">
@@ -1903,6 +1909,7 @@
         </div>
     </div>
 
+    <script src="translations.js"></script>
     <script src="sidebar-loader.js"></script>
     <script src="user-profile.js"></script>
     
@@ -2602,20 +2609,13 @@ async function showReportDetails(reportId) {
     // Get user names
     const reportedBy = await getCachedUserName(report.userId);
     
-    // PERBAIKAN: Dapatkan nama yang menyelesaikan report
+    // Dapatkan nama user yang menyelesaikan report sesuai data dari pending report
     let completedBy = 'N/A';
-    
-    // Cek apakah ada completedByName (dari data lama)
-    if (report.completedByName) {
-        completedBy = report.completedByName;
-    } 
-    // Jika tidak ada, coba ambil dari completedBy (UID)
-    else if (report.completedBy) {
-        completedBy = await getCachedUserName(report.completedBy);
-    }
-    // Cek field lain yang mungkin digunakan
-    else if (report.resolvedBy) {
-        completedBy = await getCachedUserName(report.resolvedBy);
+    const completedByRaw = report.completedByName || report.completedBy || report.resolvedBy || report.resolvedByName || null;
+
+    if (completedByRaw) {
+        const looksLikeUid = typeof completedByRaw === 'string' && /^[A-Za-z0-9_-]{20,}$/.test(completedByRaw);
+        completedBy = looksLikeUid ? await getCachedUserName(completedByRaw) : completedByRaw;
     }
     
     // Tampilkan screenshot jika ada
@@ -2626,7 +2626,7 @@ async function showReportDetails(reportId) {
         </a>`;
     }
     
-    console.log(`Completed by: ${completedBy} (UID: ${report.completedBy})`);
+    console.log(`Completed by: ${completedBy} (raw: ${completedByRaw || 'N/A'})`);
     
     // Calculate resolution time
     let resolutionTime = 'N/A';
@@ -3195,10 +3195,10 @@ function applyTranslations(language = 'id') {
                     label.textContent = lang.status || 'Status';
                     break;
                 case 2:
-                    label.textContent = lang.dateRange || 'Date Range';
+                    label.textContent = lang.category || 'Category';
                     break;
                 case 3:
-                    label.textContent = lang.category || 'Category';
+                    label.textContent = lang.dateRange || 'Date Range';
                     break;
             }
         });
@@ -3361,19 +3361,20 @@ function updateActionButtons(language) {
 
 // Function to listen for language changes
 function setupLanguageListener() {
-    // Check for language changes every second
-    setInterval(() => {
-        const currentLanguage = localStorage.getItem('language') || 'id';
-        if (window.currentLanguage !== currentLanguage) {
-            window.currentLanguage = currentLanguage;
-            applyTranslations(currentLanguage);
-            console.log('Language changed to:', currentLanguage);
-        }
-    }, 1000);
-    
-    // Also check when page gains focus
+    window.currentLanguage = localStorage.getItem('language') || 'id';
+
+    window.addEventListener('languageChanged', function(event) {
+        const newLanguage = event?.detail?.language || localStorage.getItem('language') || 'id';
+        window.currentLanguage = newLanguage;
+        applyTranslations(newLanguage);
+        console.log('Language changed to:', newLanguage);
+    });
+
     window.addEventListener('focus', () => {
         const language = localStorage.getItem('language') || 'id';
+        if (window.currentLanguage !== language) {
+            window.currentLanguage = language;
+        }
         applyTranslations(language);
     });
 }

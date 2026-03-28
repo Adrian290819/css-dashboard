@@ -1150,22 +1150,54 @@
             </div>
             
             <div class="filter-group">
-                <label for="timeFilter">Completion Time</label>
-                <select id="timeFilter" class="filter-select">
-                    <option value="all">All Time</option>
-                    <option value="today">Today</option>
-                    <option value="week">This Week</option>
-                    <option value="month">This Month</option>
-                    <option value="quarter">This Quarter</option>
+                <label for="providerFilter">Provider</label>
+                <select id="providerFilter" class="filter-select">
+                    <option value="all">All Providers</option>
+                    <option value="PG SOFT">PG SOFT</option>
+                    <option value="PRAGMATIC PLAY">PRAGMATIC PLAY</option>
+                    <option value="JOKER">JOKER</option>
+                    <option value="ADVANT PLAY">ADVANT PLAY</option>
+                    <option value="MICROGAMING">MICROGAMING</option>
+                    <option value="PS STAR">PS STAR</option>
+                    <option value="JILI">JILI</option>
+                    <option value="HABANERO">HABANERO</option>
+                    <option value="CQ9">CQ9</option>
+                    <option value="JDB">JDB</option>
+                    <option value="GG SOFT">GG SOFT</option>
+                    <option value="KING MAKER">KING MAKER</option>
+                    <option value="FA CHAI">FA CHAI</option>
+                    <option value="FAST SPIN">FAST SPIN</option>
+                    <option value="SPADE GAMING">SPADE GAMING</option>
+                    <option value="NETENT">NETENT</option>
+                    <option value="NOLIMIT CITY">NOLIMIT CITY</option>
+                    <option value="RED TIGER">RED TIGER</option>
+                    <option value="OCTOPLAY">OCTOPLAY</option>
+                    <option value="HACKSAW GAMING">HACKSAW GAMING</option>
+                    <option value="FAT PANDA">FAT PANDA</option>
+                    <option value="RTG SLOT">RTG SLOT</option>
+                    <option value="SIMPLEPLAY">SIMPLEPLAY</option>
+                    <option value="SEXY GAME">SEXY GAME</option>
+                    <option value="ION CASINO">ION CASINO</option>
+                    <option value="SBOBET">SBOBET</option>
+                    <option value="EVOLUTION">EVOLUTION</option>
+                    <option value="SA GAMING">SA GAMING</option>
+                    <option value="UG SPORT">UG SPORT</option>
+                    <option value="SABA SPORT">SABA SPORT</option>
+                    <option value="MASCOT GAMING">MASCOT GAMING</option>
+                    <option value="IDEAL GAMING">IDEAL GAMING</option>
+                    <option value="PLAYTECH">PLAYTECH</option>
+                    <option value="YELLOW BAT">YELLOW BAT</option>
                 </select>
             </div>
             
             <div class="filter-group">
-                <label for="sortFilter">Sort By</label>
-                <select id="sortFilter" class="filter-select">
-                    <option value="newest">Newest First</option>
-                    <option value="oldest">Oldest First</option>
-                    <option value="category">Category</option>
+                <label for="dateFilter">Filter Date</label>
+                <select id="dateFilter" class="filter-select">
+                    <option value="all">All Dates</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                    <option value="quarter">This Quarter</option>
                 </select>
             </div>
         </div>
@@ -1193,7 +1225,8 @@
                             <th>Task ID</th>
                             <th>Title</th>
                             <th>Category</th>
-                            <th>Completed Date</th>
+                            <th>Provider</th>
+                            <th>Completed Date & Time</th>
                             <th>Completion Time</th>
                             <th>Assigned To</th>
                             <th>Actions</th>
@@ -1251,6 +1284,10 @@
                         <label class="form-label"><i class="fas fa-tag"></i> Category</label>
                         <p id="viewCategory" class="form-input-static"></p>
                     </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-building"></i> Provider</label>
+                        <p id="viewProvider" class="form-input-static"></p>
+                    </div>
                 </div>
             </div>
             
@@ -1265,7 +1302,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label"><i class="fas fa-calendar-check"></i> Completed Date</label>
+                        <label class="form-label"><i class="fas fa-calendar-check"></i> Completed Date & Time</label>
                         <p id="viewCompletedDate" class="form-input-static"></p>
                     </div>
                 </div>
@@ -1410,69 +1447,119 @@ function formatDate(date) {
     });
 }
 
+function formatDateTime(date) {
+    if (!date) return 'N/A';
+    return date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+function normalizeProviderValue(value) {
+    return typeof value === 'string' ? value.trim() : '';
+}
+
+function getAssignedReporter(maintenance) {
+    return maintenance.assignedTo || maintenance.createdBy || maintenance.assignedBy || 'N/A';
+}
+
+function getCompletionDurationText(createdValue, completedValue) {
+    if (!createdValue || !completedValue) return 'N/A';
+
+    const created = convertToDate(createdValue);
+    const completed = convertToDate(completedValue);
+    const diffMs = completed - created;
+
+    if (!Number.isFinite(diffMs) || diffMs < 0) return 'N/A';
+
+    const totalMinutes = Math.floor(diffMs / (1000 * 60));
+    const days = Math.floor(totalMinutes / (60 * 24));
+    const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+    const minutes = totalMinutes % 60;
+
+    const parts = [];
+    if (days > 0) parts.push(`${days}d`);
+    if (hours > 0) parts.push(`${hours}h`);
+    if (minutes > 0 || parts.length === 0) parts.push(`${minutes}m`);
+
+    return parts.join(' ');
+}
+
 // ========== FUNGSI FILTER MAINTENANCE ==========
 function filterMaintenance(maintenance) {
     const categoryFilter = document.getElementById('categoryFilter').value;
-    const timeFilter = document.getElementById('timeFilter').value;
-    const sortFilter = document.getElementById('sortFilter').value;
+    const providerFilter = document.getElementById('providerFilter').value;
+    const dateFilter = document.getElementById('dateFilter').value;
+    const searchTerm = (document.getElementById('completedSearch')?.value || '').toLowerCase().trim();
     
     let filtered = maintenance.filter(item => {
-        // Filter by category
+        const normalizedProvider = normalizeProviderValue(item.provider || item.brand);
+
         if (categoryFilter !== 'all' && item.category !== categoryFilter) {
             return false;
         }
-        
-        // Filter by time
-        if (timeFilter !== 'all' && item.dateCompleted) {
+
+        if (providerFilter !== 'all' && normalizedProvider !== providerFilter) {
+            return false;
+        }
+
+        if (dateFilter !== 'all') {
+            if (!item.dateCompleted) return false;
             const completedDate = convertToDate(item.dateCompleted);
             const now = new Date();
-            
-            switch(timeFilter) {
-                case 'today':
-                    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                    if (completedDate < today) return false;
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+            switch(dateFilter) {
+                case 'today': {
+                    const completedDay = new Date(completedDate.getFullYear(), completedDate.getMonth(), completedDate.getDate());
+                    if (completedDay.getTime() !== today.getTime()) return false;
                     break;
-                case 'week':
+                }
+                case 'week': {
                     const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
                     if (completedDate < weekAgo) return false;
                     break;
-                case 'month':
-                    const monthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
-                    if (completedDate < monthAgo) return false;
+                }
+                case 'month': {
+                    if (completedDate.getMonth() !== now.getMonth() || completedDate.getFullYear() !== now.getFullYear()) return false;
                     break;
-                case 'quarter':
-                    const quarterAgo = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
+                }
+                case 'quarter': {
+                    const quarterAgo = new Date(now);
+                    quarterAgo.setMonth(quarterAgo.getMonth() - 3);
                     if (completedDate < quarterAgo) return false;
                     break;
+                }
             }
         }
-        
+
+        if (searchTerm) {
+            const assignedReporter = getAssignedReporter(item).toLowerCase();
+            const haystack = [
+                item.id || '',
+                item.title || '',
+                item.description || '',
+                normalizedProvider,
+                assignedReporter
+            ].join(' ').toLowerCase();
+
+            if (!haystack.includes(searchTerm)) {
+                return false;
+            }
+        }
+
         return true;
     });
-    
-    // Sort the results
-    switch(sortFilter) {
-        case 'newest':
-            filtered.sort((a, b) => {
-                const dateA = convertToDate(a.dateCompleted);
-                const dateB = convertToDate(b.dateCompleted);
-                return dateB - dateA;
-            });
-            break;
-        case 'oldest':
-            filtered.sort((a, b) => {
-                const dateA = convertToDate(a.dateCompleted);
-                const dateB = convertToDate(b.dateCompleted);
-                return dateA - dateB;
-            });
-            break;
-        case 'category':
-            filtered.sort((a, b) => {
-                return (a.category || '').localeCompare(b.category || '');
-            });
-            break;
-    }
-    
+
+    filtered.sort((a, b) => {
+        const dateA = convertToDate(a.dateCompleted);
+        const dateB = convertToDate(b.dateCompleted);
+        return dateB - dateA;
+    });
+
     return filtered;
 }
 
@@ -1532,13 +1619,15 @@ async function isSuperAdmin() {
 // ========== FUNGSI PARSE TIME ==========
 function parseTimeToHours(timeString) {
     if (!timeString || timeString === 'N/A') return 0;
+    const daysMatch = timeString.match(/(\d+)\s*d/);
     const hoursMatch = timeString.match(/(\d+)\s*h/);
     const minutesMatch = timeString.match(/(\d+)\s*m/);
     
+    const days = daysMatch ? parseInt(daysMatch[1]) : 0;
     const hours = hoursMatch ? parseInt(hoursMatch[1]) : 0;
     const minutes = minutesMatch ? parseInt(minutesMatch[1]) : 0;
     
-    return hours + (minutes / 60);
+    return (days * 24) + hours + (minutes / 60);
 }
 
 // ========== FUNGSI SHOW MAINTENANCE DETAILS ==========
@@ -1552,21 +1641,22 @@ function showMaintenanceDetails(maintenanceId) {
     
     document.getElementById('viewTitle').textContent = maintenance.title || 'N/A';
     document.getElementById('viewCategory').textContent = maintenance.category || 'N/A';
+    document.getElementById('viewProvider').textContent = maintenance.provider || maintenance.brand || 'N/A';
     
-    const createdDate = maintenance.dateCreated ? formatDate(convertToDate(maintenance.dateCreated)) : 'N/A';
-    const dueDate = maintenance.dueDate ? formatDate(convertToDate(maintenance.dueDate)) : 'N/A';
-    const completedDate = maintenance.dateCompleted ? formatDate(convertToDate(maintenance.dateCompleted)) : 'N/A';
+    const createdDate = maintenance.dateCreated ? formatDateTime(convertToDate(maintenance.dateCreated)) : 'N/A';
+    const dueDate = maintenance.dueDate ? formatDateTime(convertToDate(maintenance.dueDate)) : 'N/A';
+    const completedDate = maintenance.dateCompleted ? formatDateTime(convertToDate(maintenance.dateCompleted)) : 'N/A';
     
     document.getElementById('viewCreatedDate').textContent = createdDate;
     document.getElementById('viewDueDate').textContent = dueDate;
     document.getElementById('viewCompletedDate').textContent = completedDate;
     
-    document.getElementById('viewAssignedTo').textContent = maintenance.assignedTo || 'N/A';
+    document.getElementById('viewAssignedTo').textContent = getAssignedReporter(maintenance);
     document.getElementById('viewDescription').textContent = maintenance.description || 'N/A';
     document.getElementById('viewNotes').textContent = maintenance.notes || 'N/A';
     
     const estimatedTime = maintenance.estimatedTime || 'N/A';
-    const actualTime = maintenance.actualTime || 'N/A';
+    const actualTime = getCompletionDurationText(maintenance.dateCreated, maintenance.dateCompleted);
     
     document.getElementById('viewEstimatedTime').textContent = estimatedTime;
     document.getElementById('viewActualTime').textContent = actualTime;
@@ -1610,8 +1700,9 @@ async function reopenMaintenanceTask(maintenanceId) {
         const pendingData = {
             title: maintenanceData.title || '',
             category: maintenanceData.category || 'server',
+            provider: maintenanceData.provider || maintenanceData.brand || '',
             status: 'pending',
-            assignedTo: maintenanceData.assignedTo || 'Nama Masing-masing',
+            assignedTo: getAssignedReporter(maintenanceData),
             description: maintenanceData.description || '',
             notes: maintenanceData.notes || '',
             dateCreated: maintenanceData.dateCreated || new Date(),
@@ -1770,10 +1861,15 @@ function openEditModal(maintenance) {
                                 <option value="security" ${maintenance.category === 'security' ? 'selected' : ''}>Security</option>
                             </select>
                         </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Provider</label>
+                            <input type="text" id="editProvider" class="filter-select" value="${maintenance.provider || maintenance.brand || ''}" style="width:100%;">
+                        </div>
                         
                         <div class="form-group">
                             <label class="form-label">Assigned To</label>
-                            <input type="text" id="editAssignedTo" class="filter-select" value="${maintenance.assignedTo || ''}" style="width:100%;">
+                            <input type="text" id="editAssignedTo" class="filter-select" value="${getAssignedReporter(maintenance)}" style="width:100%;">
                         </div>
                         
                         <div class="form-group">
@@ -1843,6 +1939,7 @@ async function saveEditedTask(taskId) {
         const updatedData = {
             title: document.getElementById('editTitle').value,
             category: document.getElementById('editCategory').value,
+            provider: document.getElementById('editProvider').value.trim(),
             assignedTo: document.getElementById('editAssignedTo').value,
             description: document.getElementById('editDescription').value,
             notes: document.getElementById('editNotes').value,
@@ -1891,7 +1988,7 @@ async function updateSolvedMaintenanceUI() {
     if (solvedMaintenance.length === 0) {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="8" class="empty-state">
+                <td colspan="9" class="empty-state">
                     <i class="fas fa-database"></i>
                     <h3>No Completed Maintenance Found</h3>
                     <p>There are no completed maintenance tasks in the database yet.</p>
@@ -1933,7 +2030,7 @@ async function updateSolvedMaintenanceUI() {
     if (currentPageMaintenance.length === 0) {
         const emptyRow = document.createElement('tr');
         emptyRow.innerHTML = `
-            <td colspan="8" style="text-align: center; padding: 40px 20px;">
+            <td colspan="9" style="text-align: center; padding: 40px 20px;">
                 <i class="fas fa-inbox" style="font-size: 3rem; color: var(--text-tertiary); margin-bottom: 15px; display: block;"></i>
                 <h3 style="color: var(--text-secondary); margin-bottom: 10px;">No completed maintenance found</h3>
                 <p style="color: var(--text-tertiary);">Try adjusting your filters or check back later.</p>
@@ -1954,17 +2051,11 @@ async function updateSolvedMaintenanceUI() {
     currentPageMaintenance.forEach(maintenance => {
         const row = document.createElement('tr');
         
-        const createdDate = maintenance.dateCreated ? formatDate(convertToDate(maintenance.dateCreated)) : 'N/A';
-        const completedDate = maintenance.dateCompleted ? formatDate(convertToDate(maintenance.dateCompleted)) : 'N/A';
-        
-        let completionTime = 'N/A';
-        if (maintenance.dateCreated && maintenance.dateCompleted) {
-            const created = convertToDate(maintenance.dateCreated);
-            const completed = convertToDate(maintenance.dateCompleted);
-            const diffDays = Math.floor((completed - created) / (1000 * 60 * 60 * 24));
-            const diffHours = Math.floor(((completed - created) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            completionTime = `${diffDays}d ${diffHours}h`;
-        }
+        const createdDate = maintenance.dateCreated ? formatDateTime(convertToDate(maintenance.dateCreated)) : 'N/A';
+        const completedDate = maintenance.dateCompleted ? formatDateTime(convertToDate(maintenance.dateCompleted)) : 'N/A';
+        const completionTime = getCompletionDurationText(maintenance.dateCreated, maintenance.dateCompleted);
+        const assignedReporter = getAssignedReporter(maintenance);
+        const providerName = normalizeProviderValue(maintenance.provider || maintenance.brand) || 'N/A';
         
         const adminButtons = isAdmin ? `
             <button class="btn-icon reopen" data-id="${maintenance.id}" title="Reopen Task">
@@ -1982,9 +2073,10 @@ async function updateSolvedMaintenanceUI() {
             <td>${maintenance.id.substring(0, 8)}...</td>
             <td>${maintenance.title || 'N/A'}</td>
             <td>${maintenance.category || 'N/A'}</td>
+            <td>${providerName}</td>
             <td>${completedDate}</td>
             <td>${completionTime}</td>
-            <td>${maintenance.assignedTo || 'N/A'}</td>
+            <td>${assignedReporter}</td>
             <td>
                 <div class="action-buttons">
                     <button class="btn-icon view" data-id="${maintenance.id}" title="View Details">
@@ -2414,12 +2506,12 @@ function setupEventListeners() {
         updateSolvedMaintenanceUI();
     });
     
-    document.getElementById('timeFilter')?.addEventListener('change', () => {
+    document.getElementById('providerFilter')?.addEventListener('change', () => {
         currentPage = 1;
         updateSolvedMaintenanceUI();
     });
     
-    document.getElementById('sortFilter')?.addEventListener('change', () => {
+    document.getElementById('dateFilter')?.addEventListener('change', () => {
         currentPage = 1;
         updateSolvedMaintenanceUI();
     });
@@ -2546,10 +2638,11 @@ function applyTranslations(language) {
         if (th[0]) th[0].textContent = lang.taskId || 'Task ID';
         if (th[1]) th[1].textContent = lang.title || 'Title';
         if (th[2]) th[2].textContent = lang.category || 'Category';
-        if (th[3]) th[3].textContent = lang.completedDate || 'Completed Date';
-        if (th[4]) th[4].textContent = lang.completionTime || 'Completion Time';
-        if (th[5]) th[5].textContent = lang.assignedTo || 'Assigned To';
-        if (th[6]) th[6].textContent = lang.actions || 'Actions';
+        if (th[3]) th[3].textContent = lang.provider || 'Provider';
+        if (th[4]) th[4].textContent = lang.completedDate || 'Completed Date';
+        if (th[5]) th[5].textContent = lang.completionTime || 'Completion Time';
+        if (th[6]) th[6].textContent = lang.assignedTo || 'Assigned To';
+        if (th[7]) th[7].textContent = lang.actions || 'Actions';
         
         const modalTitle = document.querySelector('#viewModal .modal-title');
         if (modalTitle) modalTitle.textContent = lang.taskDetails || 'Task Details';
@@ -2749,37 +2842,38 @@ function exportCompletedToExcel(data, filename = 'completed_maintenance') {
     const worksheetData = [];
     
     // Title and header
-    worksheetData.push(['COMPLETED MAINTENANCE REPORT', '', '', '', '', '', '', '']);
-    worksheetData.push([`Generated: ${new Date().toLocaleString()}`, '', '', '', '', '', '', '']);
+    worksheetData.push(['COMPLETED MAINTENANCE REPORT', '', '', '', '', '', '', '', '']);
+    worksheetData.push([`Generated: ${new Date().toLocaleString()}`, '', '', '', '', '', '', '', '']);
     worksheetData.push([]);
     
     // Main headers
     worksheetData.push([
-        'NO', 'TASK ID', 'TITLE', 'CATEGORY', 'STATUS',
-        'COMPLETED DATE', 'COMPLETION TIME', 'ASSIGNED TO'
+        'NO', 'TASK ID', 'TITLE', 'CATEGORY', 'PROVIDER', 'STATUS',
+        'COMPLETED DATE & TIME', 'COMPLETION TIME', 'ASSIGNED TO'
     ]);
     
     // Data rows
     data.forEach((task, index) => {
-        const completedDate = task.dateCompleted ? formatDateExcelCompleted(convertToDate(task.dateCompleted)) : 'N/A';
-        const completionTime = getCompletionTimeHours(task.dateCreated, task.dateCompleted);
+        const completedDate = task.dateCompleted ? formatDateTimeExcelCompleted(convertToDate(task.dateCompleted)) : 'N/A';
+        const completionTime = getCompletionDurationText(task.dateCreated, task.dateCompleted);
         
         worksheetData.push([
             index + 1,
             task.id || '',
             task.title || 'N/A',
             getCategoryTextExportCompleted(task.category),
+            task.provider || task.brand || 'N/A',
             'Completed',
             completedDate,
             completionTime,
-            task.assignedTo || 'N/A'
+            getAssignedReporter(task)
         ]);
     });
     
     // Summary section
     worksheetData.push([]);
-    worksheetData.push(['SUMMARY', '', '', '', '', '', '', '']);
-    worksheetData.push(['Total Completed Tasks', data.length, '', '', '', '', '', '']);
+    worksheetData.push(['SUMMARY', '', '', '', '', '', '', '', '']);
+    worksheetData.push(['Total Completed Tasks', data.length, '', '', '', '', '', '', '']);
     
     // Category distribution
     const categoryCounts = {};
@@ -2860,6 +2954,7 @@ function exportCompletedToExcel(data, filename = 'completed_maintenance') {
         {wch: 22},  // TASK ID
         {wch: 35},  // TITLE
         {wch: 20},  // CATEGORY
+        {wch: 22},  // PROVIDER
         {wch: 12},  // STATUS
         {wch: 15},  // COMPLETED DATE
         {wch: 15},  // COMPLETION TIME
@@ -2868,8 +2963,8 @@ function exportCompletedToExcel(data, filename = 'completed_maintenance') {
     
     // Merge title rows
     if (!ws['!merges']) ws['!merges'] = [];
-    ws['!merges'].push({s: {r: 0, c: 0}, e: {r: 0, c: 7}});
-    ws['!merges'].push({s: {r: 1, c: 0}, e: {r: 1, c: 7}});
+    ws['!merges'].push({s: {r: 0, c: 0}, e: {r: 0, c: 8}});
+    ws['!merges'].push({s: {r: 1, c: 0}, e: {r: 1, c: 8}});
     
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Completed Maintenance');
@@ -2895,7 +2990,7 @@ function exportCompletedFullDetails(data, filename = 'completed_maintenance_full
     
     // Full headers
     worksheetData.push([
-        'NO', 'TASK ID', 'TITLE', 'CATEGORY', 'STATUS',
+        'NO', 'TASK ID', 'TITLE', 'CATEGORY', 'PROVIDER', 'STATUS',
         'CREATED DATE', 'COMPLETED DATE', 'DUE DATE', 'COMPLETION TIME',
         'ASSIGNED TO', 'DESCRIPTION', 'NOTES', 'ESTIMATED TIME', 'ACTUAL TIME'
     ]);
@@ -2905,19 +3000,20 @@ function exportCompletedFullDetails(data, filename = 'completed_maintenance_full
         const createdDate = task.dateCreated ? formatDateTimeExcelCompleted(convertToDate(task.dateCreated)) : 'N/A';
         const completedDate = task.dateCompleted ? formatDateTimeExcelCompleted(convertToDate(task.dateCompleted)) : 'N/A';
         const dueDate = task.dueDate ? formatDateTimeExcelCompleted(convertToDate(task.dueDate)) : 'N/A';
-        const completionTime = getCompletionTimeHours(task.dateCreated, task.dateCompleted);
+        const completionTime = getCompletionDurationText(task.dateCreated, task.dateCompleted);
         
         worksheetData.push([
             index + 1,
             task.id || '',
             task.title || 'N/A',
             getCategoryTextExportCompleted(task.category),
+            task.provider || task.brand || 'N/A',
             'Completed',
             createdDate,
             completedDate,
             dueDate,
             completionTime,
-            task.assignedTo || 'N/A',
+            getAssignedReporter(task),
             task.description || 'No description',
             task.notes || 'No notes',
             task.estimatedTime || 'N/A',
@@ -2978,7 +3074,7 @@ function exportCompletedFullDetails(data, filename = 'completed_maintenance_full
     
     // Set column widths
     ws['!cols'] = [
-        {wch: 5}, {wch: 22}, {wch: 35}, {wch: 20}, {wch: 12},
+        {wch: 5}, {wch: 22}, {wch: 35}, {wch: 20}, {wch: 22}, {wch: 12},
         {wch: 22}, {wch: 22}, {wch: 22}, {wch: 15}, {wch: 20},
         {wch: 45}, {wch: 40}, {wch: 15}, {wch: 15}
     ];
@@ -2993,80 +3089,68 @@ function exportCompletedFullDetails(data, filename = 'completed_maintenance_full
  * Export filtered completed maintenance
  */
 function exportCompletedFiltered() {
-    // Apply same filters as in updateSolvedMaintenanceUI
     const categoryFilter = document.getElementById('categoryFilter')?.value || 'all';
-    const timeFilter = document.getElementById('timeFilter')?.value || 'all';
-    const sortFilter = document.getElementById('sortFilter')?.value || 'newest';
+    const providerFilter = document.getElementById('providerFilter')?.value || 'all';
+    const dateFilter = document.getElementById('dateFilter')?.value || 'all';
     const searchTerm = document.getElementById('completedSearch')?.value.toLowerCase() || '';
     
     let filteredTasks = [...solvedMaintenance];
     
-    // Apply category filter
     if (categoryFilter !== 'all') {
         filteredTasks = filteredTasks.filter(task => task.category === categoryFilter);
     }
-    
-    // Apply time filter
-    if (timeFilter !== 'all') {
+
+    if (providerFilter !== 'all') {
+        filteredTasks = filteredTasks.filter(task => normalizeProviderValue(task.provider || task.brand) === providerFilter);
+    }
+
+    if (dateFilter !== 'all') {
         const now = new Date();
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        
+
         filteredTasks = filteredTasks.filter(task => {
             if (!task.dateCompleted) return false;
             const completedDate = convertToDate(task.dateCompleted);
-            
-            switch(timeFilter) {
-                case 'today':
+
+            switch(dateFilter) {
+                case 'today': {
                     const completedDay = new Date(completedDate.getFullYear(), completedDate.getMonth(), completedDate.getDate());
                     return completedDay.getTime() === today.getTime();
-                case 'week':
+                }
+                case 'week': {
                     const weekAgo = new Date(now);
                     weekAgo.setDate(weekAgo.getDate() - 7);
                     return completedDate >= weekAgo;
+                }
                 case 'month':
-                    return completedDate.getMonth() === now.getMonth() && 
-                           completedDate.getFullYear() === now.getFullYear();
-                case 'quarter':
+                    return completedDate.getMonth() === now.getMonth() && completedDate.getFullYear() === now.getFullYear();
+                case 'quarter': {
                     const quarterStart = new Date(now);
                     quarterStart.setMonth(quarterStart.getMonth() - 3);
                     return completedDate >= quarterStart;
+                }
                 default:
                     return true;
             }
         });
     }
-    
-    // Apply search
+
     if (searchTerm) {
         filteredTasks = filteredTasks.filter(task => 
             (task.title && task.title.toLowerCase().includes(searchTerm)) ||
             (task.description && task.description.toLowerCase().includes(searchTerm)) ||
             (task.id && task.id.toLowerCase().includes(searchTerm)) ||
-            (task.assignedTo && task.assignedTo.toLowerCase().includes(searchTerm))
+            (normalizeProviderValue(task.provider || task.brand) && normalizeProviderValue(task.provider || task.brand).toLowerCase().includes(searchTerm)) ||
+            (getAssignedReporter(task).toLowerCase().includes(searchTerm))
         );
     }
-    
-    // Apply sort
-    switch(sortFilter) {
-        case 'newest':
-            filteredTasks.sort((a, b) => {
-                const dateA = convertToDate(a.dateCompleted);
-                const dateB = convertToDate(b.dateCompleted);
-                return dateB - dateA;
-            });
-            break;
-        case 'oldest':
-            filteredTasks.sort((a, b) => {
-                const dateA = convertToDate(a.dateCompleted);
-                const dateB = convertToDate(b.dateCompleted);
-                return dateA - dateB;
-            });
-            break;
-        case 'category':
-            filteredTasks.sort((a, b) => (a.category || '').localeCompare(b.category || ''));
-            break;
-    }
-    
+
+    filteredTasks.sort((a, b) => {
+        const dateA = convertToDate(a.dateCompleted);
+        const dateB = convertToDate(b.dateCompleted);
+        return dateB - dateA;
+    });
+
     if (filteredTasks.length === 0) {
         showToast("No data matches current filters", "error");
         return;

@@ -1780,15 +1780,16 @@
             try {
                 await checkAuth();
                 
-                const chatDataToSave = {
-                    customer: chat.customer,
-                    platform: chat.platform,
-                    topic: chat.topic,
-                    responseTime: parseFloat(chat.responseTime),
-                    date: chat.date,
-                    userId: currentUser.uid,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
+const chatDataToSave = {
+    customer: chat.customer,
+    platform: chat.platform,
+    topic: chat.topic,
+    responseTime: parseFloat(chat.responseTime),
+    date: chat.date,
+    userId: currentUser.uid,
+    userName: currentUserData?.displayName || currentUser.displayName || currentUser.email,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+};
                 
                 if (chat.id) {
                     await db.collection('chats').doc(chat.id).update(chatDataToSave);
@@ -1888,10 +1889,10 @@
                 const statusText = status.status === 'fast' ? lang.statusFast :
                                   (status.status === 'medium' ? lang.statusMedium : lang.statusSlow);
                 
-                const ownerInfo = currentUserData && currentUserData.isSuperAdmin ? 
-                    `<p class="chat-owner" style="font-size: var(--text-xs); color: var(--text-tertiary); margin-bottom: 5px;">
-                        <i class="fas fa-user"></i> User ID: ${chat.userId}
-                    </p>` : '';
+const ownerInfo = currentUserData && currentUserData.isSuperAdmin ? 
+    `<p class="chat-owner" style="font-size: var(--text-xs); color: var(--text-tertiary); margin-bottom: 5px;">
+        <i class="fas fa-user"></i> User: ${chat.userName || chat.userId}
+    </p>` : '';
                 
                 const chatItem = document.createElement('div');
                 chatItem.className = `chat-item fade-in ${isCurrentMonth ? 'current-month' : ''}`;

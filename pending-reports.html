@@ -2641,7 +2641,8 @@
                     dateSolved: new Date(),
                     dateUpdated: new Date(),
                     resolution: resolutionDescription,
-                    completedBy: currentUser.displayName || 'Unknown',
+                    completedBy: currentUser.uid || null,
+                    completedByName: currentUser.displayName || currentUser.email || 'Unknown',
                     dueDate: reportData.dueDate,
                     originalReportId: currentReportId
                 };

@@ -1004,25 +1004,67 @@
             
             
             <div class="filter-group">
-                <label for="categoryFilter">Category</label>
-                <select id="categoryFilter" class="filter-select">
-                    <option value="all">All Categories</option>
-                    <option value="server">Server Maintenance</option>
-                    <option value="database">Database</option>
-                </select>
-            </div>
-            
-            <div class="filter-group">
-                <label for="dateFilter">Due Date</label>
-                <select id="dateFilter" class="filter-select">
-                    <option value="all">All Dates</option>
-                    <option value="today">Today</option>
-                    <option value="tomorrow">Tomorrow</option>
-                    <option value="week">This Week</option>
-                    <option value="month">This Month</option>
-                    <option value="overdue">Overdue</option>
-                </select>
-            </div>
+    <label for="categoryFilter">Category</label>
+    <select id="categoryFilter" class="filter-select">
+        <option value="all">All Categories</option>
+        <option value="server">Server Maintenance</option>
+        <option value="database">Database</option>
+    </select>
+</div>
+
+<!-- TAMBAHKAN INI: FILTER PROVIDER BARU -->
+<div class="filter-group">
+    <label for="providerFilter">Provider</label>
+    <select id="providerFilter" class="filter-select">
+        <option value="all">All Providers</option>
+        <option value="PG SOFT">PG SOFT</option>
+        <option value="PRAGMATIC PLAY">PRAGMATIC PLAY</option>
+        <option value="JOKER">JOKER</option>
+        <option value="ADVANT PLAY">ADVANT PLAY</option>
+        <option value="MICROGAMING">MICROGAMING</option>
+        <option value="PS STAR">PS STAR</option>
+        <option value="JILI">JILI</option>
+        <option value="HABANERO">HABANERO</option>
+        <option value="CQ9">CQ9</option>
+        <option value="JDB">JDB</option>
+        <option value="GG SOFT">GG SOFT</option>
+        <option value="KING MAKER">KING MAKER</option>
+        <option value="FA CHAI">FA CHAI</option>
+        <option value="FAST SPIN">FAST SPIN</option>
+        <option value="SPADE GAMING">SPADE GAMING</option>
+        <option value="NETENT">NETENT</option>
+        <option value="NOLIMIT CITY">NOLIMIT CITY</option>
+        <option value="RED TIGER">RED TIGER</option>
+        <option value="OCTOPLAY">OCTOPLAY</option>
+        <option value="HACKSAW GAMING">HACKSAW GAMING</option>
+        <option value="FAT PANDA">FAT PANDA</option>
+        <option value="RTG SLOT">RTG SLOT</option>
+        <option value="SIMPLEPLAY">SIMPLEPLAY</option>
+        <option value="SEXY GAME">SEXY GAME</option>
+        <option value="ION CASINO">ION CASINO</option>
+        <option value="SBOBET">SBOBET</option>
+        <option value="EVOLUTION">EVOLUTION</option>
+        <option value="SA GAMING">SA GAMING</option>
+        <option value="UG SPORT">UG SPORT</option>
+        <option value="SABA SPORT">SABA SPORT</option>
+        <option value="MASCOT GAMING">MASCOT GAMING</option>
+        <option value="IDEAL GAMING">IDEAL GAMING</option>
+        <option value="PLAYTECH">PLAYTECH</option>
+        <option value="YELLOW BAT">YELLOW BAT</option>
+    </select>
+</div>
+
+<div class="filter-group">
+    <label for="dateFilter">Due Date</label>
+    <select id="dateFilter" class="filter-select">
+        <option value="all">All Dates</option>
+        <option value="today">Today</option>
+        <option value="tomorrow">Tomorrow</option>
+        <option value="week">This Week</option>
+        <option value="month">This Month</option>
+        <option value="overdue">Overdue</option>
+    </select>
+</div>
         </div>
         
 <div class="maintenance-actions">
@@ -1048,15 +1090,16 @@
             <div class="maintenance-table-container">
                 <table class="maintenance-table" id="maintenanceTable">
 <thead>
-    <tr>
+     <tr>
         <th>Task ID</th>
         <th>Title</th>
         <th>Category</th>
+        <th>Provider</th>        <!-- BARU: ganti Status dengan Provider, pindah Status ke setelah Provider -->
         <th>Status</th>
         <th>Dates</th>
-        <th>Assigned To</th>
+        <th>Assigned To</th>      <!-- Ini akan menampilkan user yang membuat task -->
         <th>Actions</th>
-    </tr>
+     </tr>
 </thead>
                     <tbody id="maintenanceTableBody">
                         <!-- Data will be loaded dynamically -->
@@ -1083,8 +1126,7 @@
             <button class="modal-close" id="closeModal">&times;</button>
         </div>
         <div class="modal-body">
-            <!-- Ganti bagian form di dalam modal dengan ini: -->
-<form id="maintenanceForm">
+            <form id="maintenanceForm">
     <input type="hidden" id="taskId">
     
     <div class="form-row">
@@ -1103,19 +1145,49 @@
         </div>
     </div>
     
+    <!-- FORM ROW BARU UNTUK PROVIDER DAN STATUS -->
     <div class="form-row">
         <div class="form-group">
-            <label for="taskStartDate" class="form-label">Start Date & Time *</label>
-            <input type="datetime-local" id="taskStartDate" class="form-input" required>
+            <label for="taskProvider" class="form-label">Provider *</label>
+            <select id="taskProvider" class="form-select" required>
+                <option value="">Select Provider</option>
+                <option value="PG SOFT">PG SOFT</option>
+                <option value="PRAGMATIC PLAY">PRAGMATIC PLAY</option>
+                <option value="JOKER">JOKER</option>
+                <option value="ADVANT PLAY">ADVANT PLAY</option>
+                <option value="MICROGAMING">MICROGAMING</option>
+                <option value="PS STAR">PS STAR</option>
+                <option value="JILI">JILI</option>
+                <option value="HABANERO">HABANERO</option>
+                <option value="CQ9">CQ9</option>
+                <option value="JDB">JDB</option>
+                <option value="GG SOFT">GG SOFT</option>
+                <option value="KING MAKER">KING MAKER</option>
+                <option value="FA CHAI">FA CHAI</option>
+                <option value="FAST SPIN">FAST SPIN</option>
+                <option value="SPADE GAMING">SPADE GAMING</option>
+                <option value="NETENT">NETENT</option>
+                <option value="NOLIMIT CITY">NOLIMIT CITY</option>
+                <option value="RED TIGER">RED TIGER</option>
+                <option value="OCTOPLAY">OCTOPLAY</option>
+                <option value="HACKSAW GAMING">HACKSAW GAMING</option>
+                <option value="FAT PANDA">FAT PANDA</option>
+                <option value="RTG SLOT">RTG SLOT</option>
+                <option value="SIMPLEPLAY">SIMPLEPLAY</option>
+                <option value="SEXY GAME">SEXY GAME</option>
+                <option value="ION CASINO">ION CASINO</option>
+                <option value="SBOBET">SBOBET</option>
+                <option value="EVOLUTION">EVOLUTION</option>
+                <option value="SA GAMING">SA GAMING</option>
+                <option value="UG SPORT">UG SPORT</option>
+                <option value="SABA SPORT">SABA SPORT</option>
+                <option value="MASCOT GAMING">MASCOT GAMING</option>
+                <option value="IDEAL GAMING">IDEAL GAMING</option>
+                <option value="PLAYTECH">PLAYTECH</option>
+                <option value="YELLOW BAT">YELLOW BAT</option>
+            </select>
         </div>
         
-        <div class="form-group">
-            <label for="taskEndDate" class="form-label">End Date & Time *</label>
-            <input type="datetime-local" id="taskEndDate" class="form-input" required>
-        </div>
-    </div>
-    
-    <div class="form-row">
         <div class="form-group">
             <label for="taskStatus" class="form-label">Status *</label>
             <select id="taskStatus" class="form-select" required>
@@ -1125,10 +1197,17 @@
                 <option value="completed">Completed</option>
             </select>
         </div>
+    </div>
+    
+    <div class="form-row">
+        <div class="form-group">
+            <label for="taskStartDate" class="form-label">Start Date & Time *</label>
+            <input type="datetime-local" id="taskStartDate" class="form-input" required>
+        </div>
         
         <div class="form-group">
-            <label for="taskAssignedTo" class="form-label">Assigned To</label>
-            <input type="text" id="taskAssignedTo" class="form-input" value="Nama Masing-masing">
+            <label for="taskEndDate" class="form-label">End Date & Time *</label>
+            <input type="datetime-local" id="taskEndDate" class="form-input" required>
         </div>
     </div>
     
@@ -1175,6 +1254,10 @@
     let unsubscribeMaintenance = null;
     let maintenanceTasks = [];
 
+    function normalizeProviderValue(value) {
+        return typeof value === 'string' ? value.trim() : '';
+    }
+
     // ========== FUNGSI UTAMA ==========
     
     // Setup listener untuk maintenance reports
@@ -1192,9 +1275,17 @@
                 snapshot.forEach(doc => {
                     const task = doc.data();
                     task.id = doc.id;
+                    task.provider = normalizeProviderValue(task.provider || task.brand);
                     
-                    // Pastikan data yang diperlukan ada
-                    if (task.dateCreated && task.dueDate && task.status) {
+                    // Pastikan data yang diperlukan ada, termasuk startDate dan endDate
+                    if (task.dateCreated && task.status) {
+                        // Jika task lama tidak memiliki startDate/endDate, set default values
+                        if (!task.startDate) {
+                            task.startDate = task.dateCreated;
+                        }
+                        if (!task.endDate) {
+                            task.endDate = task.dueDate || task.dateCreated;
+                        }
                         maintenanceTasks.push(task);
                     } else {
                         console.warn("Invalid maintenance task data:", task);
@@ -1221,6 +1312,7 @@
             }
             
             const taskData = taskDoc.data();
+            taskData.provider = normalizeProviderValue(taskData.provider || taskData.brand);
             
             // Tambahkan tanggal penyelesaian
             taskData.dateCompleted = new Date();
@@ -1250,329 +1342,24 @@
         // Calculate overdue tasks (pending or in-progress tasks with due date in the past)
         const overdueCount = maintenanceTasks.filter(task => {
             return (task.status === 'pending' || task.status === 'in-progress') && 
-                   getDaysLeft(task.dueDate) < 0;
+                   getDaysLeft(task.endDate) < 0;
         }).length;
         
 
     }
 
-    // Render maintenance table
-    function renderMaintenanceTable() {
-        const tableBody = document.getElementById('maintenanceTableBody');
-        const noTasks = document.getElementById('noTasks');
-        const tasksCount = document.getElementById('tasksCount');
-        const statusFilter = document.getElementById('statusFilter').value;
-        const categoryFilter = document.getElementById('categoryFilter').value;
-        const dateFilter = document.getElementById('dateFilter').value;
-        const searchTerm = document.getElementById('maintenanceSearch').value.toLowerCase();
-        
-        let filteredTasks = [...maintenanceTasks];
-        
-        // Apply filters
-        if (statusFilter !== 'all') {
-            filteredTasks = filteredTasks.filter(task => task.status === statusFilter);
-        }
-        
-        if (categoryFilter !== 'all') {
-            filteredTasks = filteredTasks.filter(task => task.category === categoryFilter);
-        }
-        
-        // Apply date filter
-        if (dateFilter !== 'all') {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
-            filteredTasks = filteredTasks.filter(task => {
-                const dueDate = new Date(task.dueDate);
-                dueDate.setHours(0, 0, 0, 0);
-                
-                switch(dateFilter) {
-                    case 'today':
-                        return dueDate.getTime() === today.getTime();
-                    case 'tomorrow':
-                        const tomorrow = new Date(today);
-                        tomorrow.setDate(tomorrow.getDate() + 1);
-                        return dueDate.getTime() === tomorrow.getTime();
-                    case 'week':
-                        const nextWeek = new Date(today);
-                        nextWeek.setDate(nextWeek.getDate() + 7);
-                        return dueDate >= today && dueDate <= nextWeek;
-                    case 'month':
-                        const nextMonth = new Date(today);
-                        nextMonth.setMonth(nextMonth.getMonth() + 1);
-                        return dueDate >= today && dueDate <= nextMonth;
-                    default:
-                        return true;
-                }
-            });
-        }
-        
-        // Apply search
-        if (searchTerm) {
-            filteredTasks = filteredTasks.filter(task => 
-                task.title.toLowerCase().includes(searchTerm) ||
-                (task.description && task.description.toLowerCase().includes(searchTerm)) ||
-                task.id.toLowerCase().includes(searchTerm)
-            );
-        }
-        
-        // Update tasks count
-        tasksCount.textContent = `${filteredTasks.length} task${filteredTasks.length !== 1 ? 's' : ''}`;
-        
-        if (filteredTasks.length === 0) {
-            tableBody.innerHTML = '';
-            noTasks.style.display = 'block';
-            return;
-        }
-        
-        noTasks.style.display = 'none';
-        tableBody.innerHTML = '';
-        
-        // Sort tasks by due date (soonest first) and status
-        filteredTasks.sort((a, b) => {
-            // First by status (pending and in-progress first)
-            const statusOrder = { 'pending': 1, 'in-progress': 2, 'completed': 3 };
-            if (statusOrder[a.status] !== statusOrder[b.status]) {
-                return statusOrder[a.status] - statusOrder[b.status];
-            }
-            
-            // Then by due date (soonest first)
-            const aDue = new Date(a.dueDate);
-            const bDue = new Date(b.dueDate);
-            return aDue - bDue;
-        });
-        
-        // Render each task
-        filteredTasks.forEach(task => {
-            const row = document.createElement('tr');
-            
-            // Get status badge class
-            let statusClass = '';
-            let statusText = '';
-            switch(task.status) {
-                case 'pending':
-                    statusClass = 'status-pending';
-                    statusText = 'Pending';
-                    break;
-                case 'in-progress':
-                    statusClass = 'status-in-progress';
-                    statusText = 'In Progress';
-                    break;
-                case 'completed':
-                    statusClass = 'status-completed';
-                    statusText = 'Completed';
-                    break;
-            }
-            
-            // Format category text
-            let categoryText = '';
-            switch(task.category) {
-                case 'server':
-                    categoryText = 'Server Maintenance';
-                    break;
-                case 'database':
-                    categoryText = 'Database';
-                    break;
-                default:
-                    categoryText = task.category;
-            }
-            
-            row.innerHTML = `
-                <td>${task.id}</td>
-                <td>${task.title}</td>
-                <td>${categoryText}</td>
-                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                <td>
-                    ${formatDisplayDate(task.dueDate)}
-                    <div>${getDaysLeftText(task.dueDate, task.status)}</div>
-                </td>
-                <td>${task.assignedTo || 'Nama Masing-masing'}</td>
-                <td>
-                    <div class="action-buttons">
-                        <button class="btn-icon view" data-id="${task.id}" title="View Details">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="btn-icon edit" data-id="${task.id}" title="Edit Task">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        ${task.status !== 'completed' ? `
-                            <button class="btn-icon complete" data-id="${task.id}" title="Mark as Completed">
-                                <i class="fas fa-check"></i>
-                            </button>
-                        ` : ''}
-                        <button class="btn-icon delete" data-id="${task.id}" title="Delete Task">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </td>
-            `;
-            
-            tableBody.appendChild(row);
-        });
-        
-        // Add event listeners to action buttons
-        document.querySelectorAll('.btn-icon.view').forEach(btn => {
-            btn.addEventListener('click', () => viewTask(btn.dataset.id));
-        });
-        
-        document.querySelectorAll('.btn-icon.edit').forEach(btn => {
-            btn.addEventListener('click', () => editTask(btn.dataset.id));
-        });
-        
-        document.querySelectorAll('.btn-icon.complete').forEach(btn => {
-            btn.addEventListener('click', () => completeTask(btn.dataset.id));
-        });
-        
-        document.querySelectorAll('.btn-icon.delete').forEach(btn => {
-            btn.addEventListener('click', () => deleteTask(btn.dataset.id));
-        });
-    }
-
-    // View task details
-    function viewTask(taskId) {
-        const task = maintenanceTasks.find(t => t.id === taskId);
-        
-        if (task) {
-            // In a real application, you might open a detailed view modal
-            // For now, we'll just show an alert with the task description
-            alert(`Task: ${task.title}\n\nDescription: ${task.description || 'No description'}\n\nNotes: ${task.notes || 'None'}`);
-        }
-    }
-
-    // Edit task
-    function editTask(taskId) {
-        const task = maintenanceTasks.find(t => t.id === taskId);
-        
-        if (task) {
-            // Fill the form with task data
-            document.getElementById('taskId').value = task.id;
-            document.getElementById('taskTitle').value = task.title;
-            document.getElementById('taskCategory').value = task.category;
-            document.getElementById('taskStatus').value = task.status;
-            document.getElementById('taskDueDate').value = task.dueDate;
-            document.getElementById('taskAssignedTo').value = task.assignedTo || 'Nama Masing-masing';
-            document.getElementById('taskDescription').value = task.description || '';
-            document.getElementById('taskNotes').value = task.notes || '';
-            
-            // Update modal title
-            document.getElementById('modalTitle').textContent = 'Edit Maintenance Task';
-            
-            // Show the modal
-            document.getElementById('maintenanceModal').classList.add('active');
-        }
-    }
-
-    // Complete task - DIMODIFIKASI untuk memindahkan data
-    async function completeTask(taskId) {
-        try {
-            // Pindahkan task ke solvedMaintenance
-            const success = await moveToSolvedMaintenance(taskId);
-            
-            if (success) {
-                showNotification('Task completed dan dipindahkan ke arsip!', 'success');
-            }
-            
-        } catch (error) {
-            console.error("Error completing task:", error);
-            showNotification('Error completing task', 'error');
-        }
-    }
-
-    // Delete task
-    async function deleteTask(taskId) {
-        if (confirm('Are you sure you want to delete this task?')) {
-            try {
-                await db.collection('maintenanceReports').doc(taskId).delete();
-                showNotification('Task deleted successfully!', 'success');
-            } catch (error) {
-                console.error("Error deleting task:", error);
-                showNotification('Error deleting task', 'error');
-            }
-        }
-    }
-
-    // Save task (add or update)
-    async function saveTask() {
-        const taskId = document.getElementById('taskId').value;
-        const title = document.getElementById('taskTitle').value;
-        const category = document.getElementById('taskCategory').value;
-        const status = document.getElementById('taskStatus').value;
-        const dueDate = document.getElementById('taskDueDate').value;
-        const assignedTo = document.getElementById('taskAssignedTo').value;
-        const description = document.getElementById('taskDescription').value;
-        const notes = document.getElementById('taskNotes').value;
-        
-        // Basic validation
-        if (!title || !category || !status || !dueDate) {
-            showNotification('Please fill in all required fields.', 'error');
-            return;
-        }
-        
-        try {
-            if (taskId) {
-                // Update existing task
-                await db.collection('maintenanceReports').doc(taskId).update({
-                    title,
-                    category,
-                    status,
-                    dueDate,
-                    assignedTo,
-                    description,
-                    notes,
-                    dateUpdated: new Date()
-                });
-                
-                showNotification('Task updated successfully!', 'success');
-            } else {
-                // Add new task
-                await db.collection('maintenanceReports').add({
-                    title,
-                    category,
-                    status,
-                    dueDate,
-                    assignedTo,
-                    description,
-                    notes,
-                    dateCreated: new Date(),
-                    dateUpdated: new Date()
-                });
-                
-                showNotification('Task added successfully!', 'success');
-            }
-            
-            // Close the modal
-            closeMaintenanceModal();
-            
-        } catch (error) {
-            console.error("Error saving task:", error);
-            showNotification('Error saving task', 'error');
-        }
-    }
-
-   
-
-    // Open add task modal
-    function openAddTaskModal() {
-        // Reset the form
-        document.getElementById('maintenanceForm').reset();
-        document.getElementById('taskId').value = '';
-        document.getElementById('taskAssignedTo').value = 'Nama Masing-masing';
-        
-        // Set default due date to tomorrow
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        document.getElementById('taskDueDate').value = tomorrow.toISOString().split('T')[0];
-        
-        // Update modal title
-        document.getElementById('modalTitle').textContent = 'Add Maintenance Task';
-        
-        // Show the modal
-        document.getElementById('maintenanceModal').classList.add('active');
-    }
-
-    // Close maintenance modal
-    function closeMaintenanceModal() {
-        document.getElementById('maintenanceModal').classList.remove('active');
+    // Format date and time for display
+    function formatDisplayDateTime(dateTimeString) {
+        if (!dateTimeString) return '-';
+        const date = new Date(dateTimeString);
+        const options = { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        };
+        return date.toLocaleDateString('en-US', options);
     }
 
     // Format date for display
@@ -1615,6 +1402,637 @@
         }
     }
 
+    // Helper functions for view modal
+    function getStatusClass(status) {
+        switch(status) {
+            case 'pending': return 'status-pending';
+            case 'in-progress': return 'status-in-progress';
+            case 'completed': return 'status-completed';
+            default: return 'status-pending';
+        }
+    }
+
+    function getStatusText(status) {
+        switch(status) {
+            case 'pending': return 'Pending';
+            case 'in-progress': return 'In Progress';
+            case 'completed': return 'Completed';
+            default: return 'Pending';
+        }
+    }
+
+    function getCategoryText(category) {
+        switch(category) {
+            case 'server': return 'Server Maintenance';
+            case 'database': return 'Database';
+            default: return category;
+        }
+    }
+
+    function getTimeRemainingClass(endDate) {
+        const now = new Date();
+        const end = new Date(endDate);
+        const diffTime = end - now;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (diffDays < 0) return 'time-overdue';
+        if (diffDays === 0) return 'time-warning';
+        if (diffDays <= 3) return 'time-warning';
+        return 'time-normal';
+    }
+
+    function getTimeRemainingText(endDate) {
+        const now = new Date();
+        const end = new Date(endDate);
+        const diffTime = end - now;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (diffDays < 0) return `${Math.abs(diffDays)} days overdue`;
+        if (diffDays === 0) return 'Due today';
+        if (diffDays === 1) return 'Due tomorrow';
+        return `${diffDays} days remaining`;
+    }
+
+    // Close view modal function
+    function closeViewModal() {
+        const modal = document.getElementById('viewTaskModal');
+        if (modal) {
+            modal.remove();
+        }
+    }
+
+    // Render maintenance table - MODIFIED untuk menampilkan Provider dan Assigned To (pembuat)
+    function renderMaintenanceTable() {
+        const tableBody = document.getElementById('maintenanceTableBody');
+        const noTasks = document.getElementById('noTasks');
+        const tasksCount = document.getElementById('tasksCount');
+        const statusFilter = document.getElementById('statusFilter').value;
+        const categoryFilter = document.getElementById('categoryFilter').value;
+        const providerFilter = document.getElementById('providerFilter') ? document.getElementById('providerFilter').value : 'all';
+        const dateFilter = document.getElementById('dateFilter').value;
+        const searchTerm = document.getElementById('maintenanceSearch').value.toLowerCase();
+        
+        let filteredTasks = [...maintenanceTasks];
+        
+        // Apply filters
+        if (statusFilter !== 'all') {
+            filteredTasks = filteredTasks.filter(task => task.status === statusFilter);
+        }
+        
+        if (categoryFilter !== 'all') {
+            filteredTasks = filteredTasks.filter(task => task.category === categoryFilter);
+        }
+        
+        // Apply provider filter
+        if (providerFilter !== 'all') {
+            filteredTasks = filteredTasks.filter(task => task.provider === providerFilter);
+        }
+        
+        // Apply date filter
+        if (dateFilter !== 'all') {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            filteredTasks = filteredTasks.filter(task => {
+                const dueDate = new Date(task.endDate);
+                dueDate.setHours(0, 0, 0, 0);
+                
+                switch(dateFilter) {
+                    case 'today':
+                        return dueDate.getTime() === today.getTime();
+                    case 'tomorrow':
+                        const tomorrow = new Date(today);
+                        tomorrow.setDate(tomorrow.getDate() + 1);
+                        return dueDate.getTime() === tomorrow.getTime();
+                    case 'week':
+                        const nextWeek = new Date(today);
+                        nextWeek.setDate(nextWeek.getDate() + 7);
+                        return dueDate >= today && dueDate <= nextWeek;
+                    case 'month':
+                        const nextMonth = new Date(today);
+                        nextMonth.setMonth(nextMonth.getMonth() + 1);
+                        return dueDate >= today && dueDate <= nextMonth;
+                    default:
+                        return true;
+                }
+            });
+        }
+        
+        // Apply search
+        if (searchTerm) {
+            filteredTasks = filteredTasks.filter(task => 
+                task.title.toLowerCase().includes(searchTerm) ||
+                (task.description && task.description.toLowerCase().includes(searchTerm)) ||
+                task.id.toLowerCase().includes(searchTerm) ||
+                (task.provider && task.provider.toLowerCase().includes(searchTerm))
+            );
+        }
+        
+        // Update tasks count
+        tasksCount.textContent = `${filteredTasks.length} task${filteredTasks.length !== 1 ? 's' : ''}`;
+        
+        if (filteredTasks.length === 0) {
+            tableBody.innerHTML = '';
+            noTasks.style.display = 'block';
+            return;
+        }
+        
+        noTasks.style.display = 'none';
+        tableBody.innerHTML = '';
+        
+        // Sort tasks by due date (soonest first) and status
+        filteredTasks.sort((a, b) => {
+            // First by status (pending and in-progress first)
+            const statusOrder = { 'pending': 1, 'in-progress': 2, 'completed': 3 };
+            if (statusOrder[a.status] !== statusOrder[b.status]) {
+                return statusOrder[a.status] - statusOrder[b.status];
+            }
+            
+            // Then by due date (soonest first)
+            const aDue = new Date(a.endDate);
+            const bDue = new Date(b.endDate);
+            return aDue - bDue;
+        });
+        
+        // Render each task
+        filteredTasks.forEach(task => {
+            const row = document.createElement('tr');
+            
+            // Get status badge class
+            let statusClass = '';
+            let statusText = '';
+            switch(task.status) {
+                case 'pending':
+                    statusClass = 'status-pending';
+                    statusText = 'Pending';
+                    break;
+                case 'in-progress':
+                    statusClass = 'status-in-progress';
+                    statusText = 'In Progress';
+                    break;
+                case 'completed':
+                    statusClass = 'status-completed';
+                    statusText = 'Completed';
+                    break;
+            }
+            
+            // Format category text
+            let categoryText = '';
+            switch(task.category) {
+                case 'server':
+                    categoryText = 'Server Maintenance';
+                    break;
+                case 'database':
+                    categoryText = 'Database';
+                    break;
+                default:
+                    categoryText = task.category;
+            }
+            
+            // Format dates with time
+            const startDateTime = task.startDate ? formatDisplayDateTime(task.startDate) : '-';
+            const endDateTime = task.endDate ? formatDisplayDateTime(task.endDate) : '-';
+            
+            // Get assigned by (who created the task)
+            const assignedBy = task.createdBy || task.assignedBy || (currentUser ? (currentUser.displayName || currentUser.email) : 'System');
+            
+            row.innerHTML = `
+                <td>${task.id}</td>
+                <td>${task.title}</td>
+                <td>${categoryText}</td>
+                <td><strong>${task.provider || '-'}</strong></td>
+                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                <td>
+                    <div><strong>Start:</strong> ${startDateTime}</div>
+                    <div><strong>End:</strong> ${endDateTime}</div>
+                    <div>${getDaysLeftText(task.endDate, task.status)}</div>
+                </td>
+                <td>${assignedBy}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button type="button" class="btn-icon view" data-action="view" data-id="${task.id}" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button type="button" class="btn-icon edit" data-action="edit" data-id="${task.id}" title="Edit Task">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        ${task.status !== 'completed' ? `
+                            <button type="button" class="btn-icon complete" data-action="complete" data-id="${task.id}" title="Mark as Completed">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        ` : ''}
+                        <button type="button" class="btn-icon delete" data-action="delete" data-id="${task.id}" title="Delete Task">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            `;
+            
+            tableBody.appendChild(row);
+        });
+        
+        // Action buttons are handled by delegated click listener on the table body.
+    }
+
+    // View task details - MODIFIED untuk menampilkan provider dan pembuat
+    function viewTask(taskId) {
+        const task = maintenanceTasks.find(t => t.id === taskId);
+        
+        if (task) {
+            // Create detailed view modal
+            const assignedBy = task.createdBy || task.assignedBy || (currentUser ? (currentUser.displayName || currentUser.email) : 'System');
+            
+            const modalHTML = `
+                <div class="modal-overlay active" id="viewTaskModal">
+                    <div class="modal" style="max-width: 600px;">
+                        <div class="modal-header">
+                            <h3 class="modal-title">
+                                <i class="fas fa-eye"></i> Task Details
+                            </h3>
+                            <button class="modal-close" id="closeViewModal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="task-detail-view">
+                                <!-- Task Header -->
+                                <div class="task-header">
+                                    <div class="task-title-section">
+                                        <h2 class="task-title">${task.title}</h2>
+                                        <span class="status-badge large ${getStatusClass(task.status)}">
+                                            ${getStatusText(task.status)}
+                                        </span>
+                                    </div>
+                                    <div class="task-meta">
+                                        <div class="task-id">Task ID: ${task.id}</div>
+                                        <div class="task-category">${getCategoryText(task.category)}</div>
+                                        <div class="task-provider"><strong>Provider:</strong> ${task.provider || '-'}</div>
+                                    </div>
+                                </div>
+
+                                <!-- Timeline -->
+                                <div class="timeline-section">
+                                    <h4 class="section-subtitle">
+                                        <i class="fas fa-clock"></i> Timeline
+                                    </h4>
+                                    <div class="timeline">
+                                        <div class="timeline-item">
+                                            <div class="timeline-icon start">
+                                                <i class="fas fa-play-circle"></i>
+                                            </div>
+                                            <div class="timeline-content">
+                                                <div class="timeline-label">Start Date & Time</div>
+                                                <div class="timeline-value">${formatDisplayDateTime(task.startDate)}</div>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-item">
+                                            <div class="timeline-icon end">
+                                                <i class="fas fa-flag-checkered"></i>
+                                            </div>
+                                            <div class="timeline-content">
+                                                <div class="timeline-label">End Date & Time</div>
+                                                <div class="timeline-value">${formatDisplayDateTime(task.endDate)}</div>
+                                                <div class="time-remaining ${getTimeRemainingClass(task.endDate)}">
+                                                    ${getTimeRemainingText(task.endDate)}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Task Details -->
+                                <div class="details-grid">
+                                    <div class="detail-item">
+                                        <div class="detail-label">
+                                            <i class="fas fa-building"></i> Provider
+                                        </div>
+                                        <div class="detail-value">${task.provider || '-'}</div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">
+                                            <i class="fas fa-user"></i> Created By
+                                        </div>
+                                        <div class="detail-value">${assignedBy}</div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">
+                                            <i class="fas fa-layer-group"></i> Category
+                                        </div>
+                                        <div class="detail-value">${getCategoryText(task.category)}</div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">
+                                            <i class="fas fa-flag"></i> Status
+                                        </div>
+                                        <div class="detail-value">
+                                            <span class="status-badge ${getStatusClass(task.status)}">
+                                                ${getStatusText(task.status)}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">
+                                            <i class="fas fa-calendar-plus"></i> Created
+                                        </div>
+                                        <div class="detail-value">${formatDisplayDateTime(task.dateCreated)}</div>
+                                    </div>
+                                </div>
+
+                                <!-- Description -->
+                                ${task.description ? `
+                                <div class="description-section">
+                                    <h4 class="section-subtitle">
+                                        <i class="fas fa-align-left"></i> Description
+                                    </h4>
+                                    <div class="description-content">
+                                        ${task.description}
+                                    </div>
+                                </div>
+                                ` : ''}
+
+                                <!-- Notes -->
+                                ${task.notes ? `
+                                <div class="notes-section">
+                                    <h4 class="section-subtitle">
+                                        <i class="fas fa-sticky-note"></i> Notes
+                                    </h4>
+                                    <div class="notes-content">
+                                        ${task.notes}
+                                    </div>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-outline" id="editFromViewBtn" data-id="${task.id}">
+                                <i class="fas fa-edit"></i> Edit Task
+                            </button>
+                            ${task.status !== 'completed' ? `
+                            <button class="btn btn-primary" id="completeFromViewBtn" data-id="${task.id}">
+                                <i class="fas fa-check"></i> Mark as Completed
+                            </button>
+                            ` : ''}
+                            <button class="btn btn-secondary" id="closeViewBtn">
+                                <i class="fas fa-times"></i> Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Add modal to body
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+            // Add event listeners for the view modal
+            document.getElementById('closeViewModal').addEventListener('click', closeViewModal);
+            document.getElementById('closeViewBtn').addEventListener('click', closeViewModal);
+            document.getElementById('editFromViewBtn').addEventListener('click', function() {
+                closeViewModal();
+                editTask(this.dataset.id);
+            });
+            
+            if (document.getElementById('completeFromViewBtn')) {
+                document.getElementById('completeFromViewBtn').addEventListener('click', function() {
+                    closeViewModal();
+                    completeTask(this.dataset.id);
+                });
+            }
+
+            // Close modal when clicking outside
+            document.getElementById('viewTaskModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeViewModal();
+                }
+            });
+        }
+    }
+
+    // Edit task - MODIFIED untuk mengisi provider
+    function editTask(taskId) {
+        const task = maintenanceTasks.find(t => t.id === taskId);
+        
+        if (task) {
+            // Fill the form with task data
+            document.getElementById('taskId').value = task.id;
+            document.getElementById('taskTitle').value = task.title;
+            document.getElementById('taskCategory').value = task.category;
+            document.getElementById('taskProvider').value = task.provider || '';
+            document.getElementById('taskStatus').value = task.status;
+            document.getElementById('taskStartDate').value = task.startDate || '';
+            document.getElementById('taskEndDate').value = task.endDate || '';
+            document.getElementById('taskDescription').value = task.description || '';
+            document.getElementById('taskNotes').value = task.notes || '';
+            
+            // Update modal title
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Maintenance Task';
+            
+            // Show the modal
+            document.getElementById('maintenanceModal').classList.add('active');
+        }
+    }
+
+    // Complete task - DIMODIFIKASI untuk memindahkan data
+    async function completeTask(taskId) {
+        try {
+            // Pindahkan task ke solvedMaintenance
+            const success = await moveToSolvedMaintenance(taskId);
+            
+            if (success) {
+                showNotification('Task completed dan dipindahkan ke arsip!', 'success');
+            }
+            
+        } catch (error) {
+            console.error("Error completing task:", error);
+            showNotification('Error completing task', 'error');
+        }
+    }
+
+    function setupTableActionDelegation() {
+        const tableBody = document.getElementById('maintenanceTableBody');
+        if (!tableBody || tableBody.dataset.actionDelegationBound === 'true') return;
+
+        tableBody.dataset.actionDelegationBound = 'true';
+        tableBody.addEventListener('click', function(event) {
+            const button = event.target.closest('button[data-action]');
+            if (!button) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const taskId = button.dataset.id;
+            const action = button.dataset.action;
+
+            if (!taskId || !action) return;
+
+            if (action === 'view') viewTask(taskId);
+            if (action === 'edit') editTask(taskId);
+            if (action === 'complete') completeTask(taskId);
+            if (action === 'delete') deleteTask(taskId);
+        });
+    }
+
+    // Delete task
+    async function deleteTask(taskId) {
+        const confirmed = window.confirm(`Are you sure you want to delete task ${taskId}?`);
+        if (!confirmed) return;
+
+        try {
+            console.log('Deleting task:', taskId);
+            const taskRef = db.collection('maintenanceReports').doc(taskId);
+            const taskSnap = await taskRef.get();
+
+            if (!taskSnap.exists) {
+                showNotification('Task not found or already deleted.', 'error');
+                return;
+            }
+
+            await taskRef.delete();
+            maintenanceTasks = maintenanceTasks.filter(task => task.id !== taskId);
+            renderMaintenanceTable();
+            updateMaintenanceStats();
+            showNotification('Task deleted successfully!', 'success');
+        } catch (error) {
+            console.error('Error deleting task:', error);
+            showNotification(`Error deleting task: ${error.message || 'Unknown error'}`, 'error');
+        }
+    }
+
+    // Save task (add or update) - MODIFIED untuk menyimpan provider dan createdBy
+    async function saveTask() {
+        const taskId = document.getElementById('taskId').value;
+        const title = document.getElementById('taskTitle').value;
+        const category = document.getElementById('taskCategory').value;
+        const provider = normalizeProviderValue(document.getElementById('taskProvider').value);
+        const status = document.getElementById('taskStatus').value;
+        const startDate = document.getElementById('taskStartDate').value;
+        const endDate = document.getElementById('taskEndDate').value;
+        const description = document.getElementById('taskDescription').value;
+        const notes = document.getElementById('taskNotes').value;
+        
+        // Basic validation
+        if (!title || !category || !provider || !status || !startDate || !endDate) {
+            showNotification('Please fill in all required fields.', 'error');
+            return;
+        }
+        
+        // Validate date range
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        
+        if (start >= end) {
+            showNotification('End date must be after start date.', 'error');
+            return;
+        }
+        
+        try {
+            // Get current user display name
+            const userName = currentUser ? (currentUser.displayName || currentUser.email) : 'System';
+            
+            if (taskId) {
+                // Update existing task
+                await db.collection('maintenanceReports').doc(taskId).update({
+                    title,
+                    category,
+                    provider,
+                    status,
+                    startDate,
+                    endDate,
+                    description,
+                    notes,
+                    dateUpdated: new Date()
+                });
+                
+                showNotification('Task updated successfully!', 'success');
+            } else {
+                // Add new task with createdBy info
+                await db.collection('maintenanceReports').add({
+                    title,
+                    category,
+                    provider,
+                    status,
+                    startDate,
+                    endDate,
+                    description,
+                    notes,
+                    createdBy: userName,
+                    assignedBy: userName,
+                    dateCreated: new Date(),
+                    dateUpdated: new Date()
+                });
+                
+                showNotification('Task added successfully!', 'success');
+            }
+            
+            // Close the modal
+            closeMaintenanceModal();
+            
+        } catch (error) {
+            console.error("Error saving task:", error);
+            showNotification('Error saving task', 'error');
+        }
+    }
+
+    // Open add task modal - MODIFIED untuk default provider kosong
+    function openAddTaskModal() {
+        // Reset the form
+        document.getElementById('maintenanceForm').reset();
+        document.getElementById('taskId').value = '';
+        
+        // Set default start date to current date and time
+        const now = new Date();
+        const startDate = now.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:mm
+        document.getElementById('taskStartDate').value = startDate;
+        
+        // Set default end date to tomorrow same time
+        const tomorrow = new Date(now);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const endDate = tomorrow.toISOString().slice(0, 16);
+        document.getElementById('taskEndDate').value = endDate;
+        
+        // Update modal title
+        document.getElementById('modalTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Add Maintenance Task';
+        
+        // Show the modal
+        document.getElementById('maintenanceModal').classList.add('active');
+    }
+
+    // Close maintenance modal
+    function closeMaintenanceModal() {
+        document.getElementById('maintenanceModal').classList.remove('active');
+    }
+
+    // Show notification function
+    function showNotification(message, type) {
+        console.log(`${type}: ${message}`);
+        alert(message);
+    }
+
+    // Setup date validation untuk start date dan end date
+    function setupDateValidation() {
+        const startDateInput = document.getElementById('taskStartDate');
+        const endDateInput = document.getElementById('taskEndDate');
+        
+        if (startDateInput && endDateInput) {
+            startDateInput.addEventListener('change', validateDateTimeRange);
+            endDateInput.addEventListener('change', validateDateTimeRange);
+        }
+    }
+
+    function validateDateTimeRange() {
+        const startDate = document.getElementById('taskStartDate').value;
+        const endDate = document.getElementById('taskEndDate').value;
+        
+        if (startDate && endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            
+            if (start >= end) {
+                document.getElementById('taskEndDate').style.borderColor = 'var(--error)';
+                showNotification('End date must be after start date', 'error');
+            } else {
+                document.getElementById('taskEndDate').style.borderColor = '';
+            }
+        }
+    }
+
     // Initialize the page
     function initMaintenancePage() {
         // Check authentication state
@@ -1627,6 +2045,7 @@
                 setupMaintenanceListener();
                 
                 // Add event listeners
+                setupTableActionDelegation();
                 document.getElementById('addMaintenanceBtn').addEventListener('click', openAddTaskModal);
                 document.getElementById('addFirstTaskBtn').addEventListener('click', openAddTaskModal);
                 document.getElementById('saveTaskBtn').addEventListener('click', saveTask);
@@ -1641,10 +2060,16 @@
                 // Add event listeners to filters
                 document.getElementById('statusFilter').addEventListener('change', renderMaintenanceTable);
                 document.getElementById('categoryFilter').addEventListener('change', renderMaintenanceTable);
+                if (document.getElementById('providerFilter')) {
+                    document.getElementById('providerFilter').addEventListener('change', renderMaintenanceTable);
+                }
                 document.getElementById('dateFilter').addEventListener('change', renderMaintenanceTable);
                 
                 // Add event listener to search input
                 document.getElementById('maintenanceSearch').addEventListener('input', renderMaintenanceTable);
+                
+                // Setup date validation
+                setupDateValidation();
                 
                 // Close modal when clicking outside
                 document.getElementById('maintenanceModal').addEventListener('click', (e) => {
@@ -1668,871 +2093,228 @@
             } else {
                 // User not logged in, redirect to login page
                 console.log("User not logged in, redirecting...");
-                window.location.href = "index.html";
+                window.location.href = "login.html";
             }
         });
     }
 
     // Initialize the page when DOM is loaded
     document.addEventListener('DOMContentLoaded', initMaintenancePage);
+    
     // ========== SISTEM TERJEMAHAN MAINTENANCE ==========
 
-// Fungsi untuk menerapkan terjemahan maintenance
-function applyMaintenanceTranslations(language) {
-    const lang = translations[language] || translations['id'];
-    
-    if (!lang) return;
+    // Fungsi untuk menerapkan terjemahan maintenance
+    function applyMaintenanceTranslations(language) {
+        const lang = translations[language] || translations['id'];
+        
+        if (!lang) return;
 
-    console.log("Applying maintenance translations for:", language);
+        console.log("Applying maintenance translations for:", language);
 
-    // Terjemahkan elemen utama
-    const elements = {
-        'maintenanceTitle': '.header h1',
-        'statusFilter': '.filter-group:nth-child(1) label',
-        'categoryFilter': '.filter-group:nth-child(2) label',
-        'dateFilter': '.filter-group:nth-child(3) label',
-        'searchPlaceholder': '#maintenanceSearch',
-        'maintenanceTasks': '.section-title',
-        'noMaintenanceTasks': '#noTasks h3',
-        'noMaintenanceTasksMessage': '#noTasks p'
-    };
+        // Terjemahkan elemen utama
+        const elements = {
+            'maintenanceTitle': '.header h1',
+            'statusFilter': '.filter-group:nth-child(1) label',
+            'categoryFilter': '.filter-group:nth-child(2) label',
+            'providerFilter': '.filter-group:nth-child(3) label',
+            'dateFilter': '.filter-group:nth-child(4) label',
+            'searchPlaceholder': '#maintenanceSearch',
+            'maintenanceTasks': '.section-title',
+            'noMaintenanceTasks': '#noTasks h3',
+            'noMaintenanceTasksMessage': '#noTasks p'
+        };
 
-    Object.keys(elements).forEach(key => {
-        const element = document.querySelector(elements[key]);
-        if (element && lang[key]) {
-            if (key === 'searchPlaceholder') {
-                element.placeholder = lang[key];
+        Object.keys(elements).forEach(key => {
+            const element = document.querySelector(elements[key]);
+            if (element && lang[key]) {
+                if (key === 'searchPlaceholder') {
+                    element.placeholder = lang[key];
+                } else {
+                    // Simpan ikon jika ada
+                    const iconMatch = element.innerHTML.match(/(<i[^>]*><\/i>)/);
+                    if (iconMatch) {
+                        element.innerHTML = iconMatch[0] + ' ' + lang[key];
+                    } else {
+                        element.textContent = lang[key];
+                    }
+                }
+            }
+        });
+
+        // Update tombol
+        const addTaskButton = document.getElementById('addMaintenanceBtn');
+        const refreshButton = document.getElementById('refreshBtn');
+        const addFirstTaskButton = document.getElementById('addFirstTaskBtn');
+        const saveTaskButton = document.getElementById('saveTaskBtn');
+        const cancelButton = document.getElementById('cancelBtn');
+
+        if (addTaskButton && lang.addNewTask) {
+            addTaskButton.innerHTML = `<i class="fas fa-plus"></i> ${lang.addNewTask}`;
+        }
+        if (refreshButton && lang.refresh) {
+            refreshButton.innerHTML = `<i class="fas fa-sync-alt"></i> ${lang.refresh}`;
+        }
+        if (addFirstTaskButton && lang.addFirstTask) {
+            addFirstTaskButton.innerHTML = `<i class="fas fa-plus"></i> ${lang.addFirstTask}`;
+        }
+        if (saveTaskButton && lang.saveTask) {
+            saveTaskButton.innerHTML = `<i class="fas fa-save"></i> ${lang.saveTask}`;
+        }
+        if (cancelButton && lang.cancel) {
+            cancelButton.textContent = lang.cancel;
+        }
+
+        // Update judul modal
+        const modalTitle = document.getElementById('modalTitle');
+        if (modalTitle && lang.addMaintenanceTask) {
+            // Cek apakah sedang edit atau add
+            const taskId = document.getElementById('taskId').value;
+            if (taskId) {
+                modalTitle.innerHTML = `<i class="fas fa-edit"></i> ${lang.editTask}`;
             } else {
-                // Simpan ikon jika ada
-                const iconMatch = element.innerHTML.match(/(<i[^>]*><\/i>)/);
+                modalTitle.innerHTML = `<i class="fas fa-plus-circle"></i> ${lang.addMaintenanceTask}`;
+            }
+        }
+
+        // Update label form
+        updateMaintenanceFormLabels(language);
+        
+        // Update header tabel
+        updateMaintenanceTableHeaders(language);
+        
+        // Update opsi filter
+        updateMaintenanceFilterOptions(language);
+    }
+
+    // Update label form maintenance
+    function updateMaintenanceFormLabels(language) {
+        const lang = translations[language] || translations['id'];
+        
+        const formLabels = {
+            'taskTitle': 'Title',
+            'taskCategory': 'Category',
+            'taskProvider': 'Provider',
+            'taskStatus': 'Status',
+            'taskStartDate': 'Start Date & Time',
+            'taskEndDate': 'End Date & Time',
+            'taskDescription': 'Description',
+            'taskNotes': 'Notes'
+        };
+
+        Object.keys(formLabels).forEach(fieldId => {
+            const label = document.querySelector(`label[for="${fieldId}"]`);
+            const translationKey = formLabels[fieldId].toLowerCase().replace(/[ &]/g, '');
+            if (label && lang[translationKey]) {
+                // Hapus ikon yang mungkin sudah ada
+                const iconMatch = label.innerHTML.match(/(<i[^>]*><\/i>)/);
                 if (iconMatch) {
-                    element.innerHTML = iconMatch[0] + ' ' + lang[key];
+                    label.innerHTML = iconMatch[0] + ' ' + lang[translationKey];
                 } else {
-                    element.textContent = lang[key];
+                    label.innerHTML = `<i class="fas ${getIconForField(fieldId)}"></i> ${lang[translationKey]}`;
                 }
             }
-        }
-    });
-
-    // Update tombol
-    const addTaskButton = document.getElementById('addMaintenanceBtn');
-    const refreshButton = document.getElementById('refreshBtn');
-    const addFirstTaskButton = document.getElementById('addFirstTaskBtn');
-    const saveTaskButton = document.getElementById('saveTaskBtn');
-    const cancelButton = document.getElementById('cancelBtn');
-
-    if (addTaskButton && lang.addNewTask) {
-        addTaskButton.innerHTML = `<i class="fas fa-plus"></i> ${lang.addNewTask}`;
-    }
-    if (refreshButton && lang.refresh) {
-        refreshButton.innerHTML = `<i class="fas fa-sync-alt"></i> ${lang.refresh}`;
-    }
-    if (addFirstTaskButton && lang.addFirstTask) {
-        addFirstTaskButton.innerHTML = `<i class="fas fa-plus"></i> ${lang.addFirstTask}`;
-    }
-    if (saveTaskButton && lang.saveTask) {
-        saveTaskButton.innerHTML = `<i class="fas fa-save"></i> ${lang.saveTask}`;
-    }
-    if (cancelButton && lang.cancel) {
-        cancelButton.textContent = lang.cancel;
+        });
     }
 
-    // Update judul modal
-    const modalTitle = document.getElementById('modalTitle');
-    if (modalTitle && lang.addMaintenanceTask) {
-        // Cek apakah sedang edit atau add
-        const taskId = document.getElementById('taskId').value;
-        if (taskId) {
-            modalTitle.innerHTML = `<i class="fas fa-edit"></i> ${lang.editTask}`;
-        } else {
-            modalTitle.innerHTML = `<i class="fas fa-plus-circle"></i> ${lang.addMaintenanceTask}`;
-        }
+    function getIconForField(fieldId) {
+        const icons = {
+            'taskTitle': 'fa-tag',
+            'taskCategory': 'fa-layer-group',
+            'taskProvider': 'fa-building',
+            'taskStatus': 'fa-flag',
+            'taskStartDate': 'fa-calendar-alt',
+            'taskEndDate': 'fa-calendar-check',
+            'taskDescription': 'fa-align-left',
+            'taskNotes': 'fa-sticky-note'
+        };
+        return icons[fieldId] || 'fa-pen';
     }
 
-    // Update label form
-    updateMaintenanceFormLabels(language);
-    
-    // Update header tabel
-    updateMaintenanceTableHeaders(language);
-    
-    // Update opsi filter
-    updateMaintenanceFilterOptions(language);
-}
-
-// Update label form maintenance
-function updateMaintenanceFormLabels(language) {
-    const lang = translations[language] || translations['id'];
-    
-    const formLabels = {
-        'taskTitle': 'Title',
-        'taskCategory': 'Category',
-        'taskStatus': 'Status',
-        'taskDueDate': 'Due Date',
-        'taskAssignedTo': 'Assigned To',
-        'taskDescription': 'Description',
-        'taskNotes': 'Notes'
-    };
-
-    Object.keys(formLabels).forEach(fieldId => {
-        const label = document.querySelector(`label[for="${fieldId}"]`);
-        const translationKey = formLabels[fieldId].toLowerCase().replace(' ', '');
-        if (label && lang[translationKey]) {
-            label.textContent = lang[translationKey];
-        }
-    });
-}
-
-// Update header tabel maintenance
-function updateMaintenanceTableHeaders(language) {
-    const lang = translations[language] || translations['id'];
-    
-    const headers = document.querySelectorAll('.maintenance-table th');
-    const headerTranslations = [
-        'taskId',
-        'title',
-        'category',
-        'status',
-        'dueDate',
-        'assignedTo',
-        'actions'
-    ];
-
-    headers.forEach((header, index) => {
-        const translationKey = headerTranslations[index];
-        if (lang[translationKey]) {
-            header.textContent = lang[translationKey];
-        }
-    });
-}
-
-// Update opsi filter maintenance
-function updateMaintenanceFilterOptions(language) {
-    const lang = translations[language] || translations['id'];
-    
-    // Status filter
-    const statusFilter = document.getElementById('statusFilter');
-    if (statusFilter) {
-        if (lang.allStatus) statusFilter.options[0].text = lang.allStatus;
-        if (lang.pending) statusFilter.options[1].text = lang.pending;
-        if (lang.inProgress) statusFilter.options[2].text = lang.inProgress;
-    }
-    
-    // Category filter
-    const categoryFilter = document.getElementById('categoryFilter');
-    if (categoryFilter) {
-        if (lang.allCategories) categoryFilter.options[0].text = lang.allCategories;
-        if (lang.serverMaintenance) categoryFilter.options[1].text = lang.serverMaintenance;
-        if (lang.database) categoryFilter.options[2].text = lang.database;
-    }
-    
-    // Date filter
-    const dateFilter = document.getElementById('dateFilter');
-    if (dateFilter) {
-        if (lang.allDates) dateFilter.options[0].text = lang.allDates;
-        if (lang.today) dateFilter.options[1].text = lang.today;
-        if (lang.tomorrow) dateFilter.options[2].text = lang.tomorrow;
-        if (lang.thisWeek) dateFilter.options[3].text = lang.thisWeek;
-        if (lang.thisMonth) dateFilter.options[4].text = lang.thisMonth;
-        if (lang.overdue) dateFilter.options[5].text = lang.overdue;
-    }
-}
-
-// ========== INISIALISASI BAHASA MAINTENANCE ==========
-
-function initializeMaintenanceLanguage() {
-    const savedLanguage = localStorage.getItem('language') || 'id';
-    console.log("Initializing maintenance with language:", savedLanguage);
-    
-    // Terapkan terjemahan
-    applyMaintenanceTranslations(savedLanguage);
-    
-    // Setup listener untuk perubahan bahasa
-    window.addEventListener('languageChanged', function(event) {
-        console.log("Maintenance language changed to:", event.detail.language);
-        applyMaintenanceTranslations(event.detail.language);
-    });
-}
-
-// Panggil inisialisasi
-document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(() => {
-        initializeMaintenanceLanguage();
-    }, 100);
-});
-// ========== FUNGSI TAMBAHAN UNTUK START DATE DAN END DATE ==========
-
-// Update renderMaintenanceTable untuk menampilkan start date dan end date dengan waktu
-function renderMaintenanceTable() {
-    const tableBody = document.getElementById('maintenanceTableBody');
-    const noTasks = document.getElementById('noTasks');
-    const tasksCount = document.getElementById('tasksCount');
-    const statusFilter = document.getElementById('statusFilter').value;
-    const categoryFilter = document.getElementById('categoryFilter').value;
-    const dateFilter = document.getElementById('dateFilter').value;
-    const searchTerm = document.getElementById('maintenanceSearch').value.toLowerCase();
-    
-    let filteredTasks = [...maintenanceTasks];
-    
-    // Apply filters
-    if (statusFilter !== 'all') {
-        filteredTasks = filteredTasks.filter(task => task.status === statusFilter);
-    }
-    
-    if (categoryFilter !== 'all') {
-        filteredTasks = filteredTasks.filter(task => task.category === categoryFilter);
-    }
-    
-    // Apply date filter
-    if (dateFilter !== 'all') {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+    // Update header tabel maintenance
+    function updateMaintenanceTableHeaders(language) {
+        const lang = translations[language] || translations['id'];
         
-        filteredTasks = filteredTasks.filter(task => {
-            const dueDate = new Date(task.dueDate);
-            dueDate.setHours(0, 0, 0, 0);
-            
-            switch(dateFilter) {
-                case 'today':
-                    return dueDate.getTime() === today.getTime();
-                case 'tomorrow':
-                    const tomorrow = new Date(today);
-                    tomorrow.setDate(tomorrow.getDate() + 1);
-                    return dueDate.getTime() === tomorrow.getTime();
-                case 'week':
-                    const nextWeek = new Date(today);
-                    nextWeek.setDate(nextWeek.getDate() + 7);
-                    return dueDate >= today && dueDate <= nextWeek;
-                case 'month':
-                    const nextMonth = new Date(today);
-                    nextMonth.setMonth(nextMonth.getMonth() + 1);
-                    return dueDate >= today && dueDate <= nextMonth;
-                default:
-                    return true;
+        const headers = document.querySelectorAll('.maintenance-table th');
+        const headerTranslations = [
+            'taskId',
+            'title',
+            'category',
+            'provider',
+            'status',
+            'dates',
+            'assignedTo',
+            'actions'
+        ];
+
+        headers.forEach((header, index) => {
+            const translationKey = headerTranslations[index];
+            if (lang[translationKey]) {
+                header.textContent = lang[translationKey];
             }
         });
     }
-    
-    // Apply search
-    if (searchTerm) {
-        filteredTasks = filteredTasks.filter(task => 
-            task.title.toLowerCase().includes(searchTerm) ||
-            (task.description && task.description.toLowerCase().includes(searchTerm)) ||
-            task.id.toLowerCase().includes(searchTerm)
-        );
-    }
-    
-    // Update tasks count
-    tasksCount.textContent = `${filteredTasks.length} task${filteredTasks.length !== 1 ? 's' : ''}`;
-    
-    if (filteredTasks.length === 0) {
-        tableBody.innerHTML = '';
-        noTasks.style.display = 'block';
-        return;
-    }
-    
-    noTasks.style.display = 'none';
-    tableBody.innerHTML = '';
-    
-    // Sort tasks by due date (soonest first) and status
-    filteredTasks.sort((a, b) => {
-        // First by status (pending and in-progress first)
-        const statusOrder = { 'pending': 1, 'in-progress': 2, 'completed': 3 };
-        if (statusOrder[a.status] !== statusOrder[b.status]) {
-            return statusOrder[a.status] - statusOrder[b.status];
+
+    // Update opsi filter maintenance
+    function updateMaintenanceFilterOptions(language) {
+        const lang = translations[language] || translations['id'];
+        
+        // Status filter
+        const statusFilter = document.getElementById('statusFilter');
+        if (statusFilter) {
+            if (lang.allStatus) statusFilter.options[0].text = lang.allStatus;
+            if (lang.pending) statusFilter.options[1].text = lang.pending;
+            if (lang.inProgress) statusFilter.options[2].text = lang.inProgress;
+            if (lang.completed && statusFilter.options[3]) statusFilter.options[3].text = lang.completed;
         }
         
-        // Then by due date (soonest first)
-        const aDue = new Date(a.dueDate);
-        const bDue = new Date(b.dueDate);
-        return aDue - bDue;
-    });
-    
-    // Render each task
-    filteredTasks.forEach(task => {
-        const row = document.createElement('tr');
-        
-        // Get status badge class
-        let statusClass = '';
-        let statusText = '';
-        switch(task.status) {
-            case 'pending':
-                statusClass = 'status-pending';
-                statusText = 'Pending';
-                break;
-            case 'in-progress':
-                statusClass = 'status-in-progress';
-                statusText = 'In Progress';
-                break;
-            case 'completed':
-                statusClass = 'status-completed';
-                statusText = 'Completed';
-                break;
+        // Category filter
+        const categoryFilter = document.getElementById('categoryFilter');
+        if (categoryFilter) {
+            if (lang.allCategories) categoryFilter.options[0].text = lang.allCategories;
+            if (lang.serverMaintenance) categoryFilter.options[1].text = lang.serverMaintenance;
+            if (lang.database) categoryFilter.options[2].text = lang.database;
         }
         
-        // Format category text
-        let categoryText = '';
-        switch(task.category) {
-            case 'server':
-                categoryText = 'Server Maintenance';
-                break;
-            case 'database':
-                categoryText = 'Database';
-                break;
-            default:
-                categoryText = task.category;
+        // Provider filter
+        const providerFilter = document.getElementById('providerFilter');
+        if (providerFilter && lang.allProviders) {
+            providerFilter.options[0].text = lang.allProviders;
         }
         
-        // Format dates with time
-        const startDateTime = task.startDate ? formatDisplayDateTime(task.startDate) : '-';
-        const endDateTime = task.endDate ? formatDisplayDateTime(task.endDate) : '-';
-        
-        row.innerHTML = `
-            <td>${task.id}</td>
-            <td>${task.title}</td>
-            <td>${categoryText}</td>
-            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-            <td>
-                <div><strong>Start:</strong> ${startDateTime}</div>
-                <div><strong>End:</strong> ${endDateTime}</div>
-                <div>${getDaysLeftText(task.dueDate, task.status)}</div>
-            </td>
-            <td>${task.assignedTo || 'Nama Masing-masing'}</td>
-            <td>
-                <div class="action-buttons">
-                    <button class="btn-icon view" data-id="${task.id}" title="View Details">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="btn-icon edit" data-id="${task.id}" title="Edit Task">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    ${task.status !== 'completed' ? `
-                        <button class="btn-icon complete" data-id="${task.id}" title="Mark as Completed">
-                            <i class="fas fa-check"></i>
-                        </button>
-                    ` : ''}
-                    <button class="btn-icon delete" data-id="${task.id}" title="Delete Task">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </td>
-        `;
-        
-        tableBody.appendChild(row);
-    });
-    
-    // Add event listeners to action buttons
-    document.querySelectorAll('.btn-icon.view').forEach(btn => {
-        btn.addEventListener('click', () => viewTask(btn.dataset.id));
-    });
-    
-    document.querySelectorAll('.btn-icon.edit').forEach(btn => {
-        btn.addEventListener('click', () => editTask(btn.dataset.id));
-    });
-    
-    document.querySelectorAll('.btn-icon.complete').forEach(btn => {
-        btn.addEventListener('click', () => completeTask(btn.dataset.id));
-    });
-    
-    document.querySelectorAll('.btn-icon.delete').forEach(btn => {
-        btn.addEventListener('click', () => deleteTask(btn.dataset.id));
-    });
-}
-
-// Format date and time for display
-function formatDisplayDateTime(dateTimeString) {
-    const date = new Date(dateTimeString);
-    const options = { 
-        year: 'numeric', 
-        month: 'short', 
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    };
-    return date.toLocaleDateString('en-US', options);
-}
-
-// Update openAddTaskModal untuk menambahkan start date dan end date dengan waktu
-function openAddTaskModal() {
-    // Reset the form
-    document.getElementById('maintenanceForm').reset();
-    document.getElementById('taskId').value = '';
-    document.getElementById('taskAssignedTo').value = 'Nama Masing-masing';
-    
-    // Set default start date to current date and time
-    const now = new Date();
-    const startDate = now.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:mm
-    document.getElementById('taskStartDate').value = startDate;
-    
-    // Set default end date to tomorrow same time
-    const tomorrow = new Date(now);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const endDate = tomorrow.toISOString().slice(0, 16);
-    document.getElementById('taskEndDate').value = endDate;
-    
-    // Update modal title
-    document.getElementById('modalTitle').textContent = 'Add Maintenance Task';
-    
-    // Show the modal
-    document.getElementById('maintenanceModal').classList.add('active');
-}
-
-// Update saveTask untuk handle start date dan end date dengan waktu
-async function saveTask() {
-    const taskId = document.getElementById('taskId').value;
-    const title = document.getElementById('taskTitle').value;
-    const category = document.getElementById('taskCategory').value;
-    const status = document.getElementById('taskStatus').value;
-    const startDate = document.getElementById('taskStartDate').value;
-    const endDate = document.getElementById('taskEndDate').value;
-    const assignedTo = document.getElementById('taskAssignedTo').value;
-    const description = document.getElementById('taskDescription').value;
-    const notes = document.getElementById('taskNotes').value;
-    
-    // Basic validation
-    if (!title || !category || !status || !startDate || !endDate) {
-        showNotification('Please fill in all required fields.', 'error');
-        return;
-    }
-    
-    // Validate date range
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    
-    if (start >= end) {
-        showNotification('End date must be after start date.', 'error');
-        return;
-    }
-    
-    try {
-        if (taskId) {
-            // Update existing task
-            await db.collection('maintenanceReports').doc(taskId).update({
-                title,
-                category,
-                status,
-                startDate,
-                endDate,
-                assignedTo,
-                description,
-                notes,
-                dateUpdated: new Date()
-            });
-            
-            showNotification('Task updated successfully!', 'success');
-        } else {
-            // Add new task
-            await db.collection('maintenanceReports').add({
-                title,
-                category,
-                status,
-                startDate,
-                endDate,
-                assignedTo,
-                description,
-                notes,
-                dateCreated: new Date(),
-                dateUpdated: new Date()
-            });
-            
-            showNotification('Task added successfully!', 'success');
-        }
-        
-        // Close the modal
-        closeMaintenanceModal();
-        
-    } catch (error) {
-        console.error("Error saving task:", error);
-        showNotification('Error saving task', 'error');
-    }
-}
-
-// Update editTask untuk mengisi start date dan end date
-function editTask(taskId) {
-    const task = maintenanceTasks.find(t => t.id === taskId);
-    
-    if (task) {
-        // Fill the form with task data
-        document.getElementById('taskId').value = task.id;
-        document.getElementById('taskTitle').value = task.title;
-        document.getElementById('taskCategory').value = task.category;
-        document.getElementById('taskStatus').value = task.status;
-        document.getElementById('taskStartDate').value = task.startDate || '';
-        document.getElementById('taskEndDate').value = task.endDate || '';
-        document.getElementById('taskAssignedTo').value = task.assignedTo || 'Nama Masing-masing';
-        document.getElementById('taskDescription').value = task.description || '';
-        document.getElementById('taskNotes').value = task.notes || '';
-        
-        // Update modal title
-        document.getElementById('modalTitle').textContent = 'Edit Maintenance Task';
-        
-        // Show the modal
-        document.getElementById('maintenanceModal').classList.add('active');
-    }
-}
-
-// Setup date validation untuk start date dan end date
-function setupDateValidation() {
-    const startDateInput = document.getElementById('taskStartDate');
-    const endDateInput = document.getElementById('taskEndDate');
-    
-    if (startDateInput && endDateInput) {
-        startDateInput.addEventListener('change', validateDateTimeRange);
-        endDateInput.addEventListener('change', validateDateTimeRange);
-    }
-}
-
-function validateDateTimeRange() {
-    const startDate = document.getElementById('taskStartDate').value;
-    const endDate = document.getElementById('taskEndDate').value;
-    
-    if (startDate && endDate) {
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-        
-        if (start >= end) {
-            document.getElementById('taskEndDate').style.borderColor = 'var(--error)';
-            showNotification('End date must be after start date', 'error');
-        } else {
-            document.getElementById('taskEndDate').style.borderColor = '';
+        // Date filter
+        const dateFilter = document.getElementById('dateFilter');
+        if (dateFilter) {
+            if (lang.allDates) dateFilter.options[0].text = lang.allDates;
+            if (lang.today) dateFilter.options[1].text = lang.today;
+            if (lang.tomorrow) dateFilter.options[2].text = lang.tomorrow;
+            if (lang.thisWeek) dateFilter.options[3].text = lang.thisWeek;
+            if (lang.thisMonth) dateFilter.options[4].text = lang.thisMonth;
+            if (lang.overdue) dateFilter.options[5].text = lang.overdue;
         }
     }
-}
 
-// Update setupMaintenanceListener untuk handle startDate dan endDate
-function setupMaintenanceListener() {
-    if (unsubscribeMaintenance) {
-        unsubscribeMaintenance();
-    }
-    
-    const maintenanceRef = db.collection('maintenanceReports');
+    // ========== INISIALISASI BAHASA MAINTENANCE ==========
 
-    unsubscribeMaintenance = maintenanceRef
-        .orderBy('dateCreated', 'desc')
-        .onSnapshot(snapshot => {
-            maintenanceTasks = [];
-            snapshot.forEach(doc => {
-                const task = doc.data();
-                task.id = doc.id;
-                
-                // Pastikan data yang diperlukan ada, termasuk startDate dan endDate
-                if (task.dateCreated && task.status) {
-                    // Jika task lama tidak memiliki startDate/endDate, set default values
-                    if (!task.startDate) {
-                        task.startDate = task.dateCreated;
-                    }
-                    if (!task.endDate) {
-                        task.endDate = task.dueDate || task.dateCreated;
-                    }
-                    maintenanceTasks.push(task);
-                } else {
-                    console.warn("Invalid maintenance task data:", task);
-                }
-            });
-
-            renderMaintenanceTable();
-            updateMaintenanceStats();
-
-        }, error => {
-            console.error("Error fetching maintenance tasks:", error);
-            showNotification("Error loading maintenance tasks", "error");
-        });
-}
-
-// Update initMaintenancePage untuk menambahkan date validation
-function initMaintenancePage() {
-    // Check authentication state
-    auth.onAuthStateChanged((user) => {
-        if (user) {
-            currentUser = user;
-            console.log("User logged in:", user.uid);
-            
-            // Setup listener for maintenance reports
-            setupMaintenanceListener();
-            
-            // Add event listeners
-            document.getElementById('addMaintenanceBtn').addEventListener('click', openAddTaskModal);
-            document.getElementById('addFirstTaskBtn').addEventListener('click', openAddTaskModal);
-            document.getElementById('saveTaskBtn').addEventListener('click', saveTask);
-            document.getElementById('closeModal').addEventListener('click', closeMaintenanceModal);
-            document.getElementById('cancelBtn').addEventListener('click', closeMaintenanceModal);
-            document.getElementById('refreshBtn').addEventListener('click', () => {
-                renderMaintenanceTable();
-                updateMaintenanceStats();
-                showNotification('Maintenance tasks refreshed.', 'success');
-            });
-            
-            // Add event listeners to filters
-            document.getElementById('statusFilter').addEventListener('change', renderMaintenanceTable);
-            document.getElementById('categoryFilter').addEventListener('change', renderMaintenanceTable);
-            document.getElementById('dateFilter').addEventListener('change', renderMaintenanceTable);
-            
-            // Add event listener to search input
-            document.getElementById('maintenanceSearch').addEventListener('input', renderMaintenanceTable);
-            
-            // Setup date validation
-            setupDateValidation();
-            
-            // Close modal when clicking outside
-            document.getElementById('maintenanceModal').addEventListener('click', (e) => {
-                if (e.target === document.getElementById('maintenanceModal')) {
-                    closeMaintenanceModal();
-                }
-            });
-            
-            // Toggle sidebar functionality
-            const menuToggle = document.querySelector('.menu-toggle');
-            const sidebar = document.querySelector('.sidebar');
-            const mainContent = document.querySelector('.main-content');
-
-            if (menuToggle && sidebar && mainContent) {
-                menuToggle.addEventListener('click', () => {
-                    sidebar.classList.toggle('collapsed');
-                    mainContent.classList.toggle('sidebar-collapsed');
-                });
-            }
-            
-        } else {
-            // User not logged in, redirect to login page
-            console.log("User not logged in, redirecting...");
-            window.location.href = "login.html";
-        }
-    });
-}
-// Update viewTask function dengan modal yang lebih menarik
-function viewTask(taskId) {
-    const task = maintenanceTasks.find(t => t.id === taskId);
-    
-    if (task) {
-        // Create detailed view modal
-        const modalHTML = `
-            <div class="modal-overlay active" id="viewTaskModal">
-                <div class="modal" style="max-width: 600px;">
-                    <div class="modal-header">
-                        <h3 class="modal-title">
-                            <i class="fas fa-eye"></i> Task Details
-                        </h3>
-                        <button class="modal-close" id="closeViewModal">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="task-detail-view">
-                            <!-- Task Header -->
-                            <div class="task-header">
-                                <div class="task-title-section">
-                                    <h2 class="task-title">${task.title}</h2>
-                                    <span class="status-badge large ${getStatusClass(task.status)}">
-                                        ${getStatusText(task.status)}
-                                    </span>
-                                </div>
-                                <div class="task-meta">
-                                    <div class="task-id">Task ID: ${task.id}</div>
-                                    <div class="task-category">${getCategoryText(task.category)}</div>
-                                </div>
-                            </div>
-
-                            <!-- Timeline -->
-                            <div class="timeline-section">
-                                <h4 class="section-subtitle">
-                                    <i class="fas fa-clock"></i> Timeline
-                                </h4>
-                                <div class="timeline">
-                                    <div class="timeline-item">
-                                        <div class="timeline-icon start">
-                                            <i class="fas fa-play-circle"></i>
-                                        </div>
-                                        <div class="timeline-content">
-                                            <div class="timeline-label">Start Date & Time</div>
-                                            <div class="timeline-value">${formatDisplayDateTime(task.startDate)}</div>
-                                        </div>
-                                    </div>
-                                    <div class="timeline-item">
-                                        <div class="timeline-icon end">
-                                            <i class="fas fa-flag-checkered"></i>
-                                        </div>
-                                        <div class="timeline-content">
-                                            <div class="timeline-label">End Date & Time</div>
-                                            <div class="timeline-value">${formatDisplayDateTime(task.endDate)}</div>
-                                            <div class="time-remaining ${getTimeRemainingClass(task.endDate)}">
-                                                ${getTimeRemainingText(task.endDate)}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Task Details -->
-                            <div class="details-grid">
-                                <div class="detail-item">
-                                    <div class="detail-label">
-                                        <i class="fas fa-user"></i> Assigned To
-                                    </div>
-                                    <div class="detail-value">${task.assignedTo || 'Nama Masing-masing'}</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">
-                                        <i class="fas fa-layer-group"></i> Category
-                                    </div>
-                                    <div class="detail-value">${getCategoryText(task.category)}</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">
-                                        <i class="fas fa-flag"></i> Status
-                                    </div>
-                                    <div class="detail-value">
-                                        <span class="status-badge ${getStatusClass(task.status)}">
-                                            ${getStatusText(task.status)}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">
-                                        <i class="fas fa-calendar-plus"></i> Created
-                                    </div>
-                                    <div class="detail-value">${formatDisplayDateTime(task.dateCreated)}</div>
-                                </div>
-                            </div>
-
-                            <!-- Description -->
-                            ${task.description ? `
-                            <div class="description-section">
-                                <h4 class="section-subtitle">
-                                    <i class="fas fa-align-left"></i> Description
-                                </h4>
-                                <div class="description-content">
-                                    ${task.description}
-                                </div>
-                            </div>
-                            ` : ''}
-
-                            <!-- Notes -->
-                            ${task.notes ? `
-                            <div class="notes-section">
-                                <h4 class="section-subtitle">
-                                    <i class="fas fa-sticky-note"></i> Notes
-                                </h4>
-                                <div class="notes-content">
-                                    ${task.notes}
-                                </div>
-                            </div>
-                            ` : ''}
-
-                            <!-- Progress Bar (for in-progress tasks) -->
-                            ${task.status === 'in-progress' ? `
-                            <div class="progress-section">
-                                <h4 class="section-subtitle">
-                                    <i class="fas fa-tasks"></i> Progress
-                                </h4>
-                                <div class="progress-bar-container">
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" style="width: 50%"></div>
-                                    </div>
-                                    <div class="progress-text">50% Complete</div>
-                                </div>
-                            </div>
-                            ` : ''}
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-outline" id="editFromViewBtn" data-id="${task.id}">
-                            <i class="fas fa-edit"></i> Edit Task
-                        </button>
-                        ${task.status !== 'completed' ? `
-                        <button class="btn btn-primary" id="completeFromViewBtn" data-id="${task.id}">
-                            <i class="fas fa-check"></i> Mark as Completed
-                        </button>
-                        ` : ''}
-                        <button class="btn btn-secondary" id="closeViewBtn">
-                            <i class="fas fa-times"></i> Close
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        // Add modal to body
-        document.body.insertAdjacentHTML('beforeend', modalHTML);
-
-        // Add event listeners for the view modal
-        document.getElementById('closeViewModal').addEventListener('click', closeViewModal);
-        document.getElementById('closeViewBtn').addEventListener('click', closeViewModal);
-        document.getElementById('editFromViewBtn').addEventListener('click', function() {
-            closeViewModal();
-            editTask(this.dataset.id);
-        });
+    function initializeMaintenanceLanguage() {
+        const savedLanguage = localStorage.getItem('language') || 'id';
+        console.log("Initializing maintenance with language:", savedLanguage);
         
-        if (document.getElementById('completeFromViewBtn')) {
-            document.getElementById('completeFromViewBtn').addEventListener('click', function() {
-                closeViewModal();
-                completeTask(this.dataset.id);
-            });
-        }
-
-        // Close modal when clicking outside
-        document.getElementById('viewTaskModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeViewModal();
-            }
+        // Terapkan terjemahan
+        applyMaintenanceTranslations(savedLanguage);
+        
+        // Setup listener untuk perubahan bahasa
+        window.addEventListener('languageChanged', function(event) {
+            console.log("Maintenance language changed to:", event.detail.language);
+            applyMaintenanceTranslations(event.detail.language);
         });
     }
-}
 
-// Helper functions for view modal
-function getStatusClass(status) {
-    switch(status) {
-        case 'pending': return 'status-pending';
-        case 'in-progress': return 'status-in-progress';
-        case 'completed': return 'status-completed';
-        default: return 'status-pending';
-    }
-}
-
-function getStatusText(status) {
-    switch(status) {
-        case 'pending': return 'Pending';
-        case 'in-progress': return 'In Progress';
-        case 'completed': return 'Completed';
-        default: return 'Pending';
-    }
-}
-
-function getCategoryText(category) {
-    switch(category) {
-        case 'server': return 'Server Maintenance';
-        case 'database': return 'Database';
-        default: return category;
-    }
-}
-
-function getTimeRemainingClass(endDate) {
-    const now = new Date();
-    const end = new Date(endDate);
-    const diffTime = end - now;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    if (diffDays < 0) return 'time-overdue';
-    if (diffDays === 0) return 'time-warning';
-    if (diffDays <= 3) return 'time-warning';
-    return 'time-normal';
-}
-
-function getTimeRemainingText(endDate) {
-    const now = new Date();
-    const end = new Date(endDate);
-    const diffTime = end - now;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    if (diffDays < 0) return `${Math.abs(diffDays)} days overdue`;
-    if (diffDays === 0) return 'Due today';
-    if (diffDays === 1) return 'Due tomorrow';
-    return `${diffDays} days remaining`;
-}
-
-// Close view modal function
-function closeViewModal() {
-    const modal = document.getElementById('viewTaskModal');
-    if (modal) {
-        modal.remove();
-    }
-}
+    // Panggil inisialisasi
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(() => {
+            initializeMaintenanceLanguage();
+        }, 100);
+    });
 </script>
 </body>
 </html>

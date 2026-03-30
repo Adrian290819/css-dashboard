@@ -1057,7 +1057,365 @@
         transform: translateY(0);
     }
 }
-    </style>
+    
+/* ========== MOBILE STRUCTURE IMPROVEMENTS ========== */
+@media (max-width: 768px) {
+    .main-content {
+        padding: 12px;
+    }
+
+    .header {
+        padding: 14px;
+        margin-bottom: 14px;
+        border-radius: 18px;
+    }
+
+    .header h1 {
+        margin: 0 0 14px 0;
+        font-size: 1.3rem;
+        line-height: 1.3;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .header-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .search-bar {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .search-bar input {
+        width: 100%;
+    }
+
+    .user-profile {
+        width: 100%;
+        justify-content: flex-start;
+        padding: 12px 14px;
+        border-radius: 16px;
+    }
+
+    .profile-img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .chart-section {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        margin-bottom: 14px;
+    }
+
+    .chart-card,
+    .activities-section,
+    .maintenance-filters {
+        padding: 14px;
+        border-radius: 18px;
+    }
+
+    .chart-header,
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .chart-title,
+    .section-title {
+        line-height: 1.35;
+    }
+
+    .chart-header .filter-select,
+    .section-actions,
+    .export-options,
+    .btn-export {
+        width: 100%;
+    }
+
+    .chart-canvas-container {
+        height: 220px;
+    }
+
+    .maintenance-filters {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .filter-group {
+        gap: 6px;
+    }
+
+    .filter-select {
+        width: 100%;
+        height: 44px;
+        font-size: 14px;
+    }
+
+    .maintenance-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+
+    .maintenance-actions > div[style] {
+        display: none;
+    }
+
+    .maintenance-actions .btn,
+    .maintenance-actions .btn-export,
+    #deleteAllMaintenanceBtn {
+        width: 100% !important;
+        justify-content: center;
+        margin-left: 0 !important;
+    }
+
+    .export-dropdown {
+        left: 0;
+        right: 0;
+        min-width: 100%;
+    }
+
+    .maintenance-table-container {
+        overflow: visible;
+        border: none;
+        margin-bottom: 0;
+        box-shadow: none;
+    }
+
+    .maintenance-table,
+    .maintenance-table thead,
+    .maintenance-table tbody,
+    .maintenance-table th,
+    .maintenance-table td,
+    .maintenance-table tr {
+        display: block;
+        width: 100%;
+    }
+
+    .maintenance-table {
+        min-width: 0;
+        border-spacing: 0;
+    }
+
+    .maintenance-table thead {
+        display: none;
+    }
+
+    .maintenance-table tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .maintenance-table tr {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        box-shadow: var(--shadow-xs);
+        overflow: hidden;
+        padding: 6px 0;
+    }
+
+    .maintenance-table tr:hover {
+        background-color: var(--card-bg);
+    }
+
+    .maintenance-table tr:hover td {
+        transform: none;
+    }
+
+    .maintenance-table td {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 14px;
+        text-align: right;
+        white-space: normal;
+        line-height: 1.5;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .maintenance-table td:last-child {
+        border-bottom: none;
+    }
+
+    .maintenance-table td::before {
+        content: attr(data-label);
+        flex: 0 0 42%;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    .maintenance-table td > div {
+        max-width: 58%;
+    }
+
+    .action-buttons {
+        width: 100%;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .btn-icon {
+        width: 38px;
+        height: 38px;
+    }
+
+    .empty-state {
+        padding: 24px 16px;
+        border-radius: 18px;
+    }
+
+    .empty-state i {
+        font-size: 2.4rem;
+    }
+
+    .pagination {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .pagination .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .page-numbers {
+        text-align: center;
+    }
+
+    .modal {
+        width: calc(100% - 20px);
+        max-height: 88vh;
+        margin: 10px;
+        border-radius: 20px;
+    }
+
+    .modal-header {
+        padding: 16px;
+        border-radius: 20px 20px 0 0;
+    }
+
+    .modal-title {
+        font-size: 1.08rem;
+        line-height: 1.35;
+    }
+
+    .modal-body {
+        padding: 16px;
+    }
+
+    .modal-footer {
+        padding: 14px 16px 16px;
+        flex-direction: column;
+    }
+
+    .modal-footer .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .form-row,
+    .time-tracking {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .detail-section {
+        padding: 14px;
+        border-radius: 16px;
+        margin-bottom: 14px;
+    }
+
+    .detail-section-title {
+        font-size: 1rem;
+        line-height: 1.35;
+    }
+
+    .form-input-static,
+    .text-content,
+    .time-track-item {
+        padding: 14px;
+    }
+
+    .notification-dropdown {
+        width: min(92vw, 340px);
+        right: -10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content {
+        padding: 10px;
+    }
+
+    .header,
+    .chart-card,
+    .activities-section,
+    .maintenance-filters {
+        padding: 12px;
+    }
+
+    .header h1 {
+        font-size: 1.15rem;
+    }
+
+    .chart-title,
+    .section-title {
+        font-size: 1rem;
+    }
+
+    .maintenance-table td {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+        gap: 6px;
+    }
+
+    .maintenance-table td::before {
+        flex: none;
+    }
+
+    .maintenance-table td > div {
+        max-width: 100%;
+    }
+
+    .action-buttons {
+        justify-content: flex-start;
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .modal-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+}
+
+</style>
 </head>
 <body>
     <div id="sidebar-container">
@@ -1067,9 +1425,6 @@
     <div class="main-content">
         <div class="header">
             <div id="notificationContainer"></div>
-            <button class="menu-toggle">
-                <i class="fas fa-bars"></i>
-            </button>
             <h1><i class="fas fa-check-double"></i> Completed Maintenance</h1>
             
             <div class="header-actions">
@@ -1156,6 +1511,7 @@
                     <option value="PG SOFT">PG SOFT</option>
                     <option value="PRAGMATIC PLAY">PRAGMATIC PLAY</option>
                     <option value="JOKER">JOKER</option>
+                    <option value="AWC">AWC</option>
                     <option value="ADVANT PLAY">ADVANT PLAY</option>
                     <option value="MICROGAMING">MICROGAMING</option>
                     <option value="PS STAR">PS STAR</option>
@@ -1988,7 +2344,7 @@ async function updateSolvedMaintenanceUI() {
     if (solvedMaintenance.length === 0) {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="9" class="empty-state">
+                <td colspan="8" class="empty-state">
                     <i class="fas fa-database"></i>
                     <h3>No Completed Maintenance Found</h3>
                     <p>There are no completed maintenance tasks in the database yet.</p>
@@ -2030,7 +2386,7 @@ async function updateSolvedMaintenanceUI() {
     if (currentPageMaintenance.length === 0) {
         const emptyRow = document.createElement('tr');
         emptyRow.innerHTML = `
-            <td colspan="9" style="text-align: center; padding: 40px 20px;">
+            <td colspan="8" style="text-align: center; padding: 40px 20px;">
                 <i class="fas fa-inbox" style="font-size: 3rem; color: var(--text-tertiary); margin-bottom: 15px; display: block;"></i>
                 <h3 style="color: var(--text-secondary); margin-bottom: 10px;">No completed maintenance found</h3>
                 <p style="color: var(--text-tertiary);">Try adjusting your filters or check back later.</p>
@@ -2070,14 +2426,14 @@ async function updateSolvedMaintenanceUI() {
         ` : '';
         
         row.innerHTML = `
-            <td>${maintenance.id.substring(0, 8)}...</td>
-            <td>${maintenance.title || 'N/A'}</td>
-            <td>${maintenance.category || 'N/A'}</td>
-            <td>${providerName}</td>
-            <td>${completedDate}</td>
-            <td>${completionTime}</td>
-            <td>${assignedReporter}</td>
-            <td>
+            <td data-label="Task ID">${maintenance.id.substring(0, 8)}...</td>
+            <td data-label="Title">${maintenance.title || 'N/A'}</td>
+            <td data-label="Category">${maintenance.category || 'N/A'}</td>
+            <td data-label="Provider">${providerName}</td>
+            <td data-label="Completed At">${completedDate}</td>
+            <td data-label="Completion Time">${completionTime}</td>
+            <td data-label="Assigned To">${assignedReporter}</td>
+            <td data-label="Actions">
                 <div class="action-buttons">
                     <button class="btn-icon view" data-id="${maintenance.id}" title="View Details">
                         <i class="fas fa-eye"></i>

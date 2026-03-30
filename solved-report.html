@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
     <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="global.css">
-        <link rel="stylesheet" href="stylemobile.css">
+        <link rel="stylesheet" href="stylemobile.css"> 
         <script src="global-time.js"></script>
     <style>
 :root {
@@ -1907,7 +1907,6 @@
         </div>
     </div>
 
-    <script src="translations.js"></script>
     <script src="sidebar-loader.js"></script>
     <script src="user-profile.js"></script>
     
@@ -2029,6 +2028,12 @@ async function updateSolvedReportsUI() {
     const tableBody = document.getElementById('solvedReportsTableBody');
     const reportsCount = document.getElementById('reportsCount');
     
+    // Cek apakah elemen ada
+    if (!tableBody) {
+        console.error('Table body element not found');
+        return;
+    }
+    
     // Cek role user
     const isAdmin = await isSuperAdmin();
     
@@ -2039,20 +2044,21 @@ async function updateSolvedReportsUI() {
             <tr>
                 <td colspan="11" class="empty-state">
                     <i class="fas fa-database"></i>
-                    <h3>No Solved Reports Found</h3>
-                    <p>There are no completed reports in the database yet.</p>
+                    <h3>${getSolvedTranslation('noReportsFound')}</h3>
+                    <p>${getSolvedTranslation('noReportsDescription')}</p>
                 </td>
             </tr>
         `;
-        reportsCount.textContent = '0';
+        if (reportsCount) reportsCount.textContent = '0';
         return;
     }
     
     const filteredReports = filterReports(solvedReports);
     
-    // Update counter dengan jumlah yang sudah difilter
-    reportsCount.textContent = filteredReports.length;
-    console.log(`Filtered reports count: ${filteredReports.length}`);
+    // Update counter
+    if (reportsCount) {
+        reportsCount.textContent = filteredReports.length;
+    }
     
     // Reset ke halaman 1 saat filter berubah
     const previousFilteredCount = window.previousFilteredCount || 0;
@@ -2063,10 +2069,15 @@ async function updateSolvedReportsUI() {
     
     // Pagination
     const totalPages = Math.ceil(filteredReports.length / reportsPerPage);
-    document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+    const pageInfo = document.getElementById('pageInfo');
+    if (pageInfo) {
+        pageInfo.textContent = `${getSolvedTranslation('page')} ${currentPage} ${getSolvedTranslation('of')} ${totalPages}`;
+    }
     
-    document.getElementById('prevPage').disabled = currentPage === 1;
-    document.getElementById('nextPage').disabled = currentPage === totalPages || totalPages === 0;
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+    if (prevBtn) prevBtn.disabled = currentPage === 1;
+    if (nextBtn) nextBtn.disabled = currentPage === totalPages || totalPages === 0;
     
     const startIndex = (currentPage - 1) * reportsPerPage;
     const endIndex = Math.min(startIndex + reportsPerPage, filteredReports.length);
@@ -2080,52 +2091,49 @@ async function updateSolvedReportsUI() {
         emptyRow.innerHTML = `
             <td colspan="11" style="text-align: center; padding: 40px 20px;">
                 <i class="fas fa-inbox" style="font-size: 3rem; color: var(--text-tertiary); margin-bottom: 15px; display: block;"></i>
-                <h3 style="color: var(--text-secondary); margin-bottom: 10px;">No solved reports found</h3>
-                <p style="color: var(--text-tertiary);">Try adjusting your filters or check back later.</p>
+                <h3 style="color: var(--text-secondary); margin-bottom: 10px;">${getSolvedTranslation('noFilteredReports')}</h3>
+                <p style="color: var(--text-tertiary);">${getSolvedTranslation('noReportsDescription')}</p>
             </td>
         `;
         tableBody.appendChild(emptyRow);
         return;
     }
     
-    // Process each report asynchronously
+    // Process each report
     for (const report of currentPageReports) {
         const row = document.createElement('tr');
         
-        // Format dates
         const reportedDate = report.dateCreated ? formatDate(report.dateCreated.toDate()) : 'N/A';
         const resolvedDate = report.dateSolved ? formatDate(report.dateSolved.toDate()) : 'N/A';
-        
-        // Get user name
         const reportedBy = await getCachedUserName(report.userId);
         
-        // Tampilkan screenshot jika ada
-        let screenshotHtml = '<span class="text-muted">No screenshot</span>';
+        let screenshotHtml = `<span class="text-muted">${getSolvedTranslation('noScreenshot')}</span>`;
         if (report.screenshotUrl) {
             screenshotHtml = `<a href="#" class="screenshot-link" onclick="event.preventDefault(); viewScreenshot('${report.screenshotUrl}');">
-                <i class="fas fa-image"></i> View Screenshot
+                <i class="fas fa-image"></i> ${getSolvedTranslation('viewScreenshot')}
             </a>`;
         }
         
-        // Hanya super admin yang bisa melihat tombol hapus
         const deleteButtonHtml = isAdmin ? 
-            `<button class="btn-icon delete" data-id="${report.id}" title="Delete Report">
+            `<button class="btn-icon delete" data-id="${report.id}" title="${getSolvedTranslation('delete')}">
                 <i class="fas fa-trash"></i>
             </button>` : '';
+        
+        const statusText = report.status === 'completed' ? getSolvedTranslation('statusCompleted') : getSolvedTranslation('statusReopened');
         
         row.innerHTML = `
             <td>${report.id}</td>
             <td>${report.brand || 'N/A'}</td>
             <td>${reportedBy}</td>
-            <td>${report.title || 'No Title'}</td>
+            <td>${report.title || getSolvedTranslation('noTitle')}</td>
             <td>${report.category || 'N/A'}</td>
             <td>${screenshotHtml}</td>
             <td>${reportedDate}</td>
             <td>${resolvedDate}</td>
-            <td><span class="status-badge status-${report.status}">${report.status}</span></td>
+            <td><span class="status-badge status-${report.status}">${statusText}</span></td>
             <td>
                 <div class="action-buttons">
-                    <button class="btn-icon view" data-id="${report.id}" title="View Details">
+                    <button class="btn-icon view" data-id="${report.id}" title="${getSolvedTranslation('viewDetails')}">
                         <i class="fas fa-eye"></i>
                     </button>
                     ${deleteButtonHtml}
@@ -2136,7 +2144,7 @@ async function updateSolvedReportsUI() {
         tableBody.appendChild(row);
     }
     
-    // Add event listeners to view buttons
+    // Add event listeners
     document.querySelectorAll('.btn-icon.view').forEach(button => {
         button.addEventListener('click', function() {
             const reportId = this.getAttribute('data-id');
@@ -2144,7 +2152,6 @@ async function updateSolvedReportsUI() {
         });
     });
     
-    // Add event listeners to delete buttons - HANYA UNTUK SUPER ADMIN
     if (isAdmin) {
         document.querySelectorAll('.btn-icon.delete').forEach(button => {
             button.addEventListener('click', function() {
@@ -2592,7 +2599,7 @@ async function showReportDetails(reportId) {
     const report = solvedReports.find(r => r.id === reportId);
     
     if (!report) {
-        showToast("Report not found", "error");
+        showToast(getSolvedTranslation('reportNotFound'), "error");
         return;
     }
     
@@ -2600,107 +2607,102 @@ async function showReportDetails(reportId) {
     
     const modalContent = document.getElementById('reportDetailsContent');
     
-    // Format dates
     const reportedDate = report.dateCreated ? formatDateTime(report.dateCreated.toDate()) : 'N/A';
     const resolvedDate = report.dateSolved ? formatDateTime(report.dateSolved.toDate()) : 'N/A';
-    
-    // Get user names
     const reportedBy = await getCachedUserName(report.userId);
     
-    // Dapatkan nama user yang menyelesaikan report sesuai data dari pending report
     let completedBy = 'N/A';
     const completedByRaw = report.completedByName || report.completedBy || report.resolvedBy || report.resolvedByName || null;
-
+    
     if (completedByRaw) {
         const looksLikeUid = typeof completedByRaw === 'string' && /^[A-Za-z0-9_-]{20,}$/.test(completedByRaw);
         completedBy = looksLikeUid ? await getCachedUserName(completedByRaw) : completedByRaw;
     }
     
-    // Tampilkan screenshot jika ada
-    let screenshotHtml = '<span class="text-muted">No screenshot attached</span>';
+    let screenshotHtml = `<span class="text-muted">${getSolvedTranslation('noScreenshot')}</span>`;
     if (report.screenshotUrl) {
         screenshotHtml = `<a href="#" class="screenshot-link" onclick="event.preventDefault(); viewScreenshot('${report.screenshotUrl}');">
-            <i class="fas fa-image"></i> View Screenshot
+            <i class="fas fa-image"></i> ${getSolvedTranslation('viewScreenshot')}
         </a>`;
     }
     
-    console.log(`Completed by: ${completedBy} (raw: ${completedByRaw || 'N/A'})`);
-    
-    // Calculate resolution time
     let resolutionTime = 'N/A';
     if (report.dateCreated && report.dateSolved) {
-        const reportedTime = report.dateCreated.toDate();
-        const solvedTime = report.dateSolved.toDate();
-        const diffHours = Math.abs(solvedTime - reportedTime) / 36e5;
-        resolutionTime = `${Math.round(diffHours)} hours`;
+        const diffHours = Math.abs(report.dateSolved.toDate() - report.dateCreated.toDate()) / 36e5;
+        if (diffHours < 1) {
+            resolutionTime = `${Math.round(diffHours * 60)} ${getSolvedTranslation('minutes')}`;
+        } else if (diffHours < 24) {
+            resolutionTime = `${Math.round(diffHours)} ${getSolvedTranslation('hours')}`;
+        } else {
+            resolutionTime = `${Math.round(diffHours / 24)} ${getSolvedTranslation('days')}`;
+        }
     }
+    
+    const statusText = report.status === 'completed' ? getSolvedTranslation('statusCompleted') : getSolvedTranslation('statusReopened');
     
     modalContent.innerHTML = `
         <div class="report-details">
             <div class="report-detail-item">
-                <span class="report-detail-label">Report ID</span>
+                <span class="report-detail-label">${getSolvedTranslation('reportIdLabel')}</span>
                 <span class="report-detail-value">${report.id}</span>
             </div>
             <div class="report-detail-item">
-                <span class="report-detail-label">Brand</span>
+                <span class="report-detail-label">${getSolvedTranslation('brandLabel')}</span>
                 <span class="report-detail-value">${report.brand || 'N/A'}</span>
             </div>
             <div class="report-detail-item">
-                <span class="report-detail-label">Reported By</span>
+                <span class="report-detail-label">${getSolvedTranslation('reportedByLabel')}</span>
                 <span class="report-detail-value">${reportedBy}</span>
             </div>
             <div class="report-detail-item">
-                <span class="report-detail-label">Title</span>
-                <span class="report-detail-value">${report.title || 'No Title'}</span>
+                <span class="report-detail-label">${getSolvedTranslation('titleLabel')}</span>
+                <span class="report-detail-value">${report.title || getSolvedTranslation('noTitle')}</span>
             </div>
             <div class="report-detail-item">
-                <span class="report-detail-label">Category</span>
+                <span class="report-detail-label">${getSolvedTranslation('categoryLabel')}</span>
                 <span class="report-detail-value">${report.category || 'N/A'}</span>
             </div>
             <div class="report-detail-item">
-                <span class="report-detail-label">Screenshot</span>
+                <span class="report-detail-label">${getSolvedTranslation('screenshotLabel')}</span>
                 <span class="report-detail-value">${screenshotHtml}</span>
             </div>
             <div class="report-detail-item">
-                <span class="report-detail-label">Status</span>
-                <span class="report-detail-value status-badge status-${report.status}">${report.status}</span>
+                <span class="report-detail-label">${getSolvedTranslation('statusLabel')}</span>
+                <span class="report-detail-value status-badge status-${report.status}">${statusText}</span>
             </div>
             <div class="report-detail-item">
-                <span class="report-detail-label">Reported At</span>
+                <span class="report-detail-label">${getSolvedTranslation('reportedAtLabel')}</span>
                 <span class="report-detail-value">${reportedDate}</span>
             </div>
             <div class="report-detail-item">
-                <span class="report-detail-label">Solved At</span>
+                <span class="report-detail-label">${getSolvedTranslation('solvedAtLabel')}</span>
                 <span class="report-detail-value">${resolvedDate}</span>
             </div>
         </div>
         
         <div class="status-info-grid">
             <div class="status-info-item">
-                <div class="status-info-label">Resolution Time</div>
+                <div class="status-info-label">${getSolvedTranslation('resolutionTime')}</div>
                 <div class="status-info-value">${resolutionTime}</div>
             </div>
             <div class="status-info-item">
-                <div class="status-info-label">Completed By</div>
+                <div class="status-info-label">${getSolvedTranslation('completedBy')}</div>
                 <div class="status-info-value">${completedBy}</div>
             </div>
         </div>
         
         <div class="report-description">
-            <h4>Issue Description</h4>
-            <div>${report.description || 'No description provided'}</div>
+            <h4>${getSolvedTranslation('issueDescription')}</h4>
+            <div>${report.description || getSolvedTranslation('noDescription')}</div>
         </div>
         
         <div class="report-resolution">
-            <h4>Resolution Notes</h4>
-            <div>${report.resolution || 'No resolution notes provided'}</div>
+            <h4>${getSolvedTranslation('resolutionNotes')}</h4>
+            <div>${report.resolution || getSolvedTranslation('noResolution')}</div>
         </div>
     `;
     
-    // Update modal footer berdasarkan role user
     await updateModalFooter();
-    
-    // Tampilkan modal
     document.getElementById('reportDetailsModal').classList.add('active');
 }
 
@@ -3034,95 +3036,105 @@ function setupImageModalListeners() {
     }
 }
 
-// Cari kode ini di dalam file solved-report.html
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM loaded, initializing solved reports...");
     
-    // Setup language first
-    const preferredLanguage = localStorage.getItem('language') || 'id';
-    applyTranslations(preferredLanguage);
-    setupLanguageListener();
-    
     // Setup image modal listeners
     setupImageModalListeners();
+    
+    // INISIALISASI TERJEMAHAN (GUNAKAN SISTEM BARU)
+    initializeSolvedReportsLanguage();
     
     auth.onAuthStateChanged(async (user) => {
         if (user) {
             console.log("User logged in:", user.uid);
             
-            // Cek role user
             const role = await getCurrentUserRole();
             console.log("User role:", role);
             
             setupSolvedReportsListener();
-            setupFilterListeners(); // Setup filter listeners
+            setupFilterListeners();
             
-            // Test koneksi Firebase
             db.collection('solvedReports').limit(1).get()
                 .then(snapshot => {
                     console.log("Firebase connection test successful:", snapshot.size, "documents found");
                 })
                 .catch(error => {
                     console.error("Firebase connection error:", error);
-                    showToast("Cannot connect to database", "error");
+                    showToast(getSolvedTranslation('errorLoading'), "error");
                 });
             
             // Pagination event listeners
-            document.getElementById('prevPage').addEventListener('click', function() {
-                if (currentPage > 1) {
-                    currentPage--;
-                    updateSolvedReportsUI();
-                }
-            });
+            const prevPageBtn = document.getElementById('prevPage');
+            const nextPageBtn = document.getElementById('nextPage');
             
-            document.getElementById('nextPage').addEventListener('click', function() {
-                const filteredReports = filterReports(solvedReports);
-                const totalPages = Math.ceil(filteredReports.length / reportsPerPage);
-                
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    updateSolvedReportsUI();
-                }
-            });
+            if (prevPageBtn) {
+                prevPageBtn.addEventListener('click', function() {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        updateSolvedReportsUI();
+                    }
+                });
+            }
+            
+            if (nextPageBtn) {
+                nextPageBtn.addEventListener('click', function() {
+                    const filteredReports = filterReports(solvedReports);
+                    const totalPages = Math.ceil(filteredReports.length / reportsPerPage);
+                    
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        updateSolvedReportsUI();
+                    }
+                });
+            }
             
             // Modal event listeners
-            document.getElementById('closeDetailsModal').addEventListener('click', function() {
-                document.getElementById('reportDetailsModal').classList.remove('active');
-            });
+            const closeDetailsModal = document.getElementById('closeDetailsModal');
+            if (closeDetailsModal) {
+                closeDetailsModal.addEventListener('click', function() {
+                    document.getElementById('reportDetailsModal').classList.remove('active');
+                });
+            }
             
-            document.getElementById('closeReopenModal').addEventListener('click', function() {
-                document.getElementById('reopenConfirmModal').classList.remove('active');
-            });
-            
-            document.getElementById('cancelReopenBtn').addEventListener('click', function() {
-                document.getElementById('reopenConfirmModal').classList.remove('active');
-            });
-            
-            document.getElementById('confirmReopenBtn').addEventListener('click', async function() {
-                // Cek role sebelum membuka report
-                const isAdmin = await isSuperAdmin();
-                if (!isAdmin) {
-                    showToast("Access denied: Only super admin can reopen reports", "error");
+            const closeReopenModal = document.getElementById('closeReopenModal');
+            if (closeReopenModal) {
+                closeReopenModal.addEventListener('click', function() {
                     document.getElementById('reopenConfirmModal').classList.remove('active');
-                    return;
-                }
-                reopenReport(currentReportId);
-            });
+                });
+            }
             
-            // ========== TAMBAHKAN KODE INI DI SINI ==========
-            // Setup export button setelah data tersedia
+            const cancelReopenBtn = document.getElementById('cancelReopenBtn');
+            if (cancelReopenBtn) {
+                cancelReopenBtn.addEventListener('click', function() {
+                    document.getElementById('reopenConfirmModal').classList.remove('active');
+                });
+            }
+            
+            const confirmReopenBtn = document.getElementById('confirmReopenBtn');
+            if (confirmReopenBtn) {
+                confirmReopenBtn.addEventListener('click', async function() {
+                    const isAdmin = await isSuperAdmin();
+                    if (!isAdmin) {
+                        showToast(getSolvedTranslation('accessDenied'), "error");
+                        document.getElementById('reopenConfirmModal').classList.remove('active');
+                        return;
+                    }
+                    reopenReport(currentReportId);
+                });
+            }
+            
+            // Setup export button
             setTimeout(() => {
                 setupExportButton();
             }, 1000);
-            // ========== AKHIR TAMBAHAN KODE ==========
             
         } else {
-            // Pengguna belum login, redirect ke halaman login
             console.log("User not logged in, redirecting...");
             window.location.href = "index.html";
         }
     });
-});
+}); 
 
 // Tambahkan security check di fungsi yang membutuhkan akses super admin
 async function withAdminCheck(action, errorMessage = "Access denied: Only super admin can perform this action") {
@@ -3133,258 +3145,6 @@ async function withAdminCheck(action, errorMessage = "Access denied: Only super 
     }
     return true;
 }
-
-// Fungsi untuk mendapatkan terjemahan
-function getTranslation(key, language = null) {
-    const lang = language || localStorage.getItem('language') || 'id';
-    const translation = translations[lang]?.[key];
-    return translation || key;
-}
-
-// Function to set language
-function setLanguage(language) {
-    localStorage.setItem('language', language);
-    applyTranslations(language);
-}
-
-// Function to apply translations to the page
-function applyTranslations(language = 'id') {
-    try {
-        const lang = translations[language] || translations['id'];
-        
-        if (!lang) {
-            console.error('Translations not found for language:', language);
-            return;
-        }
-
-        console.log('Applying translations for solved reports:', language);
-
-        // Header
-        const headerTitle = document.querySelector('.header h1');
-        if (headerTitle) {
-            headerTitle.innerHTML = `<i class="fas fa-check-circle"></i> ${lang.solvedReports || 'Solved Reports'}`;
-        }
-
-        // Search placeholder
-        const searchInput = document.getElementById('dashboardSearch');
-        if (searchInput) {
-            searchInput.placeholder = lang.searchPlaceholder || 'Search solved reports...';
-        }
-
-        // Filter Panel
-        const filterTitle = document.querySelector('.filter-title');
-        if (filterTitle) {
-            filterTitle.textContent = lang.filterSolvedReports || 'Filter Solved Reports';
-        }
-
-        const resetFilters = document.getElementById('resetFilters');
-        if (resetFilters) {
-            resetFilters.innerHTML = `<i class="fas fa-sync-alt"></i> ${lang.resetFilters || 'Reset Filters'}`;
-        }
-
-        // Filter Labels
-        const filterLabels = document.querySelectorAll('.filter-label');
-        filterLabels.forEach((label, index) => {
-            switch(index) {
-                case 0:
-                    label.textContent = lang.brand || 'Brand';
-                    break;
-                case 1:
-                    label.textContent = lang.status || 'Status';
-                    break;
-                case 2:
-                    label.textContent = lang.category || 'Category';
-                    break;
-                case 3:
-                    label.textContent = lang.dateRange || 'Date Range';
-                    break;
-            }
-        });
-
-        // Filter Options
-        const brandFilter = document.getElementById('brandFilter');
-        if (brandFilter && brandFilter.firstElementChild) {
-            brandFilter.firstElementChild.textContent = lang.allBrands || 'All Brands';
-        }
-
-        const statusFilter = document.getElementById('statusFilter');
-        if (statusFilter) {
-            const options = statusFilter.getElementsByTagName('option');
-            if (options[0]) options[0].textContent = lang.allStatuses || 'All Statuses';
-            if (options[1]) options[1].textContent = lang.completed || 'Completed';
-            if (options[2]) options[2].textContent = lang.reopened || 'Reopened';
-        }
-
-        const categoryFilter = document.getElementById('categoryFilter');
-        if (categoryFilter && categoryFilter.firstElementChild) {
-            categoryFilter.firstElementChild.textContent = lang.allCategories || 'All Categories';
-        }
-
-        // Section Title
-        const sectionTitle = document.querySelector('.section-title');
-        if (sectionTitle) {
-            const badge = sectionTitle.querySelector('.badge');
-            sectionTitle.innerHTML = `<i class="fas fa-list-check"></i> ${lang.solvedReports || 'Solved Reports'}`;
-            if (badge) {
-                sectionTitle.appendChild(badge);
-            }
-        }
-
-        // Table Headers
-        const tableHeaders = document.querySelectorAll('.maintenance-table th');
-        if (tableHeaders.length >= 10) {
-            tableHeaders[0].textContent = lang.reportId || 'Report ID';
-            tableHeaders[1].textContent = lang.brand || 'Brand';
-            tableHeaders[2].textContent = lang.reportedBy || 'Reported By';
-            tableHeaders[3].textContent = lang.title || 'Title';
-            tableHeaders[4].textContent = lang.category || 'Category';
-            tableHeaders[5].textContent = lang.screenshot || 'Screenshot';
-            tableHeaders[6].textContent = lang.reportedAt || 'Reported At';
-            tableHeaders[7].textContent = lang.resolvedAt || 'Resolved At';
-            tableHeaders[8].textContent = lang.status || 'Status';
-            tableHeaders[9].textContent = lang.actions || 'Actions';
-        }
-
-        // Pagination
-        const prevBtn = document.getElementById('prevPage');
-        const nextBtn = document.getElementById('nextPage');
-        const pageInfo = document.getElementById('pageInfo');
-        
-        if (prevBtn) {
-            prevBtn.innerHTML = `<i class="fas fa-chevron-left"></i> ${lang.previous || 'Previous'}`;
-        }
-        if (nextBtn) {
-            nextBtn.innerHTML = `${lang.next || 'Next'} <i class="fas fa-chevron-right"></i>`;
-        }
-        if (pageInfo) {
-            const currentPage = window.currentPage || 1;
-            const totalPages = window.totalPages || 1;
-            pageInfo.textContent = `${lang.page || 'Page'} ${currentPage} ${lang.of || 'of'} ${totalPages}`;
-        }
-
-        // Update empty states
-        updateEmptyStates(language);
-
-        // Update modal translations
-        updateModalTranslations(language);
-
-        // Update action button titles
-        updateActionButtons(language);
-
-    } catch (error) {
-        console.error('Error applying translations:', error);
-    }
-}
-
-// Function to update empty states
-function updateEmptyStates(language) {
-    const lang = translations[language] || translations['id'];
-    const emptyStates = document.querySelectorAll('.empty-state');
-    
-    emptyStates.forEach(emptyState => {
-        const title = emptyState.querySelector('h3');
-        const message = emptyState.querySelector('p');
-        
-        if (title && title.textContent.includes('No Solved Reports Found')) {
-            title.textContent = lang.noReportsFound || 'No Solved Reports Found';
-        }
-        if (message && message.textContent.includes('There are no completed reports')) {
-            message.textContent = lang.noReportsDescription || 'There are no completed reports in the database yet.';
-        }
-    });
-}
-
-// Function to update modal translations
-function updateModalTranslations(language) {
-    const lang = translations[language] || translations['id'];
-    
-    // Report Details Modal
-    const reportDetailsModal = document.getElementById('reportDetailsModal');
-    if (reportDetailsModal) {
-        const modalTitle = reportDetailsModal.querySelector('.modal-title');
-        if (modalTitle) {
-            modalTitle.innerHTML = `<i class="fas fa-file-alt"></i> ${lang.reportDetails || 'Report Details'}`;
-        }
-        
-        const closeBtn = document.getElementById('closeDetailsBtn');
-        if (closeBtn) {
-            closeBtn.textContent = lang.close || 'Close';
-        }
-        
-        const reopenBtn = document.getElementById('reopenReportBtn');
-        if (reopenBtn) {
-            reopenBtn.innerHTML = `<i class="fas fa-undo"></i> ${lang.reopenReport || 'Reopen Report'}`;
-        }
-    }
-    
-    // Reopen Confirmation Modal
-    const reopenModal = document.getElementById('reopenConfirmModal');
-    if (reopenModal) {
-        const modalTitle = reopenModal.querySelector('.modal-title');
-        if (modalTitle) {
-            modalTitle.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${lang.confirmReopen || 'Confirm Reopen'}`;
-        }
-        
-        const confirmMessage = document.getElementById('reopenConfirmMessage');
-        if (confirmMessage) {
-            confirmMessage.textContent = lang.reopenConfirmMessage || 'Are you sure you want to reopen this report? This will move it back to pending reports.';
-        }
-        
-        const cancelBtn = document.getElementById('cancelReopenBtn');
-        if (cancelBtn) {
-            cancelBtn.textContent = lang.cancel || 'Cancel';
-        }
-        
-        const confirmBtn = document.getElementById('confirmReopenBtn');
-        if (confirmBtn) {
-            confirmBtn.textContent = lang.yesReopen || 'Yes, Reopen Report';
-        }
-    }
-}
-
-// Function to update action buttons
-function updateActionButtons(language) {
-    const lang = translations[language] || translations['id'];
-    const viewButtons = document.querySelectorAll('.btn-icon.view');
-    const deleteButtons = document.querySelectorAll('.btn-icon.delete');
-    
-    viewButtons.forEach(button => {
-        button.title = lang.viewDetails || 'View Details';
-    });
-    
-    deleteButtons.forEach(button => {
-        button.title = lang.deleteReport || 'Delete Report';
-    });
-}
-
-// Function to listen for language changes
-function setupLanguageListener() {
-    window.currentLanguage = localStorage.getItem('language') || 'id';
-
-    window.addEventListener('languageChanged', function(event) {
-        const newLanguage = event?.detail?.language || localStorage.getItem('language') || 'id';
-        window.currentLanguage = newLanguage;
-        applyTranslations(newLanguage);
-        console.log('Language changed to:', newLanguage);
-    });
-
-    window.addEventListener('focus', () => {
-        const language = localStorage.getItem('language') || 'id';
-        if (window.currentLanguage !== language) {
-            window.currentLanguage = language;
-        }
-        applyTranslations(language);
-    });
-}
-// Tambahkan fungsi export ke Excel di dalam tag <script>
-
-// ========== EXPORT TO EXCEL FUNCTIONS ==========
-
-/**
- * Export data ke Excel dengan format yang rapi
- * @param {Array} data - Data laporan yang akan diexport
- * @param {string} filename - Nama file export
- */
 function exportToExcel(data, filename = 'solved_reports') {
     if (!data || data.length === 0) {
         showToast("No data to export", "error");
@@ -4097,6 +3857,811 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+</script>
+<script>
+// ========== TRANSLATIONS FOR SOLVED REPORTS ==========
+const solvedTranslations = {
+    id: {
+        // Page Title
+        "pageTitle": "Laporan Terselesaikan",
+        "userRole": "Laporan Terselesaikan",
+        
+        // Header
+        "solvedReportsTitle": "Laporan Terselesaikan",
+        "searchPlaceholder": "Cari laporan terselesaikan...",
+        
+        // Filter Panel
+        "filterSolvedReports": "Filter Laporan Terselesaikan",
+        "resetFilters": "Reset Filter",
+        "brand": "Brand",
+        "status": "Status",
+        "category": "Kategori",
+        "dateRange": "Rentang Tanggal",
+        "allBrands": "Semua Brand",
+        "allStatuses": "Semua Status",
+        "completed": "Selesai",
+        "reopened": "Dibuka Kembali",
+        "allCategories": "Semua Kategori",
+        
+        // Section
+        "solvedReports": "Laporan Terselesaikan",
+        "refresh": "Refresh",
+        "export": "Export",
+        "standardExport": "Export Standar",
+        "fullDetailsExport": "Export Detail Lengkap",
+        "exportCurrentFilter": "Export Filter Saat Ini",
+        
+        // Table Headers
+        "reportId": "ID Laporan",
+        "reportedBy": "Dilaporkan Oleh",
+        "title": "Judul",
+        "screenshot": "Screenshot",
+        "reportedAt": "Tanggal Laporan",
+        "resolvedAt": "Tanggal Selesai",
+        "actions": "Aksi",
+        
+        // Empty State
+        "noReportsFound": "Tidak Ada Laporan Terselesaikan",
+        "noReportsDescription": "Belum ada laporan yang terselesaikan di database.",
+        "noFilteredReports": "Tidak ada laporan yang sesuai dengan filter",
+        
+        // Pagination
+        "previous": "Sebelumnya",
+        "next": "Selanjutnya",
+        "page": "Halaman",
+        "of": "dari",
+        
+        // Modal Titles
+        "reportDetails": "Detail Laporan",
+        "confirmReopen": "Konfirmasi Buka Kembali",
+        "deleteReport": "Hapus Laporan",
+        "deleteAllReports": "Hapus Semua Laporan",
+        "deleteConfirmation": "Konfirmasi Hapus",
+        
+        // Report Details
+        "reportIdLabel": "ID Laporan",
+        "brandLabel": "Brand",
+        "reportedByLabel": "Dilaporkan Oleh",
+        "titleLabel": "Judul",
+        "categoryLabel": "Kategori",
+        "screenshotLabel": "Screenshot",
+        "statusLabel": "Status",
+        "reportedAtLabel": "Tanggal Laporan",
+        "solvedAtLabel": "Tanggal Selesai",
+        "resolutionTime": "Waktu Resolusi",
+        "completedBy": "Diselesaikan Oleh",
+        "issueDescription": "Deskripsi Masalah",
+        "resolutionNotes": "Catatan Resolusi",
+        "noScreenshot": "Tidak ada screenshot",
+        "viewScreenshot": "Lihat Screenshot",
+        "openNewTab": "Buka di Tab Baru",
+        "noDescription": "Tidak ada deskripsi",
+        "noResolution": "Tidak ada catatan resolusi",
+        
+        // Buttons
+        "close": "Tutup",
+        "reopenReport": "Buka Kembali Laporan",
+        "cancel": "Batal",
+        "yesReopen": "Ya, Buka Kembali",
+        "viewDetails": "Lihat Detail",
+        "delete": "Hapus",
+        "confirmDelete": "Konfirmasi Hapus",
+        
+        // Confirmation Messages
+        "reopenConfirmMessage": "Apakah Anda yakin ingin membuka kembali laporan ini? Laporan akan dipindahkan kembali ke laporan tertunda.",
+        "deleteConfirmMessage": "Apakah Anda yakin ingin menghapus laporan ini? Tindakan ini tidak dapat dibatalkan.",
+        "deleteAllConfirmMessage": "⚠️ PERINGATAN: Tindakan ini tidak dapat dibatalkan!\n\nAnda akan menghapus {count} laporan terselesaikan secara permanen.\n\nApakah Anda SANGAT YAKIN ingin menghapus SEMUA laporan terselesaikan?",
+        
+        // Toast Messages
+        "noDataToExport": "Tidak ada data untuk diexport",
+        "exportSuccess": "Berhasil mengekspor {count} laporan ke Excel",
+        "exportSuccessFull": "Berhasil mengekspor {count} laporan dengan detail lengkap ke Excel",
+        "exportFilteredSuccess": "Berhasil mengekspor {count} laporan sesuai filter ke Excel",
+        "deleteSuccess": "Laporan berhasil dihapus",
+        "deleteAllSuccess": "Berhasil menghapus {count} laporan",
+        "deleteError": "Gagal menghapus laporan",
+        "deleteAllError": "Gagal menghapus laporan",
+        "reopenSuccess": "Laporan berhasil dibuka kembali",
+        "reopenError": "Gagal membuka kembali laporan",
+        "reportNotFound": "Laporan tidak ditemukan",
+        "errorLoading": "Gagal memuat laporan terselesaikan",
+        "refreshSuccess": "Data laporan diperbarui",
+        "noDataMatch": "Tidak ada data yang sesuai dengan filter saat ini",
+        "accessDenied": "Akses ditolak: Hanya super admin yang dapat melakukan tindakan ini",
+        
+        // Status Badges
+        "statusCompleted": "Selesai",
+        "statusReopened": "Dibuka Kembali",
+        
+        // Time Units
+        "minutes": "menit",
+        "hours": "jam",
+        "days": "hari",
+        
+        // Export
+        "exportGenerated": "Dibuat pada",
+        "summary": "RINGKASAN",
+        "totalReports": "Total Laporan",
+        "completedReports": "Laporan Selesai",
+        "reopenedReports": "Laporan Dibuka Kembali",
+        "averageResolutionTime": "Rata-rata Waktu Resolusi",
+        "brandDistribution": "DISTRIBUSI BRAND",
+        "fullDetailsTitle": "LAPORAN TERSELESAIKAN - DETAIL LENGKAP",
+        "standardExportTitle": "LAPORAN TERSELESAIKAN"
+    },
+    en: {
+        // Page Title
+        "pageTitle": "Solved Reports",
+        "userRole": "Solved Reports",
+        
+        // Header
+        "solvedReportsTitle": "Solved Reports",
+        "searchPlaceholder": "Search solved reports...",
+        
+        // Filter Panel
+        "filterSolvedReports": "Filter Solved Reports",
+        "resetFilters": "Reset Filters",
+        "brand": "Brand",
+        "status": "Status",
+        "category": "Category",
+        "dateRange": "Date Range",
+        "allBrands": "All Brands",
+        "allStatuses": "All Statuses",
+        "completed": "Completed",
+        "reopened": "Reopened",
+        "allCategories": "All Categories",
+        
+        // Section
+        "solvedReports": "Solved Reports",
+        "refresh": "Refresh",
+        "export": "Export",
+        "standardExport": "Standard Export",
+        "fullDetailsExport": "Full Details Export",
+        "exportCurrentFilter": "Export Current Filter View",
+        
+        // Table Headers
+        "reportId": "Report ID",
+        "reportedBy": "Reported By",
+        "title": "Title",
+        "screenshot": "Screenshot",
+        "reportedAt": "Reported At",
+        "resolvedAt": "Resolved At",
+        "actions": "Actions",
+        
+        // Empty State
+        "noReportsFound": "No Solved Reports Found",
+        "noReportsDescription": "There are no completed reports in the database yet.",
+        "noFilteredReports": "No reports match your filters",
+        
+        // Pagination
+        "previous": "Previous",
+        "next": "Next",
+        "page": "Page",
+        "of": "of",
+        
+        // Modal Titles
+        "reportDetails": "Report Details",
+        "confirmReopen": "Confirm Reopen",
+        "deleteReport": "Delete Report",
+        "deleteAllReports": "Delete All Reports",
+        "deleteConfirmation": "Delete Confirmation",
+        
+        // Report Details
+        "reportIdLabel": "Report ID",
+        "brandLabel": "Brand",
+        "reportedByLabel": "Reported By",
+        "titleLabel": "Title",
+        "categoryLabel": "Category",
+        "screenshotLabel": "Screenshot",
+        "statusLabel": "Status",
+        "reportedAtLabel": "Reported At",
+        "solvedAtLabel": "Solved At",
+        "resolutionTime": "Resolution Time",
+        "completedBy": "Completed By",
+        "issueDescription": "Issue Description",
+        "resolutionNotes": "Resolution Notes",
+        "noScreenshot": "No screenshot attached",
+        "viewScreenshot": "View Screenshot",
+        "openNewTab": "Open in New Tab",
+        "noDescription": "No description provided",
+        "noResolution": "No resolution notes provided",
+        
+        // Buttons
+        "close": "Close",
+        "reopenReport": "Reopen Report",
+        "cancel": "Cancel",
+        "yesReopen": "Yes, Reopen Report",
+        "viewDetails": "View Details",
+        "delete": "Delete",
+        "confirmDelete": "Confirm Delete",
+        
+        // Confirmation Messages
+        "reopenConfirmMessage": "Are you sure you want to reopen this report? This will move it back to pending reports.",
+        "deleteConfirmMessage": "Are you sure you want to delete this report? This action cannot be undone.",
+        "deleteAllConfirmMessage": "⚠️ WARNING: This action cannot be undone!\n\nYou are about to delete {count} solved report(s) permanently.\n\nAre you ABSOLUTELY sure you want to delete ALL solved reports?",
+        
+        // Toast Messages
+        "noDataToExport": "No data to export",
+        "exportSuccess": "Successfully exported {count} reports to Excel",
+        "exportSuccessFull": "Successfully exported {count} reports with full details to Excel",
+        "exportFilteredSuccess": "Successfully exported {count} filtered reports to Excel",
+        "deleteSuccess": "Report deleted successfully",
+        "deleteAllSuccess": "Successfully deleted {count} reports",
+        "deleteError": "Error deleting report",
+        "deleteAllError": "Error deleting reports",
+        "reopenSuccess": "Report reopened successfully",
+        "reopenError": "Error reopening report",
+        "reportNotFound": "Report not found",
+        "errorLoading": "Error loading solved reports",
+        "refreshSuccess": "Reports refreshed successfully",
+        "noDataMatch": "No data matches current filters",
+        "accessDenied": "Access denied: Only super admin can perform this action",
+        
+        // Status Badges
+        "statusCompleted": "Completed",
+        "statusReopened": "Reopened",
+        
+        // Time Units
+        "minutes": "minutes",
+        "hours": "hours",
+        "days": "days",
+        
+        // Export
+        "exportGenerated": "Generated on",
+        "summary": "SUMMARY",
+        "totalReports": "Total Reports",
+        "completedReports": "Completed Reports",
+        "reopenedReports": "Reopened Reports",
+        "averageResolutionTime": "Average Resolution Time",
+        "brandDistribution": "BRAND DISTRIBUTION",
+        "fullDetailsTitle": "SOLVED REPORTS - FULL DETAILS",
+        "standardExportTitle": "SOLVED REPORTS REPORT"
+    },
+    ja: {
+        // Page Title
+        "pageTitle": "解決済みレポート",
+        "userRole": "解決済みレポート",
+        
+        // Header
+        "solvedReportsTitle": "解決済みレポート",
+        "searchPlaceholder": "解決済みレポートを検索...",
+        
+        // Filter Panel
+        "filterSolvedReports": "レポートフィルター",
+        "resetFilters": "フィルターリセット",
+        "brand": "ブランド",
+        "status": "ステータス",
+        "category": "カテゴリ",
+        "dateRange": "日付範囲",
+        "allBrands": "すべてのブランド",
+        "allStatuses": "すべてのステータス",
+        "completed": "完了",
+        "reopened": "再開",
+        "allCategories": "すべてのカテゴリ",
+        
+        // Section
+        "solvedReports": "解決済みレポート",
+        "refresh": "更新",
+        "export": "エクスポート",
+        "standardExport": "標準エクスポート",
+        "fullDetailsExport": "詳細エクスポート",
+        "exportCurrentFilter": "現在のフィルターをエクスポート",
+        
+        // Table Headers
+        "reportId": "レポートID",
+        "reportedBy": "報告者",
+        "title": "タイトル",
+        "screenshot": "スクリーンショット",
+        "reportedAt": "報告日時",
+        "resolvedAt": "解決日時",
+        "actions": "アクション",
+        
+        // Empty State
+        "noReportsFound": "解決済みレポートはありません",
+        "noReportsDescription": "データベースに完了したレポートはありません。",
+        "noFilteredReports": "フィルターに一致するレポートはありません",
+        
+        // Pagination
+        "previous": "前へ",
+        "next": "次へ",
+        "page": "ページ",
+        "of": "/",
+        
+        // Modal Titles
+        "reportDetails": "レポート詳細",
+        "confirmReopen": "再開の確認",
+        "deleteReport": "レポート削除",
+        "deleteAllReports": "全レポート削除",
+        "deleteConfirmation": "削除確認",
+        
+        // Report Details
+        "reportIdLabel": "レポートID",
+        "brandLabel": "ブランド",
+        "reportedByLabel": "報告者",
+        "titleLabel": "タイトル",
+        "categoryLabel": "カテゴリ",
+        "screenshotLabel": "スクリーンショット",
+        "statusLabel": "ステータス",
+        "reportedAtLabel": "報告日時",
+        "solvedAtLabel": "解決日時",
+        "resolutionTime": "解決時間",
+        "completedBy": "完了者",
+        "issueDescription": "問題の説明",
+        "resolutionNotes": "解決メモ",
+        "noScreenshot": "スクリーンショットなし",
+        "viewScreenshot": "スクリーンショットを表示",
+        "openNewTab": "新しいタブで開く",
+        "noDescription": "説明はありません",
+        "noResolution": "解決メモはありません",
+        
+        // Buttons
+        "close": "閉じる",
+        "reopenReport": "レポートを再開",
+        "cancel": "キャンセル",
+        "yesReopen": "はい、再開する",
+        "viewDetails": "詳細を見る",
+        "delete": "削除",
+        "confirmDelete": "削除確認",
+        
+        // Confirmation Messages
+        "reopenConfirmMessage": "このレポートを再開してもよろしいですか？保留中のレポートに戻ります。",
+        "deleteConfirmMessage": "このレポートを削除してもよろしいですか？この操作は元に戻せません。",
+        "deleteAllConfirmMessage": "⚠️ 警告: この操作は元に戻せません！\n\n{count}件の解決済みレポートを完全に削除しようとしています。\n\n本当にすべての解決済みレポートを削除してもよろしいですか？",
+        
+        // Toast Messages
+        "noDataToExport": "エクスポートするデータがありません",
+        "exportSuccess": "{count}件のレポートをExcelにエクスポートしました",
+        "exportSuccessFull": "{count}件のレポートを詳細付きでExcelにエクスポートしました",
+        "exportFilteredSuccess": "{count}件のフィルタリングされたレポートをExcelにエクスポートしました",
+        "deleteSuccess": "レポートを削除しました",
+        "deleteAllSuccess": "{count}件のレポートを削除しました",
+        "deleteError": "レポートの削除に失敗しました",
+        "deleteAllError": "レポートの削除に失敗しました",
+        "reopenSuccess": "レポートを再開しました",
+        "reopenError": "レポートの再開に失敗しました",
+        "reportNotFound": "レポートが見つかりません",
+        "errorLoading": "解決済みレポートの読み込みに失敗しました",
+        "refreshSuccess": "レポートを更新しました",
+        "noDataMatch": "現在のフィルターに一致するデータはありません",
+        "accessDenied": "アクセス拒否: この操作はスーパー管理者のみ実行できます",
+        
+        // Status Badges
+        "statusCompleted": "完了",
+        "statusReopened": "再開",
+        
+        // Time Units
+        "minutes": "分",
+        "hours": "時間",
+        "days": "日",
+        
+        // Export
+        "exportGenerated": "生成日時",
+        "summary": "サマリー",
+        "totalReports": "総レポート数",
+        "completedReports": "完了レポート",
+        "reopenedReports": "再開レポート",
+        "averageResolutionTime": "平均解決時間",
+        "brandDistribution": "ブランド分布",
+        "fullDetailsTitle": "解決済みレポート - 詳細",
+        "standardExportTitle": "解決済みレポート"
+    },
+    zh: {
+        // Page Title
+        "pageTitle": "已解决报告",
+        "userRole": "已解决报告",
+        
+        // Header
+        "solvedReportsTitle": "已解决报告",
+        "searchPlaceholder": "搜索已解决报告...",
+        
+        // Filter Panel
+        "filterSolvedReports": "筛选已解决报告",
+        "resetFilters": "重置筛选",
+        "brand": "品牌",
+        "status": "状态",
+        "category": "分类",
+        "dateRange": "日期范围",
+        "allBrands": "所有品牌",
+        "allStatuses": "所有状态",
+        "completed": "已完成",
+        "reopened": "已重新打开",
+        "allCategories": "所有分类",
+        
+        // Section
+        "solvedReports": "已解决报告",
+        "refresh": "刷新",
+        "export": "导出",
+        "standardExport": "标准导出",
+        "fullDetailsExport": "完整详情导出",
+        "exportCurrentFilter": "导出当前筛选结果",
+        
+        // Table Headers
+        "reportId": "报告ID",
+        "reportedBy": "报告人",
+        "title": "标题",
+        "screenshot": "截图",
+        "reportedAt": "报告时间",
+        "resolvedAt": "解决时间",
+        "actions": "操作",
+        
+        // Empty State
+        "noReportsFound": "暂无已解决报告",
+        "noReportsDescription": "数据库中暂无已完成的报告。",
+        "noFilteredReports": "没有符合筛选条件的报告",
+        
+        // Pagination
+        "previous": "上一页",
+        "next": "下一页",
+        "page": "第",
+        "of": "页，共",
+        
+        // Modal Titles
+        "reportDetails": "报告详情",
+        "confirmReopen": "确认重新打开",
+        "deleteReport": "删除报告",
+        "deleteAllReports": "删除所有报告",
+        "deleteConfirmation": "删除确认",
+        
+        // Report Details
+        "reportIdLabel": "报告ID",
+        "brandLabel": "品牌",
+        "reportedByLabel": "报告人",
+        "titleLabel": "标题",
+        "categoryLabel": "分类",
+        "screenshotLabel": "截图",
+        "statusLabel": "状态",
+        "reportedAtLabel": "报告时间",
+        "solvedAtLabel": "解决时间",
+        "resolutionTime": "解决时间",
+        "completedBy": "完成人",
+        "issueDescription": "问题描述",
+        "resolutionNotes": "解决备注",
+        "noScreenshot": "未附加截图",
+        "viewScreenshot": "查看截图",
+        "openNewTab": "在新标签页打开",
+        "noDescription": "无描述",
+        "noResolution": "无解决备注",
+        
+        // Buttons
+        "close": "关闭",
+        "reopenReport": "重新打开报告",
+        "cancel": "取消",
+        "yesReopen": "是的，重新打开",
+        "viewDetails": "查看详情",
+        "delete": "删除",
+        "confirmDelete": "确认删除",
+        
+        // Confirmation Messages
+        "reopenConfirmMessage": "确定要重新打开此报告吗？这将把它移回待处理报告。",
+        "deleteConfirmMessage": "确定要删除此报告吗？此操作无法撤销。",
+        "deleteAllConfirmMessage": "⚠️ 警告：此操作无法撤销！\n\n您将永久删除 {count} 个已解决报告。\n\n您确定要删除所有已解决报告吗？",
+        
+        // Toast Messages
+        "noDataToExport": "没有数据可导出",
+        "exportSuccess": "成功导出 {count} 个报告到 Excel",
+        "exportSuccessFull": "成功导出 {count} 个报告（含完整详情）到 Excel",
+        "exportFilteredSuccess": "成功导出 {count} 个筛选后的报告到 Excel",
+        "deleteSuccess": "报告删除成功",
+        "deleteAllSuccess": "成功删除 {count} 个报告",
+        "deleteError": "删除报告失败",
+        "deleteAllError": "删除报告失败",
+        "reopenSuccess": "报告重新打开成功",
+        "reopenError": "重新打开报告失败",
+        "reportNotFound": "未找到报告",
+        "errorLoading": "加载已解决报告失败",
+        "refreshSuccess": "报告已刷新",
+        "noDataMatch": "没有符合当前筛选条件的数据",
+        "accessDenied": "访问被拒绝：只有超级管理员可以执行此操作",
+        
+        // Status Badges
+        "statusCompleted": "已完成",
+        "statusReopened": "已重新打开",
+        
+        // Time Units
+        "minutes": "分钟",
+        "hours": "小时",
+        "days": "天",
+        
+        // Export
+        "exportGenerated": "生成于",
+        "summary": "摘要",
+        "totalReports": "报告总数",
+        "completedReports": "已完成报告",
+        "reopenedReports": "已重新打开报告",
+        "averageResolutionTime": "平均解决时间",
+        "brandDistribution": "品牌分布",
+        "fullDetailsTitle": "已解决报告 - 完整详情",
+        "standardExportTitle": "已解决报告"
+    }
+};
+
+// ========== TRANSLATION FUNCTIONS ==========
+let currentSolvedLanguage = 'id';
+
+function applySolvedReportsTranslations(language) {
+    const lang = solvedTranslations[language] || solvedTranslations['id'];
+    currentSolvedLanguage = language;
+    
+    if (!lang) return;
+    
+    console.log("Applying solved reports translations for:", language);
+    
+    // Update page title
+    document.title = lang.pageTitle + " - My Dashboard";
+    
+    // Header elements
+    const headerTitle = document.querySelector('.header h1');
+    if (headerTitle) {
+        const icon = headerTitle.querySelector('i');
+        if (icon) {
+            headerTitle.innerHTML = icon.outerHTML + ' ' + lang.solvedReportsTitle;
+        } else {
+            headerTitle.textContent = lang.solvedReportsTitle;
+        }
+    }
+    
+    const userRoleSpan = document.getElementById('userRole');
+    if (userRoleSpan) userRoleSpan.textContent = lang.userRole;
+    
+    // Search placeholder
+    const searchInput = document.getElementById('dashboardSearch');
+    if (searchInput) searchInput.placeholder = lang.searchPlaceholder;
+    
+    // Filter panel
+    const filterTitle = document.querySelector('.filter-title');
+    if (filterTitle) filterTitle.textContent = lang.filterSolvedReports;
+    
+    const resetBtn = document.getElementById('resetFilters');
+    if (resetBtn) resetBtn.innerHTML = `<i class="fas fa-sync-alt"></i> ${lang.resetFilters}`;
+    
+    // Filter labels
+    const filterLabels = document.querySelectorAll('.filter-label');
+    if (filterLabels.length >= 4) {
+        filterLabels[0].textContent = lang.brand;
+        filterLabels[1].textContent = lang.status;
+        filterLabels[2].textContent = lang.category;
+        filterLabels[3].textContent = lang.dateRange;
+    }
+    
+    // Filter options
+    const brandFilter = document.getElementById('brandFilter');
+    if (brandFilter && brandFilter.options[0]) {
+        brandFilter.options[0].textContent = lang.allBrands;
+    }
+    
+    const statusFilter = document.getElementById('statusFilter');
+    if (statusFilter) {
+        if (statusFilter.options[0]) statusFilter.options[0].textContent = lang.allStatuses;
+        if (statusFilter.options[1]) statusFilter.options[1].textContent = lang.completed;
+        if (statusFilter.options[2]) statusFilter.options[2].textContent = lang.reopened;
+    }
+    
+    const categoryFilter = document.getElementById('categoryFilter');
+    if (categoryFilter && categoryFilter.options[0]) {
+        categoryFilter.options[0].textContent = lang.allCategories;
+    }
+    
+    // Section title
+    const sectionTitle = document.querySelector('.section-title');
+    if (sectionTitle) {
+        const icon = sectionTitle.querySelector('i');
+        if (icon) {
+            sectionTitle.innerHTML = icon.outerHTML + ' ' + lang.solvedReports;
+        } else {
+            sectionTitle.textContent = lang.solvedReports;
+        }
+    }
+    
+    // Table headers
+    const tableHeaders = document.querySelectorAll('.maintenance-table th');
+    if (tableHeaders.length >= 10) {
+        tableHeaders[0].textContent = lang.reportId;
+        tableHeaders[1].textContent = lang.brand;
+        tableHeaders[2].textContent = lang.reportedBy;
+        tableHeaders[3].textContent = lang.title;
+        tableHeaders[4].textContent = lang.category;
+        tableHeaders[5].textContent = lang.screenshot;
+        tableHeaders[6].textContent = lang.reportedAt;
+        tableHeaders[7].textContent = lang.resolvedAt;
+        tableHeaders[8].textContent = lang.status;
+        tableHeaders[9].textContent = lang.actions;
+    }
+    
+    // Pagination
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+    if (prevBtn) prevBtn.innerHTML = `<i class="fas fa-chevron-left"></i> ${lang.previous}`;
+    if (nextBtn) nextBtn.innerHTML = `${lang.next} <i class="fas fa-chevron-right"></i>`;
+    
+    // Update page info text
+    updatePageInfoText();
+    
+    // Modal titles
+    const reportDetailsModalTitle = document.querySelector('#reportDetailsModal .modal-title');
+    if (reportDetailsModalTitle) {
+        const icon = reportDetailsModalTitle.querySelector('i');
+        if (icon) {
+            reportDetailsModalTitle.innerHTML = icon.outerHTML + ' ' + lang.reportDetails;
+        } else {
+            reportDetailsModalTitle.textContent = lang.reportDetails;
+        }
+    }
+    
+    const reopenModalTitle = document.querySelector('#reopenConfirmModal .modal-title');
+    if (reopenModalTitle) {
+        const icon = reopenModalTitle.querySelector('i');
+        if (icon) {
+            reopenModalTitle.innerHTML = icon.outerHTML + ' ' + lang.confirmReopen;
+        } else {
+            reopenModalTitle.textContent = lang.confirmReopen;
+        }
+    }
+    
+    // Modal buttons
+    const closeDetailsBtn = document.getElementById('closeDetailsBtn');
+    if (closeDetailsBtn) closeDetailsBtn.innerHTML = `<i class="fas fa-times"></i> ${lang.close}`;
+    
+    const reopenReportBtn = document.getElementById('reopenReportBtn');
+    if (reopenReportBtn) reopenReportBtn.innerHTML = `<i class="fas fa-undo"></i> ${lang.reopenReport}`;
+    
+    const cancelReopenBtn = document.getElementById('cancelReopenBtn');
+    if (cancelReopenBtn) cancelReopenBtn.innerHTML = `<i class="fas fa-times"></i> ${lang.cancel}`;
+    
+    const confirmReopenBtn = document.getElementById('confirmReopenBtn');
+    if (confirmReopenBtn) confirmReopenBtn.innerHTML = `<i class="fas fa-check"></i> ${lang.yesReopen}`;
+    
+    const closeImageModal = document.getElementById('closeImageModal');
+    if (closeImageModal) closeImageModal.innerHTML = '&times;';
+    
+    const closeImageBtn = document.getElementById('closeImageBtn');
+    if (closeImageBtn) closeImageBtn.innerHTML = `<i class="fas fa-times"></i> ${lang.close}`;
+    
+    // Image modal
+    const imageModalTitle = document.querySelector('#imageModal .modal-title');
+    if (imageModalTitle) {
+        const icon = imageModalTitle.querySelector('i');
+        if (icon) {
+            imageModalTitle.innerHTML = icon.outerHTML + ' ' + lang.screenshot;
+        } else {
+            imageModalTitle.textContent = lang.screenshot;
+        }
+    }
+    
+    const modalImageLink = document.getElementById('modalImageLink');
+    if (modalImageLink) modalImageLink.innerHTML = `<i class="fas fa-external-link-alt"></i> ${lang.openNewTab}`;
+    
+    // Update empty states
+    updateSolvedEmptyStates(language);
+    
+    // Store translations for toast messages
+    window.solvedToastMessages = {
+        noDataToExport: lang.noDataToExport,
+        exportSuccess: lang.exportSuccess,
+        exportSuccessFull: lang.exportSuccessFull,
+        exportFilteredSuccess: lang.exportFilteredSuccess,
+        deleteSuccess: lang.deleteSuccess,
+        deleteAllSuccess: lang.deleteAllSuccess,
+        deleteError: lang.deleteError,
+        deleteAllError: lang.deleteAllError,
+        reopenSuccess: lang.reopenSuccess,
+        reopenError: lang.reopenError,
+        reportNotFound: lang.reportNotFound,
+        errorLoading: lang.errorLoading,
+        refreshSuccess: lang.refreshSuccess,
+        noDataMatch: lang.noDataMatch,
+        accessDenied: lang.accessDenied
+    };
+}
+
+function updatePageInfoText() {
+    const pageInfo = document.getElementById('pageInfo');
+    if (pageInfo && window.currentPage && window.totalPages) {
+        const lang = solvedTranslations[currentSolvedLanguage] || solvedTranslations['id'];
+        pageInfo.textContent = `${lang.page} ${window.currentPage} ${lang.of} ${window.totalPages}`;
+    }
+}
+
+function updateSolvedEmptyStates(language) {
+    const lang = solvedTranslations[language] || solvedTranslations['id'];
+    const emptyStates = document.querySelectorAll('.empty-state');
+    
+    emptyStates.forEach(emptyState => {
+        const title = emptyState.querySelector('h3');
+        const message = emptyState.querySelector('p');
+        
+        if (title) {
+            const currentText = title.textContent;
+            if (currentText.includes('No Solved Reports Found') || currentText.includes('Tidak Ada Laporan Terselesaikan')) {
+                title.textContent = lang.noReportsFound;
+            } else if (currentText.includes('No Data Available') || currentText.includes('Tidak Ada Data')) {
+                // Keep existing or update if needed
+            }
+        }
+        if (message) {
+            const currentMsg = message.textContent;
+            if (currentMsg.includes('There are no completed reports') || currentMsg.includes('Belum ada laporan yang terselesaikan')) {
+                message.textContent = lang.noReportsDescription;
+            }
+        }
+    });
+}
+
+function updateSolvedModalTranslations(language, reportData = null) {
+    const lang = solvedTranslations[language] || solvedTranslations['id'];
+    
+    // Update report details modal content if open
+    const modalContent = document.getElementById('reportDetailsContent');
+    if (modalContent && modalContent.innerHTML && reportData) {
+        // This will be called when showing report details
+        // The actual translation happens in showReportDetails function
+    }
+}
+
+function showSolvedToast(message, type = 'success', duration = 3000) {
+    // If message is a key from translations with placeholder, handle it
+    if (window.solvedToastMessages && typeof message === 'string') {
+        // Check if message contains placeholder like {count}
+        if (message.includes('{count}') && window.lastExportCount) {
+            message = message.replace('{count}', window.lastExportCount);
+        }
+        
+        // Check if message is a translation key
+        if (window.solvedToastMessages[message]) {
+            message = window.solvedToastMessages[message];
+            if (message.includes('{count}') && window.lastExportCount) {
+                message = message.replace('{count}', window.lastExportCount);
+            }
+        }
+    }
+    
+    const existing = document.querySelector('.toast-notification');
+    if (existing) existing.remove();
+    
+    const toast = document.createElement('div');
+    toast.className = `toast-notification ${type}`;
+    toast.innerHTML = `<div class="toast-content"><i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i> ${message}</div>`;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.classList.add('hide');
+        setTimeout(() => toast.remove(), 400);
+    }, duration);
+}
+
+function initializeSolvedReportsLanguage() {
+    const savedLanguage = localStorage.getItem('language') || 'id';
+    console.log("Initializing solved reports with language:", savedLanguage);
+    
+    applySolvedReportsTranslations(savedLanguage);
+    
+    window.addEventListener('languageChanged', function(event) {
+        console.log("Language changed in solved reports to:", event.detail.language);
+        applySolvedReportsTranslations(event.detail.language);
+    });
+}
+
+// Override showToast function for solved reports
+const originalSolvedShowToast = window.showToast;
+window.showToast = function(message, type = 'success', duration = 3000) {
+    showSolvedToast(message, type, duration);
+};
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        initializeSolvedReportsLanguage();
+    }, 100);
+});
+
+window.addEventListener('load', function() {
+    initializeSolvedReportsLanguage();
+});
+
+// Helper function to get translation for a key
+function getSolvedTranslation(key) {
+    const lang = solvedTranslations[currentSolvedLanguage] || solvedTranslations['id'];
+    return lang[key] || key;
+}
 </script>
 </body>
 </html>

@@ -8,8 +8,8 @@
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
         <link rel="stylesheet" href="global.css">
+            <link rel="stylesheet" href="stylemobile.css">
         <script src="global-time.js"></script>
-        <script src="translations.js"></script>
 
         
         <!-- Firebase SDK -->
@@ -3284,5 +3284,809 @@
             initializePendingReportsLanguage();
         });
     </script>
+    <script>
+// ========== TRANSLATIONS FOR PENDING REPORTS ==========
+const pendingTranslations = {
+    id: {
+        // Page Title
+        "pageTitle": "Laporan Tertunda",
+        "userRole": "Laporan Tertunda",
+        
+        // Header
+        "pendingReportsTitle": "Laporan Tertunda",
+        "searchPlaceholder": "Cari laporan yang terselesaikan...",
+        
+        // Filter Panel
+        "filterReports": "Filter Laporan",
+        "resetFilters": "Reset Filter",
+        "statusFilter": "Status",
+        "allStatus": "Semua Status",
+        "pending": "Tertunda",
+        "inProgress": "Dalam Proses",
+        "overdue": "Terlambat",
+        "brandFilter": "Brand",
+        "allBrands": "Semua Brand",
+        "categoryFilter": "Kategori",
+        "selectCategory": "Pilih Kategori",
+        "dateRange": "Rentang Tanggal",
+        
+        // Section
+        "myPendingReports": "Laporan Tertunda Saya",
+        "refresh": "Refresh",
+        "newReport": "Laporan Baru",
+        
+        // Empty State
+        "noPendingReports": "Tidak Ada Laporan Tertunda",
+        "noPendingReportsMessage": "Saat ini Anda tidak memiliki laporan tertunda.",
+        "createFirstReport": "Buat Laporan Pertama Anda",
+        
+        // Report Card
+        "view": "Lihat",
+        "edit": "Edit",
+        "delete": "Hapus",
+        "due": "Jatuh Tempo",
+        "daysLeft": "hari tersisa",
+        "daysOverdue": "hari terlambat",
+        
+        // Modal Titles
+        "addReportTitle": "Tambah Laporan Baru",
+        "editReportTitle": "Edit Laporan",
+        "reportDetailsTitle": "Detail Laporan",
+        "markCompleteTitle": "Tandai Laporan sebagai Selesai",
+        
+        // Form Labels
+        "title": "Judul",
+        "category": "Kategori",
+        "brand": "Brand",
+        "dueDate": "Tanggal Jatuh Tempo",
+        "screenshot": "Screenshot (URL)",
+        "testScreenshot": "Test",
+        "description": "Deskripsi",
+        "resolution": "Resolusi",
+        
+        // Category Options
+        "pendingWins": "Kemenangan Pending",
+        "replayWins": "Replay Kemenangan",
+        "panelIssues": "Report Kendala Panel",
+        "providerIssues": "Report Kendala Provider",
+        "gameIssues": "Report Kendala Game",
+        "maintenance": "Report Maintenance",
+        "autoqris": "Report Autoqris DIGI PAY",
+        "phising": "Report Phising",
+        "other": "Other",
+        
+        // Brand Options
+        "allBrand": "ALL BRAND",
+        
+        // Status Badges
+        "statusPending": "Tertunda",
+        "statusInProgress": "Dalam Proses",
+        "statusOverdue": "Terlambat",
+        
+        // Buttons
+        "cancel": "Batal",
+        "submit": "Submit Laporan",
+        "update": "Update Laporan",
+        "close": "Tutup",
+        "confirmCompletion": "Konfirmasi Selesai",
+        
+        // Confirmation Messages
+        "deleteConfirm": "Apakah Anda yakin ingin menghapus laporan ini?",
+        "fillAllFields": "Harap isi semua field!",
+        
+        // Toast Messages
+        "reportAdded": "Laporan berhasil ditambahkan!",
+        "reportUpdated": "Laporan berhasil diperbarui!",
+        "reportDeleted": "Laporan berhasil dihapus!",
+        "reportCompleted": "Laporan berhasil ditandai sebagai selesai!",
+        "reportNotFound": "Laporan tidak ditemukan!",
+        "errorLoading": "Gagal memuat laporan",
+        "errorAdding": "Gagal menambahkan laporan",
+        "errorUpdating": "Gagal memperbarui laporan",
+        "errorDeleting": "Gagal menghapus laporan",
+        "errorCompleting": "Gagal menandai laporan sebagai selesai",
+        "refreshSuccess": "Laporan berhasil diperbarui!",
+        "resolutionRequired": "Harap berikan detail resolusi!",
+        "noReportSelected": "Tidak ada laporan yang dipilih!",
+        "validUrl": "Harap masukkan URL yang valid (http:// atau https://)",
+        
+        // Report Details
+        "reportId": "ID Laporan",
+        "status": "Status",
+        "dateCreated": "Tanggal Dibuat",
+        "noScreenshot": "Tidak ada screenshot",
+        "viewScreenshot": "Lihat Screenshot",
+        "openNewTab": "Buka di Tab Baru",
+        
+        // Time Tracking
+        "daysLeftText": "hari tersisa",
+        "daysOverdueText": "hari terlambat",
+        
+        // Modal Footer Buttons
+        "markComplete": "Tandai Selesai",
+        "deleteReport": "Hapus Laporan"
+    },
+    en: {
+        // Page Title
+        "pageTitle": "Pending Reports",
+        "userRole": "Pending Reports",
+        
+        // Header
+        "pendingReportsTitle": "Pending Reports",
+        "searchPlaceholder": "Search solved reports...",
+        
+        // Filter Panel
+        "filterReports": "Filter Reports",
+        "resetFilters": "Reset Filters",
+        "statusFilter": "Status",
+        "allStatus": "All Status",
+        "pending": "Pending",
+        "inProgress": "In Progress",
+        "overdue": "Overdue",
+        "brandFilter": "Brand",
+        "allBrands": "All Brands",
+        "categoryFilter": "Category",
+        "selectCategory": "Select Category",
+        "dateRange": "Date Range",
+        
+        // Section
+        "myPendingReports": "My Pending Reports",
+        "refresh": "Refresh",
+        "newReport": "New Report",
+        
+        // Empty State
+        "noPendingReports": "No Pending Reports",
+        "noPendingReportsMessage": "You don't have any pending reports at the moment.",
+        "createFirstReport": "Create Your First Report",
+        
+        // Report Card
+        "view": "View",
+        "edit": "Edit",
+        "delete": "Delete",
+        "due": "Due",
+        "daysLeft": "days left",
+        "daysOverdue": "days overdue",
+        
+        // Modal Titles
+        "addReportTitle": "Add New Report",
+        "editReportTitle": "Edit Report",
+        "reportDetailsTitle": "Report Details",
+        "markCompleteTitle": "Mark Report as Complete",
+        
+        // Form Labels
+        "title": "Title",
+        "category": "Category",
+        "brand": "Brand",
+        "dueDate": "Due Date",
+        "screenshot": "Screenshot (URL)",
+        "testScreenshot": "Test",
+        "description": "Description",
+        "resolution": "Resolution",
+        
+        // Category Options
+        "pendingWins": "Pending Wins",
+        "replayWins": "Replay Wins",
+        "panelIssues": "Panel Issues Report",
+        "providerIssues": "Provider Issues Report",
+        "gameIssues": "Game Issues Report",
+        "maintenance": "Maintenance Report",
+        "autoqris": "Autoqris DIGI PAY Report",
+        "phising": "Phising Report",
+        "other": "Other",
+        
+        // Brand Options
+        "allBrand": "ALL BRAND",
+        
+        // Status Badges
+        "statusPending": "Pending",
+        "statusInProgress": "In Progress",
+        "statusOverdue": "Overdue",
+        
+        // Buttons
+        "cancel": "Cancel",
+        "submit": "Submit Report",
+        "update": "Update Report",
+        "close": "Close",
+        "confirmCompletion": "Confirm Completion",
+        
+        // Confirmation Messages
+        "deleteConfirm": "Are you sure you want to delete this report?",
+        "fillAllFields": "Please fill all fields!",
+        
+        // Toast Messages
+        "reportAdded": "Report added successfully!",
+        "reportUpdated": "Report updated successfully!",
+        "reportDeleted": "Report deleted successfully!",
+        "reportCompleted": "Report marked as completed successfully!",
+        "reportNotFound": "Report not found!",
+        "errorLoading": "Error loading reports",
+        "errorAdding": "Error adding report",
+        "errorUpdating": "Error updating report",
+        "errorDeleting": "Error deleting report",
+        "errorCompleting": "Error marking report as complete",
+        "refreshSuccess": "Reports refreshed successfully!",
+        "resolutionRequired": "Please provide resolution details!",
+        "noReportSelected": "No report selected!",
+        "validUrl": "Please enter a valid URL (http:// or https://)",
+        
+        // Report Details
+        "reportId": "Report ID",
+        "status": "Status",
+        "dateCreated": "Date Created",
+        "noScreenshot": "No screenshot attached",
+        "viewScreenshot": "View Screenshot",
+        "openNewTab": "Open in New Tab",
+        
+        // Time Tracking
+        "daysLeftText": "days left",
+        "daysOverdueText": "days overdue",
+        
+        // Modal Footer Buttons
+        "markComplete": "Mark as Complete",
+        "deleteReport": "Delete Report"
+    },
+    ja: {
+        // Page Title
+        "pageTitle": "保留中のレポート",
+        "userRole": "保留中のレポート",
+        
+        // Header
+        "pendingReportsTitle": "保留中のレポート",
+        "searchPlaceholder": "解決済みレポートを検索...",
+        
+        // Filter Panel
+        "filterReports": "レポートフィルター",
+        "resetFilters": "フィルターリセット",
+        "statusFilter": "ステータス",
+        "allStatus": "すべてのステータス",
+        "pending": "保留中",
+        "inProgress": "進行中",
+        "overdue": "期限切れ",
+        "brandFilter": "ブランド",
+        "allBrands": "すべてのブランド",
+        "categoryFilter": "カテゴリ",
+        "selectCategory": "カテゴリを選択",
+        "dateRange": "日付範囲",
+        
+        // Section
+        "myPendingReports": "保留中のレポート",
+        "refresh": "更新",
+        "newReport": "新規レポート",
+        
+        // Empty State
+        "noPendingReports": "保留中のレポートはありません",
+        "noPendingReportsMessage": "現在、保留中のレポートはありません。",
+        "createFirstReport": "最初のレポートを作成",
+        
+        // Report Card
+        "view": "表示",
+        "edit": "編集",
+        "delete": "削除",
+        "due": "期限",
+        "daysLeft": "日残り",
+        "daysOverdue": "日超過",
+        
+        // Modal Titles
+        "addReportTitle": "新規レポート追加",
+        "editReportTitle": "レポート編集",
+        "reportDetailsTitle": "レポート詳細",
+        "markCompleteTitle": "レポートを完了としてマーク",
+        
+        // Form Labels
+        "title": "タイトル",
+        "category": "カテゴリ",
+        "brand": "ブランド",
+        "dueDate": "期限日",
+        "screenshot": "スクリーンショット (URL)",
+        "testScreenshot": "テスト",
+        "description": "説明",
+        "resolution": "解決策",
+        
+        // Category Options
+        "pendingWins": "保留中の勝利",
+        "replayWins": "リプレイ勝利",
+        "panelIssues": "パネル問題レポート",
+        "providerIssues": "プロバイダー問題レポート",
+        "gameIssues": "ゲーム問題レポート",
+        "maintenance": "メンテナンスレポート",
+        "autoqris": "Autoqris DIGI PAYレポート",
+        "phising": "フィッシングレポート",
+        "other": "その他",
+        
+        // Brand Options
+        "allBrand": "全ブランド",
+        
+        // Status Badges
+        "statusPending": "保留中",
+        "statusInProgress": "進行中",
+        "statusOverdue": "期限切れ",
+        
+        // Buttons
+        "cancel": "キャンセル",
+        "submit": "レポート送信",
+        "update": "レポート更新",
+        "close": "閉じる",
+        "confirmCompletion": "完了確認",
+        
+        // Confirmation Messages
+        "deleteConfirm": "このレポートを削除してもよろしいですか？",
+        "fillAllFields": "すべてのフィールドに入力してください！",
+        
+        // Toast Messages
+        "reportAdded": "レポートが正常に追加されました！",
+        "reportUpdated": "レポートが正常に更新されました！",
+        "reportDeleted": "レポートが正常に削除されました！",
+        "reportCompleted": "レポートが完了としてマークされました！",
+        "reportNotFound": "レポートが見つかりません！",
+        "errorLoading": "レポートの読み込みに失敗しました",
+        "errorAdding": "レポートの追加に失敗しました",
+        "errorUpdating": "レポートの更新に失敗しました",
+        "errorDeleting": "レポートの削除に失敗しました",
+        "errorCompleting": "レポートの完了マークに失敗しました",
+        "refreshSuccess": "レポートが更新されました！",
+        "resolutionRequired": "解決策の詳細を入力してください！",
+        "noReportSelected": "レポートが選択されていません！",
+        "validUrl": "有効なURLを入力してください（http:// または https://）",
+        
+        // Report Details
+        "reportId": "レポートID",
+        "status": "ステータス",
+        "dateCreated": "作成日",
+        "noScreenshot": "スクリーンショットなし",
+        "viewScreenshot": "スクリーンショットを表示",
+        "openNewTab": "新しいタブで開く",
+        
+        // Time Tracking
+        "daysLeftText": "日残り",
+        "daysOverdueText": "日超過",
+        
+        // Modal Footer Buttons
+        "markComplete": "完了としてマーク",
+        "deleteReport": "レポート削除"
+    },
+    zh: {
+        // Page Title
+        "pageTitle": "待处理报告",
+        "userRole": "待处理报告",
+        
+        // Header
+        "pendingReportsTitle": "待处理报告",
+        "searchPlaceholder": "搜索已解决报告...",
+        
+        // Filter Panel
+        "filterReports": "筛选报告",
+        "resetFilters": "重置筛选",
+        "statusFilter": "状态",
+        "allStatus": "所有状态",
+        "pending": "待处理",
+        "inProgress": "处理中",
+        "overdue": "逾期",
+        "brandFilter": "品牌",
+        "allBrands": "所有品牌",
+        "categoryFilter": "分类",
+        "selectCategory": "选择分类",
+        "dateRange": "日期范围",
+        
+        // Section
+        "myPendingReports": "我的待处理报告",
+        "refresh": "刷新",
+        "newReport": "新报告",
+        
+        // Empty State
+        "noPendingReports": "暂无待处理报告",
+        "noPendingReportsMessage": "您目前没有任何待处理报告。",
+        "createFirstReport": "创建您的第一份报告",
+        
+        // Report Card
+        "view": "查看",
+        "edit": "编辑",
+        "delete": "删除",
+        "due": "截止",
+        "daysLeft": "天剩余",
+        "daysOverdue": "天逾期",
+        
+        // Modal Titles
+        "addReportTitle": "添加新报告",
+        "editReportTitle": "编辑报告",
+        "reportDetailsTitle": "报告详情",
+        "markCompleteTitle": "标记报告为已完成",
+        
+        // Form Labels
+        "title": "标题",
+        "category": "分类",
+        "brand": "品牌",
+        "dueDate": "截止日期",
+        "screenshot": "截图 (URL)",
+        "testScreenshot": "测试",
+        "description": "描述",
+        "resolution": "解决方案",
+        
+        // Category Options
+        "pendingWins": "待处理胜利",
+        "replayWins": "重播胜利",
+        "panelIssues": "面板问题报告",
+        "providerIssues": "供应商问题报告",
+        "gameIssues": "游戏问题报告",
+        "maintenance": "维护报告",
+        "autoqris": "Autoqris DIGI PAY报告",
+        "phising": "钓鱼报告",
+        "other": "其他",
+        
+        // Brand Options
+        "allBrand": "所有品牌",
+        
+        // Status Badges
+        "statusPending": "待处理",
+        "statusInProgress": "处理中",
+        "statusOverdue": "逾期",
+        
+        // Buttons
+        "cancel": "取消",
+        "submit": "提交报告",
+        "update": "更新报告",
+        "close": "关闭",
+        "confirmCompletion": "确认完成",
+        
+        // Confirmation Messages
+        "deleteConfirm": "确定要删除此报告吗？",
+        "fillAllFields": "请填写所有字段！",
+        
+        // Toast Messages
+        "reportAdded": "报告添加成功！",
+        "reportUpdated": "报告更新成功！",
+        "reportDeleted": "报告删除成功！",
+        "reportCompleted": "报告已标记为完成！",
+        "reportNotFound": "未找到报告！",
+        "errorLoading": "加载报告失败",
+        "errorAdding": "添加报告失败",
+        "errorUpdating": "更新报告失败",
+        "errorDeleting": "删除报告失败",
+        "errorCompleting": "标记报告为完成失败",
+        "refreshSuccess": "报告已刷新！",
+        "resolutionRequired": "请提供解决方案详情！",
+        "noReportSelected": "未选择报告！",
+        "validUrl": "请输入有效的URL（http:// 或 https://）",
+        
+        // Report Details
+        "reportId": "报告ID",
+        "status": "状态",
+        "dateCreated": "创建日期",
+        "noScreenshot": "未附加截图",
+        "viewScreenshot": "查看截图",
+        "openNewTab": "在新标签页打开",
+        
+        // Time Tracking
+        "daysLeftText": "天剩余",
+        "daysOverdueText": "天逾期",
+        
+        // Modal Footer Buttons
+        "markComplete": "标记完成",
+        "deleteReport": "删除报告"
+    }
+};
+
+// ========== TRANSLATION FUNCTIONS ==========
+let currentPendingLanguage = 'id';
+
+function applyPendingReportsTranslations(language) {
+    const lang = pendingTranslations[language] || pendingTranslations['id'];
+    currentPendingLanguage = language;
+    
+    if (!lang) return;
+    
+    console.log("Applying pending reports translations for:", language);
+    
+    // Update page title
+    document.title = lang.pageTitle + " - My Dashboard";
+    
+    // Header elements
+    const pageTitleSpan = document.querySelector('.header h1');
+    if (pageTitleSpan) {
+        const icon = pageTitleSpan.querySelector('i');
+        if (icon) {
+            pageTitleSpan.innerHTML = icon.outerHTML + ' ' + lang.pendingReportsTitle;
+        } else {
+            pageTitleSpan.textContent = lang.pendingReportsTitle;
+        }
+    }
+    
+    const userRoleSpan = document.getElementById('userRole');
+    if (userRoleSpan) userRoleSpan.textContent = lang.userRole;
+    
+    // Search placeholder
+    const searchInput = document.getElementById('dashboardSearch');
+    if (searchInput) searchInput.placeholder = lang.searchPlaceholder;
+    
+    // Filter panel
+    const filterTitle = document.querySelector('.filter-title');
+    if (filterTitle) filterTitle.textContent = lang.filterReports;
+    
+    const resetBtn = document.getElementById('resetFilters');
+    if (resetBtn) resetBtn.innerHTML = `<i class="fas fa-sync-alt"></i> ${lang.resetFilters}`;
+    
+    // Filter labels
+    const statusLabel = document.querySelector('.filter-group:nth-child(1) label');
+    if (statusLabel) statusLabel.textContent = lang.statusFilter;
+    
+    const brandLabel = document.querySelector('.filter-group:nth-child(2) label');
+    if (brandLabel) brandLabel.textContent = lang.brandFilter;
+    
+    const categoryLabel = document.querySelector('.filter-group:nth-child(3) label');
+    if (categoryLabel) categoryLabel.textContent = lang.categoryFilter;
+    
+    const dateLabel = document.querySelector('.filter-group:nth-child(4) label');
+    if (dateLabel) dateLabel.textContent = lang.dateRange;
+    
+    // Filter options
+    const statusFilter = document.getElementById('statusFilter');
+    if (statusFilter) {
+        if (statusFilter.options[0]) statusFilter.options[0].text = lang.allStatus;
+        if (statusFilter.options[1]) statusFilter.options[1].text = lang.pending;
+        if (statusFilter.options[2]) statusFilter.options[2].text = lang.inProgress;
+        if (statusFilter.options[3]) statusFilter.options[3].text = lang.overdue;
+    }
+    
+    const brandFilter = document.getElementById('brandFilter');
+    if (brandFilter && brandFilter.options[0]) {
+        brandFilter.options[0].text = lang.allBrands;
+    }
+    
+    const categoryFilter = document.getElementById('categoryFilter');
+    if (categoryFilter && categoryFilter.options[0]) {
+        categoryFilter.options[0].text = lang.selectCategory;
+        if (categoryFilter.options[1]) categoryFilter.options[1].text = lang.pendingWins;
+        if (categoryFilter.options[2]) categoryFilter.options[2].text = lang.replayWins;
+        if (categoryFilter.options[3]) categoryFilter.options[3].text = lang.panelIssues;
+        if (categoryFilter.options[4]) categoryFilter.options[4].text = lang.providerIssues;
+        if (categoryFilter.options[5]) categoryFilter.options[5].text = lang.gameIssues;
+        if (categoryFilter.options[6]) categoryFilter.options[6].text = lang.maintenance;
+        if (categoryFilter.options[7]) categoryFilter.options[7].text = lang.autoqris;
+        if (categoryFilter.options[8]) categoryFilter.options[8].text = lang.phising;
+        if (categoryFilter.options[9]) categoryFilter.options[9].text = lang.other;
+    }
+    
+    // Section header
+    const sectionTitle = document.querySelector('.section-title');
+    if (sectionTitle) {
+        const icon = sectionTitle.querySelector('i');
+        if (icon) {
+            sectionTitle.innerHTML = icon.outerHTML + ' ' + lang.myPendingReports;
+        } else {
+            sectionTitle.textContent = lang.myPendingReports;
+        }
+    }
+    
+    // Refresh button
+    const refreshBtn = document.getElementById('refreshReports');
+    if (refreshBtn) refreshBtn.innerHTML = `<i class="fas fa-sync-alt"></i> ${lang.refresh}`;
+    
+    // Add report button
+    const addReportBtn = document.getElementById('addReportBtn');
+    if (addReportBtn) addReportBtn.innerHTML = `<i class="fas fa-plus"></i> ${lang.newReport}`;
+    
+    // Add first report button
+    const addFirstReportBtn = document.getElementById('addFirstReport');
+    if (addFirstReportBtn) addFirstReportBtn.innerHTML = `<i class="fas fa-plus"></i> ${lang.createFirstReport}`;
+    
+    // Empty state
+    const noReportsH3 = document.querySelector('#noReports h3');
+    if (noReportsH3) noReportsH3.textContent = lang.noPendingReports;
+    
+    const noReportsP = document.querySelector('#noReports p');
+    if (noReportsP) noReportsP.textContent = lang.noPendingReportsMessage;
+    
+    // Modal titles
+    const addModalTitle = document.querySelector('#addReportModal .modal-title');
+    if (addModalTitle) {
+        const icon = addModalTitle.querySelector('i');
+        if (icon) {
+            addModalTitle.innerHTML = icon.outerHTML + ' ' + lang.addReportTitle;
+        } else {
+            addModalTitle.textContent = lang.addReportTitle;
+        }
+    }
+    
+    const editModalTitle = document.querySelector('#editReportModal .modal-title');
+    if (editModalTitle) {
+        const icon = editModalTitle.querySelector('i');
+        if (icon) {
+            editModalTitle.innerHTML = icon.outerHTML + ' ' + lang.editReportTitle;
+        } else {
+            editModalTitle.textContent = lang.editReportTitle;
+        }
+    }
+    
+    const reportModalTitle = document.querySelector('#reportModal .modal-title');
+    if (reportModalTitle) {
+        const icon = reportModalTitle.querySelector('i');
+        if (icon) {
+            reportModalTitle.innerHTML = icon.outerHTML + ' ' + lang.reportDetailsTitle;
+        } else {
+            reportModalTitle.textContent = lang.reportDetailsTitle;
+        }
+    }
+    
+    const markCompleteModalTitle = document.querySelector('#markCompleteModal .modal-title');
+    if (markCompleteModalTitle) {
+        const icon = markCompleteModalTitle.querySelector('i');
+        if (icon) {
+            markCompleteModalTitle.innerHTML = icon.outerHTML + ' ' + lang.markCompleteTitle;
+        } else {
+            markCompleteModalTitle.textContent = lang.markCompleteTitle;
+        }
+    }
+    
+    // Form labels
+    const titleLabel = document.querySelector('#reportForm .report-detail-item:first-child .report-detail-label');
+    if (titleLabel) titleLabel.textContent = lang.title;
+    
+    const categoryLabelForm = document.querySelector('#reportForm .report-detail-item:nth-child(2) .report-detail-label');
+    if (categoryLabelForm) categoryLabelForm.textContent = lang.category;
+    
+    const brandLabelForm = document.querySelector('#reportForm .report-detail-item:nth-child(3) .report-detail-label');
+    if (brandLabelForm) brandLabelForm.textContent = lang.brand;
+    
+    const dueDateLabel = document.querySelector('#reportForm .report-detail-item:nth-child(4) .report-detail-label');
+    if (dueDateLabel) dueDateLabel.textContent = lang.dueDate;
+    
+    const screenshotLabel = document.querySelector('#reportForm .report-detail-item:nth-child(5) .report-detail-label');
+    if (screenshotLabel) screenshotLabel.textContent = lang.screenshot;
+    
+    const testBtn = document.getElementById('testScreenshotUrl');
+    if (testBtn) testBtn.innerHTML = `<i class="fas fa-eye"></i> ${lang.testScreenshot}`;
+    
+    const descriptionLabel = document.querySelector('#reportForm .report-description h4');
+    if (descriptionLabel) descriptionLabel.textContent = lang.description;
+    
+    // Modal buttons
+    const cancelAddBtn = document.getElementById('cancelAddReport');
+    if (cancelAddBtn) cancelAddBtn.innerHTML = `<i class="fas fa-times"></i> ${lang.cancel}`;
+    
+    const submitBtn = document.getElementById('submitReport');
+    if (submitBtn) submitBtn.innerHTML = `<i class="fas fa-save"></i> ${lang.submit}`;
+    
+    const cancelEditBtn = document.getElementById('cancelEditReport');
+    if (cancelEditBtn) cancelEditBtn.innerHTML = `<i class="fas fa-times"></i> ${lang.cancel}`;
+    
+    const updateBtn = document.getElementById('updateReport');
+    if (updateBtn) updateBtn.innerHTML = `<i class="fas fa-save"></i> ${lang.update}`;
+    
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    if (closeModalBtn) closeModalBtn.innerHTML = `<i class="fas fa-times"></i> ${lang.close}`;
+    
+    const editReportBtn = document.getElementById('editReportBtn');
+    if (editReportBtn) editReportBtn.innerHTML = `<i class="fas fa-edit"></i> ${lang.edit}`;
+    
+    const deleteReportBtn = document.getElementById('deleteReportBtn');
+    if (deleteReportBtn) deleteReportBtn.innerHTML = `<i class="fas fa-trash"></i> ${lang.deleteReport}`;
+    
+    const markCompleteBtn = document.getElementById('markCompleteBtn');
+    if (markCompleteBtn) markCompleteBtn.innerHTML = `<i class="fas fa-check"></i> ${lang.markComplete}`;
+    
+    const cancelMarkComplete = document.getElementById('cancelMarkComplete');
+    if (cancelMarkComplete) cancelMarkComplete.innerHTML = `<i class="fas fa-times"></i> ${lang.cancel}`;
+    
+    const confirmMarkComplete = document.getElementById('confirmMarkComplete');
+    if (confirmMarkComplete) confirmMarkComplete.innerHTML = `<i class="fas fa-check"></i> ${lang.confirmCompletion}`;
+    
+    // Resolution label
+    const resolutionLabel = document.querySelector('#markCompleteModal .modal-body p');
+    if (resolutionLabel) resolutionLabel.textContent = lang.resolution;
+    
+    // Update category options in edit modal
+    updateEditModalCategories(language);
+    
+    // Store translations for toast messages
+    window.pendingToastMessages = {
+        reportAdded: lang.reportAdded,
+        reportUpdated: lang.reportUpdated,
+        reportDeleted: lang.reportDeleted,
+        reportCompleted: lang.reportCompleted,
+        reportNotFound: lang.reportNotFound,
+        errorLoading: lang.errorLoading,
+        errorAdding: lang.errorAdding,
+        errorUpdating: lang.errorUpdating,
+        errorDeleting: lang.errorDeleting,
+        errorCompleting: lang.errorCompleting,
+        refreshSuccess: lang.refreshSuccess,
+        resolutionRequired: lang.resolutionRequired,
+        noReportSelected: lang.noReportSelected,
+        validUrl: lang.validUrl,
+        fillAllFields: lang.fillAllFields
+    };
+}
+
+function updateEditModalCategories(language) {
+    const lang = pendingTranslations[language] || pendingTranslations['id'];
+    
+    const editCategoryFilter = document.getElementById('editReportCategory');
+    if (editCategoryFilter && editCategoryFilter.options) {
+        if (editCategoryFilter.options[0]) editCategoryFilter.options[0].text = lang.selectCategory;
+        if (editCategoryFilter.options[1]) editCategoryFilter.options[1].text = lang.pendingWins;
+        if (editCategoryFilter.options[2]) editCategoryFilter.options[2].text = lang.replayWins;
+        if (editCategoryFilter.options[3]) editCategoryFilter.options[3].text = lang.panelIssues;
+        if (editCategoryFilter.options[4]) editCategoryFilter.options[4].text = lang.providerIssues;
+        if (editCategoryFilter.options[5]) editCategoryFilter.options[5].text = lang.gameIssues;
+        if (editCategoryFilter.options[6]) editCategoryFilter.options[6].text = lang.maintenance;
+        if (editCategoryFilter.options[7]) editCategoryFilter.options[7].text = lang.autoqris;
+        if (editCategoryFilter.options[8]) editCategoryFilter.options[8].text = lang.phising;
+        if (editCategoryFilter.options[9]) editCategoryFilter.options[9].text = lang.other;
+    }
+    
+    const editBrandFilter = document.getElementById('editReportBrand');
+    if (editBrandFilter && editBrandFilter.options[0]) {
+        editBrandFilter.options[0].text = lang.selectCategory;
+    }
+    
+    const editTitleLabel = document.querySelector('#editReportForm .report-detail-item:first-child .report-detail-label');
+    if (editTitleLabel) editTitleLabel.textContent = lang.title;
+    
+    const editCategoryLabel = document.querySelector('#editReportForm .report-detail-item:nth-child(2) .report-detail-label');
+    if (editCategoryLabel) editCategoryLabel.textContent = lang.category;
+    
+    const editBrandLabel = document.querySelector('#editReportForm .report-detail-item:nth-child(3) .report-detail-label');
+    if (editBrandLabel) editBrandLabel.textContent = lang.brand;
+    
+    const editDueDateLabel = document.querySelector('#editReportForm .report-detail-item:nth-child(4) .report-detail-label');
+    if (editDueDateLabel) editDueDateLabel.textContent = lang.dueDate;
+    
+    const editScreenshotLabel = document.querySelector('#editReportForm .report-detail-item:nth-child(5) .report-detail-label');
+    if (editScreenshotLabel) editScreenshotLabel.textContent = lang.screenshot;
+    
+    const editTestBtn = document.getElementById('editTestScreenshotUrl');
+    if (editTestBtn) editTestBtn.innerHTML = `<i class="fas fa-eye"></i> ${lang.testScreenshot}`;
+    
+    const editDescriptionLabel = document.querySelector('#editReportForm .report-description h4');
+    if (editDescriptionLabel) editDescriptionLabel.textContent = lang.description;
+}
+
+function showPendingToast(message, type = 'success', duration = 3000) {
+    const existing = document.querySelector('.toast-notification');
+    if (existing) existing.remove();
+    
+    const toast = document.createElement('div');
+    toast.className = `toast-notification ${type}`;
+    toast.innerHTML = `<div><i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i> ${message}</div>`;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.classList.add('hide');
+        setTimeout(() => toast.remove(), 400);
+    }, duration);
+}
+
+function initializePendingReportsLanguage() {
+    const savedLanguage = localStorage.getItem('language') || 'id';
+    console.log("Initializing pending reports with language:", savedLanguage);
+    
+    applyPendingReportsTranslations(savedLanguage);
+    
+    window.addEventListener('languageChanged', function(event) {
+        console.log("Language changed in pending reports to:", event.detail.language);
+        applyPendingReportsTranslations(event.detail.language);
+    });
+}
+
+// Override existing showToast function to use translations
+const originalShowToast = window.showToast;
+window.showToast = function(message, type = 'success', duration = 3000) {
+    // If message is a key from translations, use it
+    if (window.pendingToastMessages && window.pendingToastMessages[message]) {
+        message = window.pendingToastMessages[message];
+    }
+    showPendingToast(message, type, duration);
+};
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        initializePendingReportsLanguage();
+    }, 100);
+});
+
+window.addEventListener('load', function() {
+    initializePendingReportsLanguage();
+});
+</script>
     </body>
     </html>

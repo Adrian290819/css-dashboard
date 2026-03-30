@@ -859,13 +859,387 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* ========== MOBILE IMPROVEMENTS ========== */
+        @media (max-width: 768px) {
+            body {
+                background: var(--bg-secondary);
+            }
+
+            .main-content {
+                padding: 76px 12px 20px;
+            }
+
+            .header {
+                padding: 14px;
+                margin-bottom: 14px;
+                border-radius: 18px;
+            }
+
+            .header h1 {
+                display: flex;
+                align-items: flex-start;
+                gap: 10px;
+                font-size: 1.15rem;
+                line-height: 1.35;
+                margin: 0 0 14px;
+                padding-right: 40px;
+            }
+
+            .header-actions {
+                width: 100%;
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .search-bar {
+                width: 100%;
+            }
+
+            .search-bar input {
+                width: 100%;
+                height: 44px;
+                font-size: 0.95rem;
+                border-radius: 14px;
+            }
+
+            .user-profile {
+                width: 100%;
+                padding: 12px;
+                border: 1px solid var(--border-color);
+                background: var(--bg-secondary);
+                border-radius: 16px;
+                justify-content: flex-start;
+            }
+
+            .profile-img {
+                width: 44px;
+                height: 44px;
+            }
+
+            .summary-stats,
+            .additional-stats,
+            .summary-filters,
+            .charts-container,
+            .summary-table-section {
+                margin-bottom: 14px;
+            }
+
+            .summary-stat-card,
+            .additional-stat-card,
+            .chart-card,
+            .summary-table-section,
+            .summary-filters {
+                border-radius: 18px;
+                padding: 14px;
+            }
+
+            .stat-header {
+                align-items: center;
+                margin-bottom: 12px;
+            }
+
+            .stat-title {
+                font-size: 0.88rem;
+                line-height: 1.4;
+                padding-right: 8px;
+            }
+
+            .stat-icon {
+                width: 42px;
+                height: 42px;
+                font-size: 1rem;
+                flex-shrink: 0;
+            }
+
+            .stat-value {
+                font-size: 1.7rem;
+            }
+
+            .additional-stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+            }
+
+            .additional-stat-card {
+                min-height: 102px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                text-align: left;
+            }
+
+            .additional-stat-value {
+                font-size: 1.45rem;
+            }
+
+            .additional-stat-label {
+                font-size: 0.8rem;
+                line-height: 1.35;
+            }
+
+            .summary-filters {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 12px;
+                align-items: stretch;
+            }
+
+            .filter-group {
+                min-height: auto;
+            }
+
+            .filter-group label {
+                margin-bottom: 6px;
+            }
+
+            .filter-select,
+            .date-range-inputs input[type="date"] {
+                height: 44px;
+                border-radius: 14px;
+                font-size: 0.95rem;
+            }
+
+            .date-range-inputs {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .date-range-inputs span {
+                display: none;
+            }
+
+            .filter-actions {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                height: auto;
+            }
+
+            .filter-actions .btn,
+            .section-actions .btn,
+            .section-actions .btn-export {
+                min-width: 0;
+                width: 100%;
+                height: 44px;
+                justify-content: center;
+                border-radius: 14px;
+            }
+
+            .charts-container {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+
+            .chart-header {
+                align-items: flex-start;
+                gap: 10px;
+                margin-bottom: 14px;
+            }
+
+            .chart-title {
+                font-size: 0.98rem;
+                line-height: 1.4;
+                flex: 1;
+            }
+
+            .chart-actions {
+                flex-shrink: 0;
+            }
+
+            .chart-content {
+                height: 260px;
+            }
+
+            .section-header {
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            .section-title {
+                font-size: 1rem;
+                line-height: 1.4;
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            .badge {
+                flex-shrink: 0;
+            }
+
+            .section-actions {
+                width: 100%;
+            }
+
+            .summary-table-container {
+                overflow: visible;
+                border: none;
+                margin-bottom: 0;
+            }
+
+            .summary-table,
+            .summary-table thead,
+            .summary-table tbody,
+            .summary-table th,
+            .summary-table td,
+            .summary-table tr {
+                display: block;
+                width: 100%;
+            }
+
+            .summary-table {
+                min-width: 0;
+                background: transparent;
+            }
+
+            .summary-table thead {
+                display: none;
+            }
+
+            .summary-table tbody {
+                display: grid;
+                gap: 12px;
+            }
+
+            .summary-table tr {
+                background: var(--card-bg);
+                border: 1px solid var(--border-color);
+                border-radius: 16px;
+                padding: 12px;
+                box-shadow: var(--shadow-sm);
+            }
+
+            .summary-table td {
+                border: none;
+                padding: 8px 0;
+                min-height: auto;
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 12px;
+                font-size: 0.88rem;
+                line-height: 1.45;
+            }
+
+            .summary-table td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: var(--text-secondary);
+                min-width: 110px;
+                max-width: 110px;
+                flex-shrink: 0;
+                font-size: 0.76rem;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+            }
+
+            .summary-table td:last-child {
+                padding-bottom: 0;
+            }
+
+            .action-buttons {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .action-buttons .btn-icon {
+                width: 38px;
+                height: 38px;
+            }
+
+            .pagination {
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-top: 16px;
+            }
+
+            .pagination .btn {
+                flex: 1 1 calc(50% - 5px);
+                justify-content: center;
+            }
+
+            .page-numbers {
+                width: 100%;
+                text-align: center;
+                order: -1;
+                font-size: 0.85rem;
+            }
+
+            .empty-state {
+                padding: 24px 16px;
+                border-radius: 18px;
+            }
+
+            .empty-state i {
+                font-size: 2.3rem;
+            }
+
+            .toast-notification {
+                left: 12px;
+                right: 12px;
+                bottom: 12px;
+                width: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 72px 10px 18px;
+            }
+
+            .header,
+            .summary-stat-card,
+            .additional-stat-card,
+            .chart-card,
+            .summary-table-section,
+            .summary-filters {
+                padding: 12px;
+                border-radius: 16px;
+            }
+
+            .header h1 {
+                font-size: 1.05rem;
+            }
+
+            .additional-stats-grid,
+            .filter-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-value {
+                font-size: 1.55rem;
+            }
+
+            .chart-content {
+                height: 220px;
+            }
+
+            .summary-table td {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+
+            .summary-table td::before {
+                min-width: auto;
+                max-width: none;
+            }
+
+            .action-buttons {
+                justify-content: flex-start;
+            }
+
+            .pagination .btn {
+                flex: 1 1 100%;
+            }
+        }
+
     </style>
 </head>
 <body>
     <div id="sidebar-container"></div>
-    <button class="menu-toggle" id="menuToggleBtn">
-        <i class="fas fa-bars"></i>
-    </button>
 
     <!-- Main Content -->
     <div class="main-content" id="mainContent">
@@ -2033,13 +2407,13 @@
             }
 
             tr.innerHTML = `
-                <td>${formatDateForDisplay(row.dateCreated || row.date)}</td>
-                <td>${row.id || `row-${index}`}</td>
-                <td>${translateSummaryCategory(row.category)}</td>
-                <td><span class="${statusClass}">${translateSummaryStatus(row.status)}</span></td>
-                <td>${row.brand || 'N/A'}</td>
-                <td>${resolutionText}</td>
-                <td>
+                <td data-label="${lang.thDate}">${formatDateForDisplay(row.dateCreated || row.date)}</td>
+                <td data-label="${lang.thReportId}">${row.id || `row-${index}`}</td>
+                <td data-label="${lang.thCategory}">${translateSummaryCategory(row.category)}</td>
+                <td data-label="${lang.thStatus}"><span class="${statusClass}">${translateSummaryStatus(row.status)}</span></td>
+                <td data-label="${lang.thBrand}">${row.brand || 'N/A'}</td>
+                <td data-label="${lang.thResolutionTime}">${resolutionText}</td>
+                <td data-label="${lang.thActions}">
                     <div class="action-buttons">
                         <button class="btn-icon view" title="${lang.thActions}" onclick="viewReportDetails('${row.id}', '${row.collection}')">
                             <i class="fas fa-eye"></i>
